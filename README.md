@@ -1,10 +1,10 @@
-# E-LEAP — v0.3 Prototype
+# E-LEAP — v0.4 Prototype
 
 **English Learning, Evaluation & Analytics Platform**
 
 Một platform duy nhất để quản lý nhiều giáo trình, Skills Lab, Exam Center, bài tập, tiến độ, Teacher Dashboard và dữ liệu Learning Analytics phục vụ cải tiến đào tạo/NCKH.
 
-## v0.3 thay đổi chính
+## v0.4 thay đổi chính
 - Rebrand từ Minh Châu Digital Learning sang **E-LEAP**.
 - Objectives B1 được giữ lại; Objectives B2 · Objective First được đánh dấu là hướng ưu tiên từ 2027.
 - Sửa UX: mỗi activity có nút **Mở nội dung** riêng; nút **Đánh dấu hoàn thành** chỉ lưu progress.
@@ -19,8 +19,14 @@ Một platform duy nhất để quản lý nhiều giáo trình, Skills Lab, Exa
 Supabase/Auth/Storage sẽ được nối sau cho tài khoản, lớp, điểm, bài nộp ảnh/audio và dữ liệu nghiên cứu. AI/OCR/Speaking gọi server-side để không lộ API key.
 
 
-## v0.3
+## v0.4
 - Expanded Objectives B1 Unit 1 Lesson 1.1 from the full 33-slide teaching deck.
 - Added lesson outcomes and 12 learning stages.
 - Added embedded mini auto-check quizzes.
 - Kept commercial book scans/audio out of the public repository.
+
+
+## v0.4
+- Added dual-mode lesson delivery: Classroom Delivery and Student Self-study.
+- Unit 1.1 Classroom Delivery now contains 33 screen-by-screen teaching stages mapped to the original PPT.
+- Added Previous/Next, Reveal answer, fullscreen and screen index controls.
