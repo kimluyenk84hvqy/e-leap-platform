@@ -1,0 +1,73 @@
+{
+  "slide1": [
+    "image2.jpeg",
+    "image1.jpeg"
+  ],
+  "slide2": [
+    "image3.png"
+  ],
+  "slide3": [
+    "image10.svg",
+    "image5.jpeg",
+    "image9.png",
+    "image4.png",
+    "image8.svg",
+    "image7.png",
+    "image6.jpeg"
+  ],
+  "slide9": [
+    "image11.png"
+  ],
+  "slide10": [
+    "media1.mp4",
+    "media1.mp4",
+    "image12.png"
+  ],
+  "slide11": [
+    "image13.png",
+    "image15.jpeg",
+    "image14.svg"
+  ],
+  "slide12": [
+    "image16.png"
+  ],
+  "slide13": [
+    "image17.png"
+  ],
+  "slide19": [
+    "image18.png"
+  ],
+  "slide20": [
+    "media2.mp3",
+    "media2.mp3",
+    "image18.png",
+    "image19.png"
+  ],
+  "slide21": [
+    "media3.mp3",
+    "media3.mp3",
+    "image19.png"
+  ],
+  "slide22": [
+    "media3.mp3",
+    "media3.mp3",
+    "image19.png"
+  ],
+  "slide24": [
+    "media4.mp4",
+    "media4.mp4",
+    "image20.png"
+  ],
+  "slide25": [
+    "image21.png"
+  ],
+  "slide26": [
+    "image22.png"
+  ],
+  "slide32": [
+    "image23.png"
+  ],
+  "slide33": [
+    "image24.jpeg"
+  ]
+}
