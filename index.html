@@ -1,18 +1,598 @@
 <!doctype html>
-<html lang="vi">
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="theme-color" content="#073f32" />
-  <title>E-LEAP · English Learning, Evaluation & Analytics Platform</title>
-  <link rel="manifest" href="manifest.webmanifest?v=0.7" />
-  <link rel="stylesheet" href="styles.css?v=0.7" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>E-LEAP Platform Master v1.0 — APPROVED</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css"/>
 </head>
 <body>
-  <div id="app"></div>
-  <script type="module" src="src/app.js?v=0.7"></script>
-  <script>
-    if ('serviceWorker' in navigator) window.addEventListener('load', async()=>{try{const regs=await navigator.serviceWorker.getRegistrations();for(const r of regs){if(!r.active?.scriptURL.includes('service-worker.js?v=0.7')) await r.unregister();}await navigator.serviceWorker.register('./service-worker.js?v=0.7');}catch(e){console.warn(e);}});
-  </script>
+<div class="app" data-role="teacher">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">E</div>
+      <div class="brand-copy">
+        <div class="brand-name">E-LEAP</div>
+        <div class="brand-sub">English Learning, Evaluation<br>& Analytics Platform</div><div class="approved-mark">APPROVED MASTER · v1.0</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <button class="nav-item active" data-view="courses"><span>▦</span><b>Courses</b></button>
+      <button class="nav-item" data-view="skills"><span>◫</span><b>Skills Lab</b></button>
+      <button class="nav-item" data-view="assignments"><span>✓</span><b>Assignments</b><em class="badge student-only">2</em></button>
+      <button class="nav-item" data-view="mock"><span>◉</span><b>Mock Tests</b></button>
+      <button class="nav-item" data-view="progress"><span>↗</span><b>Progress</b></button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="role-box">
+        <span>VIEW AS</span>
+        <div class="role-switch">
+          <button class="role-btn active" data-role="teacher">Teacher</button>
+          <button class="role-btn" data-role="student">Student</button>
+        </div>
+      </div>
+      <button class="side-minor">Profile</button>
+      <button class="side-minor">Settings</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <div class="top-title" id="topTitle">Courses</div>
+        <div class="top-sub" id="topSub">Programmes, classes and lessons</div>
+      </div>
+      <div class="top-actions">
+        <button class="icon-btn">⌕</button>
+        <button class="icon-btn">○</button>
+        <div class="user-chip"><span class="avatar">MP</span><span id="roleText">Teacher</span></div>
+      </div>
+    </header>
+
+    <!-- COURSES -->
+    <section class="view active" id="courses">
+      <div class="page-intro">
+        <div>
+          <div class="kicker">COURSES</div>
+          <h1 class="teacher-only">Teaching programmes</h1>
+          <h1 class="student-only">My courses</h1>
+          <p class="teacher-only">Open a course, choose a class, and continue from the current lesson.</p>
+          <p class="student-only">Continue your course from where you stopped.</p>
+        </div>
+      </div>
+
+      <div class="programme-list">
+        <button class="programme-row open-course" data-course="objective">
+          <span class="programme-accent"></span>
+          <span class="programme-copy">
+            <span class="meta-line"><em>B2 · MAIN COURSE</em><small class="teacher-only">3 classes</small><small class="student-only">42% complete</small></span>
+            <b>Objective First B2</b>
+            <small>12 units · Exam-oriented English</small>
+          </span>
+          <span class="programme-current teacher-only"><small>Current delivery</small><b>U2 · L3</b></span>
+          <span class="programme-current student-only"><small>Next</small><b>U2 · L3</b></span>
+          <span class="arrow">→</span>
+        </button>
+
+        <button class="programme-row open-course" data-course="life">
+          <span class="programme-accent muted"></span>
+          <span class="programme-copy">
+            <span class="meta-line"><em>INTERMEDIATE</em><small class="teacher-only">2 classes</small><small class="student-only">31% complete</small></span>
+            <b>Life Intermediate</b>
+            <small>12 units · General English</small>
+          </span>
+          <span class="programme-current"><small>Current</small><b>U4 · L1</b></span>
+          <span class="arrow">→</span>
+        </button>
+
+        <div class="programme-row esp-family">
+          <span class="programme-accent soft"></span>
+          <span class="programme-copy">
+            <span class="meta-line"><em>COURSE FAMILY</em><small>2 programmes</small></span>
+            <b>ESP</b>
+            <small>English for Specific Purposes</small>
+          </span>
+          <span class="esp-branches">
+            <button class="branch open-course" data-course="pharmacy"><b>English for Pharmacy</b><small>Open →</small></button>
+            <button class="branch open-course" data-course="medical"><b>Medical English</b><small>Open →</small></button>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- COURSE DETAIL -->
+    <section class="view" id="course-detail">
+      <button class="back-link" id="backToCourses">← Courses</button>
+      <div class="course-header">
+        <div>
+          <div class="kicker" id="courseLevel">B2 COURSE</div>
+          <h1 id="courseTitle">Objective First B2</h1>
+          <p id="courseDesc">Exam-oriented English with classroom delivery and self-study.</p>
+        </div>
+        <div class="course-summary">
+          <div><span>Units</span><strong id="summaryUnits">12</strong></div>
+          <div class="teacher-only"><span>Classes</span><strong id="summaryClasses">3</strong></div>
+          <div><span class="teacher-only">Current delivery</span><span class="student-only">Progress</span><strong id="summaryCurrent">U2 · L3</strong></div>
+        </div>
+      </div>
+
+      <div class="course-continue">
+        <div>
+          <span class="eyebrow teacher-only">CURRENT CLASS POSITION</span>
+          <span class="eyebrow student-only">CONTINUE LEARNING</span>
+          <strong class="teacher-only">B2-A · Unit 2 · Lesson 3</strong>
+          <strong class="student-only">Unit 2 · Lesson 3</strong>
+          <small class="teacher-only">Last taught: 24 Sep · Next: Unit 2 · Lesson 4</small>
+          <small class="student-only">42% complete · Last activity: yesterday</small>
+        </div>
+        <button class="primary teacher-only" id="courseStartClass">Start Class</button>
+        <button class="primary student-only" id="courseContinueLearn">Continue</button>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" data-course-tab="units">Units</button>
+        <button class="tab teacher-only" data-course-tab="classes">Classes</button>
+        <button class="tab" data-course-tab="progress">Progress</button>
+      </div>
+
+      <div class="course-panel active" data-course-panel="units">
+        <div class="section-tools">
+          <div>
+            <h3>Units</h3>
+            <p>Course → Unit → Lesson → Activity</p>
+          </div>
+          <div class="tools-right">
+            <input class="search-input" placeholder="Search units or lessons"/>
+            <select class="teacher-only"><option>All status</option><option>Published</option><option>Review</option><option>Draft</option></select>
+          </div>
+        </div>
+
+        <div class="unit-list">
+          <button class="unit-row open-unit">
+            <span class="unit-no">01</span>
+            <span class="unit-copy"><b>Unit 1</b><small>A question of sport</small></span>
+            <span class="unit-meta">6 lessons</span>
+            <span class="student-only unit-meta">100%</span>
+            <span class="teacher-only status-pill published">Published</span>
+            <span class="arrow">→</span>
+          </button>
+          <button class="unit-row">
+            <span class="unit-no">02</span>
+            <span class="unit-copy"><b>Unit 2</b><small>Topic title</small></span>
+            <span class="unit-meta">6 lessons</span>
+            <span class="student-only unit-meta">42%</span>
+            <span class="teacher-only status-pill review">Review</span>
+            <span class="arrow">→</span>
+          </button>
+          <button class="unit-row">
+            <span class="unit-no">03</span>
+            <span class="unit-copy"><b>Unit 3</b><small>Topic title</small></span>
+            <span class="unit-meta">6 lessons</span>
+            <span class="student-only unit-meta">0%</span>
+            <span class="teacher-only status-pill draft">Draft</span>
+            <span class="arrow">→</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="course-panel" data-course-panel="classes">
+        <div class="section-tools">
+          <div><h3>Classes</h3><p>Each class has its own teaching sessions, students and progress.</p></div>
+          <button class="primary small">+ Create class</button>
+        </div>
+        <div class="class-list">
+          <button class="class-row open-class">
+            <span><b>B2-A</b><small>28 students</small></span>
+            <span><small>Current lesson</small><b>U2 · L3</b></span>
+            <span><small>Next lesson</small><b>U2 · L4</b></span>
+            <span><small>Last taught</small><b>24 Sep</b></span>
+            <span class="arrow">→</span>
+          </button>
+          <button class="class-row">
+            <span><b>B2-B</b><small>26 students</small></span>
+            <span><small>Current lesson</small><b>U2 · L1</b></span>
+            <span><small>Next lesson</small><b>U2 · L2</b></span>
+            <span><small>Last taught</small><b>23 Sep</b></span>
+            <span class="arrow">→</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="course-panel" data-course-panel="progress">
+        <div class="metric-grid three">
+          <div class="metric"><span>Completion</span><strong>68%</strong><small>+9% this month</small></div>
+          <div class="metric"><span>Performance</span><strong>74%</strong><small>+4 points</small></div>
+          <div class="metric"><span>Assignments</span><strong>86%</strong><small>5 late</small></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- UNIT -->
+    <section class="view" id="unit-detail">
+      <button class="back-link" id="backToCourse">← Objective First B2</button>
+      <div class="page-intro">
+        <div>
+          <div class="kicker">UNIT 1</div>
+          <h1>A question of sport</h1>
+          <p>6 lessons · 1 review · 1 unit check</p>
+        </div>
+      </div>
+      <div class="lesson-list">
+        <button class="lesson-row open-lesson">
+          <span class="lesson-no">L1</span>
+          <span class="lesson-copy"><b>Vocabulary & Speaking</b><small>Lead-in · Vocabulary · Speaking</small></span>
+          <span class="teacher-only status-pill published">Approved</span>
+          <span class="student-only lesson-progress">Complete</span>
+          <span class="lesson-mode-text">Classroom + Self-study</span>
+          <span class="arrow">→</span>
+        </button>
+        <button class="lesson-row">
+          <span class="lesson-no">L2</span>
+          <span class="lesson-copy"><b>Reading</b><small>Reading · Vocabulary · Review</small></span>
+          <span class="teacher-only status-pill review">Review</span>
+          <span class="student-only lesson-progress">42%</span>
+          <span class="lesson-mode-text">Classroom + Self-study</span>
+          <span class="arrow">→</span>
+        </button>
+        <button class="lesson-row">
+          <span class="lesson-no">L3</span>
+          <span class="lesson-copy"><b>Language Focus</b><small>Guided discovery · Practice</small></span>
+          <span class="teacher-only status-pill draft">Draft</span>
+          <span class="student-only lesson-progress">Not started</span>
+          <span class="lesson-mode-text">Classroom + Self-study</span>
+          <span class="arrow">→</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- LESSON -->
+    <section class="view" id="lesson">
+      <button class="back-link" id="backToUnit">← Unit 1</button>
+      <div class="lesson-header">
+        <div>
+          <div class="kicker">OBJECTIVE FIRST B2 · UNIT 1</div>
+          <div class="lesson-title-line">
+            <h1>Lesson 1 · Vocabulary & Speaking</h1>
+            <span class="teacher-only status-pill published">Approved</span>
+          </div>
+        </div>
+        <div class="segmented">
+          <button class="lesson-mode active" data-mode="classroom">Classroom</button>
+          <button class="lesson-mode" data-mode="selfstudy">Self-study</button>
+          <button class="lesson-mode teacher-only" data-mode="edit">Edit</button>
+        </div>
+      </div>
+
+      <div class="lesson-layout">
+        <aside class="stage-nav">
+          <button class="stage active"><span>01</span><b>Lead-in</b></button>
+          <button class="stage"><span>02</span><b>Vocabulary</b></button>
+          <button class="stage"><span>03</span><b>Reading</b></button>
+          <button class="stage"><span>04</span><b>Language</b></button>
+          <button class="stage"><span>05</span><b>Practice</b></button>
+          <button class="stage"><span>06</span><b>Speaking</b></button>
+          <button class="stage"><span>07</span><b>Review</b></button>
+        </aside>
+
+        <div class="lesson-canvas">
+          <div class="canvas-top">
+            <span class="activity-label">LEAD-IN</span>
+            <button class="ghost tiny teacher-only">Teacher panel</button>
+          </div>
+          <h2>What makes a sport exciting to watch?</h2>
+          <p class="lead-copy">Discuss with a partner. Give one example and explain your choice.</p>
+
+          <div class="student-only selfstudy-flow">
+            <span>Learn</span><i>→</i><span>Try</span><i>→</i><span>Check</span><i>→</i><span>Feedback</span><i>→</i><span>Retry</span><i>→</i><span>Complete</span>
+          </div>
+
+          <div class="activity-steps">
+            <div><span>01</span><b>Think</b><small>Choose one sport.</small></div>
+            <div><span>02</span><b>Pair</b><small>Compare your reasons.</small></div>
+            <div><span>03</span><b>Share</b><small>Report one idea.</small></div>
+          </div>
+
+          <div class="canvas-bottom">
+            <span class="teacher-only">Question → Student response → Reveal → Explanation → Next</span>
+            <span class="student-only">Your progress is saved at meaningful checkpoints only.</span>
+            <button class="primary teacher-only" id="startClassBtn">Start Class</button>
+            <button class="primary student-only">Continue Activity</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CLASS DETAIL -->
+    <section class="view" id="class-detail">
+      <button class="back-link" id="backToClasses">← Objective First B2 · Classes</button>
+      <div class="class-header">
+        <div>
+          <div class="kicker">OBJECTIVE FIRST B2</div>
+          <h1>B2-A</h1>
+          <p>28 students · Active class</p>
+        </div>
+        <div class="join-card">
+          <span>JOIN CODE</span><strong>B2A-2468</strong><button>Copy</button>
+        </div>
+      </div>
+
+      <div class="class-current">
+        <div><span>Current lesson</span><strong>Unit 2 · Lesson 3</strong></div>
+        <div><span>Last taught</span><strong>24 Sep</strong></div>
+        <div><span>Next lesson</span><strong>Unit 2 · Lesson 4</strong></div>
+        <button class="primary" id="classStartBtn">Start Class</button>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" data-class-tab="students">Students</button>
+        <button class="tab" data-class-tab="sessions">Sessions</button>
+        <button class="tab" data-class-tab="assignments">Assignments</button>
+        <button class="tab" data-class-tab="results">Results</button>
+      </div>
+
+      <div class="class-panel active" data-class-panel="students">
+        <div class="student-table">
+          <div class="student-head"><span>Student</span><span>Completion</span><span>Assignments</span><span>Last active</span><span></span></div>
+          <button class="student-row open-student"><span><b>Nguyen Minh Anh</b><small>Student ID 001</small></span><span>82%</span><span>12/14</span><span>Today</span><span>View →</span></button>
+          <button class="student-row"><span><b>Tran Gia Han</b><small>Student ID 002</small></span><span>74%</span><span>13/14</span><span>Yesterday</span><span>View →</span></button>
+          <button class="student-row"><span><b>Le Duc Minh</b><small>Student ID 003</small></span><span>51%</span><span>9/14</span><span>5 days ago</span><span>View →</span></button>
+        </div>
+      </div>
+
+      <div class="class-panel" data-class-panel="sessions">
+        <div class="session-list">
+          <div class="session-row"><span><b>24 Sep</b><small>Unit 2 · Lesson 3</small></span><span>26/28 joined</span><span>84% response rate</span><span>Completed</span></div>
+          <div class="session-row"><span><b>22 Sep</b><small>Unit 2 · Lesson 2</small></span><span>27/28 joined</span><span>81% response rate</span><span>Completed</span></div>
+        </div>
+      </div>
+
+      <div class="class-panel" data-class-panel="assignments">
+        <div class="empty-state"><h3>Class assignments</h3><p>Assignments targeted to B2-A appear here.</p></div>
+      </div>
+
+      <div class="class-panel" data-class-panel="results">
+        <div class="metric-grid three">
+          <div class="metric"><span>Completion</span><strong>78%</strong><small>+9%</small></div>
+          <div class="metric"><span>Performance</span><strong>74%</strong><small>+4 points</small></div>
+          <div class="metric"><span>Participation</span><strong>82%</strong><small>Stable</small></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STUDENT PROFILE -->
+    <section class="view" id="student-profile">
+      <button class="back-link" id="backToClass">← B2-A · Students</button>
+      <div class="student-profile-header">
+        <div>
+          <div class="kicker">STUDENT PROFILE</div>
+          <h1>Nguyen Minh Anh</h1>
+          <p>Objective First B2 · B2-A · Active</p>
+        </div>
+      </div>
+
+      <div class="profile-grid">
+        <div class="profile-card"><span>Course completion</span><strong>82%</strong><small>+12% this month</small></div>
+        <div class="profile-card"><span>Assignments</span><strong>12/14</strong><small>1 late · 1 missing</small></div>
+        <div class="profile-card"><span>Mock Tests</span><strong>2</strong><small>Latest: 71%</small></div>
+        <div class="profile-card"><span>Engagement</span><strong>High</strong><small>Active today</small></div>
+      </div>
+
+      <div class="profile-panels">
+        <div class="panel">
+          <div class="panel-title"><h3>Skill profile</h3><span>Trend</span></div>
+          <div class="skill-progress"><span>Reading</span><div class="bar"><i style="width:78%"></i></div><b>78</b><em>+6</em></div>
+          <div class="skill-progress"><span>Listening</span><div class="bar"><i style="width:69%"></i></div><b>69</b><em>+8</em></div>
+          <div class="skill-progress"><span>Speaking</span><div class="bar"><i style="width:74%"></i></div><b>74</b><em>+3</em></div>
+          <div class="skill-progress"><span>Writing</span><div class="bar"><i style="width:67%"></i></div><b>67</b><em>-2</em></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title"><h3>Recent feedback</h3><span>Latest</span></div>
+          <div class="feedback-item"><b>Writing Task 1</b><small>Good organisation. Review tense consistency.</small></div>
+          <div class="feedback-item"><b>Speaking Practice 02</b><small>Clear ideas; work on fluency between points.</small></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS LAB -->
+    <section class="view" id="skills">
+      <div class="page-intro">
+        <div><div class="kicker">SKILLS LAB</div><h1>Focused practice</h1><p>Practice beyond the core lesson with a clear next step.</p></div>
+      </div>
+      <div class="skills-list">
+        <button class="skill-row"><span class="skill-letter">R</span><span><b>Reading</b><small>Current focus: inference</small></span><span><small>Recent</small><b>76%</b></span><span><small>Recommended next</small><b>B2 Reading Set 4</b></span><span class="arrow">→</span></button>
+        <button class="skill-row"><span class="skill-letter">L</span><span><b>Listening</b><small>Current focus: detail</small></span><span><small>Recent</small><b>69%</b></span><span><small>Recommended next</small><b>B2 Listening Set 4</b></span><span class="arrow">→</span></button>
+        <button class="skill-row"><span class="skill-letter">S</span><span><b>Speaking</b><small>Current focus: fluency</small></span><span><small>Recent</small><b>72%</b></span><span><small>Recommended next</small><b>Speaking Set 3</b></span><span class="arrow">→</span></button>
+        <button class="skill-row"><span class="skill-letter">W</span><span><b>Writing</b><small>Current focus: organisation</small></span><span><small>Recent</small><b>67%</b></span><span><small>Recommended next</small><b>Writing Set 2</b></span><span class="arrow">→</span></button>
+      </div>
+    </section>
+
+    <!-- ASSIGNMENTS -->
+    <section class="view" id="assignments">
+      <div class="page-intro with-action">
+        <div>
+          <div class="kicker">ASSIGNMENTS</div>
+          <h1 class="teacher-only">Assign, submit and grade</h1>
+          <h1 class="student-only">My assignments</h1>
+          <p class="teacher-only">One workflow for online tasks, typed writing, speaking and paper uploads.</p>
+          <p class="student-only">Complete work online or upload photos/PDF when required.</p>
+        </div>
+        <button class="primary teacher-only">+ New assignment</button>
+      </div>
+
+      <div class="tabs assignment-tabs">
+        <button class="tab active" data-assignment-tab="current">Current</button>
+        <button class="tab teacher-only" data-assignment-tab="grade">To Grade <span class="count">18</span></button>
+        <button class="tab" data-assignment-tab="returned">Returned</button>
+      </div>
+
+      <div class="assignment-panel active" data-assignment-panel="current">
+        <div class="filter-row teacher-only">
+          <select><option>All courses</option><option>Objective First B2</option><option>Life Intermediate</option></select>
+          <select><option>All classes</option><option>B2-A</option><option>B2-B</option></select>
+          <select><option>All types</option><option>Online</option><option>Writing</option><option>Speaking</option><option>Paper upload</option></select>
+        </div>
+        <div class="assignment-table">
+          <div class="assignment-head"><span>Assignment</span><span>Type</span><span>Status</span><span>Due</span><span></span></div>
+          <div class="assignment-item">
+            <span><b>Writing Task 1</b><small>Objective First B2 · B2-A</small></span>
+            <span>Typed / Paper</span>
+            <span class="teacher-only">24 / 28 submitted</span><span class="student-only">Submitted</span>
+            <span>28 Sep</span>
+            <button>Open →</button>
+          </div>
+          <div class="assignment-item">
+            <span><b>Speaking Practice 02</b><small>Life Intermediate · LI-B</small></span>
+            <span>Audio recording</span>
+            <span class="teacher-only">19 / 22 submitted</span><span class="student-only">Due soon</span>
+            <span>30 Sep</span>
+            <button>Open →</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="assignment-panel" data-assignment-panel="grade">
+        <div class="grading-shell">
+          <aside class="submission-list">
+            <div class="submission-title"><span class="kicker">TO GRADE</span><h3>Writing Task 1</h3><p>B2-A · 24 submitted</p></div>
+            <button class="submission-row active"><span>Nguyen Minh Anh</span><small>Paper upload · 3 pages</small></button>
+            <button class="submission-row"><span>Tran Gia Han</span><small>Typed writing</small></button>
+            <button class="submission-row"><span>Le Duc Minh</span><small>Paper upload · 2 pages</small></button>
+          </aside>
+
+          <section class="submission-view">
+            <div class="viewer-toolbar">
+              <span>Page 1 of 3</span>
+              <div><button>−</button><button>100%</button><button>+</button><button>Rotate</button><button>Pen</button><button>Highlight</button><button>Comment</button></div>
+            </div>
+            <div class="paper">
+              <div class="paper-title">Student handwritten response</div>
+              <div class="line l90"></div><div class="line l74"></div><div class="line l84"></div>
+              <div class="annotation good">✓ Clear idea</div>
+              <div class="line l95"></div><div class="line l68"></div>
+              <div class="annotation note">Check tense consistency</div>
+              <div class="line l88"></div><div class="line l62"></div>
+            </div>
+          </section>
+
+          <aside class="grading-panel">
+            <div class="grading-head"><span class="kicker">GRADING</span><h3>Nguyen Minh Anh</h3><p>Teacher controls the final score.</p></div>
+            <label><span>Task achievement</span><input value="7" type="number"></label>
+            <label><span>Organisation</span><input value="8" type="number"></label>
+            <label><span>Vocabulary</span><input value="7" type="number"></label>
+            <label><span>Grammar</span><input value="6" type="number"></label>
+            <label class="feedback-label"><span>Teacher feedback</span><textarea>Good organisation. Review verb tense consistency.</textarea></label>
+            <div class="total-row"><span>Total</span><strong>28 / 40</strong></div>
+            <div class="grading-actions"><button class="ghost">Save draft</button><button class="primary">Save & Next</button></div>
+            <div class="grading-nav"><button>← Previous</button><button>Next →</button></div>
+          </aside>
+        </div>
+
+        <div class="renderer-notes">
+          <div><b>Typed writing</b><span>Inline comments + highlight + rubric + overall feedback</span></div>
+          <div><b>Speaking</b><span>Audio player + 0.75×/1×/1.25× + timestamp comments + rubric</span></div>
+        </div>
+      </div>
+
+      <div class="assignment-panel" data-assignment-panel="returned">
+        <div class="empty-state"><h3>Returned work</h3><p>Graded work and feedback appear here.</p></div>
+      </div>
+    </section>
+
+    <!-- MOCK -->
+    <section class="view" id="mock">
+      <div class="page-intro">
+        <div><div class="kicker">MOCK TESTS</div><h1>Four-skill assessment</h1><p>Full mock tests and skill-specific tests with clear status.</p></div>
+      </div>
+
+      <div class="mock-list">
+        <div class="mock-row">
+          <span><em>FULL MOCK</em><b>Mock Test 01</b><small>Reading · Listening · Writing · Speaking</small></span>
+          <span><small>Status</small><b>Available</b></span>
+          <span><small>Duration</small><b>180 min</b></span>
+          <button>Open →</button>
+        </div>
+        <div class="mock-row">
+          <span><em>FULL MOCK</em><b>Mock Test 00</b><small>Reading · Listening · Writing · Speaking</small></span>
+          <span><small>Status</small><b>Completed</b></span>
+          <span><small>Latest score</small><b>71%</b></span>
+          <button>Results →</button>
+        </div>
+      </div>
+
+      <div class="skill-test-grid">
+        <button><b>Reading</b><span>45 min · Available →</span></button>
+        <button><b>Listening</b><span>40 min · Available →</span></button>
+        <button><b>Writing</b><span>80 min · In progress →</span></button>
+        <button><b>Speaking</b><span>15 min · Completed →</span></button>
+      </div>
+    </section>
+
+    <!-- PROGRESS -->
+    <section class="view" id="progress">
+      <div class="page-intro with-action">
+        <div><div class="kicker">PROGRESS</div><h1 id="progressTitle">Class progress</h1><p>Completion, performance, engagement and skill trends.</p></div>
+        <select class="teacher-only"><option>B2-A</option><option>B2-B</option><option>LI-A</option></select>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active">Overview</button>
+        <button class="tab">Gradebook</button>
+        <button class="tab">Skills</button>
+        <button class="tab">Engagement</button>
+        <button class="tab teacher-only">Students</button>
+      </div>
+
+      <div class="progress-strip">
+        <div><span>Completion</span><strong>78%</strong><small>+9%</small></div>
+        <div><span>Performance</span><strong>74%</strong><small>+4 pts</small></div>
+        <div><span>Assignments</span><strong>86%</strong><small>5 late</small></div>
+        <div><span>Participation</span><strong>82%</strong><small>Stable</small></div>
+      </div>
+
+      <div class="progress-grid">
+        <div class="panel">
+          <div class="panel-title"><h3>Skill profile</h3><span>Trend</span></div>
+          <div class="skill-progress"><span>Reading</span><div class="bar"><i style="width:76%"></i></div><b>76</b><em>+6</em></div>
+          <div class="skill-progress"><span>Listening</span><div class="bar"><i style="width:69%"></i></div><b>69</b><em>+8</em></div>
+          <div class="skill-progress"><span>Speaking</span><div class="bar"><i style="width:72%"></i></div><b>72</b><em>+3</em></div>
+          <div class="skill-progress"><span>Writing</span><div class="bar"><i style="width:67%"></i></div><b>67</b><em>-2</em></div>
+        </div>
+        <div class="panel teacher-only">
+          <div class="panel-title"><h3>Needs attention</h3><span>Actionable</span></div>
+          <button class="attention-row"><span><b>3 students</b><small>Not active this week</small></span><span>View →</span></button>
+          <button class="attention-row"><span><b>4 students</b><small>Below 50% in Listening</small></span><span>View →</span></button>
+          <button class="attention-row"><span><b>2 students</b><small>Missing assignments</small></span><span>View →</span></button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- CLASSROOM -->
+<div class="classroom" id="classroom">
+  <div class="classroom-top">
+    <div>
+      <span>Objective First B2 · B2-A</span>
+      <small>Unit 2 · Lesson 3</small>
+    </div>
+    <button id="exitClassroom">Exit Class</button>
+  </div>
+  <div class="classroom-main">
+    <span class="activity-label">LEAD-IN</span>
+    <h1>What makes a sport exciting to watch?</h1>
+    <p>Discuss with a partner. Give one example and explain your choice.</p>
+    <div class="live-row"><span>Connected <b>26 / 28</b></span><span>Responded <b>21 / 26</b></span></div>
+  </div>
+  <div class="classroom-toolbar">
+    <button>← Back</button><button>Timer</button><button>Reveal</button><button>Responses</button><button>Teacher Notes</button><button class="primary">Next →</button>
+  </div>
+</div>
+
+<script src="assets/js/app.js"></script>
 </body>
 </html>

@@ -1,43 +1,41 @@
-# E-LEAP — v0.7 Prototype
+# E-LEAP Platform Master v1.0 — APPROVED
 
-**English Learning, Evaluation & Analytics Platform**
+GitHub-ready package for the approved E-LEAP platform shell.
 
-Một platform duy nhất để quản lý nhiều giáo trình, Skills Lab, Exam Center, bài tập, tiến độ, Teacher Dashboard và dữ liệu Learning Analytics phục vụ cải tiến đào tạo/NCKH.
+## Open locally
+Open `index.html`.
 
-## v0.7 thay đổi chính
-- Rebrand từ Minh Châu Digital Learning sang **E-LEAP**.
-- Objectives B1 được giữ lại; Objectives B2 · Objective First được đánh dấu là hướng ưu tiên từ 2027.
-- Sửa UX: mỗi activity có nút **Mở nội dung** riêng; nút **Đánh dấu hoàn thành** chỉ lưu progress.
-- Thêm trang nội dung sâu cho Unit 1.1 / 1.2.
-- Giữ cấu trúc mở: `Platform → Program → Course/Class → Unit → Lesson → Section/Activity`.
-- Public demo không chứa PDF/audio bản quyền hoặc dữ liệu học viên.
+## GitHub Pages
+This repository is ready for GitHub Pages deployment from the repository root.
 
-## Modules
-`Courses | Skills Lab | Exam Center | Question Bank | Assignments | Submissions | Progress | Teacher Analytics`
+See:
+- `docs/DEPLOY-GITHUB-PAGES.md`
+- `docs/ARCHITECTURE.md`
 
-## Backend roadmap
-Supabase/Auth/Storage sẽ được nối sau cho tài khoản, lớp, điểm, bài nộp ảnh/audio và dữ liệu nghiên cứu. AI/OCR/Speaking gọi server-side để không lộ API key.
+## Repository structure
 
+```text
+/
+├── index.html
+├── assets/
+│   ├── css/styles.css
+│   └── js/app.js
+├── courses/
+│   ├── registry.json
+│   ├── objective-first-b2/
+│   │   ├── course.json
+│   │   └── unit-01/unit.json
+│   ├── life-intermediate/
+│   └── esp/
+├── docs/
+├── media-private/
+├── .gitignore
+├── .nojekyll
+└── .env.example
+```
 
-## v0.7
-- Expanded Objectives B1 Unit 1 Lesson 1.1 from the full 33-slide teaching deck.
-- Added lesson outcomes and 12 learning stages.
-- Added embedded mini auto-check quizzes.
-- Kept commercial book scans/audio out of the public repository.
+## Production rule
+The platform shell is locked. Add new courses, units, lessons, activities and classes as data/content without redesigning the shell.
 
-
-## v0.7
-- Added dual-mode lesson delivery: Classroom Delivery and Student Self-study.
-- Unit 1.1 Classroom Delivery now contains 33 screen-by-screen teaching stages mapped to the original PPT.
-- Added Previous/Next, Reveal answer, fullscreen and screen index controls.
-
-
-## v0.7
-- Makes the three lesson-use choices explicit: Dạy trên lớp, Tự học, Trình chiếu.
-- Presentation mode hides navigation/chrome and enlarges lesson content for projection.
-- Classroom Delivery remains the teacher-controlled mode with Next/Previous and Reveal answer.
-
-
-## v0.7
-- Cache-bust + service worker v0.7 to force dark-green UI.
-- Private Media Pack loader: teacher selects the local media-pack folder; images/video/audio render on mapped classroom slides without uploading copyrighted media to GitHub.
+## Next production task
+Build **Objective First B2 — Unit 1** from an approved Content Map.

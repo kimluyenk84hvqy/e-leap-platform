@@ -1,0 +1,34 @@
+{
+  "platformVersion": "1.0",
+  "status": "APPROVED",
+  "courses": [
+    {
+      "id": "objective-first-b2",
+      "title": "Objective First B2",
+      "level": "B2",
+      "type": "main-course",
+      "path": "courses/objective-first-b2/course.json"
+    },
+    {
+      "id": "life-intermediate",
+      "title": "Life Intermediate",
+      "level": "Intermediate",
+      "type": "general-english",
+      "path": "courses/life-intermediate/course.json"
+    },
+    {
+      "id": "english-for-pharmacy",
+      "title": "English for Pharmacy",
+      "level": "ESP",
+      "type": "esp",
+      "path": "courses/esp/english-for-pharmacy/course.json"
+    },
+    {
+      "id": "medical-english",
+      "title": "Medical English",
+      "level": "ESP",
+      "type": "esp",
+      "path": "courses/esp/medical-english/course.json"
+    }
+  ]
+}

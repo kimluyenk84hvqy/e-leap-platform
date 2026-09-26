@@ -1,0 +1,15 @@
+{
+  "id": "objective-first-b2",
+  "title": "Objective First B2",
+  "level": "B2",
+  "status": "active",
+  "units": [
+    {
+      "id": "unit-01",
+      "title": "Unit 1",
+      "subtitle": "A question of sport",
+      "status": "planned",
+      "path": "unit-01/unit.json"
+    }
+  ]
+}
