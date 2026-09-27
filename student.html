@@ -1,6 +1,8 @@
 <!doctype html>
 <!DOCTYPE html>
 
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -740,6 +742,32 @@ html,body{margin:0;background:#f4f7f5;color:#183a31;font-family:Inter,Arial,sans
 .student-homework-input{width:100%;box-sizing:border-box;min-height:150px;border:1px solid #aebfb9;border-radius:10px;padding:11px;font:inherit;margin-top:12px}
 .student-lesson input:disabled,.student-lesson textarea:disabled,.student-lesson select:disabled,.student-lesson button.student-answer-btn:disabled{opacity:.55;cursor:not-allowed}
 @media(max-width:800px){.student-shell{padding-left:8px;padding-right:8px}.student-response-footer{bottom:8px}}
+
+.strategy-student-response{
+  margin-top:16px;background:#fff;border:1px solid #d4dfdb;border-radius:12px;padding:14px 16px
+}
+.strategy-response-head b{display:block;color:#174c40;font-size:18px}
+.strategy-response-head span{display:block;color:#66756f;margin-top:3px}
+.strategy-response-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.strategy-response-grid input{
+  width:100%;box-sizing:border-box;border:1px solid #aebfb9;border-radius:9px;padding:10px 11px;font:inherit
+}
+.student-ended-bar{
+  position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:1700;
+  width:min(860px,calc(100vw - 34px));background:#fff;border:1px solid #d7e2de;border-radius:15px;
+  padding:13px 15px;box-shadow:0 16px 42px rgba(17,50,40,.16);
+  display:flex;align-items:center;justify-content:space-between;gap:14px
+}
+.student-ended-bar[hidden]{display:none}
+.student-ended-bar b{display:block;color:#174c40}
+.student-ended-bar span{display:block;color:#66756f;font-size:13px;margin-top:2px}
+.student-ended-bar button{
+  border:1px solid #0f6a57;background:#0f6a57;color:#fff;border-radius:9px;padding:9px 13px;font-weight:900
+}
+@media(max-width:680px){
+  .strategy-response-grid{grid-template-columns:1fr}
+  .student-ended-bar{align-items:stretch;flex-direction:column}
+}
 </style>
 </head>
 <body>
@@ -777,7 +805,6 @@ html,body{margin:0;background:#f4f7f5;color:#183a31;font-family:Inter,Arial,sans
 <div class="poll-result" id="pollResult">Choose one option, then type your explanation in the response box below.</div>
 <div class="poll-response-area hidden" id="pollResponseArea">
 <textarea class="student-response-control" id="pollExplanation" placeholder="Type your explanation here..."></textarea>
-
 </div>
 </div>
 </div>
@@ -823,6 +850,19 @@ html,body{margin:0;background:#f4f7f5;color:#183a31;font-family:Inter,Arial,sans
 <button class="layer-card" data-layer-support="Personally, I think… / To me,…" data-layer-title="Give an opinion">4</button>
 </div>
 </div>
+
+<section class="strategy-student-response" id="studentStrategyResponse">
+<div class="strategy-response-head">
+<b>Your turn</b>
+<span>After watching the video, type the four techniques you remember before the teacher reveals them.</span>
+</div>
+<div class="strategy-response-grid">
+<input class="student-response-control strategy-answer" data-strategy-answer="1" placeholder="1. Type technique..."/>
+<input class="student-response-control strategy-answer" data-strategy-answer="2" placeholder="2. Type technique..."/>
+<input class="student-response-control strategy-answer" data-strategy-answer="3" placeholder="3. Type technique..."/>
+<input class="student-response-control strategy-answer" data-strategy-answer="4" placeholder="4. Type technique..."/>
+</div>
+</section>
 </section>
 <section class="screen accent-vocab" data-screen="4">
 <div class="stage-label">TOPIC VOCABULARY</div>
@@ -841,9 +881,9 @@ html,body{margin:0;background:#f4f7f5;color:#183a31;font-family:Inter,Arial,sans
 <div class="learner-input-card vocab-add-card">
 <label for="vocabMoreWords"><b>Add more words to the current list</b></label>
 <div class="input-row">
-<input class="student-response-control" id="vocabMoreWords" placeholder="Type one word or phrase..." type="text">
+<input class="student-response-control" id="vocabMoreWords" placeholder="Type one word or phrase..." type="text"/>
 <button class="student-response-control" id="addVocabWord" type="button">Add</button>
-</input></div>
+</div>
 <div aria-live="polite" class="added-word-list" id="vocabAddedWords"></div>
 </div>
 </section>
@@ -965,7 +1005,7 @@ html,body{margin:0;background:#f4f7f5;color:#183a31;font-family:Inter,Arial,sans
 <div class="step-title"><span>STEP 1</span> Which phrasal verbs do you hear?</div>
 <audio controls="" data-media-key="u01/l01/speakers-2-5.mp3" data-media-kind="audio" data-media-state="loading" data-private-path="u01/l01/speakers-2-5.mp3" preload="metadata"></audio>
 <div class="candidate-grid">
-<div class="candidate-item"><label><input type="checkbox"> add to</input></label><button class="item-check" data-heard="no">check</button></div>
+<div class="candidate-item"><label><input type="checkbox"/> add to</label><button class="item-check" data-heard="no">check</button></div>
 <div class="candidate-item"><label><input type="checkbox"/> cut down (on)</label><button class="item-check" data-heard="yes">check</button></div>
 <div class="candidate-item"><label><input type="checkbox"/> dress up</label><button class="item-check" data-heard="yes">check</button></div>
 <div class="candidate-item"><label><input type="checkbox"/> fit in with</label><button class="item-check" data-heard="no">check</button></div>
@@ -1131,6 +1171,14 @@ html,body{margin:0;background:#f4f7f5;color:#183a31;font-family:Inter,Arial,sans
 <button class="primary" disabled="" id="studentSubmitBtn">Submit</button>
 </div>
 </div>
+<div class="student-ended-bar" hidden="" id="studentEndedBar">
+<div>
+<b>Class ended</b>
+<span>This session is closed. Join the next class with a new code.</span>
+</div>
+<button id="studentJoinNewClass" type="button">Join new class</button>
+</div>
+
 <script src="assets/js/e-leap-live-config.js"></script>
 <script src="assets/js/e-leap-live-api.js"></script>
 <script src="assets/js/e-leap-sound.js"></script>
@@ -1231,6 +1279,12 @@ html,body{margin:0;background:#f4f7f5;color:#183a31;font-family:Inter,Arial,sans
       option=$('[data-screen="1"] .poll-btn.selected')?.textContent?.trim()||"";
       explanation=$("#pollExplanation")?.value.trim()||"";
       if(!option||!explanation)throw new Error("Choose one option and type your explanation.");
+    }else if(id==="s03"){
+      const vals=$$('[data-screen="3"] .strategy-answer').map(x=>x.value.trim());
+      if(vals.length!==4 || vals.some(v=>!v))throw new Error("Type all four techniques before submitting.");
+      option="Speaking strategy";
+      type="multi_text";
+      explanation=vals.map((v,i)=>`${i+1}. ${v}`).join("\n");
     }else if(id==="s04"){
       explanation=$("#vocabMoreWords")?.value.trim()||"";
       if(!explanation)throw new Error("Type at least one word or phrase.");
@@ -1284,7 +1338,20 @@ html,body{margin:0;background:#f4f7f5;color:#183a31;font-family:Inter,Arial,sans
       const raw=await ELeapLive.getClassState({joinCode:state.participant.join_code}),cs=Array.isArray(raw)?raw[0]:raw;
       const id=cs.current_screen_id||"s01";
       if(state.currentId!==id)showSlideById(id);
-      if(cs.class_status==="lobby"||cs.class_status==="ended"){setMode("FOLLOW");$("#studentResponseFooter").hidden=true;setControls(false);return}
+      if(cs.class_status==="ended"){
+        setMode("FOLLOW");
+        $("#studentResponseFooter").hidden=true;
+        $("#studentEndedBar").hidden=false;
+        setControls(false);
+        return;
+      }
+      $("#studentEndedBar").hidden=true;
+      if(cs.class_status==="lobby"){
+        setMode("FOLLOW");
+        $("#studentResponseFooter").hidden=true;
+        setControls(false);
+        return;
+      }
       if(interactiveScreen(id)){
         const ar=await ELeapLive.getActivityState({joinCode:state.participant.join_code,screenId:id});
         renderActivity(Array.isArray(ar)?ar[0]:ar);
@@ -1304,6 +1371,21 @@ html,body{margin:0;background:#f4f7f5;color:#183a31;font-family:Inter,Arial,sans
     }catch(e){$("#joinStatus").textContent=e.message}
   }
   $("#joinBtn").onclick=join;
+
+  $("#studentJoinNewClass").onclick=()=>{
+    sessionStorage.removeItem("eleap_student_session");
+    state.participant=null;
+    state.currentId=null;
+    state.submitted={};
+    $("#studentEndedBar").hidden=true;
+    $("#studentLesson").hidden=true;
+    $("#joinCard").hidden=false;
+    $("#joinCode").value="";
+    $("#studentName").value="";
+    $("#joinStatus").textContent="";
+    setMode("FOLLOW");
+    window.scrollTo({top:0,behavior:"smooth"});
+  };
 
   try{
     const p=JSON.parse(sessionStorage.getItem("eleap_student_session")||"null");
