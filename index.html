@@ -13,6 +13,8 @@
 
 <!DOCTYPE html>
 
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -702,6 +704,14 @@ body{color:var(--charcoal)}
 
 .vocab-once-note{margin:6px 0 10px;color:#61716b;font-size:15px;line-height:1.45}
 .vocab-add-card .input-row input{width:100%;box-sizing:border-box}
+
+.transcript-response-card{margin-top:14px}
+.transcript-response-card textarea{
+  width:100%;box-sizing:border-box;min-height:110px;margin-top:8px;
+  border:1px solid var(--line);border-radius:9px;padding:10px 12px;
+  font:inherit;font-size:18px;background:#fff;color:var(--ink)
+}
+.transcript-response-note{margin:6px 0 0;color:var(--muted);font-size:16px;line-height:1.4}
 </style></head>
 <body>
 <div class="app">
@@ -967,7 +977,7 @@ body{color:var(--charcoal)}
 <section class="screen accent-vocab" data-screen="7">
 <div class="stage-label">TRANSCRIPT FOCUS</div>
 <h2>Find the phrasal verbs</h2>
-<p class="instruction">Select Speakers 2–5 in turn. Read each transcript, identify the phrasal verbs, and try to explain their meaning from context before clicking a highlighted phrase.</p>
+<p class="instruction">Select Speakers 2–5 in turn. Read each transcript, identify the highlighted phrasal verbs, and infer their meaning from context. Click a highlighted phrase to check its meaning. After exploring all four speakers, type one short response and submit once.</p>
 <div class="tabs" id="speakerTabs">
 <button class="tab active" data-speaker="2">Speaker 2</button>
 <button class="tab" data-speaker="3">Speaker 3</button>
@@ -976,7 +986,16 @@ body{color:var(--charcoal)}
 </div>
 <div class="transcript" id="speakerText"></div>
 <div class="meaning-box" id="meaningBox">Click a highlighted phrasal verb.</div>
-</section>
+<div class="learner-input-card transcript-response-card" id="slide7Response">
+<label for="slide7MeaningResponse">
+<b>Your response — submit once</b>
+</label>
+<p class="transcript-response-note">
+            Choose at least two phrasal verbs from the transcripts and explain what they mean in context.
+            Example format: <i>dress up = ...; stand out = ...</i>
+</p>
+<textarea id="slide7MeaningResponse" placeholder="Type at least two phrasal verbs and their meanings in context..."></textarea>
+</div></section>
 <section class="screen accent-language" data-screen="8">
 <div class="stage-label">LANGUAGE FOCUS · GUIDED DISCOVERY</div>
 <h2>How do phrasal verbs work?</h2>
