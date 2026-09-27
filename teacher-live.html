@@ -1,99 +1,143 @@
 <!doctype html><html lang="en"><head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>E-LEAP · Live Response Wall</title>
+<title>E-LEAP · Live Classroom</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/e-leap-live.css"/></head><body>
+<link rel="stylesheet" href="assets/css/e-leap-live.css"/>
+<style>
+.classflow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px 24px;border-bottom:1px solid var(--line);background:#fbfcfb}
+.screen-nav{display:flex;align-items:center;justify-content:center;gap:10px}
+.screen-chip{font-weight:900;color:var(--green2)}
+.lobby-note{padding:10px 24px;background:#f8fbf9;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+.qr-img{width:116px;height:116px;background:white;border-radius:10px;padding:5px;object-fit:contain}
+@media(max-width:820px){.classflow{grid-template-columns:1fr}.screen-nav{justify-content:flex-start}}
+</style></head><body>
 <div class="shell"><header class="topbar"><div class="brand"><div class="brand-mark">E</div><div>E-LEAP<small>Live Classroom · Teacher</small></div></div><a class="btn ghost" href="index.html">← Back to lesson</a></header>
 <main class="page">
-<section id="createPanel" class="panel"><div class="hero"><div class="kicker">Live Classroom</div><h1>Create a teaching session</h1><p>One lesson can run in many classes at the same time. Each class receives its own session and response wall.</p></div>
-<div style="padding:24px 28px"><div class="grid2"><label><span>Teacher name</span><input id="teacherName" placeholder="e.g. Ms Phuong"/></label><label><span>Lesson</span><input value="Objective First B2 · U1.1 Fashion Matters" disabled/></label></div><div style="display:flex;gap:10px;align-items:center;margin-top:18px"><button id="createSession" class="btn primary">Create live session</button><span id="createStatus" class="status"></span></div></div></section>
+<section id="createPanel" class="panel"><div class="hero"><div class="kicker">Live Classroom</div><h1>Start a class session</h1><p>Students join once and stay connected throughout the whole lesson.</p></div>
+<div style="padding:24px 28px"><div class="grid2"><label><span>Teacher name</span><input id="teacherName" placeholder="e.g. Ms Phuong"/></label><label><span>Lesson</span><input value="Objective First B2 · U1.1 Fashion Matters" disabled/></label></div><div style="display:flex;gap:10px;align-items:center;margin-top:18px"><button id="createSession" class="btn primary">Create class session</button><span id="createStatus" class="status"></span></div></div></section>
 
 <section id="livePanel" class="panel hidden">
-<div class="session-bar"><div class="session-meta"><div><small>JOIN CODE</small><div id="joinCode" class="code">------</div></div><div><small>LESSON</small><b>Objective First B2 · U1.1</b><div class="live-dot" style="margin-top:8px">Live</div></div></div>
-<div class="join-tools"><canvas id="qrCanvas" class="qr" width="116" height="116"></canvas><div class="stack" style="gap:7px"><button id="copyLink" class="btn">Copy student link</button><button id="newSession" class="btn">New session</button><button id="closeSession" class="btn danger">Close session</button></div></div></div>
+<div class="session-bar">
+  <div class="session-meta">
+    <div><small>JOIN CODE</small><div id="joinCode" class="code">------</div></div>
+    <div><small>CLASS STATUS</small><b id="classStatusText">Lobby</b><div id="liveBadge" class="state-pill">Students can join now</div></div>
+  </div>
+  <div class="join-tools">
+    <img id="qrImg" class="qr-img" alt="Student join QR"/>
+    <div class="stack" style="gap:7px">
+      <button id="copyLink" class="btn">Copy student link</button>
+      <button id="classToggle" class="btn primary">Start Class</button>
+      <button id="closeSession" class="btn danger">End Class</button>
+    </div>
+  </div>
+</div>
+<div class="lobby-note">Students may join in the lobby before teaching starts. They remain in this same session for the whole lesson.</div>
 
-<div class="activity-strip">
-  <div class="activity-state"><span id="statePill" class="state-pill">Waiting</span><b>Slide 1 · Quick Choice</b>
+<div class="classflow">
+  <button id="prevScreen" class="btn">← Previous</button>
+  <div class="screen-nav">
+    <span class="screen-chip"><span id="screenNumber">1</span> / 16</span>
+    <strong id="screenTitle">Fashion Matters</strong>
+  </div>
+  <button id="nextScreen" class="btn">Next →</button>
+</div>
+
+<div id="activityStrip" class="activity-strip">
+  <div class="activity-state"><span id="statePill" class="state-pill">Waiting</span><b id="activityLabel">Slide 1 · Quick Choice</b>
     <label class="sound-toggle"><input id="soundToggle" type="checkbox" checked/> Gentle sound</label>
   </div>
   <div id="timer" class="timer">01:30</div>
   <div class="timer-controls">
     <select id="duration"><option value="30">30 sec</option><option value="45">45 sec</option><option value="60">60 sec</option><option value="90" selected>90 sec</option><option value="120">2 min</option><option value="180">3 min</option></select>
-    <button id="startBtn" class="btn primary">Start</button><button id="pauseBtn" class="btn">Pause</button><button id="addBtn" class="btn">+30s</button><button id="endBtn" class="btn">End now</button><button id="reopenBtn" class="btn">Reopen 30s</button>
+    <button id="startBtn" class="btn primary">Open activity</button><button id="pauseBtn" class="btn">Pause</button><button id="addBtn" class="btn">+30s</button><button id="endBtn" class="btn">Close</button><button id="reopenBtn" class="btn">Reopen 30s</button>
   </div>
 </div>
 
 <div class="stats-strip"><div class="stat"><b id="joinedCount">0</b><span>joined</span></div><div class="stat"><b id="responseTotal">0</b><span>responded</span></div><div class="stat"><b id="avgTime">—</b><span>avg. response time</span></div></div>
-
 <div class="wall-toolbar"><div class="tabs"><button class="tab active" data-view="by-option">By option</button><button class="tab" data-view="all">All responses</button><button class="tab" data-view="spotlight">Spotlight</button></div><div id="lastUpdate">Waiting…</div></div>
-<div id="wall" class="wall"><div class="empty"><div><h3>No responses yet</h3><p>Start the timer when students are ready.</p></div></div></div>
+<div id="wall" class="wall"><div class="empty"><div><h3>Class lobby is open</h3><p>Students can join now. Start Class when you are ready to teach.</p></div></div></div>
 </section></main></div>
 
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
-<script src="assets/js/e-leap-live-config.js"></script><script src="assets/js/e-leap-live-api.js"></script><script src="assets/js/e-leap-sound.js"></script>
+<script src="assets/js/e-leap-live-config.js"></script>
+<script src="assets/js/e-leap-live-api.js"></script>
+<script src="assets/js/e-leap-sound.js"></script>
 <script>
 (() => {
- const $=s=>document.querySelector(s); const options=["Comfort","Style","Price","Occasion"];
- const state={session:null,responses:[],view:"by-option",spotlightId:null,poll:null,activity:null,lastRemaining:null,warned10:false};
+ const $=s=>document.querySelector(s), cfg=ELeapLive.config, screens=cfg.SCREENS||[];
+ const options=["Comfort","Style","Price","Occasion"];
+ const st={session:null,classState:null,screenIndex:0,activity:null,responses:[],view:"by-option",spotlightId:null,poll:null,lastRemaining:null,warned10:false};
  const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]));
  const fmt=n=>`${String(Math.floor(Math.max(0,n)/60)).padStart(2,"0")}:${String(Math.max(0,n)%60).padStart(2,"0")}`;
+ const current=()=>screens[st.screenIndex]||screens[0];
  const studentUrl=code=>{const u=new URL("student.html",location.href);u.searchParams.set("code",code);return u.toString()};
+ function setQR(){const u=studentUrl(st.session.join_code);$("#qrImg").src=`https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=0&data=${encodeURIComponent(u)}`;}
  function card(r,showOption=true){return `<article class="response-card" data-id="${r.response_id}"><div class="author">${esc(r.display_name)}</div>${showOption?`<div class="option-pill">${esc(r.option_value||"Response")}</div>`:""}<p>${esc(r.explanation||"")}</p><footer><span>${r.response_time_seconds??"—"}s</span><button class="btn ghost spot-btn" data-spot="${r.response_id}" style="padding:3px 7px;font-size:11px">Spotlight</button></footer></article>`}
- function render(){
-   $("#responseTotal").textContent=state.responses.length; const w=$("#wall");
-   if(!state.responses.length){w.innerHTML=`<div class="empty"><div><h3>No responses yet</h3><p>Responses will appear here automatically.</p></div></div>`;return}
-   if(state.view==="by-option") w.innerHTML=`<div class="option-columns">${options.map(o=>{const rs=state.responses.filter(r=>r.option_value===o);return `<section class="option-col"><div class="option-head"><span>${o}</span><span class="count">${rs.length}</span></div><div class="cards">${rs.map(r=>card(r,false)).join("")||'<div class="status">No responses yet.</div>'}</div></section>`}).join("")}</div>`;
-   else if(state.view==="all") w.innerHTML=`<div class="all-grid">${state.responses.map(r=>card(r,true)).join("")}</div>`;
-   else {const c=state.responses.find(r=>r.response_id===state.spotlightId)||state.responses[0];state.spotlightId=c.response_id;w.innerHTML=`<div class="spotlight"><div class="spotlight-card"><div><div class="option-pill">${esc(c.option_value||"Response")}</div><blockquote>“${esc(c.explanation||"")}”</blockquote><div class="spot-author">${esc(c.display_name)}</div></div></div><div><h3>Choose a response</h3><div class="cards">${state.responses.map(r=>card(r,true)).join("")}</div></div></div>`}
+ function renderWall(){
+   $("#responseTotal").textContent=st.responses.length; const w=$("#wall"), sc=current();
+   if(!sc?.interactive){w.innerHTML=`<div class="empty"><div><h3>Follow mode</h3><p>Students are following Slide ${sc?.n||1}: ${esc(sc?.title||"")}. No response wall is required on this screen.</p></div></div>`;return}
+   if(!st.responses.length){w.innerHTML=`<div class="empty"><div><h3>No responses yet</h3><p>Open the activity when students are ready.</p></div></div>`;return}
+   if(st.view==="by-option") w.innerHTML=`<div class="option-columns">${options.map(o=>{const rs=st.responses.filter(r=>r.option_value===o);return `<section class="option-col"><div class="option-head"><span>${o}</span><span class="count">${rs.length}</span></div><div class="cards">${rs.map(r=>card(r,false)).join("")||'<div class="status">No responses yet.</div>'}</div></section>`}).join("")}</div>`;
+   else if(st.view==="all") w.innerHTML=`<div class="all-grid">${st.responses.map(r=>card(r,true)).join("")}</div>`;
+   else {const c=st.responses.find(r=>r.response_id===st.spotlightId)||st.responses[0];st.spotlightId=c.response_id;w.innerHTML=`<div class="spotlight"><div class="spotlight-card"><div><div class="option-pill">${esc(c.option_value||"Response")}</div><blockquote>“${esc(c.explanation||"")}”</blockquote><div class="spot-author">${esc(c.display_name)}</div></div></div><div><h3>Choose a response</h3><div class="cards">${st.responses.map(r=>card(r,true)).join("")}</div></div></div>`}
    w.querySelectorAll(".response-card").forEach(el=>el.onclick=e=>{if(e.target.closest(".spot-btn"))return;el.classList.toggle("reveal-author")});
-   w.querySelectorAll(".spot-btn").forEach(b=>b.onclick=e=>{e.stopPropagation();state.spotlightId=b.dataset.spot;state.view="spotlight";document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.view==="spotlight"));render()});
+   w.querySelectorAll(".spot-btn").forEach(b=>b.onclick=e=>{e.stopPropagation();st.spotlightId=b.dataset.spot;st.view="spotlight";document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.view==="spotlight"));renderWall()});
+ }
+ function renderClass(cs){
+   st.classState=cs; const status=cs?.class_status||"lobby";
+   $("#classStatusText").textContent=status==="lobby"?"Lobby":status==="live"?"Live class":"Ended";
+   $("#liveBadge").textContent=status==="lobby"?"Students can join now":status==="live"?"Teaching in progress":"Class ended";
+   $("#liveBadge").className="state-pill "+(status==="live"?"open":status==="ended"?"closed":"");
+   $("#classToggle").textContent=status==="live"?"Pause Class":"Start Class";
+   $("#classToggle").disabled=status==="ended";
+ }
+ function renderScreen(){
+   const sc=current(); if(!sc)return;
+   $("#screenNumber").textContent=sc.n; $("#screenTitle").textContent=sc.title;
+   $("#prevScreen").disabled=st.screenIndex===0; $("#nextScreen").disabled=st.screenIndex===screens.length-1;
+   $("#activityStrip").style.display=sc.interactive?"grid":"none";
+   renderWall();
  }
  function renderActivity(a){
-   state.activity=a; let rem=Number(a?.remaining_seconds||0), status=a?.status||"waiting";
-   $("#timer").textContent=fmt(rem || Number($("#duration").value||90));
+   st.activity=a; if(!a)return; const rem=Number(a.remaining_seconds||0),status=a.status||"waiting";
+   $("#timer").textContent=fmt(rem || Number(a.duration_seconds||90));
    $("#timer").className="timer"+(rem<=10&&status==="open"?" danger":rem<=30&&status==="open"?" warning":"");
-   $("#statePill").textContent=status[0].toUpperCase()+status.slice(1); $("#statePill").className="state-pill "+status;
-   $("#pauseBtn").textContent=status==="paused"?"Resume":"Pause";
-   $("#startBtn").disabled=status==="open"; $("#endBtn").disabled=status==="closed";
-   if(status==="open" && rem===10 && !state.warned10){ELeapSound.warning();state.warned10=true}
-   if(status==="open" && rem>10) state.warned10=false;
-   if(state.lastRemaining>0 && rem===0 && status==="closed") ELeapSound.timeUp();
-   state.lastRemaining=rem;
+   $("#statePill").textContent=status[0].toUpperCase()+status.slice(1);$("#statePill").className="state-pill "+status;
+   $("#pauseBtn").textContent=status==="paused"?"Resume":"Pause";$("#startBtn").disabled=status==="open";
+   if(status==="open"&&rem===10&&!st.warned10){ELeapSound.warning();st.warned10=true} if(status==="open"&&rem>10)st.warned10=false;
+   if(st.lastRemaining>0&&rem===0&&status==="closed")ELeapSound.timeUp();st.lastRemaining=rem;
  }
  async function refresh(){
-   if(!state.session)return;
+   if(!st.session)return;
    try{
-     const [rows,stats,activity]=await Promise.all([
-       ELeapLive.getTeacherWall({joinCode:state.session.join_code,teacherToken:state.session.teacher_token,screenId:"s01"}),
-       ELeapLive.getTeacherStats({joinCode:state.session.join_code,teacherToken:state.session.teacher_token,screenId:"s01"}),
-       ELeapLive.getActivityState({joinCode:state.session.join_code,screenId:"s01"})
+     const csRaw=await ELeapLive.getClassState({joinCode:st.session.join_code}); const cs=Array.isArray(csRaw)?csRaw[0]:csRaw; renderClass(cs);
+     const idx=screens.findIndex(x=>x.id===cs.current_screen_id); if(idx>=0&&idx!==st.screenIndex){st.screenIndex=idx;renderScreen()}
+     const sc=current();
+     const [statsRaw,wallRaw,actRaw]=await Promise.all([
+       ELeapLive.getTeacherStats({joinCode:st.session.join_code,teacherToken:st.session.teacher_token,screenId:sc.id}),
+       sc.interactive?ELeapLive.getTeacherWall({joinCode:st.session.join_code,teacherToken:st.session.teacher_token,screenId:sc.id}):Promise.resolve([]),
+       sc.interactive?ELeapLive.getActivityState({joinCode:st.session.join_code,screenId:sc.id}):Promise.resolve(null)
      ]);
-     state.responses=Array.isArray(rows)?rows:[]; const st=Array.isArray(stats)?stats[0]:stats; const ac=Array.isArray(activity)?activity[0]:activity;
-     $("#joinedCount").textContent=st?.joined_count??0; $("#avgTime").textContent=st?.avg_response_seconds!=null?`${st.avg_response_seconds}s`:"—";
+     const stats=Array.isArray(statsRaw)?statsRaw[0]:statsRaw;st.responses=Array.isArray(wallRaw)?wallRaw:[];
+     $("#joinedCount").textContent=stats?.joined_count??0;$("#avgTime").textContent=stats?.avg_response_seconds!=null?`${stats.avg_response_seconds}s`:"—";
+     if(sc.interactive)renderActivity(Array.isArray(actRaw)?actRaw[0]:actRaw);renderWall();
      $("#lastUpdate").textContent="updated "+new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit",second:"2-digit"});
-     renderActivity(ac); render();
    }catch(e){$("#lastUpdate").textContent="connection error";console.error(e)}
  }
- async function control(action,seconds=0){
-   try{
-     const r=await ELeapLive.controlActivity({joinCode:state.session.join_code,teacherToken:state.session.teacher_token,screenId:"s01",action,seconds});
-     const a=Array.isArray(r)?r[0]:r; renderActivity(a);
-     if(action==="start")ELeapSound.start(); if(action==="reopen")ELeapSound.reopen();
-     refresh();
-   }catch(e){alert(e.message)}
+ async function go(delta){
+   const ni=Math.max(0,Math.min(screens.length-1,st.screenIndex+delta)); if(ni===st.screenIndex)return;
+   try{await ELeapLive.goToScreen({joinCode:st.session.join_code,teacherToken:st.session.teacher_token,screenId:screens[ni].id});st.screenIndex=ni;st.responses=[];renderScreen();refresh()}catch(e){alert(e.message)}
  }
- async function showLive(){ $("#createPanel").classList.add("hidden");$("#livePanel").classList.remove("hidden");$("#joinCode").textContent=state.session.join_code;
-   if(window.QRCode?.toCanvas) await QRCode.toCanvas($("#qrCanvas"),studentUrl(state.session.join_code),{width:116,margin:1});
-   state.poll=setInterval(refresh,ELeapLive.config.POLL_MS||1500); refresh();
- }
- $("#createSession").onclick=async()=>{const n=$("#teacherName").value.trim();if(!n){$("#createStatus").textContent="Enter the teacher name first.";return}try{const d=await ELeapLive.createSession(n);state.session=Array.isArray(d)?d[0]:d;localStorage.setItem("eleap_teacher_session",JSON.stringify(state.session));showLive()}catch(e){$("#createStatus").textContent=e.message}};
- $("#copyLink").onclick=async()=>{await navigator.clipboard.writeText(studentUrl(state.session.join_code));$("#copyLink").textContent="Copied";setTimeout(()=>$("#copyLink").textContent="Copy student link",1000)};
- $("#newSession").onclick=()=>{localStorage.removeItem("eleap_teacher_session");location.reload()};
- $("#closeSession").onclick=async()=>{if(confirm("Close this session?")){await ELeapLive.closeSession({joinCode:state.session.join_code,teacherToken:state.session.teacher_token});location.reload()}};
- $("#startBtn").onclick=()=>control("start",Number($("#duration").value)); $("#pauseBtn").onclick=()=>control(state.activity?.status==="paused"?"resume":"pause"); $("#addBtn").onclick=()=>control("add",30); $("#endBtn").onclick=()=>control("close"); $("#reopenBtn").onclick=()=>control("reopen",30);
- $("#soundToggle").checked=ELeapSound.isEnabled(); $("#soundToggle").onchange=e=>ELeapSound.setEnabled(e.target.checked);
- document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{state.view=t.dataset.view;document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===t));render()});
- try{const s=JSON.parse(localStorage.getItem("eleap_teacher_session")||"null");if(s?.join_code&&s?.teacher_token){state.session=s;showLive()}}catch{}
+ async function control(action,seconds=0){try{const r=await ELeapLive.controlActivity({joinCode:st.session.join_code,teacherToken:st.session.teacher_token,screenId:current().id,action,seconds});renderActivity(Array.isArray(r)?r[0]:r);if(action==="start")ELeapSound.start();if(action==="reopen")ELeapSound.reopen();refresh()}catch(e){alert(e.message)}}
+ async function showLive(){ $("#createPanel").classList.add("hidden");$("#livePanel").classList.remove("hidden");$("#joinCode").textContent=st.session.join_code;setQR();st.poll=setInterval(refresh,cfg.POLL_MS||1200);refresh()}
+ $("#createSession").onclick=async()=>{const n=$("#teacherName").value.trim();if(!n){$("#createStatus").textContent="Enter the teacher name first.";return}try{const d=await ELeapLive.createSession(n);st.session=Array.isArray(d)?d[0]:d;localStorage.setItem("eleap_teacher_session",JSON.stringify(st.session));showLive()}catch(e){$("#createStatus").textContent=e.message}};
+ $("#copyLink").onclick=async()=>{await navigator.clipboard.writeText(studentUrl(st.session.join_code));$("#copyLink").textContent="Copied";setTimeout(()=>$("#copyLink").textContent="Copy student link",1000)};
+ $("#classToggle").onclick=async()=>{try{const next=st.classState?.class_status==="live"?"lobby":"live";const r=await ELeapLive.setClassStatus({joinCode:st.session.join_code,teacherToken:st.session.teacher_token,status:next});renderClass(Array.isArray(r)?r[0]:r);if(next==="live")ELeapSound.start();refresh()}catch(e){alert(e.message)}};
+ $("#closeSession").onclick=async()=>{if(!confirm("End this class? Students will no longer be able to join or submit."))return;try{await ELeapLive.setClassStatus({joinCode:st.session.join_code,teacherToken:st.session.teacher_token,status:"ended"});localStorage.removeItem("eleap_teacher_session");location.reload()}catch(e){alert(e.message)}};
+ $("#prevScreen").onclick=()=>go(-1);$("#nextScreen").onclick=()=>go(1);
+ $("#startBtn").onclick=()=>control("start",Number($("#duration").value));$("#pauseBtn").onclick=()=>control(st.activity?.status==="paused"?"resume":"pause");$("#addBtn").onclick=()=>control("add",30);$("#endBtn").onclick=()=>control("close");$("#reopenBtn").onclick=()=>control("reopen",30);
+ $("#soundToggle").checked=ELeapSound.isEnabled();$("#soundToggle").onchange=e=>ELeapSound.setEnabled(e.target.checked);
+ document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{st.view=t.dataset.view;document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===t));renderWall()});
+ try{const s=JSON.parse(localStorage.getItem("eleap_teacher_session")||"null");if(s?.join_code&&s?.teacher_token){st.session=s;showLive()}}catch{}
 })();
 </script></body></html>
