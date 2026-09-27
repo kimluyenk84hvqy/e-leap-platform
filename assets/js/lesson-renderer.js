@@ -73,6 +73,28 @@
     return `<div class="lesson-grid">${items.map((x,i)=>`<button class="reveal-card" data-reveal="${i}" data-answer="${encodeURIComponent(x.answer||x.support||"")}"><b>${x.question||x.prompt||x.title||("Item "+(i+1))}</b></button>`).join("")}</div>`;
   }
 
+  function renderLeadInPresentation(s){
+    const response=s.responseAfterSelection?.enabled ? `
+      <div class="choice-response-space" hidden>
+        <div class="choice-response-label">Your choice: <b class="selected-choice-label"></b></div>
+        <label class="choice-response-prompt">${s.responseAfterSelection.prompt||"Type your explanation."}</label>
+        <textarea class="choice-response-input" placeholder="${s.responseAfterSelection.placeholder||"Type here..."}"></textarea>
+        <div class="choice-response-actions"><button class="primary choice-submit">${s.responseAfterSelection.submitLabel||"Submit"}</button></div>
+        <div class="choice-submit-status" aria-live="polite"></div>
+      </div>` : "";
+
+    return `<div class="lead-in-presentation-grid">
+      <section class="lead-in-copy">
+        <p class="lead-in-main-instruction">${s.instruction||""}</p>
+        <div class="lead-in-question">${s.question||""}</div>
+        <div class="lead-in-action-prompt">${s.interactionPrompt||"Choose one option, then type your explanation."}</div>
+        <div class="lead-in-options">${s.options.map(o=>`<button class="choice-option" data-choice="${o}">${o}</button>`).join("")}</div>
+        ${response}
+      </section>
+      <section class="lead-in-media">${mediaBlock(s.media)}</section>
+    </div>`;
+  }
+
   function renderTask(s){
     if(s.type==="quick-choice"){
       const response=s.responseAfterSelection?.enabled ? `
@@ -377,8 +399,15 @@
     q("#classroomLessonMeta").textContent=`${state.lesson.lessonNumber} · ${state.lesson.title}`;
     q("#classroomStage").textContent=s.stage;
     q("#classroomTitle").textContent=s.title;
-    q("#classroomInstruction").textContent=s.instruction||"";
-    q("#classroomTask").innerHTML=renderTask(s);
+    if(s.id==="s01") {
+      q("#classroomInstruction").textContent="";
+      q("#classroomInstruction").style.display="none";
+      q("#classroomTask").innerHTML=renderLeadInPresentation(s);
+    } else {
+      q("#classroomInstruction").style.display="";
+      q("#classroomInstruction").textContent=s.instruction||"";
+      q("#classroomTask").innerHTML=renderTask(s);
+    }
     q("#classroomCounter").textContent=`${state.index+1} / ${state.lesson.screens.length}`;
     wireInteractions(s,q("#classroomTask"));
     hydrateMedia(q("#classroomTask"));
