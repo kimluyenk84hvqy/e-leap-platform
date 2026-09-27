@@ -1,8 +1,35 @@
 {
   "id": "unit-01",
   "title": "Unit 1",
-  "subtitle": "A question of sport",
-  "status": "planned",
-  "lessons": [],
-  "note": "Populate after Content Map approval. Do not copy the PowerPoint slide-by-slide."
+  "subtitle": "Fashion Matters",
+  "status": "in-progress",
+  "periods": 8,
+  "lessons": [
+    {
+      "id": "u1.1",
+      "title": "Fashion Matters",
+      "status": "approved",
+      "periods": 4,
+      "stages": [
+        "Speaking",
+        "Listening",
+        "Vocabulary",
+        "Phrasal verbs"
+      ],
+      "lessonData": "lesson-01/lesson.json"
+    },
+    {
+      "id": "u1.2",
+      "title": "Comparison",
+      "status": "draft",
+      "periods": 4,
+      "stages": [
+        "Language Focus",
+        "Practice",
+        "Skills integration"
+      ],
+      "lessonData": "lesson-02/lesson.json"
+    }
+  ],
+  "note": "Unit 1 shell corrected to the approved Objective First B2 structure. U1.1 lesson data is integrated separately."
 }
