@@ -11,6 +11,8 @@
 
 <!DOCTYPE html>
 
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -697,6 +699,9 @@ body{color:var(--charcoal)}
 .screen[data-screen="6"] .listening-layout::before{
   display:none !important;
 }
+
+.vocab-once-note{margin:6px 0 10px;color:#61716b;font-size:15px;line-height:1.45}
+.vocab-add-card .input-row input{width:100%;box-sizing:border-box}
 </style></head>
 <body>
 <div class="app">
@@ -848,7 +853,7 @@ body{color:var(--charcoal)}
 <section class="screen accent-vocab" data-screen="4">
 <div class="stage-label">TOPIC VOCABULARY</div>
 <h2>Build your fashion vocabulary</h2>
-<p class="instruction">Click one category at a time. Read the words aloud, then add one more example of your own before moving to the next category.</p>
+<p class="instruction">Explore the six categories and read the words aloud. When you finish, type one response with 3–5 extra fashion words or phrases.</p>
 <div class="tabs" id="vocabTabs">
 <button class="tab active" data-tab="clothes">Clothes</button>
 <button class="tab" data-tab="footwear">Footwear</button>
@@ -858,19 +863,24 @@ body{color:var(--charcoal)}
 <button class="tab" data-tab="appearance">Appearance</button>
 </div>
 <div class="vocab-panel" id="vocabPanel"></div>
-<div class="mini-task">Mini task: Describe one classmate using at least three words from the current category.</div>
+<div class="mini-task">Mini task: Use at least three suitable words to describe one classmate.</div>
 <div class="learner-input-card vocab-add-card">
-<label for="vocabMoreWords"><b>Add more words to the current list</b></label>
+<label for="vocabMoreWords">
+<b>Your vocabulary response — submit once</b>
+</label>
+<p class="vocab-once-note">
+        After exploring all six categories, type 3–5 extra fashion words or phrases below.
+        You only need to submit once for this slide.
+      </p>
 <div class="input-row">
-<input id="vocabMoreWords" placeholder="Type one word or phrase..." type="text"/>
-<button id="addVocabWord" type="button">Add</button>
+<input autocomplete="off" id="vocabMoreWords" placeholder="e.g. cardigan, loafers, velvet, stylish..." type="text"/>
 </div>
-<div aria-live="polite" class="added-word-list" id="vocabAddedWords"></div>
 <div class="ui-submit-row">
 <button class="ui-clear" id="vocabUiSubmitClear" type="button">Clear</button>
 <button class="ui-submit" id="vocabUiSubmit" type="button">Submit</button>
 <span class="ui-submit-status" id="vocabUiSubmitStatus"></span>
-</div></div>
+</div>
+</div>
 </section>
 <section class="screen accent-speaking" data-screen="5">
 <div class="stage-label">SPEAKING · PHOTO TASK</div>
@@ -1516,27 +1526,12 @@ window.ELEAP_FINAL_LIVE=(()=>{
 
 
 
-// Slide 4: category-specific learner-added vocabulary.
+// Slide 4: one student response after exploring all categories.
 (()=>{
-  const store={clothes:[],footwear:[],jewellery:[],headgear:[],materials:[],appearance:[]};
   const input=document.getElementById("vocabMoreWords");
-  const add=document.getElementById("addVocabWord");
-  const list=document.getElementById("vocabAddedWords");
-  if(!input||!add||!list)return;
-  const activeKey=()=>document.querySelector("#vocabTabs .tab.active")?.dataset.tab||"clothes";
-  function render(){
-    list.innerHTML=(store[activeKey()]||[]).map(x=>`<span>${x}</span>`).join("");
-  }
-  function addWord(){
-    const v=input.value.trim(); if(!v)return;
-    const key=activeKey();
-    if(!store[key].some(x=>x.toLowerCase()===v.toLowerCase())) store[key].push(v);
-    input.value="";render();input.focus();
-  }
-  add.onclick=addWord;
-  input.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();addWord()}});
-  document.querySelectorAll("#vocabTabs .tab").forEach(b=>b.addEventListener("click",()=>setTimeout(render,0)));
-  window.__resetVocabAdded=()=>{Object.keys(store).forEach(k=>store[k]=[]);input.value="";render()};
+  window.__resetVocabAdded=()=>{
+    if(input) input.value="";
+  };
 })();
 
 // Generic local recorder helper.
@@ -1908,8 +1903,8 @@ document.querySelectorAll(".discovery-card").forEach(c=>{c.dataset.initialHtml=c
   });
 
   document.getElementById("vocabUiSubmit")?.addEventListener("click",()=>{
-    const count=document.querySelectorAll("#vocabAddedWords span").length;
-    setStatus("vocabUiSubmit",count ? "Submitted ✓" : "Add a word first");
+    const text=document.getElementById("vocabMoreWords")?.value.trim();
+    setStatus("vocabUiSubmit",text ? "Submitted ✓" : "Type your response first");
   });
   document.getElementById("vocabUiSubmitClear")?.addEventListener("click",()=>{
     window.__resetVocabAdded?.();setStatus("vocabUiSubmit","");
