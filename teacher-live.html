@@ -11,6 +11,7 @@
 .lobby-note{padding:10px 24px;background:#f8fbf9;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
 .qr-img{width:116px;height:116px;background:white;border-radius:10px;padding:5px;object-fit:contain}
 @media(max-width:820px){.classflow{grid-template-columns:1fr}.screen-nav{justify-content:flex-start}}
+.audio-response{margin-top:10px}.audio-response audio{width:100%}.spotlight-card .audio-play-btn{margin-top:18px}
 </style></head><body>
 <div class="shell"><header class="topbar"><div class="brand"><div class="brand-mark">E</div><div>E-LEAP<small>Live Classroom · Teacher</small></div></div><a class="btn ghost" href="index.html">← Back to lesson</a></header>
 <main class="page">
@@ -65,23 +66,43 @@
 <script>
 (() => {
  const $=s=>document.querySelector(s), cfg=ELeapLive.config, screens=cfg.SCREENS||[];
- const options=["Comfort","Style","Price","Occasion"];
+ const optionMap={s01:["Comfort","Style","Price","Occasion"],s14:["Confidence 1/5","Confidence 2/5","Confidence 3/5","Confidence 4/5","Confidence 5/5"]};
  const st={session:null,classState:null,screenIndex:0,activity:null,responses:[],view:"by-option",spotlightId:null,poll:null,lastRemaining:null,warned10:false};
  const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]));
  const fmt=n=>`${String(Math.floor(Math.max(0,n)/60)).padStart(2,"0")}:${String(Math.max(0,n)%60).padStart(2,"0")}`;
  const current=()=>screens[st.screenIndex]||screens[0];
  const studentUrl=code=>{const u=new URL("student.html",location.href);u.searchParams.set("code",code);return u.toString()};
  function setQR(){const u=studentUrl(st.session.join_code);$("#qrImg").src=`https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=0&data=${encodeURIComponent(u)}`;}
- function card(r,showOption=true){return `<article class="response-card" data-id="${r.response_id}"><div class="author">${esc(r.display_name)}</div>${showOption?`<div class="option-pill">${esc(r.option_value||"Response")}</div>`:""}<p>${esc(r.explanation||"")}</p><footer><span>${r.response_time_seconds??"—"}s</span><button class="btn ghost spot-btn" data-spot="${r.response_id}" style="padding:3px 7px;font-size:11px">Spotlight</button></footer></article>`}
+ function card(r,showOption=true){
+   const audio=r.response_type==="audio"&&r.audio_path;
+   return `<article class="response-card" data-id="${r.response_id}">
+     <div class="author">${esc(r.display_name)}</div>
+     ${showOption&&r.option_value?`<div class="option-pill">${esc(r.option_value)}</div>`:""}
+     <p style="white-space:pre-wrap">${esc(r.explanation||"")}</p>
+     ${audio?`<div class="audio-response" data-audio="${r.response_id}"><button class="btn ghost audio-play-btn" data-audio-id="${r.response_id}">▶ Play audio${r.audio_duration_seconds?` · ${r.audio_duration_seconds}s`:""}</button></div>`:""}
+     <footer><span>${r.response_time_seconds??"—"}s · attempt ${r.attempt_number||1}</span><button class="btn ghost spot-btn" data-spot="${r.response_id}" style="padding:3px 7px;font-size:11px">Spotlight</button></footer>
+   </article>`
+ }
  function renderWall(){
    $("#responseTotal").textContent=st.responses.length; const w=$("#wall"), sc=current();
    if(!sc?.interactive){w.innerHTML=`<div class="empty"><div><h3>Follow mode</h3><p>Students are following Slide ${sc?.n||1}: ${esc(sc?.title||"")}. No response wall is required on this screen.</p></div></div>`;return}
    if(!st.responses.length){w.innerHTML=`<div class="empty"><div><h3>No responses yet</h3><p>Open the activity when students are ready.</p></div></div>`;return}
-   if(st.view==="by-option") w.innerHTML=`<div class="option-columns">${options.map(o=>{const rs=st.responses.filter(r=>r.option_value===o);return `<section class="option-col"><div class="option-head"><span>${o}</span><span class="count">${rs.length}</span></div><div class="cards">${rs.map(r=>card(r,false)).join("")||'<div class="status">No responses yet.</div>'}</div></section>`}).join("")}</div>`;
+   const opts=optionMap[sc.id]||[];
+   if(st.view==="by-option"&&opts.length) w.innerHTML=`<div class="option-columns">${opts.map(o=>{const rs=st.responses.filter(r=>r.option_value===o);return `<section class="option-col"><div class="option-head"><span>${o}</span><span class="count">${rs.length}</span></div><div class="cards">${rs.map(r=>card(r,false)).join("")||'<div class="status">No responses yet.</div>'}</div></section>`}).join("")}</div>`;
+   else if(st.view==="by-option") w.innerHTML=`<div class="all-grid">${st.responses.map(r=>card(r,true)).join("")}</div>`;
    else if(st.view==="all") w.innerHTML=`<div class="all-grid">${st.responses.map(r=>card(r,true)).join("")}</div>`;
-   else {const c=st.responses.find(r=>r.response_id===st.spotlightId)||st.responses[0];st.spotlightId=c.response_id;w.innerHTML=`<div class="spotlight"><div class="spotlight-card"><div><div class="option-pill">${esc(c.option_value||"Response")}</div><blockquote>“${esc(c.explanation||"")}”</blockquote><div class="spot-author">${esc(c.display_name)}</div></div></div><div><h3>Choose a response</h3><div class="cards">${st.responses.map(r=>card(r,true)).join("")}</div></div></div>`}
+   else {const c=st.responses.find(r=>r.response_id===st.spotlightId)||st.responses[0];st.spotlightId=c.response_id;w.innerHTML=`<div class="spotlight"><div class="spotlight-card"><div>${c.option_value?`<div class="option-pill">${esc(c.option_value)}</div>`:""}<blockquote>“${esc(c.explanation||"")}”</blockquote>${c.response_type==="audio"?`<button class="btn primary audio-play-btn" data-audio-id="${c.response_id}">▶ Play audio${c.audio_duration_seconds?` · ${c.audio_duration_seconds}s`:""}</button>`:""}<div class="spot-author">${esc(c.display_name)}</div></div></div><div><h3>Choose a response</h3><div class="cards">${st.responses.map(r=>card(r,true)).join("")}</div></div></div>`}
    w.querySelectorAll(".response-card").forEach(el=>el.onclick=e=>{if(e.target.closest(".spot-btn"))return;el.classList.toggle("reveal-author")});
    w.querySelectorAll(".spot-btn").forEach(b=>b.onclick=e=>{e.stopPropagation();st.spotlightId=b.dataset.spot;st.view="spotlight";document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.view==="spotlight"));renderWall()});
+   w.querySelectorAll(".audio-play-btn").forEach(b=>b.onclick=async e=>{
+     e.stopPropagation();const holder=b.closest(".audio-response")||b.parentElement;
+     try{
+       b.disabled=true;b.textContent="Loading audio…";
+       const d=await ELeapLive.getResponseAudioUrl({joinCode:st.session.join_code,teacherToken:st.session.teacher_token,responseId:b.dataset.audioId});
+       const a=document.createElement("audio");a.controls=true;a.autoplay=true;a.src=d.url;a.style.width="100%";a.style.marginTop="8px";
+       holder.appendChild(a);b.remove();
+     }catch(err){b.disabled=false;b.textContent="Audio unavailable";console.error(err)}
+   });
  }
  function renderClass(cs){
    st.classState=cs; const status=cs?.class_status||"lobby";
