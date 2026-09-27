@@ -7,7 +7,7 @@ window.ELEAP_LIVE_CONFIG = {
   SCREENS: [
     {id:"s01", n:1,  title:"Fashion Matters", interactive:true,  activityType:"choice_text"},
     {id:"s02", n:2,  title:"Speaking Questions", interactive:false},
-    {id:"s03", n:3,  title:"Speaking Strategy", interactive:false},
+    {id:"s03", n:3,  title:"Speaking Strategy", interactive:true, activityType:"multi_text"},
     {id:"s04", n:4,  title:"Topic Vocabulary", interactive:true, activityType:"text"},
     {id:"s05", n:5,  title:"Describe & Compare", interactive:true, activityType:"text_or_audio"},
     {id:"s06", n:6,  title:"Listening", interactive:true, activityType:"matching"},
