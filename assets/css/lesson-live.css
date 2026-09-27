@@ -190,3 +190,36 @@ body.lesson-live-modal-open{overflow:hidden}
   .lesson-live-qr{width:140px;height:140px}
   #lessonLiveJoinCode{font-size:40px}
 }
+
+
+/* === v4.1 NAVIGATION VISIBILITY HOTFIX ===
+   Keep Presentation navigation legible even when other platform button styles cascade in.
+*/
+#classroom.active .classroom-toolbar #classroomNext,
+#classroomNext{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  min-width:112px !important;
+  min-height:42px !important;
+  padding:9px 18px !important;
+  background:#0f6a57 !important;
+  border:1px solid #0f6a57 !important;
+  color:#ffffff !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  font-weight:850 !important;
+  line-height:1.2 !important;
+  text-indent:0 !important;
+  overflow:visible !important;
+}
+#classroom.active .classroom-toolbar #classroomNext:disabled,
+#classroomNext:disabled{
+  background:#dfe7e3 !important;
+  border-color:#d3ddd8 !important;
+  color:#7b8a84 !important;
+  opacity:1 !important;
+}
+#classroom.active .classroom-toolbar{
+  gap:10px !important;
+}
