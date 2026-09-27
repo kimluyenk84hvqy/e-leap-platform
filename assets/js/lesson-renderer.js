@@ -1,34 +1,31 @@
 
 (() => {
   const q=(s,c=document)=>c.querySelector(s), qa=(s,c=document)=>[...c.querySelectorAll(s)];
-  const state={lesson:null,index:0,selectedMatch:null};
+  const state={lesson:null,index:0,selectedMatch:null,mediaMap:{}};
 
-  function enforceClassroomNextButton(){
-    const btn=q("#classroomNext");
-    if(!btn) return;
-    btn.textContent="Next →";
-    btn.style.setProperty("display","inline-flex","important");
-    btn.style.setProperty("align-items","center","important");
-    btn.style.setProperty("justify-content","center","important");
-    btn.style.setProperty("min-width","118px","important");
-    btn.style.setProperty("background","#0f6a57","important");
-    btn.style.setProperty("color","#ffffff","important");
-    btn.style.setProperty("-webkit-text-fill-color","#ffffff","important");
-    btn.style.setProperty("border","1px solid #0f6a57","important");
-    btn.style.setProperty("font-weight","800","important");
-    btn.style.setProperty("opacity","1","important");
-    btn.style.setProperty("visibility","visible","important");
-    btn.style.setProperty("text-indent","0","important");
-    btn.style.setProperty("font-size","16px","important");
-    btn.style.setProperty("line-height","1.2","important");
+  function resolveMediaUrl(raw){
+    if(!raw) return "";
+    const key=String(raw).replace(/^PRIVATE_MEDIA\//,"");
+    const mapped=state.mediaMap[key]||"";
+    if(mapped && !mapped.startsWith("PRIVATE_STORAGE_URL/")) return mapped;
+    return "";
   }
 
   function mediaBlock(media){
     if(!media) return "";
     const items=[];
-    for(const [kind,url] of Object.entries(media)){
-      if(String(url).startsWith("PRIVATE_MEDIA/")){
-        items.push(`<div class="lesson-media-placeholder">${kind.toUpperCase()} · Private media placeholder. Connect private storage to play this course media.</div>`);
+    for(const [kind,raw] of Object.entries(media)){
+      const url=resolveMediaUrl(raw);
+      if(url){
+        if(kind==="image"){
+          items.push(`<figure class="lesson-media-frame image-frame"><img src="${url}" alt="" loading="lazy"/></figure>`);
+        }else if(kind.toLowerCase().includes("audio")){
+          items.push(`<div class="lesson-media-frame audio-frame"><audio controls preload="metadata" src="${url}"></audio></div>`);
+        }else if(kind==="video"){
+          items.push(`<div class="lesson-media-frame video-frame"><video controls preload="metadata" src="${url}"></video></div>`);
+        }
+      }else{
+        items.push(`<div class="lesson-media-placeholder">${kind.toUpperCase()} · Private media not connected yet.</div>`);
       }
     }
     return items.join("");
@@ -165,12 +162,17 @@
     q("#classroomTask").innerHTML=renderTask(s);
     q("#classroomCounter").textContent=`${state.index+1} / ${state.lesson.screens.length}`;
     wireInteractions(s);
-    enforceClassroomNextButton();
   }
-  function openPresentation(){ q("#classroom").classList.add("active"); renderPresentation(); enforceClassroomNextButton(); }
+  function openPresentation(){ q("#classroom").classList.add("active"); renderPresentation(); }
 
   async function load(){
     try{
+      try{
+        const mr=await fetch("media-map.json",{cache:"no-store"});
+        state.mediaMap=await mr.json();
+      }catch(_e){
+        state.mediaMap={};
+      }
       const r=await fetch("courses/objective-first-b2/unit-01/lesson-01/lesson.json",{cache:"no-store"});
       state.lesson=await r.json();
       render();
@@ -178,7 +180,6 @@
       q("#classroomPrev")?.addEventListener("click",()=>{if(state.index>0){state.index--;renderPresentation()}});
       q("#classroomNext")?.addEventListener("click",()=>{if(state.index<state.lesson.screens.length-1){state.index++;renderPresentation()}});
       q("#exitClassroom")?.addEventListener("click",()=>q("#classroom").classList.remove("active"));
-      enforceClassroomNextButton();
     }catch(e){
       const host=q("#lessonRenderer"); if(host) host.innerHTML=`<div class="empty-state"><h3>Lesson data could not be loaded</h3><p>${e.message}</p></div>`;
     }
