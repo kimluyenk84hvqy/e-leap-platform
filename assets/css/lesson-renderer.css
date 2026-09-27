@@ -88,3 +88,80 @@
 #classroom.active .recorder-head b{font-size:clamp(20px,1.5vw,25px)}
 #classroom.active .recorder-controls button,
 #classroom.active .submit-recording{font-size:clamp(17px,1.25vw,21px)}
+
+
+/* === v4.4 Slide 1 refined two-column presentation === */
+#classroom.active .lead-in-presentation-grid{
+  display:grid;
+  grid-template-columns:minmax(0,0.95fr) minmax(420px,1.05fr);
+  gap:34px;
+  align-items:start;
+  margin-top:4px;
+}
+#classroom.active .lead-in-copy{min-width:0;padding-top:2px}
+#classroom.active .lead-in-main-instruction{
+  margin:0 0 18px;
+  font-size:clamp(23px,1.85vw,29px);
+  line-height:1.43;
+  font-weight:720;
+  color:#203a32;
+  max-width:720px;
+}
+#classroom.active .lead-in-question{
+  margin-top:2px;
+  padding-top:16px;
+  border-top:4px solid #0f6a57;
+  font-size:clamp(21px,1.55vw,25px);
+  line-height:1.28;
+  font-weight:900;
+  color:#17352d;
+}
+#classroom.active .lead-in-action-prompt{
+  margin:9px 0 12px;
+  color:#63736d;
+  font-size:clamp(17px,1.15vw,20px);
+  line-height:1.35;
+  font-weight:650;
+}
+#classroom.active .lead-in-options{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:9px;
+}
+#classroom.active .lead-in-options .choice-option{
+  padding:11px 8px;
+  min-height:48px;
+  font-size:clamp(17px,1.15vw,20px);
+  border-radius:10px;
+  background:#fff;
+}
+#classroom.active .lead-in-media .lesson-media-placeholder,
+#classroom.active .lead-in-media img{
+  width:100%;
+  max-height:400px;
+  object-fit:cover;
+  border-radius:14px;
+}
+#classroom.active .lead-in-media .lesson-media-placeholder{
+  margin:0;
+  padding:0;
+  border:0;
+  background:transparent;
+}
+#classroom.active .lead-in-media .lesson-media-placeholder img{
+  display:block;
+}
+#classroom.active .lead-in-copy .choice-response-space{
+  margin-top:12px;
+  padding:12px 14px;
+  border-radius:12px;
+  background:#eef5f2;
+}
+#classroom.active .lead-in-copy .choice-response-input{
+  min-height:72px;
+}
+@media(max-width:1050px){
+  #classroom.active .lead-in-presentation-grid{grid-template-columns:1fr;gap:18px}
+  #classroom.active .lead-in-media{order:-1}
+  #classroom.active .lead-in-options{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
