@@ -85,6 +85,7 @@
         </div>` : "";
       return `${mediaBlock(s.media)}
         <div class="lesson-support"><b>${s.question}</b></div>
+        ${s.interactionPrompt ? `<div class="lesson-action-prompt">${s.interactionPrompt}</div>` : ""}
         <div class="lesson-grid quick-choice-grid">${s.options.map(o=>`<button class="choice-option" data-choice="${o}">${o}</button>`).join("")}</div>
         ${response}`;
     }
