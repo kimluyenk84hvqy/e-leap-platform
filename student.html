@@ -1,14 +1,36 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>E-LEAP · Student Classroom</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/e-leap-live.css"/>
 <style>
-.follow-panel{padding:34px 24px;text-align:center;background:linear-gradient(135deg,#f8fbf9,#e8f2ee)}
+.follow-panel{padding:30px 24px;text-align:center;background:linear-gradient(135deg,#f8fbf9,#e8f2ee)}
 .mode-badge{display:inline-flex;border-radius:999px;padding:8px 13px;font-size:12px;font-weight:900;letter-spacing:.08em;background:#e8efec;color:#456158;margin-bottom:14px}
 .mode-badge.respond{background:#dff3ea;color:#0f6a57}.mode-badge.submitted{background:#e8eef7;color:#334f77}
-.slide-now{font-family:"Source Serif 4",Georgia,serif;font-size:clamp(34px,8vw,58px);margin:0 0 8px}
-</style></head><body>
+.slide-now{font-family:"Source Serif 4",Georgia,serif;font-size:clamp(30px,7vw,52px);margin:0 0 8px}
+.task-card{display:grid;gap:13px}.task-card h3{margin:0}.task-card textarea,.task-card input,.task-card select{width:100%;box-sizing:border-box;border:1px solid #c4d2cd;border-radius:10px;padding:11px 12px;font:inherit}
+.task-card textarea{min-height:110px;resize:vertical}.task-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.task-grid.four{grid-template-columns:1fr 1fr}.field-label{font-size:13px;font-weight:800;color:#52655e;margin-bottom:5px}
+.submit-row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.submit-row .btn.primary{min-width:120px}
+.submitted-box{background:#e9f5ef;border:1px solid #b7d7c9;border-radius:12px;padding:13px 14px;color:#0f6a57;font-weight:800}
+.record-box{background:#f8faf9;border:1px solid #d5dfdb;border-radius:12px;padding:12px}.record-controls{display:flex;gap:8px;flex-wrap:wrap}.record-controls button{border:1px solid #c6d3ce;background:#fff;border-radius:9px;padding:8px 11px;font-weight:800}
+.record-controls .rec{background:#0f6a57;color:#fff;border-color:#0f6a57}.record-status{margin-top:8px;color:#65756f;font-size:13px}.record-box audio{width:100%;margin-top:9px}
+.choice-grid .choice.selected{background:#0f6a57;color:#fff;border-color:#0f6a57}
+.confidence-row{display:flex;gap:7px;flex-wrap:wrap}.confidence-row button{border:1px solid #c6d3ce;background:#fff;border-radius:9px;padding:8px 11px;font-weight:800}.confidence-row button.selected{background:#0f6a57;color:#fff}
+.match-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.mode-tabs{display:flex;gap:7px}.mode-tabs button{border:1px solid #c6d3ce;background:#fff;border-radius:9px;padding:8px 11px;font-weight:800}.mode-tabs button.active{background:#0f6a57;color:#fff}
+@media(max-width:640px){.task-grid,.task-grid.four,.match-grid{grid-template-columns:1fr}}
+
+.emma-student-letter{
+  background:#fff;border:1px solid #d5dfdb;border-radius:12px;padding:14px 16px;line-height:1.9
+}
+.emma-student-letter p{margin:7px 0}
+.emma-student-letter input{
+  display:inline-block;width:min(190px,45vw);padding:6px 8px;margin:0 4px;vertical-align:middle
+}
+</style></head>
+<body>
 <header class="topbar"><div class="brand"><div class="brand-mark">E</div><div>E-LEAP<small>Live Classroom · Student</small></div></div></header>
 <main class="student-wrap">
 <section id="joinCard" class="student-card"><div class="student-head"><div class="kicker">Join class</div><h1 style="font-size:36px;margin-bottom:6px">Enter your class</h1><p style="color:#66756f;margin-bottom:0">Join once and stay connected for the whole lesson.</p></div><div class="student-body stack"><label><span>Join code</span><input id="joinCode" maxlength="6" placeholder="ABC123" style="text-transform:uppercase"/></label><label><span>Your name</span><input id="studentName" placeholder="Your name"/></label><button id="joinBtn" class="btn primary">Join class</button><div id="joinStatus" class="student-status"></div></div></section>
@@ -22,55 +44,146 @@
   </div>
   <div id="activityBody" class="student-body hidden">
     <div id="studentTimerBar" class="student-timerbar waiting"><div><b id="activityStatus">Waiting for teacher</b><div class="status">Respond when your teacher opens the activity.</div></div><div id="studentTimer" class="student-timer">01:30</div></div>
-    <div id="s01Activity">
-      <p style="color:#66756f"><b>Look at the fashion image.</b> Discuss what clothes can communicate about a person. Choose one idea and explain your opinion.</p>
-      <h3>Choose one option, then type your explanation.</h3>
-      <div class="choice-grid"><button class="choice" data-value="Comfort">Comfort</button><button class="choice" data-value="Style">Style</button><button class="choice" data-value="Price">Price</button><button class="choice" data-value="Occasion">Occasion</button></div>
-      <div id="responseBox" class="response-box" hidden><div style="margin-bottom:10px">Your choice: <b id="selectedLabel"></b></div><textarea id="explanation" placeholder="Type your explanation here..."></textarea><button id="submitBtn" class="btn primary" style="margin-top:10px">Submit</button><div id="submitStatus" class="student-status"></div></div>
-    </div>
+    <div id="dynamicTask" class="task-card"></div>
   </div>
-</section></main>
+</section>
+</main>
 <script src="assets/js/e-leap-live-config.js"></script><script src="assets/js/e-leap-live-api.js"></script><script src="assets/js/e-leap-sound.js"></script>
 <script>
 (() => {
- const $=s=>document.querySelector(s),cfg=ELeapLive.config,screens=cfg.SCREENS||[];
- const st={participant:null,classState:null,selected:null,submittedScreen:null,activity:null,poll:null,lastRemaining:null};
+ const $=s=>document.querySelector(s), cfg=ELeapLive.config, screens=cfg.SCREENS||[];
+ const st={participant:null,classState:null,activity:null,poll:null,lastRemaining:null,currentScreen:null,submitted:{},drafts:{},rec:null,recBlob:null,recUrl:null,recStartedAt:null,recDuration:0};
  const params=new URLSearchParams(location.search);if(params.get("code"))$("#joinCode").value=params.get("code").toUpperCase();
  const fmt=n=>`${String(Math.floor(Math.max(0,n)/60)).padStart(2,"0")}:${String(Math.max(0,n)%60).padStart(2,"0")}`;
  const screenById=id=>screens.find(x=>x.id===id)||screens[0];
  function mode(name){const b=$("#modeBadge");b.textContent=name;b.className="mode-badge "+(name==="RESPOND"?"respond":name==="SUBMITTED"?"submitted":"")}
- function enableActivity(open){document.querySelectorAll(".choice").forEach(b=>b.disabled=!open);$("#explanation").disabled=!open;$("#submitBtn").disabled=!open}
+ function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]))}
+ function clearRecording(){
+   try{if(st.rec?.state==="recording")st.rec.stop()}catch{}
+   if(st.recUrl)URL.revokeObjectURL(st.recUrl);
+   st.rec=null;st.recBlob=null;st.recUrl=null;st.recStartedAt=null;st.recDuration=0;
+ }
+ function recorderHtml(){
+   return `<div class="record-box"><div class="record-controls"><button class="rec" id="recStart">● Record</button><button id="recStop" disabled>■ Stop</button><button id="recAgain" disabled>Record again</button></div><audio id="recPlayback" controls hidden></audio><div class="record-status" id="recStatus">Ready to record.</div></div>`;
+ }
+ function wireRecorder(){
+   const start=$("#recStart"),stop=$("#recStop"),again=$("#recAgain"),play=$("#recPlayback"),status=$("#recStatus");if(!start)return;
+   start.onclick=async()=>{try{
+     clearRecording();const stream=await navigator.mediaDevices.getUserMedia({audio:true});const chunks=[];
+     st.rec=new MediaRecorder(stream);st.recStartedAt=Date.now();
+     st.rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
+     st.rec.onstop=()=>{st.recDuration=Math.max(1,Math.round((Date.now()-st.recStartedAt)/1000));st.recBlob=new Blob(chunks,{type:st.rec.mimeType||"audio/webm"});st.recUrl=URL.createObjectURL(st.recBlob);play.src=st.recUrl;play.hidden=false;again.disabled=false;stream.getTracks().forEach(t=>t.stop());status.textContent=`Recording ready · ${st.recDuration}s`;};
+     st.rec.start();start.disabled=true;stop.disabled=false;status.textContent="Recording…";
+   }catch(e){status.textContent="Microphone permission is required."}};
+   stop.onclick=()=>{if(st.rec?.state==="recording")st.rec.stop();start.disabled=false;stop.disabled=true};
+   again.onclick=()=>{clearRecording();play.hidden=true;again.disabled=true;start.disabled=false;stop.disabled=true;status.textContent="Ready to record."};
+ }
+ function taskHtml(sc){
+   const submitted=st.submitted[sc.id];
+   if(sc.id==="s01")return `<h3>What matters most when you choose clothes?</h3><div class="choice-grid">${["Comfort","Style","Price","Occasion"].map(x=>`<button class="choice" data-choice="${x}">${x}</button>`).join("")}</div><textarea id="answerText" placeholder="Type your explanation here..."></textarea>${submitRow(submitted)}`;
+   if(sc.id==="s04")return `<h3>Add more fashion words</h3><p>Type one or more useful words or phrases from the current category.</p><textarea id="answerText" placeholder="e.g. hoodie, trainers, denim..."></textarea>${submitRow(submitted)}`;
+   if(sc.id==="s05")return `<h3>Describe and compare the people</h3><div class="mode-tabs"><button class="active" data-mode="type">Type</button><button data-mode="record">Record</button></div><div id="typePanel"><textarea id="answerText" placeholder="Type your description and comparison here..."></textarea></div><div id="recordPanel" class="hidden">${recorderHtml()}</div>${submitRow(submitted)}`;
+   if(sc.id==="s06")return `<h3>Match Speakers 2–5 to the photos</h3><div class="match-grid">${[2,3,4,5].map(n=>`<label><div class="field-label">Speaker ${n}</div><select data-match="${n}"><option value="">Choose...</option>${["1a","1b","2a","2b","3a","3b","4a","4b"].map(x=>`<option>${x}</option>`).join("")}</select></label>`).join("")}</div>${submitRow(submitted)}`;
+   if(sc.id==="s09")return `<h3>Exercise 7 · Match the phrasal verbs and definitions</h3><p>Type one matching letter (a–i) for each target phrasal verb.</p><div class="task-grid four">${[
+     "cut down","dress up","go out","keep up with","put together","save up","slip on","stand out","take back"
+   ].map((x,i)=>`<label><div class="field-label">${i+1}. ${x}</div><input data-ex9="${i}" maxlength="1" placeholder="a–i"></label>`).join("")}</div>${submitRow(submitted)}`;
+   if(sc.id==="s10")return `<h3>Exercise 8 · Complete the sentences</h3>${[
+     "a. The prices of leather bags have ___ a lot recently.",
+     "b. Why are you looking at me like that? What’s ___?",
+     "c. The design company ___ the applicant with the best portfolio.",
+     "d. I ___ to the same shoe shop but there were no more pairs in my size.",
+     "e. You’ll need to ___ all the figures in the report to check they’re correct.",
+     "f. “Can I wear your necklace tonight?” “Sure, ___!”"
+   ].map((q,i)=>`<label><div class="field-label">${q}</div><input data-ex10="${i}" placeholder="Type the phrasal verb..."></label>`).join("")}${submitRow(submitted)}`;
+   if(sc.id==="s11")return `<h3>Exercise 9 · Complete Emma’s letter</h3><div class="emma-student-letter">
+     <p><b>Dear Jane,</b></p>
+     <p>Last night, Maria, Sam and I <input data-ex11="0" placeholder="(1)"> clubbing.</p>
+     <p>I was late back from work, so I just <input data-ex11="1" placeholder="(2)"> some black jeans and a sparkly T-shirt, but the other two really <input data-ex11="2" placeholder="(3)">!</p>
+     <p>Maria chose a stunning purple dress and sprayed her hair pink. Sam <input data-ex11="3" placeholder="(4)"> the most outrageous outfit.</p>
+     <p>When we got there, they both <input data-ex11="4" placeholder="(5)"> on the dance floor and I looked very ordinary in comparison.</p>
+     <p>Honestly, I can’t <input data-ex11="5" placeholder="(6)"> them — they’re so fashion-conscious!</p>
+     <p>What would you do in my position?</p>
+     <p>Love,<br>Emma</p>
+   </div>${submitRow(submitted)}`;
+   if(sc.id==="s12")return `<h3>What advice would you give Emma?</h3><div class="mode-tabs"><button class="active" data-mode="type">Type</button><button data-mode="record">Record</button></div><div id="typePanel"><textarea id="answerText" placeholder="Give Emma 2–3 pieces of advice. Use reasons/examples and phrasal verbs."></textarea></div><div id="recordPanel" class="hidden">${recorderHtml()}</div>${submitRow(submitted)}`;
+   if(sc.id==="s13")return `<h3>Consolidation challenge</h3><div class="task-grid four">${[
+     "Name 3 words for clothing or appearance.","Give 2 phrasal verbs from the listening.","What is one two-part phrasal verb?","Give Emma one piece of advice."
+   ].map((q,i)=>`<label><div class="field-label">${esc(q)}</div><textarea data-multi="${i}" rows="3"></textarea></label>`).join("")}</div>${submitRow(submitted)}`;
+   if(sc.id==="s14")return `<h3>Exit Ticket</h3>${["New phrasal verb","I can now…","I still need to practise…"].map((q,i)=>`<label><div class="field-label">${q}</div><textarea data-exit="${i}" rows="2"></textarea></label>`).join("")}<div class="field-label">How confident are you? 1 = not confident yet · 5 = very confident</div><div class="confidence-row">${[1,2,3,4,5].map(n=>`<button data-confidence="${n}">${n}</button>`).join("")}</div>${submitRow(submitted)}`;
+   if(sc.id==="s15")return `<h3>Reply to Emma</h3><p>Give clear advice, explain your reasons, and use 3–4 phrasal verbs naturally.</p><textarea id="answerText" placeholder="Type your reply here..."></textarea>${submitRow(submitted)}`;
+   return `<p>Follow your teacher's screen.</p>`;
+ }
+ function submitRow(submitted){
+   return `<div class="submit-row"><button id="submitBtn" class="btn primary">${submitted?"Submit again":"Submit"}</button>${submitted?'<button id="editBtn" class="btn ghost">Edit response</button><span class="submitted-box">Submitted ✓</span>':''}<div id="submitStatus" class="student-status"></div></div>`;
+ }
+ function renderTask(sc){
+   clearRecording();$("#dynamicTask").innerHTML=taskHtml(sc);
+   const submitted=st.submitted[sc.id];
+   if(sc.id==="s01"){
+     document.querySelectorAll("[data-choice]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-choice]").forEach(x=>x.classList.toggle("selected",x===b));st.drafts[sc.id]={...(st.drafts[sc.id]||{}),choice:b.dataset.choice}});
+     const d=st.drafts[sc.id];if(d?.choice)document.querySelector(`[data-choice="${d.choice}"]`)?.classList.add("selected");if(d?.text)$("#answerText").value=d.text;
+   }
+   if(["s05","s12"].includes(sc.id)){
+     document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-mode]").forEach(x=>x.classList.toggle("active",x===b));const type=b.dataset.mode==="type";$("#typePanel").classList.toggle("hidden",!type);$("#recordPanel").classList.toggle("hidden",type);if(!type)wireRecorder()});
+   }
+   if(sc.id==="s14")document.querySelectorAll("[data-confidence]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-confidence]").forEach(x=>x.classList.toggle("selected",x===b))});
+   $("#submitBtn")?.addEventListener("click",()=>submit(sc));
+   $("#editBtn")?.addEventListener("click",()=>{st.submitted[sc.id]=false;renderTask(sc);renderActivity(st.activity)});
+   renderActivity(st.activity);
+ }
+ function enableTask(open){
+   $("#dynamicTask").querySelectorAll("textarea,input,select,button").forEach(el=>{
+     if(el.id==="editBtn")return;
+     el.disabled=!open;
+   });
+ }
  function renderActivity(a){
    st.activity=a;const status=a?.status||"waiting",rem=Number(a?.remaining_seconds||0);
    $("#studentTimer").textContent=fmt(rem||Number(a?.duration_seconds||90));$("#studentTimerBar").className="student-timerbar "+status;
    const labels={waiting:"Waiting for teacher",open:"Answer now",paused:"Paused",closed:"Submission closed"};$("#activityStatus").textContent=labels[status]||status;
-   const submitted=st.submittedScreen===st.classState?.current_screen_id;
-   if(submitted){mode("SUBMITTED");enableActivity(false)}
-   else if(status==="open"){mode("RESPOND");enableActivity(true)}
-   else{mode("FOLLOW");enableActivity(false)}
+   const submitted=st.submitted[st.classState?.current_screen_id];
+   if(submitted){mode("SUBMITTED");enableTask(false);$("#editBtn")?.removeAttribute("disabled")}
+   else if(status==="open"){mode("RESPOND");enableTask(true)}
+   else{mode("FOLLOW");enableTask(false)}
    if(st.lastRemaining>0&&rem===0&&status==="closed")ELeapSound.timeUp();st.lastRemaining=rem;
+ }
+ async function submit(sc){
+   const status=$("#submitStatus");let option="",explanation="",type="text",audioPath=null,audioDuration=null;
+   try{
+     if(sc.id==="s01"){option=document.querySelector("[data-choice].selected")?.dataset.choice||"";explanation=$("#answerText").value.trim();if(!option||!explanation)throw new Error("Choose one option and type your explanation.")}
+     else if(sc.id==="s04"){explanation=$("#answerText").value.trim();if(!explanation)throw new Error("Type at least one word or phrase.")}
+     else if(["s05","s12"].includes(sc.id)){
+       const recordMode=document.querySelector('[data-mode="record"]')?.classList.contains("active");
+       if(recordMode){if(!st.recBlob)throw new Error("Record your response first.");status.textContent="Uploading audio…";const up=await ELeapLive.uploadResponseAudio({joinCode:st.participant.join_code,participantId:st.participant.participant_id,participantToken:st.participant.participant_token,screenId:sc.id,blob:st.recBlob});audioPath=up.path;audioDuration=st.recDuration;type="audio";explanation=sc.id==="s05"?"Recorded description and comparison":"Recorded advice to Emma";}
+       else{explanation=$("#answerText").value.trim();if(!explanation)throw new Error("Type your response first.");}
+     }
+     else if(sc.id==="s06"){const vals=[...document.querySelectorAll("[data-match]")].map(x=>[x.dataset.match,x.value]);if(vals.some(x=>!x[1]))throw new Error("Complete all four matches.");explanation=vals.map(x=>`Speaker ${x[0]} = ${x[1]}`).join(" · ");option="Listening match";type="matching";}
+     else if(sc.id==="s09"){const vals=[...document.querySelectorAll("[data-ex9]")].map(x=>x.value.trim().toLowerCase());if(vals.some(x=>!/^[a-i]$/.test(x)))throw new Error("Type one letter a–i for every item.");explanation=vals.map((x,i)=>`${i+1}-${x}`).join(" · ");option="Exercise 7";type="matching";}
+     else if(sc.id==="s10"){const vals=[...document.querySelectorAll("[data-ex10]")].map(x=>x.value.trim());if(vals.some(x=>!x))throw new Error("Complete all six blanks.");explanation=vals.map((x,i)=>`${String.fromCharCode(97+i)}. ${x}`).join("\n");option="Exercise 8";type="multi_text";}
+     else if(sc.id==="s11"){const vals=[...document.querySelectorAll("[data-ex11]")].map(x=>x.value.trim());if(vals.some(x=>!x))throw new Error("Complete all six blanks.");explanation=vals.map((x,i)=>`${i+1}. ${x}`).join("\n");option="Exercise 9";type="multi_text";}
+     else if(sc.id==="s13"){const vals=[...document.querySelectorAll("[data-multi]")].map(x=>x.value.trim());if(vals.some(x=>!x))throw new Error("Complete all four answers.");explanation=vals.map((x,i)=>`${i+1}. ${x}`).join("\n");type="multi_text";}
+     else if(sc.id==="s14"){const vals=[...document.querySelectorAll("[data-exit]")].map(x=>x.value.trim()),conf=document.querySelector("[data-confidence].selected")?.dataset.confidence;if(vals.some(x=>!x)||!conf)throw new Error("Complete all fields and choose confidence 1–5.");explanation=`1. ${vals[0]}\n2. ${vals[1]}\n3. ${vals[2]}\nConfidence: ${conf}/5`;option=`Confidence ${conf}/5`;type="exit_ticket";}
+     else if(sc.id==="s15"){explanation=$("#answerText").value.trim();if(!explanation)throw new Error("Type your reply to Emma.");type="homework";}
+     else return;
+     $("#submitBtn").disabled=true;status.textContent="Submitting…";
+     const r=await ELeapLive.submitResponse({joinCode:st.participant.join_code,participantId:st.participant.participant_id,participantToken:st.participant.participant_token,screenId:sc.id,optionValue:option,explanation,responseType:type,audioPath,audioDurationSeconds:audioDuration});
+     st.submitted[sc.id]=true;ELeapSound.submit();mode("SUBMITTED");renderTask(sc);
+   }catch(e){status.textContent=e.message;$("#submitBtn")?.removeAttribute("disabled")}
  }
  async function refresh(){
    if(!st.participant)return;
    try{
-     const csRaw=await ELeapLive.getClassState({joinCode:st.participant.join_code}),cs=Array.isArray(csRaw)?csRaw[0]:csRaw;st.classState=cs;
+     const csRaw=await ELeapLive.getClassState({joinCode:st.participant.join_code}),cs=Array.isArray(csRaw)?csRaw[0]:csRaw;const old=st.classState?.current_screen_id;st.classState=cs;
      const sc=screenById(cs.current_screen_id);$("#slideNow").textContent=`${sc.n}. ${sc.title}`;
-     if(cs.class_status==="lobby"){
-       mode("FOLLOW");$("#followMessage").textContent="You are connected. Your teacher will start the class shortly.";$("#activityBody").classList.add("hidden");return;
-     }
-     if(cs.class_status==="ended"){
-       mode("FOLLOW");$("#followMessage").textContent="Class ended. Thank you.";$("#activityBody").classList.add("hidden");return;
-     }
-     if(!sc.interactive){
-       mode("FOLLOW");$("#followMessage").textContent="Follow your teacher's screen.";$("#activityBody").classList.add("hidden");return;
-     }
+     if(cs.class_status==="lobby"){mode("FOLLOW");$("#followMessage").textContent="You are connected. Your teacher will start the class shortly.";$("#activityBody").classList.add("hidden");return}
+     if(cs.class_status==="ended"){mode("FOLLOW");$("#followMessage").textContent="Class ended. Thank you.";$("#activityBody").classList.add("hidden");return}
+     if(!sc.interactive){mode("FOLLOW");$("#followMessage").textContent="Follow your teacher's screen.";$("#activityBody").classList.add("hidden");st.currentScreen=sc.id;return}
      $("#followMessage").textContent="An interactive task is available on this slide.";$("#activityBody").classList.remove("hidden");
-     const ar=await ELeapLive.getActivityState({joinCode:st.participant.join_code,screenId:sc.id});renderActivity(Array.isArray(ar)?ar[0]:ar);
+     const ar=await ELeapLive.getActivityState({joinCode:st.participant.join_code,screenId:sc.id});st.activity=Array.isArray(ar)?ar[0]:ar;
+     if(st.currentScreen!==sc.id){st.currentScreen=sc.id;renderTask(sc)}else renderActivity(st.activity);
    }catch(e){console.error(e)}
  }
  $("#joinBtn").onclick=async()=>{const c=$("#joinCode").value.trim().toUpperCase(),n=$("#studentName").value.trim();if(!c||!n){$("#joinStatus").textContent="Enter the join code and your name.";return}try{const d=await ELeapLive.joinSession(c,n);st.participant=Array.isArray(d)?d[0]:d;sessionStorage.setItem("eleap_student_session",JSON.stringify(st.participant));$("#joinCard").classList.add("hidden");$("#classCard").classList.remove("hidden");refresh();st.poll=setInterval(refresh,cfg.POLL_MS||1200)}catch(e){$("#joinStatus").textContent=e.message}};
- document.querySelectorAll(".choice").forEach(b=>b.onclick=()=>{if(st.activity?.status!=="open")return;st.selected=b.dataset.value;document.querySelectorAll(".choice").forEach(x=>x.classList.toggle("selected",x===b));$("#selectedLabel").textContent=st.selected;$("#responseBox").hidden=false;$("#explanation").focus()});
- $("#submitBtn").onclick=async()=>{const x=$("#explanation").value.trim(),screen=st.classState?.current_screen_id;if(!st.selected){$("#submitStatus").textContent="Choose one option first.";return}if(!x){$("#submitStatus").textContent="Type your explanation before submitting.";return}try{$("#submitBtn").disabled=true;await ELeapLive.submitResponse({joinCode:st.participant.join_code,participantId:st.participant.participant_id,participantToken:st.participant.participant_token,screenId:screen,optionValue:st.selected,explanation:x});st.submittedScreen=screen;ELeapSound.submit();mode("SUBMITTED");$("#submitStatus").innerHTML='<span class="success">Submitted. Wait for your teacher to continue.</span>'}catch(e){$("#submitStatus").textContent=e.message;$("#submitBtn").disabled=st.activity?.status!=="open"}};
  try{const p=JSON.parse(sessionStorage.getItem("eleap_student_session")||"null");if(p?.participant_id&&p?.join_code){st.participant=p;$("#joinCard").classList.add("hidden");$("#classCard").classList.remove("hidden");refresh();st.poll=setInterval(refresh,cfg.POLL_MS||1200)}}catch{}
 })();
 </script></body></html>
