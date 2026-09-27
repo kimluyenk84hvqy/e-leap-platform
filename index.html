@@ -7,6 +7,8 @@
 
 <!DOCTYPE html>
 
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -626,6 +628,29 @@ body{color:var(--charcoal)}
   border:1px solid #c9a8a8;background:#fff;border-radius:7px;padding:6px 9px;
   color:#7c4545;font-weight:850
 }
+
+/* ===== FINAL v1.3.1 UI-only patch ===== */
+.ui-submit-row,.response-actions{
+  display:flex;align-items:center;gap:9px;justify-content:flex-end;flex-wrap:wrap
+}
+.ui-submit,.ui-clear{
+  border-radius:9px;padding:9px 14px;font-weight:900;font-size:15px
+}
+.ui-submit{border:1px solid #0f6a57;background:#0f6a57;color:#fff}
+.ui-clear{border:1px solid var(--line);background:#fff;color:#52655e}
+.ui-submit-status{font-size:14px;font-weight:850;color:#0f6a57;min-width:88px}
+
+/* Mask only the lime source-image labels at bottom; preserve people + 1a–4b labels. */
+.screen[data-screen="5"] .image-wrap{position:relative;overflow:hidden}
+.screen[data-screen="5"] .image-wrap::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:32px;background:#fff;z-index:3;pointer-events:none
+}
+.screen[data-screen="5"] .hotspot-info{position:relative;z-index:4}
+
+.screen[data-screen="6"] .listening-layout{position:relative}
+.screen[data-screen="6"] .listening-layout::before{
+  content:"";position:absolute;left:0;bottom:0;width:57%;height:32px;background:#fff;z-index:3;pointer-events:none
+}
 </style></head>
 <body>
 <div class="app">
@@ -727,7 +752,7 @@ body{color:var(--charcoal)}
 <textarea id="pollExplanation" placeholder="Type your explanation here..."></textarea>
 <div class="response-actions">
 <button id="clearPollResponse" type="button">Clear</button>
-</div>
+<button class="ui-submit" id="pollUiSubmit" type="button">Submit</button><span class="ui-submit-status" id="pollUiSubmitStatus"></span></div>
 </div>
 </div>
 </div>
@@ -795,7 +820,11 @@ body{color:var(--charcoal)}
 <button id="addVocabWord" type="button">Add</button>
 </div>
 <div aria-live="polite" class="added-word-list" id="vocabAddedWords"></div>
-</div>
+<div class="ui-submit-row">
+<button class="ui-clear" id="vocabUiSubmitClear" type="button">Clear</button>
+<button class="ui-submit" id="vocabUiSubmit" type="button">Submit</button>
+<span class="ui-submit-status" id="vocabUiSubmitStatus"></span>
+</div></div>
 </section>
 <section class="screen accent-speaking" data-screen="5">
 <div class="stage-label">SPEAKING · PHOTO TASK</div>
@@ -845,7 +874,11 @@ body{color:var(--charcoal)}
 <audio controls="" hidden="" id="photoRecordPlayback"></audio>
 <div class="record-status" id="photoRecordStatus">Ready to record.</div>
 </div>
-</div>
+<div class="ui-submit-row">
+<button class="ui-clear" id="photoUiSubmitClear" type="button">Clear</button>
+<button class="ui-submit" id="photoUiSubmit" type="button">Submit</button>
+<span class="ui-submit-status" id="photoUiSubmitStatus"></span>
+</div></div>
 </section>
 <section class="screen accent-listening" data-screen="6">
 <div class="stage-label">LISTENING</div>
@@ -1015,7 +1048,10 @@ body{color:var(--charcoal)}
 </div>
 <audio controls="" hidden="" id="recordPlayback"></audio>
 <div class="record-status" id="recordStatus">Ready to record.</div>
-</div>
+<div class="ui-submit-row">
+<button class="ui-submit" id="adviceUiSubmit" type="button">Submit</button>
+<span class="ui-submit-status" id="adviceUiSubmitStatus"></span>
+</div></div>
 </section>
 <section class="screen accent-review" data-screen="13">
 <div class="stage-label">CONSOLIDATION CHALLENGE</div>
@@ -1027,7 +1063,11 @@ body{color:var(--charcoal)}
 <div class="challenge-response-item"><button class="challenge-card" data-back="Example: dress up" data-front="What is one two-part phrasal verb?">What is one two-part phrasal verb?</button><textarea class="challenge-input" placeholder="Type your answer before checking..." rows="2"></textarea></div>
 <div class="challenge-response-item"><button class="challenge-card" data-back="Example: You could wear what makes you feel confident." data-front="Give Emma one piece of advice.">Give Emma one piece of advice.</button><textarea class="challenge-input" placeholder="Type your answer before checking..." rows="2"></textarea></div>
 </div>
-</section>
+<div class="ui-submit-row">
+<button class="ui-clear" id="consolidationUiSubmitClear" type="button">Clear</button>
+<button class="ui-submit" id="consolidationUiSubmit" type="button">Submit</button>
+<span class="ui-submit-status" id="consolidationUiSubmitStatus"></span>
+</div></section>
 <section class="screen accent-review" data-screen="14">
 <div class="stage-label">EXIT TICKET</div>
 <h2>Before you leave…</h2>
@@ -1048,7 +1088,11 @@ body{color:var(--charcoal)}
   This is a self-rating for reflection and research data. It does not affect your score.
 </div>
 </div>
-</section>
+<div class="ui-submit-row">
+<button class="ui-clear" id="exitUiSubmitClear" type="button">Clear</button>
+<button class="ui-submit" id="exitUiSubmit" type="button">Submit</button>
+<span class="ui-submit-status" id="exitUiSubmitStatus"></span>
+</div></section>
 <section class="screen accent-homework" data-screen="15">
 <div class="stage-label">HOMEWORK · TEACHER-ADDED EXTENSION</div>
 <h2>Reply to Emma</h2>
@@ -1771,6 +1815,68 @@ document.querySelectorAll(".discovery-card").forEach(c=>{c.dataset.initialHtml=c
       return hydrateMedia(document);
     }
   };
+})();
+
+// FINAL v1.3.1 — UI-only Submit state.
+// No SQL, no backend schema, no Response Wall rewrite.
+(()=>{
+  const setStatus=(id,msg)=>{
+    const s=document.getElementById(id+"Status");
+    if(s) s.textContent=msg;
+  };
+
+  document.getElementById("pollUiSubmit")?.addEventListener("click",()=>{
+    const choice=document.querySelector('[data-screen="1"] .poll-btn.selected');
+    const text=document.getElementById("pollExplanation")?.value.trim();
+    setStatus("pollUiSubmit", choice&&text ? "Submitted ✓" : "Choose + type first");
+  });
+
+  document.getElementById("vocabUiSubmit")?.addEventListener("click",()=>{
+    const count=document.querySelectorAll("#vocabAddedWords span").length;
+    setStatus("vocabUiSubmit",count ? "Submitted ✓" : "Add a word first");
+  });
+  document.getElementById("vocabUiSubmitClear")?.addEventListener("click",()=>{
+    window.__resetVocabAdded?.();setStatus("vocabUiSubmit","");
+  });
+
+  document.getElementById("photoUiSubmit")?.addEventListener("click",()=>{
+    const typeVisible=!document.getElementById("photoTypePanel")?.classList.contains("hidden");
+    const typed=document.getElementById("photoResponseText")?.value.trim();
+    const recorded=!document.getElementById("photoRecordPlayback")?.hidden;
+    setStatus("photoUiSubmit",
+      typeVisible ? (typed?"Submitted ✓":"Type first") : (recorded?"Submitted ✓":"Record first")
+    );
+  });
+  document.getElementById("photoUiSubmitClear")?.addEventListener("click",()=>{
+    const t=document.getElementById("photoResponseText"); if(t)t.value="";
+    document.getElementById("photoRecordReset")?.click();
+    setStatus("photoUiSubmit","");
+  });
+
+  document.getElementById("adviceUiSubmit")?.addEventListener("click",()=>{
+    const recorded=!document.getElementById("recordPlayback")?.hidden;
+    setStatus("adviceUiSubmit",recorded?"Submitted ✓":"Record first");
+  });
+
+  document.getElementById("consolidationUiSubmit")?.addEventListener("click",()=>{
+    const a=[...document.querySelectorAll('[data-screen="13"] .challenge-input')].map(x=>x.value.trim());
+    setStatus("consolidationUiSubmit",a.length && a.every(Boolean) ? "Submitted ✓" : "Complete all answers");
+  });
+  document.getElementById("consolidationUiSubmitClear")?.addEventListener("click",()=>{
+    document.querySelectorAll('[data-screen="13"] .challenge-input').forEach(x=>x.value="");
+    setStatus("consolidationUiSubmit","");
+  });
+
+  document.getElementById("exitUiSubmit")?.addEventListener("click",()=>{
+    const a=[...document.querySelectorAll('[data-screen="14"] textarea')].map(x=>x.value.trim());
+    const conf=document.querySelector('[data-screen="14"] .confidence button.selected');
+    setStatus("exitUiSubmit",a.length && a.every(Boolean) && conf ? "Submitted ✓" : "Complete all fields");
+  });
+  document.getElementById("exitUiSubmitClear")?.addEventListener("click",()=>{
+    document.querySelectorAll('[data-screen="14"] textarea').forEach(x=>x.value="");
+    document.querySelectorAll('[data-screen="14"] .confidence button').forEach(x=>x.classList.remove("selected"));
+    setStatus("exitUiSubmit","");
+  });
 })();
 </script></body>
 </html>
