@@ -192,34 +192,61 @@ body.lesson-live-modal-open{overflow:hidden}
 }
 
 
-/* === v4.1 NAVIGATION VISIBILITY HOTFIX ===
-   Keep Presentation navigation legible even when other platform button styles cascade in.
-*/
-#classroom.active .classroom-toolbar #classroomNext,
-#classroomNext{
-  display:inline-flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  min-width:112px !important;
-  min-height:42px !important;
-  padding:9px 18px !important;
-  background:#0f6a57 !important;
-  border:1px solid #0f6a57 !important;
-  color:#ffffff !important;
-  opacity:1 !important;
-  visibility:visible !important;
-  font-weight:850 !important;
-  line-height:1.2 !important;
-  text-indent:0 !important;
-  overflow:visible !important;
+/* === v4.2 Persistent Join Panel === */
+.lesson-persistent-join{
+  margin:10px 0 12px;
+  border-radius:16px;
+  background:linear-gradient(135deg,#f6faf8,#e9f2ee);
+  box-shadow:0 8px 24px rgba(28,59,50,.08);
+  overflow:hidden;
 }
-#classroom.active .classroom-toolbar #classroomNext:disabled,
-#classroomNext:disabled{
-  background:#dfe7e3 !important;
-  border-color:#d3ddd8 !important;
-  color:#7b8a84 !important;
-  opacity:1 !important;
+.lesson-persistent-main{
+  display:grid;
+  grid-template-columns:92px minmax(0,1fr) auto;
+  gap:16px;
+  align-items:center;
+  padding:14px 16px;
 }
-#classroom.active .classroom-toolbar{
-  gap:10px !important;
+.lesson-persistent-qr-wrap{display:grid;place-items:center}
+.lesson-persistent-qr{
+  width:82px;height:82px;background:#fff;padding:4px;border-radius:10px
+}
+.lesson-persistent-label{
+  display:block;font-size:11px;letter-spacing:.12em;font-weight:900;color:#61736c
+}
+.lesson-persistent-code{
+  margin-top:2px;font-size:34px;line-height:1;letter-spacing:.13em;font-weight:950;
+  color:#174c40;font-variant-numeric:tabular-nums
+}
+.lesson-persistent-meta{
+  margin-top:7px;display:flex;gap:7px;flex-wrap:wrap;color:#60716b;font-weight:800;font-size:13px
+}
+.lesson-persistent-actions{
+  display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end
+}
+.lesson-persistent-actions button{
+  border:1px solid #bfd0ca;background:#fff;color:#174c40;border-radius:9px;padding:9px 12px;font-weight:850
+}
+.lesson-persistent-actions .primary{
+  background:#0f6a57;color:#fff;border-color:#0f6a57
+}
+
+/* Compact after Start Teaching, but keep join info available for late students */
+.lesson-persistent-join.compact .lesson-persistent-main{
+  grid-template-columns:54px minmax(0,1fr) auto;padding:9px 12px
+}
+.lesson-persistent-join.compact .lesson-persistent-qr{width:48px;height:48px}
+.lesson-persistent-join.compact .lesson-persistent-code{font-size:22px}
+.lesson-persistent-join.compact .lesson-persistent-label{font-size:10px}
+.lesson-persistent-join.compact .lesson-persistent-meta{margin-top:3px;font-size:12px}
+
+#classroom.active .lesson-persistent-join{
+  position:sticky;top:0;z-index:20
+}
+
+@media(max-width:760px){
+  .lesson-persistent-main{grid-template-columns:72px 1fr}
+  .lesson-persistent-actions{grid-column:1/-1;justify-content:flex-start}
+  .lesson-persistent-qr{width:64px;height:64px}
+  .lesson-persistent-code{font-size:28px}
 }
