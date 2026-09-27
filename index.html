@@ -9,6 +9,8 @@
 
 <!DOCTYPE html>
 
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -651,6 +653,50 @@ body{color:var(--charcoal)}
 .screen[data-screen="6"] .listening-layout::before{
   content:"";position:absolute;left:0;bottom:0;width:57%;height:32px;background:#fff;z-index:3;pointer-events:none
 }
+
+
+/* ===== FINAL v1.3.2 HOTFIX ===== */
+
+/* Slide 1: make Submit unmistakably visible despite older .response-actions button rule */
+.screen[data-screen="1"] .response-actions .ui-submit{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  min-width:112px !important;
+  min-height:40px !important;
+  border:1px solid #0f6a57 !important;
+  background:#0f6a57 !important;
+  color:#ffffff !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  font-weight:900 !important;
+  font-size:15px !important;
+}
+.screen[data-screen="1"] .response-actions .ui-submit::before{
+  content:"Submit";
+  color:#ffffff;
+}
+.screen[data-screen="1"] .response-actions .ui-submit{
+  font-size:0 !important;
+}
+.screen[data-screen="1"] .response-actions .ui-submit::before{
+  font-size:15px !important;
+}
+
+/* Slides 5–6: crop ONLY the embedded bottom source labels
+   “Speaking” and “Listening” from people-photo-set.png.
+   The people and 1a–4b labels remain untouched. */
+.screen[data-screen="5"] .image-wrap > img[data-private-path*="people-photo-set"],
+.screen[data-screen="6"] .listening-layout > img[data-private-path*="people-photo-set"]{
+  clip-path: inset(0 0 6.3% 0) !important;
+  -webkit-clip-path: inset(0 0 6.3% 0) !important;
+}
+
+/* Disable the previous white pseudo-mask; clipping above is deterministic. */
+.screen[data-screen="5"] .image-wrap::after,
+.screen[data-screen="6"] .listening-layout::before{
+  display:none !important;
+}
 </style></head>
 <body>
 <div class="app">
@@ -752,7 +798,7 @@ body{color:var(--charcoal)}
 <textarea id="pollExplanation" placeholder="Type your explanation here..."></textarea>
 <div class="response-actions">
 <button id="clearPollResponse" type="button">Clear</button>
-<button class="ui-submit" id="pollUiSubmit" type="button">Submit</button><span class="ui-submit-status" id="pollUiSubmitStatus"></span></div>
+<button aria-label="Submit response" class="ui-submit" id="pollUiSubmit" type="button">Submit</button><span class="ui-submit-status" id="pollUiSubmitStatus"></span></div>
 </div>
 </div>
 </div>
