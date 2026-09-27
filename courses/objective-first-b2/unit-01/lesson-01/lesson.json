@@ -31,11 +31,11 @@
       "responseAfterSelection": {
         "enabled": true,
         "responseType": "text",
-        "prompt": "Type your explanation for your choice.",
+        "prompt": "Type your explanation in the response box below.",
         "placeholder": "Type your explanation here...",
         "submitLabel": "Submit"
       },
-      "interactionPrompt": "Choose one option, then type your explanation."
+      "interactionPrompt": "Choose one option, then type your explanation in the response box below."
     },
     {
       "id": "s02",
