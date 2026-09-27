@@ -201,6 +201,7 @@
     q("#classroomTask").innerHTML=renderTask(s);
     q("#classroomCounter").textContent=`${state.index+1} / ${state.lesson.screens.length}`;
     wireInteractions(s);
+    hydrateMedia(q("#classroomTask")||document);
   }
   function openPresentation(){ q("#classroom").classList.add("active"); renderPresentation(); }
 
