@@ -54,7 +54,7 @@ $("#backToUnit").addEventListener("click",()=>showView("unit-detail"));
 $("#backToClasses").addEventListener("click",()=>showView("course-detail"));
 $("#backToClass").addEventListener("click",()=>showView("class-detail"));
 $(".open-unit").addEventListener("click",()=>showView("unit-detail"));
-$(".open-lesson").addEventListener("click",()=>showView("lesson"));
+$(".open-lesson").addEventListener("click",()=>{showView("lesson");document.dispatchEvent(new Event("eleap-open-u11"));});
 $(".open-class").addEventListener("click",()=>showView("class-detail"));
 $(".open-student").addEventListener("click",()=>showView("student-profile"));
 
