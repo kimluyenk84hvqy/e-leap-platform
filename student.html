@@ -5,6 +5,8 @@
 
 <!DOCTYPE html>
 
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -773,6 +775,19 @@ html,body{margin:0;background:#f4f7f5;color:#183a31;font-family:Inter,Arial,sans
 
 .vocab-once-note{margin:6px 0 10px;color:#61716b;font-size:15px;line-height:1.45}
 .vocab-add-card .input-row input{width:100%;box-sizing:border-box}
+
+.transcript-response-card{margin-top:14px}
+.transcript-response-card textarea{
+  width:100%;box-sizing:border-box;min-height:110px;margin-top:8px;
+  border:1px solid #aebfb9;border-radius:9px;padding:10px 12px;
+  font:inherit;font-size:18px;background:#fff;color:#183a31
+}
+.transcript-response-note{margin:6px 0 0;color:#66756f;font-size:15px;line-height:1.45}
+#speakerText{min-height:110px}
+#speakerText .phrasal-click{
+  color:#0f6a57;font-weight:900;text-decoration:underline dotted;
+  text-underline-offset:4px;cursor:pointer
+}
 </style>
 </head>
 <body>
@@ -976,7 +991,7 @@ html,body{margin:0;background:#f4f7f5;color:#183a31;font-family:Inter,Arial,sans
 <section class="screen accent-vocab" data-screen="7">
 <div class="stage-label">TRANSCRIPT FOCUS</div>
 <h2>Find the phrasal verbs</h2>
-<p class="instruction">Select Speakers 2–5 in turn. Read each transcript, identify the phrasal verbs, and try to explain their meaning from context before clicking a highlighted phrase.</p>
+<p class="instruction">Select Speakers 2–5 in turn. Read each transcript, identify the highlighted phrasal verbs, and infer their meaning from context. Click a highlighted phrase to check its meaning. After exploring all four speakers, type one short response and submit once.</p>
 <div class="tabs" id="speakerTabs">
 <button class="tab active" data-speaker="2">Speaker 2</button>
 <button class="tab" data-speaker="3">Speaker 3</button>
@@ -985,7 +1000,16 @@ html,body{margin:0;background:#f4f7f5;color:#183a31;font-family:Inter,Arial,sans
 </div>
 <div class="transcript" id="speakerText"></div>
 <div class="meaning-box" id="meaningBox">Click a highlighted phrasal verb.</div>
-</section>
+<div class="learner-input-card transcript-response-card" id="slide7Response">
+<label for="slide7MeaningResponse">
+<b>Your response — submit once</b>
+</label>
+<p class="transcript-response-note">
+            Choose at least two phrasal verbs from the transcripts and explain what they mean in context.
+            Example format: <i>dress up = ...; stand out = ...</i>
+</p>
+<textarea class="student-response-control" id="slide7MeaningResponse" placeholder="Type at least two phrasal verbs and their meanings in context..."></textarea>
+</div></section>
 <section class="screen accent-language" data-screen="8">
 <div class="stage-label">LANGUAGE FOCUS · GUIDED DISCOVERY</div>
 <h2>How do phrasal verbs work?</h2>
@@ -1211,6 +1235,31 @@ html,body{margin:0;background:#f4f7f5;color:#183a31;font-family:Inter,Arial,sans
   }
   function interactiveScreen(id){return screens.find(x=>x.id===id)?.interactive===true}
 
+  // Slide 7 transcript data: same source text and meanings as Teacher View.
+  const speakers={
+    2:`I started working this year, so I’m able to get new clothes more regularly than before, when I had to <span class="phrasal-click" data-meaning="save money for something in the future">save up</span> for months. My mum thinks I should <span class="phrasal-click" data-meaning="reduce">cut down</span> the amount I spend on clothes. I don’t like to <span class="phrasal-click" data-meaning="go somewhere for entertainment / social activity">go out</span> in the same thing again. I always <span class="phrasal-click" data-meaning="wear smarter or special clothes than usual">dress up</span> when I go clubbing and try to <span class="phrasal-click" data-meaning="stay informed about something that changes quickly">keep up with</span> the latest fashions.`,
+    3:`Shopping for clothes isn’t really my scene. I favour the casual look. I’ve got one favourite T-shirt, which a girlfriend gave me so I would always <span class="phrasal-click" data-meaning="be easy to see or notice">stand out</span> in a crowd.`,
+    4:`My clothes have to be comfortable. I <span class="phrasal-click" data-meaning="put something on quickly">slip them on</span> and often <span class="phrasal-click" data-meaning="create something by combining different things">put together</span> outfits from things I find in street markets.`,
+    5:`I have to make an effort to look good all the time. If I see something by chance, I’m likely to <span class="phrasal-click" data-meaning="choose / decide to take">go for</span> it. I did <span class="phrasal-click" data-meaning="return something">take back</span> a jacket last week because it was badly made.`
+  };
+  function loadSpeaker(n){
+    const box=$("#speakerText");
+    if(!box) return;
+    box.innerHTML=speakers[n]||"";
+    box.querySelectorAll(".phrasal-click").forEach(x=>x.onclick=()=>{
+      const mb=$("#meaningBox");
+      if(mb) mb.textContent=`${x.textContent} = ${x.dataset.meaning}`;
+    });
+  }
+  $$("#speakerTabs .tab").forEach(btn=>btn.onclick=()=>{
+    $$("#speakerTabs .tab").forEach(x=>x.classList.remove("active"));
+    btn.classList.add("active");
+    loadSpeaker(btn.dataset.speaker);
+    const mb=$("#meaningBox");
+    if(mb) mb.textContent="Click a highlighted phrasal verb.";
+  });
+  loadSpeaker(2);
+
   // Same basic non-answer lesson interactions as teacher view.
   $$(".poll-btn").forEach(b=>b.onclick=()=>{
     $$(".poll-btn").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");
@@ -1303,6 +1352,11 @@ html,body{margin:0;background:#f4f7f5;color:#183a31;font-family:Inter,Arial,sans
       const vals=$$('[data-screen="6"] .student-speaker-select').map(s=>s.value);
       if(vals.some(v=>!v))throw new Error("Complete all four speaker matches.");
       option="Listening match";type="matching";explanation=vals.map((v,i)=>`Speaker ${i+2} = ${v}`).join(" · ");
+    }else if(id==="s07"){
+      explanation=$("#slide7MeaningResponse")?.value.trim()||"";
+      if(!explanation)throw new Error("Explain at least two phrasal verbs before submitting.");
+      option="Transcript focus";
+      type="text";
     }else if(id==="s09"){
       const vals=$$('[data-screen="9"] .student-match-select').map(s=>s.value);
       if(vals.some(v=>!v))throw new Error("Complete all nine matches.");
@@ -1344,7 +1398,15 @@ html,body{margin:0;background:#f4f7f5;color:#183a31;font-family:Inter,Arial,sans
     try{
       const raw=await ELeapLive.getClassState({joinCode:state.participant.join_code}),cs=Array.isArray(raw)?raw[0]:raw;
       const id=cs.current_screen_id||"s01";
-      if(state.currentId!==id)showSlideById(id);
+      if(state.currentId!==id){
+        showSlideById(id);
+        if(id==="s07"){
+          $$("#speakerTabs .tab").forEach(x=>x.classList.toggle("active",x.dataset.speaker==="2"));
+          loadSpeaker(2);
+          const mb=$("#meaningBox");
+          if(mb) mb.textContent="Click a highlighted phrasal verb.";
+        }
+      }
       if(cs.class_status==="ended"){
         setMode("FOLLOW");
         $("#studentResponseFooter").hidden=true;
