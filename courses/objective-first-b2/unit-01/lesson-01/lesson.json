@@ -12,7 +12,7 @@
       "stage": "LEAD-IN",
       "type": "quick-choice",
       "title": "Fashion Matters",
-      "instruction": "Look at the fashion image. In pairs, discuss what clothes can communicate about a person. Choose one idea and explain your opinion.",
+      "instruction": "Choose one option, then type your explanation for your choice.",
       "question": "What matters most when you choose clothes?",
       "options": [
         "Comfort",
@@ -22,6 +22,18 @@
       ],
       "media": {
         "image": "PRIVATE_MEDIA/u01/l01/fashion-hero.jpeg"
+      },
+      "futureInteraction": [
+        "single-choice",
+        "text-response",
+        "submit"
+      ],
+      "responseAfterSelection": {
+        "enabled": true,
+        "responseType": "text",
+        "prompt": "Type your explanation for your choice.",
+        "placeholder": "Type your explanation here...",
+        "submitLabel": "Submit"
       }
     },
     {
@@ -29,11 +41,16 @@
       "stage": "SPEAKING",
       "type": "questions",
       "title": "Talk about fashion",
-      "instruction": "Work with a partner. Discuss the questions below. First think quietly for 20 seconds, then take turns answering and asking one follow-up question.",
+      "instruction": "Choose a question, type key ideas for your answer, then speak when your teacher invites you.",
       "questions": [
         "How important is fashion to you?",
         "What sort of clothes do you prefer to wear?",
         "Do you ever have to wear things you don’t really like? If so, when and why?"
+      ],
+      "futureInteraction": [
+        "question-select",
+        "text-planning",
+        "speaking"
       ]
     },
     {
@@ -41,7 +58,7 @@
       "stage": "SPEAKING",
       "type": "layered-reveal",
       "title": "Four ways to expand an answer",
-      "instruction": "Watch the video and identify the four ways to expand an answer. Then explore the technique cards one by one and use the useful phrases to improve your own answers.",
+      "instruction": "Watch the video, then open each technique, type an example of your own, and check the model.",
       "media": {
         "video": "PRIVATE_MEDIA/u01/l01/speaking-strategy.mp4"
       },
@@ -66,6 +83,11 @@
           "support": "Personally, I think… / To me,…",
           "model": "Personally, I think clothes can show part of your personality."
         }
+      ],
+      "futureInteraction": [
+        "video",
+        "layered-reveal",
+        "text-response"
       ]
     },
     {
@@ -73,7 +95,7 @@
       "stage": "VOCABULARY",
       "type": "vocabulary-tabs",
       "title": "Build your fashion vocabulary",
-      "instruction": "Choose one category at a time. Read the words aloud, then add one more example of your own.",
+      "instruction": "Choose a vocabulary category, then type one more example of your own.",
       "categories": {
         "Clothes": [
           "T-shirts",
@@ -129,14 +151,18 @@
           "neat",
           "fashionable"
         ]
-      }
+      },
+      "futureInteraction": [
+        "category-select",
+        "text-response"
+      ]
     },
     {
       "id": "s05",
       "stage": "SPEAKING",
       "type": "photo-task",
       "title": "Describe and compare the people",
-      "instruction": "Work in pairs. Choose one pair of photos. First describe what each person is wearing and their appearance. Then make one comparison. Your partner should add one extra detail.",
+      "instruction": "Choose one photo pair, type key details you notice, then describe and compare the people.",
       "pairs": [
         "1a + 1b",
         "2a + 2b",
@@ -146,14 +172,19 @@
       "media": {
         "image": "PRIVATE_MEDIA/u01/l01/people-photo-set.png"
       },
-      "note": "Comparison language is preview/support only. Systematic comparison work belongs to U1.2."
+      "note": "Comparison language is preview/support only. Systematic comparison work belongs to U1.2.",
+      "futureInteraction": [
+        "image-select",
+        "text-response",
+        "speaking"
+      ]
     },
     {
       "id": "s06",
       "stage": "LISTENING",
       "type": "speaker-match",
       "title": "Who is speaking?",
-      "instruction": "Listen to Speakers 2–5 and match each speaker to the correct photo. Compare your answers with a partner, then check the speakers one by one.",
+      "instruction": "Listen to Speakers 2–5, choose the correct photo for each speaker, then submit your answers.",
       "media": {
         "audio": "PRIVATE_MEDIA/u01/l01/speakers-2-5.mp3"
       },
@@ -175,6 +206,11 @@
           "prompt": "Speaker 5",
           "answer": "3a"
         }
+      ],
+      "futureInteraction": [
+        "audio",
+        "single-choice",
+        "submit"
       ]
     },
     {
@@ -182,7 +218,7 @@
       "stage": "LISTENING",
       "type": "transcript-focus",
       "title": "Find the phrasal verbs",
-      "instruction": "Select Speakers 2–5 in turn. Read each transcript, identify the phrasal verbs, and try to explain their meaning from context before checking.",
+      "instruction": "Choose a speaker, identify the phrasal verbs, type what you think they mean, then check.",
       "media": {
         "audio": "PRIVATE_MEDIA/u01/l01/speakers-2-5.mp3"
       },
@@ -207,6 +243,11 @@
           "phrase": "take back",
           "meaning": "return something"
         }
+      ],
+      "futureInteraction": [
+        "audio",
+        "text-response",
+        "reveal"
       ]
     },
     {
@@ -214,7 +255,7 @@
       "stage": "LANGUAGE FOCUS",
       "type": "guided-discovery",
       "title": "How do phrasal verbs work?",
-      "instruction": "Watch the video. Discuss the three questions below with a partner. Click each question only after you have agreed on an answer.",
+      "instruction": "Watch the video, answer each question, then reveal the explanation to check your idea.",
       "media": {
         "video": "PRIVATE_MEDIA/u01/l01/phrasal-verbs.mp4"
       },
@@ -231,6 +272,11 @@
           "question": "What do you notice about word order?",
           "answer": "Some two-part phrasal verbs can be separated; three-part phrasal verbs are not separated in the patterns taught here."
         }
+      ],
+      "futureInteraction": [
+        "video",
+        "text-response",
+        "reveal"
       ]
     },
     {
@@ -238,7 +284,7 @@
       "stage": "EXERCISE 7",
       "type": "listen-match",
       "title": "Listen, identify, then match",
-      "instruction": "Step 1: Listen again to Speakers 2–5 and identify the phrasal verbs you hear. The list includes distractors. Step 2: Match the nine target phrasal verbs to their definitions.",
+      "instruction": "Choose the phrasal verbs you hear, complete the matching task, then submit your answers.",
       "media": {
         "audio": "PRIVATE_MEDIA/u01/l01/speakers-2-5.mp3"
       },
@@ -329,6 +375,12 @@
           "term": "take back",
           "definition": "return something"
         }
+      ],
+      "futureInteraction": [
+        "audio",
+        "multi-select",
+        "matching",
+        "submit"
       ]
     },
     {
@@ -336,7 +388,7 @@
       "stage": "EXERCISE 8",
       "type": "inline-reveal",
       "title": "Phrasal verbs with go",
-      "instruction": "Complete each sentence with the correct form of go and a particle from the box. Explain the meaning of your choice, then reveal each answer separately.",
+      "instruction": "Type the correct phrasal verb in each gap, then check each answer one at a time.",
       "wordBank": [
         "ahead",
         "back",
@@ -371,6 +423,10 @@
           "text": "“Can I wear your necklace tonight?” “Sure, ___!”",
           "answer": "go ahead"
         }
+      ],
+      "futureInteraction": [
+        "gap-fill",
+        "reveal"
       ]
     },
     {
@@ -378,7 +434,7 @@
       "stage": "EXERCISE 9",
       "type": "inline-reveal",
       "title": "Complete Emma’s letter",
-      "instruction": "Complete the letter with phrasal verbs from Exercise 7. More than one answer may be possible. Compare your choices, then reveal each blank separately.",
+      "instruction": "Type a suitable phrasal verb in each gap, then check the possible answers one at a time.",
       "items": [
         {
           "text": "1. ___",
@@ -404,6 +460,10 @@
           "text": "6. ___",
           "answer": "keep up with"
         }
+      ],
+      "futureInteraction": [
+        "gap-fill",
+        "reveal"
       ]
     },
     {
@@ -411,20 +471,33 @@
       "stage": "SPEAKING",
       "type": "speaking-prompt",
       "title": "What advice would you give Emma?",
-      "instruction": "Work in pairs. Give Emma two or three pieces of advice. For each piece of advice, give a reason or an example. Try to use at least two phrasal verbs from the lesson.",
+      "instruction": "Record your advice to Emma, listen back, then submit your recording when you are ready.",
       "support": [
         "You could…",
         "Why don’t you…?",
         "If I were you, I’d…",
         "It might help to…"
-      ]
+      ],
+      "futureInteraction": [
+        "audio-recording",
+        "playback",
+        "rerecord",
+        "submit"
+      ],
+      "recorder": {
+        "enabled": true,
+        "maxSeconds": 180,
+        "allowPlayback": true,
+        "allowRerecord": true,
+        "submitLabel": "Submit recording"
+      }
     },
     {
       "id": "s13",
       "stage": "REVIEW",
       "type": "challenge-cards",
       "title": "Can you remember it?",
-      "instruction": "Answer each challenge aloud before revealing the sample answer. Check one card at a time.",
+      "instruction": "Answer each challenge, then reveal the sample answer and compare it with your response.",
       "items": [
         {
           "prompt": "Name 3 words for clothing or appearance.",
@@ -442,6 +515,10 @@
           "prompt": "Give Emma one piece of advice.",
           "answer": "You could wear what makes you feel confident."
         }
+      ],
+      "futureInteraction": [
+        "text-response",
+        "reveal"
       ]
     },
     {
@@ -449,11 +526,15 @@
       "stage": "EXIT TICKET",
       "type": "exit-ticket",
       "title": "Before you leave…",
-      "instruction": "Take one minute. Write or say one new phrasal verb you learned, one thing you can now do better, and one point you still want to practise.",
+      "instruction": "Type your exit-ticket responses, then submit them before leaving the lesson.",
       "fields": [
         "New phrasal verb",
         "I can now…",
         "I still need to practise…"
+      ],
+      "futureInteraction": [
+        "text-response",
+        "submit"
       ]
     },
     {
@@ -462,15 +543,22 @@
       "type": "assignment",
       "title": "Reply to Emma",
       "label": "Teacher-added Extension",
-      "instruction": "Write a short reply to Emma. Give clear advice, explain your reasons, and use three or four phrasal verbs from the lesson naturally and accurately."
+      "instruction": "Type your reply to Emma, then submit your work when you are ready.",
+      "futureInteraction": [
+        "long-text",
+        "submit"
+      ]
     },
     {
       "id": "s16",
       "stage": "END",
       "type": "end-screen",
       "title": "Thank You",
-      "instruction": "You have completed Unit 1.1 – Fashion Matters.",
-      "footer": "Any questions?"
+      "instruction": "Review your progress and finish the lesson.",
+      "footer": "Any questions?",
+      "futureInteraction": [
+        "end-screen"
+      ]
     }
   ]
 }
