@@ -1,34 +1,72 @@
 
 (() => {
   const q=(s,c=document)=>c.querySelector(s), qa=(s,c=document)=>[...c.querySelectorAll(s)];
+  const MEDIA_SIGN_ENDPOINT="https://xfisojqahojcsfrjjxab.supabase.co/functions/v1/get-media-url";
+  const mediaUrlCache=new Map();
   const state={lesson:null,index:0,selectedMatch:null,mediaMap:{}};
 
-  function resolveMediaUrl(raw){
+  async function getSignedMediaUrl(raw){
     if(!raw) return "";
     const key=String(raw).replace(/^PRIVATE_MEDIA\//,"");
-    const mapped=state.mediaMap[key]||"";
-    if(mapped && !mapped.startsWith("PRIVATE_STORAGE_URL/")) return mapped;
-    return "";
+    const cached=mediaUrlCache.get(key);
+    if(cached && cached.expiresAt>Date.now()+60000) return cached.url;
+
+    try{
+      const res=await fetch(MEDIA_SIGN_ENDPOINT,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({path:key})
+      });
+      if(!res.ok) throw new Error("Signed media request failed: "+res.status);
+      const data=await res.json();
+      if(!data?.url) throw new Error("No signed URL returned");
+      const ttl=Math.max(60,Number(data.expiresIn)||3600);
+      mediaUrlCache.set(key,{url:data.url,expiresAt:Date.now()+ttl*1000});
+      return data.url;
+    }catch(err){
+      console.error("E-LEAP private media error",key,err);
+      return "";
+    }
   }
 
   function mediaBlock(media){
     if(!media) return "";
     const items=[];
     for(const [kind,raw] of Object.entries(media)){
-      const url=resolveMediaUrl(raw);
-      if(url){
-        if(kind==="image"){
-          items.push(`<figure class="lesson-media-frame image-frame"><img src="${url}" alt="" loading="lazy"/></figure>`);
-        }else if(kind.toLowerCase().includes("audio")){
-          items.push(`<div class="lesson-media-frame audio-frame"><audio controls preload="metadata" src="${url}"></audio></div>`);
-        }else if(kind==="video"){
-          items.push(`<div class="lesson-media-frame video-frame"><video controls preload="metadata" src="${url}"></video></div>`);
-        }
-      }else{
-        items.push(`<div class="lesson-media-placeholder">${kind.toUpperCase()} · Private media not connected yet.</div>`);
+      const key=String(raw||"").replace(/^PRIVATE_MEDIA\//,"");
+      const id="media-"+Math.random().toString(36).slice(2);
+      const label=kind.toLowerCase();
+      if(label==="image"){
+        items.push(`<figure id="${id}" class="lesson-media-frame image-frame media-loading" data-media-kind="image" data-media-key="${key}"><div class="lesson-media-placeholder">Loading image…</div></figure>`);
+      }else if(label.includes("audio")){
+        items.push(`<div id="${id}" class="lesson-media-frame audio-frame media-loading" data-media-kind="audio" data-media-key="${key}"><div class="lesson-media-placeholder">Loading audio…</div></div>`);
+      }else if(label==="video"){
+        items.push(`<div id="${id}" class="lesson-media-frame video-frame media-loading" data-media-kind="video" data-media-key="${key}"><div class="lesson-media-placeholder">Loading video…</div></div>`);
       }
     }
     return items.join("");
+  }
+
+  async function hydrateMedia(root=document){
+    const nodes=[...root.querySelectorAll("[data-media-key]")];
+    await Promise.all(nodes.map(async node=>{
+      const key=node.dataset.mediaKey;
+      const kind=node.dataset.mediaKind;
+      if(!key) return;
+      const url=await getSignedMediaUrl(key);
+      node.classList.remove("media-loading");
+      if(!url){
+        node.innerHTML='<div class="lesson-media-placeholder">Private media unavailable.</div>';
+        return;
+      }
+      if(kind==="image"){
+        node.innerHTML=`<img src="${url}" alt="" loading="lazy"/>`;
+      }else if(kind==="audio"){
+        node.innerHTML=`<audio controls preload="metadata" src="${url}"></audio>`;
+      }else if(kind==="video"){
+        node.innerHTML=`<video controls preload="metadata" playsinline src="${url}"></video>`;
+      }
+    }));
   }
 
   function revealList(items){
@@ -151,6 +189,7 @@
     q("#lessonNext",host)?.addEventListener("click",()=>{if(state.index<state.lesson.screens.length-1){state.index++;render()}});
     q("#lessonStartClass",host)?.addEventListener("click",()=>openPresentation());
     wireInteractions(s);
+    hydrateMedia(q("#classroomTask")||document);
   }
 
   function renderPresentation(){
@@ -167,12 +206,6 @@
 
   async function load(){
     try{
-      try{
-        const mr=await fetch("media-map.json",{cache:"no-store"});
-        state.mediaMap=await mr.json();
-      }catch(_e){
-        state.mediaMap={};
-      }
       const r=await fetch("courses/objective-first-b2/unit-01/lesson-01/lesson.json",{cache:"no-store"});
       state.lesson=await r.json();
       render();
