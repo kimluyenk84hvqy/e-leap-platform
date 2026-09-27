@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/styles.css"/>
+  <link rel="stylesheet" href="assets/css/lesson-renderer.css"/>
 </head>
 <body>
 <div class="app" data-role="teacher">
@@ -125,8 +126,8 @@
         <div>
           <span class="eyebrow teacher-only">CURRENT CLASS POSITION</span>
           <span class="eyebrow student-only">CONTINUE LEARNING</span>
-          <strong class="teacher-only"></strong>
-          <strong class="student-only">Unit 2 · Lesson 3</strong>
+          <strong class="teacher-only">B2-A · Unit 1 · U1.1</strong>
+          <strong class="student-only">Unit 1 · U1.1</strong>
           <small class="teacher-only">Fashion Matters · Ready to teach</small>
           <small class="student-only">42% complete · Last activity: yesterday</small>
         </div>
@@ -222,26 +223,18 @@
           <p>2 lessons · 8 periods</p>
         </div>
       </div>
-
       <div class="lesson-list">
         <button class="lesson-row open-lesson" data-lesson="u1.1">
           <span class="lesson-no">U1.1</span>
-          <span class="lesson-copy">
-            <b>Fashion Matters</b>
-            <small>Speaking · Listening · Vocabulary · Phrasal verbs</small>
-          </span>
+          <span class="lesson-copy"><b>Fashion Matters</b><small>Speaking · Listening · Vocabulary · Phrasal verbs</small></span>
           <span class="teacher-only status-pill published">Approved</span>
           <span class="student-only lesson-progress">Ready</span>
           <span class="lesson-mode-text">4 periods</span>
           <span class="arrow">→</span>
         </button>
-
         <button class="lesson-row" data-lesson="u1.2">
           <span class="lesson-no">U1.2</span>
-          <span class="lesson-copy">
-            <b>Comparison</b>
-            <small>Language Focus · Practice · Skills integration</small>
-          </span>
+          <span class="lesson-copy"><b>Comparison</b><small>Language Focus · Practice · Skills integration</small></span>
           <span class="teacher-only status-pill draft">Draft</span>
           <span class="student-only lesson-progress">Not started</span>
           <span class="lesson-mode-text">4 periods</span>
@@ -252,12 +245,12 @@
 
     <!-- LESSON -->
     <section class="view" id="lesson">
-      <button class="back-link" id="backToUnit">← Unit 1</button>
+      <button class="back-link" id="backToUnit">← Unit 1 · Fashion Matters</button>
       <div class="lesson-header">
         <div>
           <div class="kicker">OBJECTIVE FIRST B2 · UNIT 1</div>
           <div class="lesson-title-line">
-            <h1>U1.1 · Fashion Matters</h1>
+            <h1 id="lessonTitle">U1.1 · Fashion Matters</h1>
             <span class="teacher-only status-pill published">Approved</span>
           </div>
         </div>
@@ -267,44 +260,7 @@
           <button class="lesson-mode teacher-only" data-mode="edit">Edit</button>
         </div>
       </div>
-
-      <div class="lesson-layout">
-        <aside class="stage-nav">
-          <button class="stage active"><span>01</span><b>Lead-in</b></button>
-          <button class="stage"><span>02</span><b>Vocabulary</b></button>
-          <button class="stage"><span>03</span><b>Reading</b></button>
-          <button class="stage"><span>04</span><b>Language</b></button>
-          <button class="stage"><span>05</span><b>Practice</b></button>
-          <button class="stage"><span>06</span><b>Speaking</b></button>
-          <button class="stage"><span>07</span><b>Review</b></button>
-        </aside>
-
-        <div class="lesson-canvas">
-          <div class="canvas-top">
-            <span class="activity-label">LEAD-IN</span>
-            <button class="ghost tiny teacher-only">Teacher panel</button>
-          </div>
-          <h2>What makes a sport exciting to watch?</h2>
-          <p class="lead-copy">Discuss with a partner. Give one example and explain your choice.</p>
-
-          <div class="student-only selfstudy-flow">
-            <span>Learn</span><i>→</i><span>Try</span><i>→</i><span>Check</span><i>→</i><span>Feedback</span><i>→</i><span>Retry</span><i>→</i><span>Complete</span>
-          </div>
-
-          <div class="activity-steps">
-            <div><span>01</span><b>Think</b><small>Choose one sport.</small></div>
-            <div><span>02</span><b>Pair</b><small>Compare your reasons.</small></div>
-            <div><span>03</span><b>Share</b><small>Report one idea.</small></div>
-          </div>
-
-          <div class="canvas-bottom">
-            <span class="teacher-only">Question → Student response → Reveal → Explanation → Next</span>
-            <span class="student-only">Your progress is saved at meaningful checkpoints only.</span>
-            <button class="primary teacher-only" id="startClassBtn">Start Class</button>
-            <button class="primary student-only">Continue Activity</button>
-          </div>
-        </div>
-      </div>
+      <div id="lessonRenderer"></div>
     </section>
 
     <!-- CLASS DETAIL -->
@@ -578,21 +534,30 @@
   <div class="classroom-top">
     <div>
       <span>Objective First B2 · B2-A</span>
-      <small>Unit 2 · Lesson 3</small>
+      <small id="classroomLessonMeta">U1.1 · Fashion Matters</small>
     </div>
     <button id="exitClassroom">Exit Class</button>
   </div>
-  <div class="classroom-main">
-    <span class="activity-label">LEAD-IN</span>
-    <h1>What makes a sport exciting to watch?</h1>
-    <p>Discuss with a partner. Give one example and explain your choice.</p>
-    <div class="live-row"><span>Connected <b>26 / 28</b></span><span>Responded <b>21 / 26</b></span></div>
+  <div class="classroom-main" style="justify-content:flex-start;align-items:stretch;text-align:left;overflow:auto">
+    <div style="max-width:1200px;width:100%;margin:0 auto;padding:20px 30px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span class="activity-label" id="classroomStage">LEAD-IN</span>
+        <span id="classroomCounter" style="font-weight:800;color:#52645e">1 / 16</span>
+      </div>
+      <h1 id="classroomTitle" style="font-size:52px;margin:14px 0">Fashion Matters</h1>
+      <p id="classroomInstruction" style="font-size:27px;line-height:1.45;color:#1e2f2a"></p>
+      <div id="classroomTask" style="margin-top:24px"></div>
+    </div>
   </div>
   <div class="classroom-toolbar">
-    <button>← Back</button><button>Timer</button><button>Reveal</button><button>Responses</button><button>Teacher Notes</button><button class="primary">Next →</button>
+    <button id="classroomPrev">← Back</button>
+    <button>Timer</button>
+    <button>Teacher Notes</button>
+    <button id="classroomNext" class="primary">Next →</button>
   </div>
 </div>
 
 <script src="assets/js/app.js"></script>
+<script src="assets/js/lesson-renderer.js"></script>
 </body>
 </html>
