@@ -1,0 +1,476 @@
+{
+  "id": "objective-first-b2-u01-l01",
+  "courseId": "objective-first-b2",
+  "unitId": "unit-01",
+  "lessonNumber": "U1.1",
+  "title": "Fashion Matters",
+  "status": "APPROVED",
+  "periods": 4,
+  "screens": [
+    {
+      "id": "s01",
+      "stage": "LEAD-IN",
+      "type": "quick-choice",
+      "title": "Fashion Matters",
+      "instruction": "Look at the fashion image. In pairs, discuss what clothes can communicate about a person. Choose one idea and explain your opinion.",
+      "question": "What matters most when you choose clothes?",
+      "options": [
+        "Comfort",
+        "Style",
+        "Price",
+        "Occasion"
+      ],
+      "media": {
+        "image": "PRIVATE_MEDIA/u01/l01/fashion-hero.jpeg"
+      }
+    },
+    {
+      "id": "s02",
+      "stage": "SPEAKING",
+      "type": "questions",
+      "title": "Talk about fashion",
+      "instruction": "Work with a partner. Discuss the questions below. First think quietly for 20 seconds, then take turns answering and asking one follow-up question.",
+      "questions": [
+        "How important is fashion to you?",
+        "What sort of clothes do you prefer to wear?",
+        "Do you ever have to wear things you don’t really like? If so, when and why?"
+      ]
+    },
+    {
+      "id": "s03",
+      "stage": "SPEAKING",
+      "type": "layered-reveal",
+      "title": "Four ways to expand an answer",
+      "instruction": "Watch the video and identify the four ways to expand an answer. Then explore the technique cards one by one and use the useful phrases to improve your own answers.",
+      "media": {
+        "video": "PRIVATE_MEDIA/u01/l01/speaking-strategy.mp4"
+      },
+      "items": [
+        {
+          "title": "Give a reason",
+          "support": "Because… / The main reason is that…",
+          "model": "I prefer comfortable clothes because I move around a lot during the day."
+        },
+        {
+          "title": "Give an example",
+          "support": "For example… / For instance…",
+          "model": "For example, I usually wear trainers when I go to university."
+        },
+        {
+          "title": "Add a contrast",
+          "support": "However… / Unlike… / In the past…, but now…",
+          "model": "I used to follow trends, but now I care more about comfort."
+        },
+        {
+          "title": "Give an opinion",
+          "support": "Personally, I think… / To me,…",
+          "model": "Personally, I think clothes can show part of your personality."
+        }
+      ]
+    },
+    {
+      "id": "s04",
+      "stage": "VOCABULARY",
+      "type": "vocabulary-tabs",
+      "title": "Build your fashion vocabulary",
+      "instruction": "Choose one category at a time. Read the words aloud, then add one more example of your own.",
+      "categories": {
+        "Clothes": [
+          "T-shirts",
+          "jeans",
+          "hoodies",
+          "skirts",
+          "dresses",
+          "blazers",
+          "suits",
+          "jackets",
+          "sweaters",
+          "shorts",
+          "uniforms"
+        ],
+        "Footwear": [
+          "sneakers",
+          "trainers",
+          "sandals",
+          "high heels",
+          "boots",
+          "flip-flops"
+        ],
+        "Jewellery": [
+          "earrings",
+          "necklaces",
+          "bracelets",
+          "rings",
+          "watches"
+        ],
+        "Headgear": [
+          "caps",
+          "hats",
+          "beanies",
+          "helmets",
+          "scarves",
+          "headbands"
+        ],
+        "Materials": [
+          "cotton",
+          "wool",
+          "leather",
+          "silk",
+          "denim",
+          "linen",
+          "polyester"
+        ],
+        "Appearance": [
+          "casual",
+          "smart",
+          "elegant",
+          "trendy",
+          "sporty",
+          "neat",
+          "fashionable"
+        ]
+      }
+    },
+    {
+      "id": "s05",
+      "stage": "SPEAKING",
+      "type": "photo-task",
+      "title": "Describe and compare the people",
+      "instruction": "Work in pairs. Choose one pair of photos. First describe what each person is wearing and their appearance. Then make one comparison. Your partner should add one extra detail.",
+      "pairs": [
+        "1a + 1b",
+        "2a + 2b",
+        "3a + 3b",
+        "4a + 4b"
+      ],
+      "media": {
+        "image": "PRIVATE_MEDIA/u01/l01/people-photo-set.png"
+      },
+      "note": "Comparison language is preview/support only. Systematic comparison work belongs to U1.2."
+    },
+    {
+      "id": "s06",
+      "stage": "LISTENING",
+      "type": "speaker-match",
+      "title": "Who is speaking?",
+      "instruction": "Listen to Speakers 2–5 and match each speaker to the correct photo. Compare your answers with a partner, then check the speakers one by one.",
+      "media": {
+        "audio": "PRIVATE_MEDIA/u01/l01/speakers-2-5.mp3"
+      },
+      "example": "Speaker 1 = photo 3b",
+      "items": [
+        {
+          "prompt": "Speaker 2",
+          "answer": "2a"
+        },
+        {
+          "prompt": "Speaker 3",
+          "answer": "1a"
+        },
+        {
+          "prompt": "Speaker 4",
+          "answer": "4b"
+        },
+        {
+          "prompt": "Speaker 5",
+          "answer": "3a"
+        }
+      ]
+    },
+    {
+      "id": "s07",
+      "stage": "LISTENING",
+      "type": "transcript-focus",
+      "title": "Find the phrasal verbs",
+      "instruction": "Select Speakers 2–5 in turn. Read each transcript, identify the phrasal verbs, and try to explain their meaning from context before checking.",
+      "media": {
+        "audio": "PRIVATE_MEDIA/u01/l01/speakers-2-5.mp3"
+      },
+      "items": [
+        {
+          "phrase": "dress up",
+          "meaning": "wear smarter clothes than usual"
+        },
+        {
+          "phrase": "keep up with",
+          "meaning": "understand or follow something that is changing fast"
+        },
+        {
+          "phrase": "stand out",
+          "meaning": "be easy to see or notice"
+        },
+        {
+          "phrase": "save up",
+          "meaning": "keep money for something in the future"
+        },
+        {
+          "phrase": "take back",
+          "meaning": "return something"
+        }
+      ]
+    },
+    {
+      "id": "s08",
+      "stage": "LANGUAGE FOCUS",
+      "type": "guided-discovery",
+      "title": "How do phrasal verbs work?",
+      "instruction": "Watch the video. Discuss the three questions below with a partner. Click each question only after you have agreed on an answer.",
+      "media": {
+        "video": "PRIVATE_MEDIA/u01/l01/phrasal-verbs.mp4"
+      },
+      "items": [
+        {
+          "question": "What is a phrasal verb?",
+          "answer": "A phrasal verb is a verb together with an adverb or preposition that changes its meaning."
+        },
+        {
+          "question": "What two types can you identify?",
+          "answer": "Two-part: verb + adverb/preposition. Three-part: verb + adverb + preposition."
+        },
+        {
+          "question": "What do you notice about word order?",
+          "answer": "Some two-part phrasal verbs can be separated; three-part phrasal verbs are not separated in the patterns taught here."
+        }
+      ]
+    },
+    {
+      "id": "s09",
+      "stage": "EXERCISE 7",
+      "type": "listen-match",
+      "title": "Listen, identify, then match",
+      "instruction": "Step 1: Listen again to Speakers 2–5 and identify the phrasal verbs you hear. The list includes distractors. Step 2: Match the nine target phrasal verbs to their definitions.",
+      "media": {
+        "audio": "PRIVATE_MEDIA/u01/l01/speakers-2-5.mp3"
+      },
+      "candidates": [
+        {
+          "text": "add to",
+          "heard": false
+        },
+        {
+          "text": "cut down (on)",
+          "heard": true
+        },
+        {
+          "text": "dress up",
+          "heard": true
+        },
+        {
+          "text": "fit in with",
+          "heard": false
+        },
+        {
+          "text": "go out",
+          "heard": true
+        },
+        {
+          "text": "keep up with",
+          "heard": true
+        },
+        {
+          "text": "pull on",
+          "heard": false
+        },
+        {
+          "text": "put together",
+          "heard": true
+        },
+        {
+          "text": "save up",
+          "heard": true
+        },
+        {
+          "text": "slip on",
+          "heard": true
+        },
+        {
+          "text": "stand out",
+          "heard": true
+        },
+        {
+          "text": "take back",
+          "heard": true
+        }
+      ],
+      "matching": [
+        {
+          "term": "cut down",
+          "definition": "reduce"
+        },
+        {
+          "term": "dress up",
+          "definition": "wear smarter clothes than usual"
+        },
+        {
+          "term": "go out",
+          "definition": "go somewhere for entertainment"
+        },
+        {
+          "term": "keep up with",
+          "definition": "understand something that is changing fast"
+        },
+        {
+          "term": "put together",
+          "definition": "create something by joining or combining different things"
+        },
+        {
+          "term": "save up",
+          "definition": "keep money for something in the future"
+        },
+        {
+          "term": "slip on",
+          "definition": "put something on quickly"
+        },
+        {
+          "term": "stand out",
+          "definition": "be easy to see or notice"
+        },
+        {
+          "term": "take back",
+          "definition": "return something"
+        }
+      ]
+    },
+    {
+      "id": "s10",
+      "stage": "EXERCISE 8",
+      "type": "inline-reveal",
+      "title": "Phrasal verbs with go",
+      "instruction": "Complete each sentence with the correct form of go and a particle from the box. Explain the meaning of your choice, then reveal each answer separately.",
+      "wordBank": [
+        "ahead",
+        "back",
+        "for",
+        "in",
+        "on",
+        "over",
+        "up"
+      ],
+      "items": [
+        {
+          "text": "The prices of leather bags have ___ a lot recently.",
+          "answer": "gone up"
+        },
+        {
+          "text": "Why are you looking at me like that? What’s ___?",
+          "answer": "going on"
+        },
+        {
+          "text": "The design company ___ the applicant with the best portfolio.",
+          "answer": "went for"
+        },
+        {
+          "text": "I ___ to the same shoe shop but there were no more pairs in my size.",
+          "answer": "went back"
+        },
+        {
+          "text": "You’ll need to ___ all the figures in the report to check they’re correct.",
+          "answer": "go over"
+        },
+        {
+          "text": "“Can I wear your necklace tonight?” “Sure, ___!”",
+          "answer": "go ahead"
+        }
+      ]
+    },
+    {
+      "id": "s11",
+      "stage": "EXERCISE 9",
+      "type": "inline-reveal",
+      "title": "Complete Emma’s letter",
+      "instruction": "Complete the letter with phrasal verbs from Exercise 7. More than one answer may be possible. Compare your choices, then reveal each blank separately.",
+      "items": [
+        {
+          "text": "1. ___",
+          "answer": "went out"
+        },
+        {
+          "text": "2. ___",
+          "answer": "slipped on / pulled on"
+        },
+        {
+          "text": "3. ___",
+          "answer": "dressed up"
+        },
+        {
+          "text": "4. ___",
+          "answer": "put together"
+        },
+        {
+          "text": "5. ___",
+          "answer": "stood out"
+        },
+        {
+          "text": "6. ___",
+          "answer": "keep up with"
+        }
+      ]
+    },
+    {
+      "id": "s12",
+      "stage": "SPEAKING",
+      "type": "speaking-prompt",
+      "title": "What advice would you give Emma?",
+      "instruction": "Work in pairs. Give Emma two or three pieces of advice. For each piece of advice, give a reason or an example. Try to use at least two phrasal verbs from the lesson.",
+      "support": [
+        "You could…",
+        "Why don’t you…?",
+        "If I were you, I’d…",
+        "It might help to…"
+      ]
+    },
+    {
+      "id": "s13",
+      "stage": "REVIEW",
+      "type": "challenge-cards",
+      "title": "Can you remember it?",
+      "instruction": "Answer each challenge aloud before revealing the sample answer. Check one card at a time.",
+      "items": [
+        {
+          "prompt": "Name 3 words for clothing or appearance.",
+          "answer": "suit · scarf · fashionable"
+        },
+        {
+          "prompt": "Give 2 phrasal verbs from the listening.",
+          "answer": "save up · stand out"
+        },
+        {
+          "prompt": "Which phrasal verb means “be easy to notice”?",
+          "answer": "stand out"
+        },
+        {
+          "prompt": "Give Emma one piece of advice.",
+          "answer": "You could wear what makes you feel confident."
+        }
+      ]
+    },
+    {
+      "id": "s14",
+      "stage": "EXIT TICKET",
+      "type": "exit-ticket",
+      "title": "Before you leave…",
+      "instruction": "Take one minute. Write or say one new phrasal verb you learned, one thing you can now do better, and one point you still want to practise.",
+      "fields": [
+        "New phrasal verb",
+        "I can now…",
+        "I still need to practise…"
+      ]
+    },
+    {
+      "id": "s15",
+      "stage": "HOMEWORK",
+      "type": "assignment",
+      "title": "Reply to Emma",
+      "label": "Teacher-added Extension",
+      "instruction": "Write a short reply to Emma. Give clear advice, explain your reasons, and use three or four phrasal verbs from the lesson naturally and accurately."
+    },
+    {
+      "id": "s16",
+      "stage": "END",
+      "type": "end-screen",
+      "title": "Thank You",
+      "instruction": "You have completed Unit 1.1 – Fashion Matters.",
+      "footer": "Any questions?"
+    }
+  ]
+}
