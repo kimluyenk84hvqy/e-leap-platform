@@ -250,3 +250,35 @@ body.lesson-live-modal-open{overflow:hidden}
   .lesson-persistent-qr{width:64px;height:64px}
   .lesson-persistent-code{font-size:28px}
 }
+
+
+/* === v4.2.1 Navigation visibility hotfix === */
+#classroomNext,
+#classroom.active #classroomNext,
+#classroom.active .classroom-toolbar #classroomNext{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  min-width:112px !important;
+  min-height:42px !important;
+  padding:9px 18px !important;
+  background:#0f6a57 !important;
+  border:1px solid #0f6a57 !important;
+  color:#ffffff !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  font-weight:850 !important;
+  line-height:1.2 !important;
+  text-indent:0 !important;
+  overflow:visible !important;
+}
+#classroomNext:disabled,
+#classroom.active #classroomNext:disabled{
+  background:#dfe7e3 !important;
+  border-color:#d3ddd8 !important;
+  color:#7b8a84 !important;
+  opacity:1 !important;
+}
+#classroom.active .classroom-toolbar{
+  gap:10px !important;
+}
