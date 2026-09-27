@@ -1461,13 +1461,37 @@ window.ELEAP_FINAL_LIVE=(()=>{
       updateUI(); await syncScreen(current+1);
     }catch(e){alert(e.message)}
   }
+  let syncSeq=0;
   async function syncScreen(n){
     if(!state.session || !window.ELeapLive)return;
-    const id=screenId(n); if(id===state.lastScreen)return;
+    const id=screenId(n);
+    const seq=++syncSeq;
     try{
-      await ELeapLive.goToScreen({joinCode:state.session.join_code,teacherToken:state.session.teacher_token,screenId:id});
-      state.lastScreen=id;
-    }catch(e){console.error('Screen sync',e)}
+      // Teacher lesson is the source of truth: always push the current slide.
+      await ELeapLive.goToScreen({
+        joinCode:state.session.join_code,
+        teacherToken:state.session.teacher_token,
+        screenId:id
+      });
+
+      // Verify once; retry if the session did not move.
+      const cs0=await ELeapLive.getClassState({joinCode:state.session.join_code});
+      const cs=Array.isArray(cs0)?cs0[0]:cs0;
+      if(seq!==syncSeq)return;
+
+      if(cs?.current_screen_id!==id){
+        await new Promise(r=>setTimeout(r,250));
+        if(seq!==syncSeq)return;
+        await ELeapLive.goToScreen({
+          joinCode:state.session.join_code,
+          teacherToken:state.session.teacher_token,
+          screenId:id
+        });
+      }
+      if(seq===syncSeq) state.lastScreen=id;
+    }catch(e){
+      console.error('Screen sync',e);
+    }
   }
   function startRefresh(){clearInterval(state.timer);state.timer=setInterval(refresh,1500)}
   $('#liveClassBtn')?.addEventListener('click',()=>{state.session?panel(true):modal(true)});
@@ -1479,7 +1503,13 @@ window.ELEAP_FINAL_LIVE=(()=>{
   document.querySelectorAll('[data-close-live]').forEach(x=>x.addEventListener('click',()=>modal(false)));
   try{
     const saved=JSON.parse(localStorage.getItem('eleap_teacher_session')||'null');
-    if(saved?.join_code&&saved?.teacher_token){state.session=saved;panel(true);refresh();startRefresh()}
+    if(saved?.join_code&&saved?.teacher_token){
+      state.session=saved;
+      panel(true);
+      refresh();
+      startRefresh();
+      setTimeout(()=>syncScreen(current+1),150);
+    }
   }catch{}
   return {syncScreen};
 })();
