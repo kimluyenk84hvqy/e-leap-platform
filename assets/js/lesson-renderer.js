@@ -75,20 +75,46 @@
 
   function renderTask(s){
     if(s.type==="quick-choice"){
-      return `${mediaBlock(s.media)}<div class="lesson-support"><b>${s.question}</b></div><div class="lesson-grid">${s.options.map(o=>`<button class="choice-option">${o}</button>`).join("")}</div>`;
+      const response=s.responseAfterSelection?.enabled ? `
+        <div class="choice-response-space" hidden>
+          <div class="choice-response-label">Your choice: <b class="selected-choice-label"></b></div>
+          <label class="choice-response-prompt">${s.responseAfterSelection.prompt||"Type your explanation."}</label>
+          <textarea class="choice-response-input" placeholder="${s.responseAfterSelection.placeholder||"Type here..."}"></textarea>
+          <div class="choice-response-actions"><button class="primary choice-submit">${s.responseAfterSelection.submitLabel||"Submit"}</button></div>
+          <div class="choice-submit-status" aria-live="polite"></div>
+        </div>` : "";
+      return `${mediaBlock(s.media)}
+        <div class="lesson-support"><b>${s.question}</b></div>
+        <div class="lesson-grid quick-choice-grid">${s.options.map(o=>`<button class="choice-option" data-choice="${o}">${o}</button>`).join("")}</div>
+        ${response}`;
     }
     if(s.type==="questions"){
-      return `<div class="lesson-grid">${s.questions.map((x,i)=>`<div class="lesson-card"><b>${i+1}.</b> ${x}</div>`).join("")}</div>`;
+      return `<div class="lesson-grid">${s.questions.map((x,i)=>`<button class="lesson-card question-select" type="button"><b>${i+1}.</b> ${x}</button>`).join("")}</div>
+      <div class="context-response-space" hidden>
+        <label>Type key ideas for your answer.</label>
+        <textarea class="context-response-input" placeholder="Type your ideas here..."></textarea>
+      </div>`;
     }
     if(s.type==="layered-reveal"){
       return `${mediaBlock(s.media)}<div class="lesson-grid">${s.items.map((x,i)=>`<button class="reveal-card" data-layer="${i}"><b>${x.title}</b><div class="layer-content" hidden><div>${x.support}</div><small>${x.model||""}</small></div></button>`).join("")}</div>`;
     }
     if(s.type==="vocabulary-tabs"){
       const keys=Object.keys(s.categories);
-      return `<div class="vocab-tabs">${keys.map((k,i)=>`<button class="vocab-tab ${i===0?"active":""}" data-vtab="${k}">${k}</button>`).join("")}</div><div class="word-cloud" id="wordCloud">${s.categories[keys[0]].map(w=>`<span>${w}</span>`).join("")}</div>`;
+      return `<div class="vocab-tabs">${keys.map((k,i)=>`<button class="vocab-tab ${i===0?"active":""}" data-vtab="${k}">${k}</button>`).join("")}</div>
+      <div class="word-cloud" id="wordCloud">${s.categories[keys[0]].map(w=>`<span>${w}</span>`).join("")}</div>
+      <div class="context-response-space vocab-response-space">
+        <label>Add your own example.</label>
+        <input class="context-response-input single-line" type="text" placeholder="Type an example..."/>
+      </div>`;
     }
     if(s.type==="photo-task"){
-      return `${mediaBlock(s.media)}<div class="lesson-grid">${s.pairs.map(p=>`<button class="choice-option">${p}</button>`).join("")}</div><div class="lesson-support">${s.note}</div>`;
+      return `${mediaBlock(s.media)}
+        <div class="lesson-grid photo-choice-grid">${s.pairs.map(p=>`<button class="choice-option" data-choice="${p}">${p}</button>`).join("")}</div>
+        <div class="context-response-space" hidden>
+          <label>Type key details you notice.</label>
+          <textarea class="context-response-input" placeholder="Clothes, appearance, similarities, differences..."></textarea>
+        </div>
+        <div class="lesson-support">${s.note}</div>`;
     }
     if(s.type==="speaker-match"){
       return `${mediaBlock(s.media)}<div class="lesson-support">${s.example}</div>${s.items.map(x=>`<div class="inline-row"><span>${x.prompt}</span><button data-inline-answer="${x.answer}">Check</button><span class="inline-answer">${x.answer}</span></div>`).join("")}`;
@@ -114,14 +140,35 @@
       return `${s.wordBank?`<div class="lesson-support"><b>Word bank:</b> ${s.wordBank.join(" · ")}</div>`:""}${s.items.map(x=>`<div class="inline-row"><span>${x.text}</span><button data-inline-answer="${x.answer}">Reveal</button><span class="inline-answer">${x.answer}</span></div>`).join("")}`;
     }
     if(s.type==="speaking-prompt"){
-      return `<div class="lesson-grid">${(s.support||[]).map(x=>`<div class="lesson-card">${x}</div>`).join("")}</div>`;
+      const recorder=s.recorder?.enabled ? `
+        <section class="audio-recorder" data-max-seconds="${s.recorder.maxSeconds||180}">
+          <div class="recorder-head">
+            <div><b>Voice response</b><small>Record on this device. Nothing is uploaded until you submit.</small></div>
+            <span class="recording-time">00:00</span>
+          </div>
+          <div class="recorder-controls">
+            <button class="record-btn primary" type="button">● Record</button>
+            <button class="pause-btn" type="button" disabled>Pause</button>
+            <button class="stop-btn" type="button" disabled>Stop</button>
+            <button class="rerecord-btn" type="button" hidden>Re-record</button>
+          </div>
+          <div class="recorder-playback" hidden>
+            <audio class="recording-preview" controls></audio>
+            <button class="submit-recording primary" type="button">${s.recorder.submitLabel||"Submit recording"}</button>
+          </div>
+          <div class="recorder-status" aria-live="polite">Ready to record.</div>
+        </section>` : "";
+      return `<div class="lesson-grid">${(s.support||[]).map(x=>`<div class="lesson-card">${x}</div>`).join("")}</div>${recorder}`;
     }
     if(s.type==="challenge-cards"){ return revealList(s.items); }
     if(s.type==="exit-ticket"){
-      return `<div class="lesson-grid">${s.fields.map(x=>`<label class="lesson-card">${x}<textarea style="width:100%;min-height:80px;margin-top:8px;border:1px solid #c7d1cd;border-radius:8px"></textarea></label>`).join("")}</div>`;
+      return `<div class="lesson-grid">${s.fields.map(x=>`<label class="lesson-card">${x}<textarea class="exit-response"></textarea></label>`).join("")}</div>
+      <div class="response-submit-row"><button class="primary generic-submit" type="button">Submit</button><span class="generic-submit-status"></span></div>`;
     }
     if(s.type==="assignment"){
-      return `<div class="lesson-support"><b>${s.label||"Assignment"}</b></div><textarea style="width:100%;min-height:240px;border:1px solid #c7d1cd;border-radius:10px;padding:14px;font-size:18px" placeholder="Draft your reply here…"></textarea>`;
+      return `<div class="lesson-support"><b>${s.label||"Assignment"}</b></div>
+      <textarea class="assignment-response" placeholder="Draft your reply here…"></textarea>
+      <div class="response-submit-row"><button class="primary generic-submit" type="button">Submit</button><span class="generic-submit-status"></span></div>`;
     }
     if(s.type==="end-screen"){
       return `<div class="end-screen"><h2>${s.title}</h2><p>${s.instruction}</p><div class="lesson-support">${s.footer}</div></div>`;
@@ -129,8 +176,51 @@
     return `<div class="lesson-card">Activity renderer coming soon.</div>`;
   }
 
-  function wireInteractions(s){
-    qa(".choice-option").forEach(b=>b.addEventListener("click",()=>b.classList.toggle("selected")));
+  function wireInteractions(s, root=document){
+    qa(".choice-option",root).forEach(b=>b.addEventListener("click",()=>{
+      const task=b.closest(".lesson-task")||root;
+      qa(".choice-option",task).forEach(x=>x.classList.remove("selected"));
+      b.classList.add("selected");
+
+      const choiceSpace=q(".choice-response-space",task);
+      if(choiceSpace){
+        choiceSpace.hidden=false;
+        const label=q(".selected-choice-label",choiceSpace);
+        if(label) label.textContent=b.dataset.choice||b.textContent.trim();
+        setTimeout(()=>q(".choice-response-input",choiceSpace)?.focus({preventScroll:true}),40);
+      }
+      const contextSpace=q(".context-response-space",task);
+      if(contextSpace && s.type==="photo-task"){
+        contextSpace.hidden=false;
+        setTimeout(()=>q(".context-response-input",contextSpace)?.focus({preventScroll:true}),40);
+      }
+    }));
+
+    qa(".question-select",root).forEach(b=>b.addEventListener("click",()=>{
+      qa(".question-select",root).forEach(x=>x.classList.remove("selected"));
+      b.classList.add("selected");
+      const space=q(".context-response-space",root);
+      if(space){space.hidden=false; setTimeout(()=>q(".context-response-input",space)?.focus({preventScroll:true}),40);}
+    }));
+
+    qa(".choice-submit",root).forEach(b=>b.addEventListener("click",()=>{
+      const space=b.closest(".choice-response-space");
+      const input=q(".choice-response-input",space);
+      const status=q(".choice-submit-status",space);
+      if(!input?.value.trim()){
+        if(status) status.textContent="Type your explanation before submitting.";
+        input?.focus(); return;
+      }
+      if(status) status.textContent="Response ready. Live class submission will connect in Student Join.";
+    }));
+
+    qa(".generic-submit",root).forEach(b=>b.addEventListener("click",()=>{
+      const row=b.closest(".response-submit-row");
+      const status=q(".generic-submit-status",row);
+      if(status) status.textContent="Response ready. Live submission will connect in Student Join.";
+    }));
+
+    initAudioRecorders(root);
     qa(".reveal-card[data-answer]").forEach(b=>b.addEventListener("click",()=>{
       if(b.classList.contains("revealed")) return;
       const a=decodeURIComponent(b.dataset.answer||"");
@@ -163,6 +253,95 @@
     }));
   }
 
+  function initAudioRecorders(root=document){
+    qa(".audio-recorder",root).forEach(box=>{
+      if(box.dataset.ready==="1") return;
+      box.dataset.ready="1";
+
+      const record=q(".record-btn",box), pause=q(".pause-btn",box), stop=q(".stop-btn",box);
+      const rerecord=q(".rerecord-btn",box), playback=q(".recorder-playback",box);
+      const audio=q(".recording-preview",box), submit=q(".submit-recording",box);
+      const status=q(".recorder-status",box), time=q(".recording-time",box);
+      const maxSeconds=Number(box.dataset.maxSeconds)||180;
+
+      let recorder=null, stream=null, chunks=[], timer=null, elapsed=0, blobUrl="";
+
+      const setTime=()=>{
+        const m=String(Math.floor(elapsed/60)).padStart(2,"0");
+        const s=String(elapsed%60).padStart(2,"0");
+        time.textContent=`${m}:${s}`;
+      };
+      const cleanupStream=()=>{
+        if(stream){stream.getTracks().forEach(t=>t.stop()); stream=null;}
+      };
+      const stopTimer=()=>{if(timer){clearInterval(timer);timer=null;}};
+
+      async function startRecording(){
+        if(!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder==="undefined"){
+          status.textContent="Recording is not supported in this browser.";
+          return;
+        }
+        try{
+          if(blobUrl){URL.revokeObjectURL(blobUrl); blobUrl="";}
+          playback.hidden=true; audio.removeAttribute("src");
+          chunks=[]; elapsed=0; setTime();
+          stream=await navigator.mediaDevices.getUserMedia({audio:true});
+          recorder=new MediaRecorder(stream);
+          recorder.ondataavailable=e=>{if(e.data?.size) chunks.push(e.data);};
+          recorder.onstop=()=>{
+            stopTimer(); cleanupStream();
+            const type=recorder.mimeType || "audio/webm";
+            const blob=new Blob(chunks,{type});
+            blobUrl=URL.createObjectURL(blob);
+            audio.src=blobUrl;
+            playback.hidden=false;
+            rerecord.hidden=false;
+            record.disabled=true; pause.disabled=true; stop.disabled=true;
+            status.textContent="Recording complete. Listen back, re-record, or submit.";
+            box._eleapRecordingBlob=blob;
+          };
+          recorder.start(250);
+          record.disabled=true; pause.disabled=false; stop.disabled=false; rerecord.hidden=true;
+          status.textContent="Recording…";
+          timer=setInterval(()=>{
+            elapsed+=1; setTime();
+            if(elapsed>=maxSeconds && recorder?.state!=="inactive") recorder.stop();
+          },1000);
+        }catch(err){
+          cleanupStream();
+          status.textContent="Microphone access is needed to record.";
+          console.error("E-LEAP recorder error",err);
+        }
+      }
+
+      record.addEventListener("click",startRecording);
+      pause.addEventListener("click",()=>{
+        if(!recorder) return;
+        if(recorder.state==="recording"){
+          recorder.pause(); pause.textContent="Resume"; stopTimer(); status.textContent="Recording paused.";
+        }else if(recorder.state==="paused"){
+          recorder.resume(); pause.textContent="Pause"; status.textContent="Recording…";
+          timer=setInterval(()=>{
+            elapsed+=1; setTime();
+            if(elapsed>=maxSeconds && recorder?.state!=="inactive") recorder.stop();
+          },1000);
+        }
+      });
+      stop.addEventListener("click",()=>{
+        if(recorder && recorder.state!=="inactive") recorder.stop();
+      });
+      rerecord.addEventListener("click",()=>{
+        playback.hidden=true; rerecord.hidden=true; record.disabled=false; pause.disabled=true; stop.disabled=true;
+        pause.textContent="Pause"; elapsed=0; setTime(); status.textContent="Ready to record again.";
+        box._eleapRecordingBlob=null;
+      });
+      submit.addEventListener("click",()=>{
+        if(!box._eleapRecordingBlob){status.textContent="Record your response first."; return;}
+        status.textContent="Recording ready. Secure upload will connect in Student Join.";
+      });
+    });
+  }
+
   function render(){
     const s=state.lesson.screens[state.index], host=q("#lessonRenderer");
     if(!host) return;
@@ -188,8 +367,8 @@
     q("#lessonPrev",host)?.addEventListener("click",()=>{if(state.index>0){state.index--;render()}});
     q("#lessonNext",host)?.addEventListener("click",()=>{if(state.index<state.lesson.screens.length-1){state.index++;render()}});
     q("#lessonStartClass",host)?.addEventListener("click",()=>openPresentation());
-    wireInteractions(s);
-    hydrateMedia(q("#classroomTask")||document);
+    wireInteractions(s,host);
+    hydrateMedia(host);
   }
 
   function renderPresentation(){
@@ -200,8 +379,8 @@
     q("#classroomInstruction").textContent=s.instruction||"";
     q("#classroomTask").innerHTML=renderTask(s);
     q("#classroomCounter").textContent=`${state.index+1} / ${state.lesson.screens.length}`;
-    wireInteractions(s);
-    hydrateMedia(q("#classroomTask")||document);
+    wireInteractions(s,q("#classroomTask"));
+    hydrateMedia(q("#classroomTask"));
   }
   function openPresentation(){ q("#classroom").classList.add("active"); renderPresentation(); }
 
