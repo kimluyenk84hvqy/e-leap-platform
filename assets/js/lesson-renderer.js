@@ -3,6 +3,26 @@
   const q=(s,c=document)=>c.querySelector(s), qa=(s,c=document)=>[...c.querySelectorAll(s)];
   const state={lesson:null,index:0,selectedMatch:null};
 
+  function enforceClassroomNextButton(){
+    const btn=q("#classroomNext");
+    if(!btn) return;
+    btn.textContent="Next →";
+    btn.style.setProperty("display","inline-flex","important");
+    btn.style.setProperty("align-items","center","important");
+    btn.style.setProperty("justify-content","center","important");
+    btn.style.setProperty("min-width","118px","important");
+    btn.style.setProperty("background","#0f6a57","important");
+    btn.style.setProperty("color","#ffffff","important");
+    btn.style.setProperty("-webkit-text-fill-color","#ffffff","important");
+    btn.style.setProperty("border","1px solid #0f6a57","important");
+    btn.style.setProperty("font-weight","800","important");
+    btn.style.setProperty("opacity","1","important");
+    btn.style.setProperty("visibility","visible","important");
+    btn.style.setProperty("text-indent","0","important");
+    btn.style.setProperty("font-size","16px","important");
+    btn.style.setProperty("line-height","1.2","important");
+  }
+
   function mediaBlock(media){
     if(!media) return "";
     const items=[];
@@ -145,8 +165,9 @@
     q("#classroomTask").innerHTML=renderTask(s);
     q("#classroomCounter").textContent=`${state.index+1} / ${state.lesson.screens.length}`;
     wireInteractions(s);
+    enforceClassroomNextButton();
   }
-  function openPresentation(){ q("#classroom").classList.add("active"); renderPresentation(); }
+  function openPresentation(){ q("#classroom").classList.add("active"); renderPresentation(); enforceClassroomNextButton(); }
 
   async function load(){
     try{
@@ -157,6 +178,7 @@
       q("#classroomPrev")?.addEventListener("click",()=>{if(state.index>0){state.index--;renderPresentation()}});
       q("#classroomNext")?.addEventListener("click",()=>{if(state.index<state.lesson.screens.length-1){state.index++;renderPresentation()}});
       q("#exitClassroom")?.addEventListener("click",()=>q("#classroom").classList.remove("active"));
+      enforceClassroomNextButton();
     }catch(e){
       const host=q("#lessonRenderer"); if(host) host.innerHTML=`<div class="empty-state"><h3>Lesson data could not be loaded</h3><p>${e.message}</p></div>`;
     }
