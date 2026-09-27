@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/styles.css"/>
   <link rel="stylesheet" href="assets/css/lesson-renderer.css"/>
-  <link rel="stylesheet" href="assets/css/next-button-fix.css"/>
+  <link rel="stylesheet" href="assets/css/lesson-live.css"/>
 </head>
 <body>
 <div class="app" data-role="teacher">
@@ -537,7 +537,12 @@
       <span>Objective First B2 · B2-A</span>
       <small id="classroomLessonMeta">U1.1 · Fashion Matters</small>
     </div>
-    <button id="exitClassroom">Exit Class</button>
+    <div class="lesson-live-top-actions">
+      <button id="lessonLiveButton" class="lesson-live-button">Start Class</button>
+      <button id="lessonResponsesButton" class="lesson-responses-button" hidden>Responses</button>
+      <span id="lessonLiveStatus" class="lesson-live-status" hidden>● Live · <b>0</b> joined</span>
+      <button id="exitClassroom">Exit Class</button>
+    </div>
   </div>
   <div class="classroom-main" style="justify-content:flex-start;align-items:stretch;text-align:left;overflow:auto">
     <div style="max-width:1200px;width:100%;margin:0 auto;padding:20px 30px">
@@ -558,7 +563,57 @@
   </div>
 </div>
 
+
+<!-- LIVE CLASS MODAL -->
+<div id="lessonLiveModal" class="lesson-live-modal" hidden>
+  <div class="lesson-live-backdrop" data-live-close></div>
+  <section class="lesson-live-dialog" role="dialog" aria-modal="true" aria-labelledby="lessonLiveDialogTitle">
+    <div class="lesson-live-dialog-head">
+      <div>
+        <span class="lesson-live-kicker">LIVE CLASSROOM</span>
+        <h2 id="lessonLiveDialogTitle">Students join once for the whole lesson</h2>
+      </div>
+      <button class="lesson-live-x" type="button" data-live-close>×</button>
+    </div>
+
+    <div id="lessonLiveCreateView" class="lesson-live-dialog-body">
+      <label class="lesson-live-field">
+        <span>Teacher name</span>
+        <input id="lessonLiveTeacherName" value="Dr. Nguyen Thi Kim Luyen"/>
+      </label>
+      <button id="lessonLiveCreateSession" class="lesson-live-primary" type="button">Create class session</button>
+      <div id="lessonLiveCreateStatus" class="lesson-live-message"></div>
+    </div>
+
+    <div id="lessonLiveSessionView" class="lesson-live-session" hidden>
+      <div class="lesson-live-code-zone">
+        <div>
+          <span class="lesson-live-label">JOIN CODE</span>
+          <strong id="lessonLiveJoinCode">------</strong>
+          <div id="lessonLiveClassState" class="lesson-live-state">Lobby · Students can join now</div>
+        </div>
+        <img id="lessonLiveQr" class="lesson-live-qr" alt="Student join QR"/>
+      </div>
+
+      <div class="lesson-live-session-actions">
+        <button id="lessonLiveCopyLink" type="button">Copy student link</button>
+        <button id="lessonLiveStartClass" class="lesson-live-primary" type="button">Start Class</button>
+        <button id="lessonLiveOpenWall" type="button">Open Response Wall</button>
+      </div>
+
+      <div class="lesson-live-joined">
+        <span><b id="lessonLiveJoinedCount">0</b> students joined</span>
+        <span id="lessonLiveScreenSync">Slide 1 synced</span>
+      </div>
+    </div>
+  </section>
+</div>
+
 <script src="assets/js/app.js"></script>
 <script src="assets/js/lesson-renderer.js"></script>
+<script src="assets/js/e-leap-live-config.js"></script>
+<script src="assets/js/e-leap-live-api.js"></script>
+<script src="assets/js/e-leap-sound.js"></script>
+<script src="assets/js/lesson-live.js"></script>
 </body>
 </html>
