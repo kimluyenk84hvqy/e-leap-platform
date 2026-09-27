@@ -1,0 +1,33 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>E-LEAP · Student Join</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="assets/css/e-leap-live.css"/></head><body>
+<header class="topbar"><div class="brand"><div class="brand-mark">E</div><div>E-LEAP<small>Live Classroom · Student</small></div></div></header>
+<main class="student-wrap">
+<section id="joinCard" class="student-card"><div class="student-head"><div class="kicker">Join class</div><h1 style="font-size:36px;margin-bottom:6px">Enter your session</h1><p style="color:#66756f;margin-bottom:0">Use the code shown by your teacher.</p></div><div class="student-body stack"><label><span>Join code</span><input id="joinCode" maxlength="6" placeholder="ABC123" style="text-transform:uppercase"/></label><label><span>Your name</span><input id="studentName" placeholder="Your name"/></label><button id="joinBtn" class="btn primary">Join class</button><div id="joinStatus" class="student-status"></div></div></section>
+<section id="activityCard" class="student-card hidden"><div class="student-head"><div class="kicker">U1.1 · Lead-in</div><h1 style="font-size:36px">Fashion Matters</h1><p style="color:#66756f;margin-bottom:0">Look at the fashion image. Discuss what clothes can communicate about a person. Choose one idea and explain your opinion.</p></div>
+<div class="student-body"><div id="studentTimerBar" class="student-timerbar waiting"><div><b id="activityStatus">Waiting for teacher</b><div class="status">Submission opens when your teacher starts the activity.</div></div><div id="studentTimer" class="student-timer">01:30</div></div>
+<h3>Choose one option, then type your explanation.</h3><div class="choice-grid"><button class="choice" data-value="Comfort">Comfort</button><button class="choice" data-value="Style">Style</button><button class="choice" data-value="Price">Price</button><button class="choice" data-value="Occasion">Occasion</button></div>
+<div id="responseBox" class="response-box" hidden><div style="margin-bottom:10px">Your choice: <b id="selectedLabel"></b></div><textarea id="explanation" placeholder="Type your explanation here..."></textarea><button id="submitBtn" class="btn primary" style="margin-top:10px">Submit</button><div id="submitStatus" class="student-status"></div></div></div></section></main>
+<script src="assets/js/e-leap-live-config.js"></script><script src="assets/js/e-leap-live-api.js"></script><script src="assets/js/e-leap-sound.js"></script>
+<script>
+(() => {
+ const $=s=>document.querySelector(s); const state={participant:null,selected:null,activity:null,poll:null,lastRemaining:null};
+ const params=new URLSearchParams(location.search); if(params.get("code"))$("#joinCode").value=params.get("code").toUpperCase();
+ const fmt=n=>`${String(Math.floor(Math.max(0,n)/60)).padStart(2,"0")}:${String(Math.max(0,n)%60).padStart(2,"0")}`;
+ function setEnabled(open){
+   document.querySelectorAll(".choice").forEach(b=>b.disabled=!open); $("#explanation").disabled=!open; $("#submitBtn").disabled=!open;
+ }
+ function renderActivity(a){
+   state.activity=a; const status=a?.status||"waiting", rem=Number(a?.remaining_seconds||0), bar=$("#studentTimerBar");
+   $("#studentTimer").textContent=fmt(rem || Number(a?.duration_seconds||90)); bar.className="student-timerbar "+status;
+   const labels={waiting:"Waiting for teacher",open:"Answer now",paused:"Paused",closed:"Submission closed"}; $("#activityStatus").textContent=labels[status]||status;
+   setEnabled(status==="open");
+   if(state.lastRemaining>0 && rem===0 && status==="closed") ELeapSound.timeUp();
+   state.lastRemaining=rem;
+ }
+ async function poll(){if(!state.participant)return;try{const r=await ELeapLive.getActivityState({joinCode:state.participant.join_code,screenId:"s01"});const a=Array.isArray(r)?r[0]:r;renderActivity(a)}catch(e){console.error(e)}}
+ $("#joinBtn").onclick=async()=>{const c=$("#joinCode").value.trim().toUpperCase(),n=$("#studentName").value.trim();if(!c||!n){$("#joinStatus").textContent="Enter the join code and your name.";return}try{const d=await ELeapLive.joinSession(c,n);state.participant=Array.isArray(d)?d[0]:d;$("#joinCard").classList.add("hidden");$("#activityCard").classList.remove("hidden");poll();state.poll=setInterval(poll,ELeapLive.config.POLL_MS||1500)}catch(e){$("#joinStatus").textContent=e.message}};
+ document.querySelectorAll(".choice").forEach(b=>b.onclick=()=>{if(state.activity?.status!=="open")return;state.selected=b.dataset.value;document.querySelectorAll(".choice").forEach(x=>x.classList.toggle("selected",x===b));$("#selectedLabel").textContent=state.selected;$("#responseBox").hidden=false;$("#explanation").focus()});
+ $("#submitBtn").onclick=async()=>{const x=$("#explanation").value.trim();if(!state.selected){$("#submitStatus").textContent="Choose one option first.";return}if(!x){$("#submitStatus").textContent="Type your explanation before submitting.";return}try{$("#submitBtn").disabled=true;const r=await ELeapLive.submitResponse({joinCode:state.participant.join_code,participantId:state.participant.participant_id,participantToken:state.participant.participant_token,screenId:"s01",optionValue:state.selected,explanation:x});ELeapSound.submit();$("#submitStatus").innerHTML='<span class="success">Submitted. Your teacher can now see your response.</span>'}catch(e){$("#submitStatus").textContent=e.message;$("#submitBtn").disabled=state.activity?.status!=="open"}};
+})();
+</script></body></html>
