@@ -7,6 +7,8 @@
 
 <!DOCTYPE html>
 
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -788,6 +790,10 @@ html,body{margin:0;background:#f4f7f5;color:#183a31;font-family:Inter,Arial,sans
   color:#0f6a57;font-weight:900;text-decoration:underline dotted;
   text-underline-offset:4px;cursor:pointer
 }
+
+#speakerText .phrasal-click.student-phrase-selected{
+  background:#e5f1ed;border-radius:5px;padding:0 2px;text-decoration-style:solid
+}
 </style>
 </head>
 <body>
@@ -991,7 +997,7 @@ html,body{margin:0;background:#f4f7f5;color:#183a31;font-family:Inter,Arial,sans
 <section class="screen accent-vocab" data-screen="7">
 <div class="stage-label">TRANSCRIPT FOCUS</div>
 <h2>Find the phrasal verbs</h2>
-<p class="instruction">Select Speakers 2–5 in turn. Read each transcript, identify the highlighted phrasal verbs, and infer their meaning from context. Click a highlighted phrase to check its meaning. After exploring all four speakers, type one short response and submit once.</p>
+<p class="instruction">Select Speakers 2–5 in turn. Read each transcript and identify the highlighted phrasal verbs. Infer their meaning from context first. Submit your ideas before the meanings are checked together as a class.</p>
 <div class="tabs" id="speakerTabs">
 <button class="tab active" data-speaker="2">Speaker 2</button>
 <button class="tab" data-speaker="3">Speaker 3</button>
@@ -999,15 +1005,12 @@ html,body{margin:0;background:#f4f7f5;color:#183a31;font-family:Inter,Arial,sans
 <button class="tab" data-speaker="5">Speaker 5</button>
 </div>
 <div class="transcript" id="speakerText"></div>
-<div class="meaning-box" id="meaningBox">Click a highlighted phrasal verb.</div>
+<div class="meaning-box" id="meaningBox">Infer the meaning from context first. Meanings will be checked together after submission.</div>
 <div class="learner-input-card transcript-response-card" id="slide7Response">
 <label for="slide7MeaningResponse">
 <b>Your response — submit once</b>
 </label>
-<p class="transcript-response-note">
-            Choose at least two phrasal verbs from the transcripts and explain what they mean in context.
-            Example format: <i>dress up = ...; stand out = ...</i>
-</p>
+<p class="transcript-response-note">Choose at least two phrasal verbs and explain what you think they mean in context. <i>Example format: dress up = ...; stand out = ...</i></p>
 <textarea class="student-response-control" id="slide7MeaningResponse" placeholder="Type at least two phrasal verbs and their meanings in context..."></textarea>
 </div></section>
 <section class="screen accent-language" data-screen="8">
@@ -1247,8 +1250,10 @@ html,body{margin:0;background:#f4f7f5;color:#183a31;font-family:Inter,Arial,sans
     if(!box) return;
     box.innerHTML=speakers[n]||"";
     box.querySelectorAll(".phrasal-click").forEach(x=>x.onclick=()=>{
+      box.querySelectorAll(".phrasal-click").forEach(y=>y.classList.remove("student-phrase-selected"));
+      x.classList.add("student-phrase-selected");
       const mb=$("#meaningBox");
-      if(mb) mb.textContent=`${x.textContent} = ${x.dataset.meaning}`;
+      if(mb) mb.textContent=`Selected: ${x.textContent}. Infer its meaning from the surrounding sentence and add your idea below.`;
     });
   }
   $$("#speakerTabs .tab").forEach(btn=>btn.onclick=()=>{
@@ -1256,7 +1261,7 @@ html,body{margin:0;background:#f4f7f5;color:#183a31;font-family:Inter,Arial,sans
     btn.classList.add("active");
     loadSpeaker(btn.dataset.speaker);
     const mb=$("#meaningBox");
-    if(mb) mb.textContent="Click a highlighted phrasal verb.";
+    if(mb) mb.textContent="Infer the meaning from context first. Meanings will be checked together after submission.";
   });
   loadSpeaker(2);
 
@@ -1404,7 +1409,7 @@ html,body{margin:0;background:#f4f7f5;color:#183a31;font-family:Inter,Arial,sans
           $$("#speakerTabs .tab").forEach(x=>x.classList.toggle("active",x.dataset.speaker==="2"));
           loadSpeaker(2);
           const mb=$("#meaningBox");
-          if(mb) mb.textContent="Click a highlighted phrasal verb.";
+          if(mb) mb.textContent="Infer the meaning from context first. Meanings will be checked together after submission.";
         }
       }
       if(cs.class_status==="ended"){
