@@ -552,7 +552,30 @@
       </div>
       <h1 id="classroomTitle" style="font-size:52px;margin:14px 0">Fashion Matters</h1>
       <p id="classroomInstruction" style="font-size:27px;line-height:1.45;color:#1e2f2a"></p>
-      <div id="classroomTask" style="margin-top:24px"></div>
+      
+      <section id="lessonPersistentJoinPanel" class="lesson-persistent-join" hidden>
+        <div class="lesson-persistent-main">
+          <div class="lesson-persistent-qr-wrap">
+            <img id="lessonPersistentQr" class="lesson-persistent-qr" alt="Student join QR"/>
+          </div>
+          <div class="lesson-persistent-info">
+            <span class="lesson-persistent-label">JOIN CLASS</span>
+            <div id="lessonPersistentCode" class="lesson-persistent-code">------</div>
+            <div class="lesson-persistent-meta">
+              <span id="lessonPersistentState">Lobby</span>
+              <span>·</span>
+              <span><b id="lessonPersistentJoined">0</b> joined</span>
+            </div>
+          </div>
+          <div class="lesson-persistent-actions">
+            <button id="lessonPersistentCopy" type="button">Copy link</button>
+            <button id="lessonPersistentStart" class="primary" type="button">Start Teaching</button>
+            <button id="lessonPersistentHide" type="button">Hide</button>
+          </div>
+        </div>
+      </section>
+
+<div id="classroomTask" style="margin-top:24px"></div>
     </div>
   </div>
   <div class="classroom-toolbar">
