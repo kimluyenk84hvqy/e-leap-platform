@@ -34,6 +34,42 @@
     document.body.classList.toggle("lesson-live-modal-open", open);
   }
 
+
+  function persistentPanel(){
+    return $("#lessonPersistentJoinPanel");
+  }
+
+  function showPersistentPanel(force=true){
+    const panel = persistentPanel();
+    if(!panel || !state.session) return;
+    panel.hidden = !force;
+  }
+
+  function updatePersistentPanel(){
+    if(!state.session) return;
+    const panel = persistentPanel();
+    if(!panel) return;
+
+    $("#lessonPersistentCode").textContent = state.session.join_code;
+    $("#lessonPersistentQr").src =
+      `https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=0&data=${encodeURIComponent(studentUrl(state.session.join_code))}`;
+
+    const joined = $("#lessonLiveJoinedCount")?.textContent || "0";
+    $("#lessonPersistentJoined").textContent = joined;
+
+    const status = state.classState?.class_status || "lobby";
+    $("#lessonPersistentState").textContent =
+      status === "live" ? "Live" : status === "ended" ? "Ended" : "Lobby";
+
+    const start = $("#lessonPersistentStart");
+    if(start){
+      start.textContent = status === "live" ? "Pause Class" : "Start Teaching";
+      start.disabled = status === "ended";
+    }
+
+    panel.classList.toggle("compact", status === "live");
+  }
+
   function updateTopBar(){
     const btn = $("#lessonLiveButton");
     const resp = $("#lessonResponsesButton");
@@ -57,6 +93,7 @@
       status.innerHTML = `${live ? "● Live" : "● Lobby"} · <b>${joined}</b> joined`;
       status.classList.toggle("is-live", live);
     }
+    updatePersistentPanel();
   }
 
   async function refreshClassState(){
@@ -77,6 +114,7 @@
         start.disabled = cs.class_status === "ended";
       }
       updateTopBar();
+      updatePersistentPanel();
     }catch(err){
       console.error("E-LEAP class-state error", err);
     }
@@ -95,6 +133,7 @@
       const el = $("#lessonLiveJoinedCount");
       if(el) el.textContent = count;
       updateTopBar();
+      updatePersistentPanel();
     }catch(err){
       console.error("E-LEAP stats error", err);
     }
@@ -143,6 +182,9 @@
       localStorage.setItem("eleap_teacher_session", JSON.stringify(state.session));
       status.textContent = "";
       showSessionInModal();
+      showPersistentPanel(true);
+      setModal(false);
+      updatePersistentPanel();
       startBackgroundRefresh();
     }catch(err){
       status.textContent = err.message;
@@ -199,6 +241,8 @@
       if(saved?.join_code && saved?.teacher_token){
         state.session = saved;
         showSessionInModal();
+        showPersistentPanel(true);
+        updatePersistentPanel();
         startBackgroundRefresh();
       }
     }catch{}
@@ -207,8 +251,12 @@
 
   document.addEventListener("DOMContentLoaded", ()=>{
     $("#lessonLiveButton")?.addEventListener("click", ()=>{
-      setModal(true);
-      if(state.session) showSessionInModal();
+      if(state.session){
+        showPersistentPanel(true);
+        updatePersistentPanel();
+      }else{
+        setModal(true);
+      }
     });
 
     $("#lessonResponsesButton")?.addEventListener("click", openWall);
@@ -216,6 +264,9 @@
     $("#lessonLiveStartClass")?.addEventListener("click", toggleClass);
     $("#lessonLiveCopyLink")?.addEventListener("click", copyStudentLink);
     $("#lessonLiveOpenWall")?.addEventListener("click", openWall);
+    $("#lessonPersistentCopy")?.addEventListener("click", copyStudentLink);
+    $("#lessonPersistentStart")?.addEventListener("click", toggleClass);
+    $("#lessonPersistentHide")?.addEventListener("click", ()=>showPersistentPanel(false));
 
     document.querySelectorAll("[data-live-close]").forEach(el =>
       el.addEventListener("click", ()=>setModal(false))
