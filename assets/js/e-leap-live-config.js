@@ -11,7 +11,7 @@ window.ELEAP_LIVE_CONFIG = {
     {id:"s04", n:4,  title:"Topic Vocabulary", interactive:true, activityType:"text"},
     {id:"s05", n:5,  title:"Describe & Compare", interactive:true, activityType:"text_or_audio"},
     {id:"s06", n:6,  title:"Listening", interactive:true, activityType:"matching"},
-    {id:"s07", n:7,  title:"Transcript Focus", interactive:false},
+    {id:"s07", n:7,  title:"Transcript Focus", interactive:true, activityType:"text"},
     {id:"s08", n:8,  title:"Phrasal Verbs Focus", interactive:false},
     {id:"s09", n:9,  title:"Exercise 7", interactive:true, activityType:"matching"},
     {id:"s10", n:10, title:"Exercise 8", interactive:true, activityType:"six_blanks"},
