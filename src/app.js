@@ -155,25 +155,7 @@ function renderHome(){
 
 
 
-function loadCourse(id){
-
- const program =
- dataStore[id] ||
- dataStore["objectives-b1"];
-
-
- currentLesson =
- program.units?.[0]?.lessons?.[0]
- ||
- program;
-
-
- currentScreenIndex=0;
-
-
- renderLesson();
-
-}// ==============================
+// ==============================
 // PART 2/3
 // SCREEN RENDERERS
 // ==============================
