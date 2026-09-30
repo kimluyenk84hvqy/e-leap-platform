@@ -4,7 +4,7 @@
 
 import { platform, programs } from "./data/catalog.js";
 import { objectivesB1 } from "./data/objectives-b1-unit1.js";
-
+import { loadCourse } from "./services/course-loader.js";
 const app = document.querySelector("#app");
 
 let currentLesson = null;
