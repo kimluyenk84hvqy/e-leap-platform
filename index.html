@@ -1,1972 +1,598 @@
 <!doctype html>
-<!DOCTYPE html>
-
-<!DOCTYPE html>
-
-<!DOCTYPE html>
-
-<!DOCTYPE html>
-
-<!DOCTYPE html>
-
-<!DOCTYPE html>
-
-<!DOCTYPE html>
-
-<!DOCTYPE html>
-
-<!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Objective First B2 · U1.1 Fashion Matters · FINAL</title>
-<style id="eleap-final-locked-styles">
-:root{
-  --green:#0b4b3e; --green2:#176e5c; --sage:#dcece6; --sage2:#eff6f3;
-  --bg:#f4f7f5; --ink:#183a31; --muted:#667a73; --line:#d9e3df; --white:#fff;
-  --answer:#0f6a57; --answer-bg:#e6f2ee;
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
-button,input,textarea{font:inherit}
-button{cursor:pointer}
-.app{min-height:100vh;display:grid;grid-template-rows:76px 1fr 72px}
-.topbar,.footer{background:white;border-color:var(--line);display:flex;align-items:center;padding:0 28px}
-.topbar{justify-content:space-between;border-bottom:1px solid var(--line)}
-.eyebrow,.stage-label{font-size:14px;letter-spacing:.1em;font-weight:900;color:var(--green2)}
-.course-title{font-size:24px;font-weight:900;margin-top:3px}
-.review-badge{font-size:12px;font-weight:900;letter-spacing:.08em;border:1px solid var(--green2);color:var(--green2);padding:8px 10px;border-radius:8px}
-main{position:relative;overflow:hidden}
-.screen{display:none;min-height:calc(100vh - 148px);padding:34px 44px 28px;max-width:1500px;margin:auto}
-.screen.active{display:block}
-h1,h2{font-family:Georgia,"Times New Roman",serif;color:#103f34;margin:6px 0 12px}
-h1{font-size:60px;line-height:1.02}
-h2{font-size:44px;line-height:1.08}
-h3{font-size:28px;margin:0 0 10px}
-.instruction{font-size:27px;line-height:1.45;color:#405a52;margin:0 0 20px;max-width:1250px}
-.screen-grid{display:grid;gap:30px;align-items:center}
-.hero-grid{grid-template-columns:1.05fr .95fr}
-.hero-img{width:100%;max-height:500px;object-fit:cover;border-radius:14px}
-.poll-card,.support-box,.question-card,.reveal-panel,.audio-block,.mini-task,.meaning-box,.hint-box,.homework-card{background:white;border:1px solid var(--line);border-radius:12px}
-.poll-card{padding:18px 20px}.poll-title{font-size:24px;font-weight:800}.poll-options{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}.poll-btn,.timer-btn,.support-toggle,.hint-btn{border:1px solid var(--green2);background:white;color:var(--green2);border-radius:9px;padding:10px 14px;font-weight:800}.poll-btn.selected{background:var(--green2);color:white}.poll-result{font-size:18px;color:var(--muted)}
-.timer-row{display:flex;align-items:center;gap:14px;margin-bottom:16px}.timer-row #timerDisplay{font-size:32px;font-weight:900;color:var(--green2)}
-.question-stack{display:grid;gap:10px}.question-card{padding:14px 16px}.question-line{display:flex;gap:12px;align-items:flex-start;font-size:26px;line-height:1.35}.question-line span{display:grid;place-items:center;min-width:38px;height:38px;background:var(--sage);border-radius:8px;font-weight:900}.support-toggle{margin-top:10px;font-size:16px}.support{margin-top:8px;padding:10px 12px;background:var(--sage2);border-radius:8px;font-size:20px}.hidden{display:none!important}
-.media-layout{display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:start}video{width:100%;max-height:490px;background:#000;border-radius:12px}
-.layer-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.layer-card{min-height:120px;border:1px solid var(--line);background:white;border-radius:12px;font-size:26px;font-weight:900;color:var(--green2);padding:16px;text-align:left}.layer-card.revealed{background:var(--answer-bg);color:var(--answer)}
-.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 16px}.tab{border:1px solid var(--line);background:white;border-radius:8px;padding:10px 14px;font-size:18px;font-weight:800;color:var(--ink)}.tab.active{background:var(--green);color:white}
-.vocab-panel{display:flex;flex-wrap:wrap;gap:10px;background:white;border:1px solid var(--line);border-radius:12px;padding:20px;min-height:130px}.vocab-panel span{font-size:24px;padding:8px 12px;background:#f0f5f2;border-radius:7px}.mini-task{margin-top:14px;padding:14px;font-size:21px;font-weight:700}
-.photo-layout,.listening-layout,.advice-layout{display:grid;grid-template-columns:1.25fr .75fr;gap:24px;align-items:start}.image-wrap{position:relative}.image-wrap>img,.listening-layout>img{width:100%;max-height:520px;object-fit:contain;border-radius:10px;background:white}.hotspot{position:absolute;border:2px solid white;background:var(--green2);color:white;border-radius:999px;font-weight:900;padding:6px 8px}.hs1{left:12%;top:24%}.hs2{left:27%;top:37%}.hs3{left:65%;top:18%}.hs4{left:75%;top:47%}.hotspot-info{position:absolute;left:3%;right:3%;bottom:3%;background:rgba(255,255,255,.95);border-radius:8px;padding:10px 12px;font-size:18px;font-weight:700}
-.support-box{padding:18px}.support-box p{font-size:22px;line-height:1.4;margin:8px 0}.support-box small{font-size:17px;color:var(--muted)}
-.audio-block{padding:12px 14px;margin-bottom:10px;display:grid;gap:8px;font-size:19px}audio{width:100%}.speaker-match{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}.speaker-match>div{background:white;border:1px solid var(--line);border-radius:9px;padding:11px 12px;font-size:22px;display:flex;justify-content:space-between;align-items:center}.blank-reveal,.inline-blank{border:1px dashed #93aaa1;background:#fff;color:#52665f;border-radius:7px;min-width:66px;padding:6px 10px;font-weight:800}.blank-reveal.revealed,.inline-blank.revealed{border:1px solid #9ac8b8;background:var(--answer-bg);color:var(--answer);animation:answerIn .22s ease-out}
-@keyframes answerIn{from{opacity:0;transform:translateY(-7px)}to{opacity:1;transform:translateY(0)}}
-.confidence{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}.confidence span{font-size:18px;font-weight:800}.confidence button{border:1px solid var(--line);background:white;border-radius:8px;padding:8px 11px}.confidence button.selected{background:var(--sage);border-color:#9ac8b8}.confidence.big{justify-content:center;margin-top:18px}.confidence.big button{font-size:22px;min-width:46px}
-.transcript{background:white;border:1px solid var(--line);border-radius:12px;padding:22px;font-size:25px;line-height:1.55}.phrasal-click{color:var(--green2);font-weight:900;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:4px}.meaning-box{margin-top:12px;padding:12px 14px;font-size:20px;color:var(--muted)}
-.question-mini{background:#f4f7f5;border-radius:8px;padding:10px 12px;margin-bottom:7px;font-size:21px}.hint-row{display:flex;gap:8px;margin:10px 0}.hint-box{min-height:44px;padding:10px 12px;color:var(--muted)}.rule-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.rule-card{border:1px solid var(--line);background:white;border-radius:9px;padding:12px;font-size:21px;font-weight:800}.answer{margin-top:10px;background:var(--answer-bg);color:var(--answer);border-radius:10px;padding:14px;font-size:20px;line-height:1.45}
-.exercise7{display:grid;grid-template-columns:.85fr 1.15fr;gap:18px}.check-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;background:white;border:1px solid var(--line);border-radius:10px;padding:14px;margin-top:10px}.check-grid label{font-size:20px}.match-table{display:grid;gap:7px}.match-table>div{display:grid;grid-template-columns:170px 1fr;gap:10px;align-items:center;background:white;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:18px}
-.go-bank{font-size:23px;font-weight:900;background:var(--sage);border-radius:9px;padding:11px 14px;margin-bottom:12px}.gap-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.gap-grid>div{background:white;border:1px solid var(--line);border-radius:9px;padding:11px 13px;font-size:20px;line-height:1.5}
-.letter{background:white;border:1px solid var(--line);border-radius:12px;padding:16px 20px;max-height:500px;overflow:auto}.letter p{font-size:21px;line-height:1.5;margin:7px 0}.big-prompt{font:700 34px/1.35 Georgia,"Times New Roman",serif;background:white;border:1px solid var(--line);border-left:5px solid var(--green2);border-radius:12px;padding:22px}
-.challenge-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.challenge-card{min-height:150px;border:1px solid var(--line);background:white;border-radius:12px;padding:18px;text-align:left;font-size:24px;font-weight:800;color:var(--ink)}.challenge-card.flipped{background:var(--answer-bg);color:var(--answer)}
-.exit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.exit-grid>div{background:white;border:1px solid var(--line);border-radius:10px;padding:14px}.exit-grid b{font-size:20px}.exit-grid textarea{width:100%;min-height:110px;margin-top:8px;border:1px solid var(--line);border-radius:8px;padding:10px;font-size:18px}
-.homework-card{padding:24px;max-width:1000px}.homework-checks{display:grid;grid-template-columns:1fr 1fr;gap:12px}.homework-checks span{background:#f0f5f2;border-radius:8px;padding:12px;font-size:20px}
-.footer{justify-content:space-between;border-top:1px solid var(--line)}.footer button{border:1px solid var(--line);background:white;color:var(--green);border-radius:9px;padding:10px 15px;font-size:18px;font-weight:900}.progress-wrap{display:flex;align-items:center;gap:12px}.progress{width:240px;height:7px;background:#e6ece9;border-radius:10px;overflow:hidden}.progress i{display:block;height:100%;background:var(--green2);width:6.67%}#counter{font-size:14px;font-weight:900;color:var(--muted)}
-@media(max-width:900px){
- .screen{padding:24px 18px 90px;overflow:auto}.app{grid-template-rows:70px 1fr 66px}
- h1{font-size:43px}h2{font-size:34px}.instruction{font-size:22px}
- .hero-grid,.media-layout,.photo-layout,.listening-layout,.advice-layout,.exercise7{grid-template-columns:1fr}
- .gap-grid,.challenge-grid,.exit-grid,.homework-checks{grid-template-columns:1fr}
- .progress{width:110px}.topbar{padding:0 14px}.footer{padding:0 12px}.layer-grid{grid-template-columns:1fr}
-}
-
-
-/* ===== FINAL CANDIDATE: projection-safe multi-accent visual system ===== */
-:root{
-  --navy:#173a5e;
-  --navy-bg:#eef3f8;
-  --amber:#a86200;
-  --amber-bg:#fff4df;
-  --plum:#6f315c;
-  --plum-bg:#f7edf4;
-  --teal:#0f6a57;
-  --teal-bg:#e7f3ef;
-  --review:#5b4b83;
-  --review-bg:#f1eef8;
-  --homework:#7b4a1f;
-  --homework-bg:#f8f0e8;
-  --text-strong:#132f28;
-  --text-body:#2d4740;
-}
-body{color:var(--text-strong)}
-.instruction{color:var(--text-body);font-weight:650}
-.screen{
-  position:relative;
-}
-.screen::before{
-  content:"";
-  position:absolute;
-  top:28px;
-  left:18px;
-  width:7px;
-  height:56px;
-  border-radius:7px;
-  background:var(--screen-accent,var(--green2));
-}
-.screen .stage-label{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:6px 10px;
-  border-radius:8px;
-  background:var(--screen-soft,var(--sage2));
-  color:var(--screen-accent,var(--green2));
-}
-.screen h2,.screen h1{
-  color:var(--screen-accent,var(--green));
-  text-shadow:0 0 0 transparent;
-}
-.accent-speaking{--screen-accent:var(--amber);--screen-soft:var(--amber-bg)}
-.accent-listening{--screen-accent:var(--navy);--screen-soft:var(--navy-bg)}
-.accent-vocab{--screen-accent:var(--plum);--screen-soft:var(--plum-bg)}
-.accent-language{--screen-accent:var(--teal);--screen-soft:var(--teal-bg)}
-.accent-review{--screen-accent:var(--review);--screen-soft:var(--review-bg)}
-.accent-homework{--screen-accent:var(--homework);--screen-soft:var(--homework-bg)}
-.question-line,.gap-grid>div,.letter p,.transcript,.match-table>div,.candidate-grid label{
-  color:#17352d;
-  font-weight:600;
-}
-.support-box,.prompt-box,.question-card,.reveal-panel,.audio-block,.mini-task,.meaning-box,.hint-box,.homework-card,.letter,.transcript,.match-col,.ex7-step{
-  box-shadow:0 2px 8px rgba(12,45,37,.06);
-}
-.blank-reveal.revealed,.inline-blank.revealed{
-  background:#dff0ea;
-  color:#075c49;
-  border-color:#74ad99;
-  font-weight:900;
-}
-.ex7-step{
-  background:white;
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:16px;
-  margin-bottom:14px;
-}
-.step-title{
-  font-size:22px;
-  font-weight:900;
-  margin-bottom:12px;
-  color:var(--plum);
-}
-.step-title span{
-  display:inline-block;
-  margin-right:8px;
-  padding:4px 8px;
-  border-radius:7px;
-  background:var(--plum-bg);
-  color:var(--plum);
-  font-size:14px;
-}
-.candidate-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-  margin-top:12px;
-}
-.candidate-grid label{
-  background:#fafbfa;
-  border:1px solid var(--line);
-  border-radius:8px;
-  padding:9px 10px;
-  font-size:19px;
-}
-.check-selection,.reset-match{
-  margin-top:10px;
-  border:1px solid var(--plum);
-  background:white;
-  color:var(--plum);
-  border-radius:8px;
-  padding:9px 12px;
-  font-weight:800;
-}
-.selection-feedback{
-  margin-top:9px;
-  min-height:24px;
-  font-size:18px;
-  font-weight:800;
-}
-.matching-board{
-  display:grid;
-  grid-template-columns:.9fr 1.4fr;
-  gap:14px;
-}
-.match-col{
-  border:1px solid var(--line);
-  border-radius:10px;
-  padding:10px;
-  background:#fff;
-  display:grid;
-  gap:7px;
-}
-.match-heading{
-  font-weight:900;
-  color:var(--plum);
-  font-size:20px;
-  margin-bottom:3px;
-}
-.match-item,.definition-item{
-  border:1px solid var(--line);
-  background:white;
-  color:#17352d;
-  border-radius:8px;
-  padding:9px 10px;
-  text-align:left;
-  font-size:18px;
-  font-weight:700;
-}
-.match-item.selected,.definition-item.selected{
-  border-color:var(--plum);
-  background:var(--plum-bg);
-}
-.match-item.matched,.definition-item.matched{
-  border-color:#77ad98;
-  background:#e8f3ee;
-  color:#075c49;
-}
-.match-item.wrong,.definition-item.wrong{
-  border-color:#bf8e8e;
-  background:#faeeee;
-}
-.match-status{
-  margin-top:10px;
-  padding:10px 12px;
-  border-radius:8px;
-  background:#f7f8f7;
-  font-size:18px;
-  font-weight:700;
-  color:#41564f;
-}
-.toolbar-line{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-}
-.mini-controls{
-  display:flex;
-  gap:7px;
-}
-.mini-controls.align-right{
-  justify-content:flex-end;
-  margin-bottom:8px;
-}
-.mini-controls button,.hide-local,.reset-local{
-  border:1px solid var(--line);
-  background:white;
-  color:#27463d;
-  border-radius:8px;
-  padding:8px 10px;
-  font-size:15px;
-  font-weight:800;
-}
-.hs1{left:11%;top:20%}.hs2{left:27%;top:33%}.hs3{left:13%;top:66%}.hs4{left:30%;top:68%}
-.hs5{left:63%;top:16%}.hs6{left:76%;top:40%}.hs7{left:62%;top:66%}.hs8{left:78%;top:69%}
-
-/* stronger projection contrast */
-.question-card,.support-box,.reveal-panel,.audio-block,.mini-task,.meaning-box,.hint-box,.letter,.transcript,.ex7-step,.homework-card{
-  border-color:#c5d0cc;
-}
-.footer button,.tab,.support-toggle,.hint-btn,.poll-btn{
-  font-weight:900;
-}
-@media(max-width:900px){
-  .candidate-grid{grid-template-columns:1fr 1fr}
-  .matching-board{grid-template-columns:1fr}
-  .toolbar-line{display:block}
-  .mini-controls{margin-top:8px}
-}
-
-/* ===== FINAL visual refinement: projection-safe, no pale purple ===== */
-:root{
-  --forest:#123c32;
-  --forest-2:#0b5847;
-  --navy-strong:#123a63;
-  --navy-soft:#eaf1f7;
-  --burgundy:#6b2f3a;
-  --burgundy-soft:#f8ecee;
-  --amber-strong:#8a5600;
-  --amber-soft:#fff2d8;
-  --teal-strong:#075f4d;
-  --teal-soft:#e4f2ed;
-  --charcoal:#1e2f2a;
-  --slate:#40524c;
-}
-body{color:var(--charcoal)}
-.instruction{color:#263c35;font-weight:700}
-.accent-speaking{--screen-accent:var(--amber-strong);--screen-soft:var(--amber-soft)}
-.accent-listening{--screen-accent:var(--navy-strong);--screen-soft:var(--navy-soft)}
-.accent-vocab{--screen-accent:var(--burgundy);--screen-soft:var(--burgundy-soft)}
-.accent-language{--screen-accent:var(--teal-strong);--screen-soft:var(--teal-soft)}
-.accent-review{--screen-accent:var(--navy-strong);--screen-soft:var(--navy-soft)}
-.accent-homework{--screen-accent:var(--forest);--screen-soft:#eaf2ef}
-.screen h1,.screen h2{font-weight:800}
-.question-line,.gap-grid>div,.letter p,.transcript,.candidate-item,.match-item,.definition-item{
-  color:#172d26;font-weight:650;
-}
-.stage-label{font-weight:900}
-.discovery-stack{display:grid;gap:10px}
-.discovery-card{
-  border:1px solid #bfcac6;
-  background:#fff;
-  border-radius:11px;
-  padding:14px 15px;
-  text-align:left;
-  color:#17332a;
-  display:grid;
-  grid-template-columns:38px 1fr auto;
-  gap:10px;
-  align-items:center;
-  font-size:21px;
-  font-weight:800;
-}
-.discovery-card span{
-  display:grid;place-items:center;width:36px;height:36px;border-radius:8px;
-  background:var(--teal-soft);color:var(--teal-strong);font-weight:900
-}
-.discovery-card small{font-size:14px;color:#4b5f58;font-weight:800}
-.discovery-card.revealed{
-  display:block;background:var(--teal-soft);color:var(--teal-strong);
-  border-color:#85b7a6;animation:answerIn .22s ease-out;
-}
-.candidate-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.candidate-item{
-  display:grid;grid-template-columns:1fr auto;gap:7px;align-items:center;
-  background:#fff;border:1px solid #c7d1cd;border-radius:8px;padding:8px 9px;
-}
-.candidate-item label{font-size:18px;font-weight:700}
-.item-check{
-  border:1px solid #9eaaa5;background:#fff;color:#2f4840;border-radius:7px;
-  padding:6px 8px;font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.03em
-}
-.item-check.heard{background:#e4f2ed;color:#075f4d;border-color:#7caf9d}
-.item-check.not-heard{background:#f4eeee;color:#7a3b3b;border-color:#c7a0a0}
-.poll-title,.step-title,.match-heading{color:var(--charcoal)}
-.match-item,.definition-item{font-weight:750}
-.hotspot{box-shadow:0 1px 4px rgba(0,0,0,.22)}
-@media(max-width:900px){.candidate-grid{grid-template-columns:1fr 1fr}}
-
-/* ===== FINAL v2: Exercise 7 projection readability ===== */
-.screen[data-screen="9"] .instruction{
-  font-size:30px;
-  line-height:1.42;
-  max-width:1320px;
-}
-.screen[data-screen="9"] .step-title{
-  font-size:26px;
-}
-.screen[data-screen="9"] .candidate-grid{
-  gap:10px;
-}
-.screen[data-screen="9"] .candidate-item{
-  padding:10px 12px;
-}
-.screen[data-screen="9"] .candidate-item label{
-  font-size:22px;
-  line-height:1.25;
-}
-.screen[data-screen="9"] .item-check{
-  font-size:14px;
-  padding:7px 9px;
-}
-.screen[data-screen="9"] .match-heading{
-  font-size:24px;
-}
-.screen[data-screen="9"] .match-item,
-.screen[data-screen="9"] .definition-item{
-  font-size:21px;
-  line-height:1.28;
-  padding:10px 12px;
-}
-.screen[data-screen="9"] .matching-board{
-  gap:18px;
-}
-.screen[data-screen="9"] .match-status{
-  font-size:20px;
-}
-.screen[data-screen="9"] .reset-match{
-  font-size:16px;
-}
-@media (min-width:1200px){
-  .screen[data-screen="9"]{
-    padding-top:26px;
-  }
-  .screen[data-screen="9"] h2{
-    margin-bottom:8px;
-  }
-  .screen[data-screen="9"] .instruction{
-    margin-bottom:12px;
-  }
-  .screen[data-screen="9"] .ex7-step{
-    padding:14px 16px;
-    margin-bottom:10px;
-  }
-}
-
-/* ===== Thank you screen ===== */
-.thankyou-screen{
-  min-height:calc(100vh - 220px);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-}
-.thankyou-screen h1{
-  font-size:84px;
-  margin:14px 0 18px;
-  color:var(--forest);
-}
-.thankyou-sub{
-  font-size:32px;
-  line-height:1.4;
-  color:var(--charcoal);
-  font-weight:650;
-}
-.thankyou-line{
-  width:180px;
-  height:6px;
-  border-radius:999px;
-  background:var(--amber-strong);
-  margin:18px 0 20px;
-}
-.thankyou-note{
-  font-size:28px;
-  color:var(--navy-strong);
-  font-weight:800;
-}
-
-
-/* ===== E-LEAP U1.1 FINAL LOCKED additions ===== */
-.top-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:flex-end}
-.top-action,.locked-badge{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 12px;font-weight:900;color:var(--green);font-size:14px}
-.top-action.primary{background:var(--green);border-color:var(--green);color:#fff}
-.locked-badge{font-size:12px;letter-spacing:.07em}
-.live-chip{border-radius:999px;background:#eef3f1;color:#52655e;padding:7px 10px;font-size:13px;font-weight:850}
-.live-chip.is-live{background:#e0f2ea;color:#075c49}
-
-.persistent-join-panel{
-  position:fixed;z-index:1000;top:92px;left:50%;transform:translateX(-50%);
-  width:min(1030px,calc(100vw - 54px));display:grid;grid-template-columns:94px 1fr auto;
-  gap:16px;align-items:center;padding:13px 16px;background:rgba(247,251,249,.98);
-  border:1px solid #d2dfda;border-radius:16px;box-shadow:0 16px 42px rgba(17,50,40,.17)
-}
-.persistent-join-panel[hidden]{display:none}
-.join-qr{width:82px;height:82px;background:#fff;border-radius:10px;padding:4px}
-.join-label{display:block;font-size:11px;letter-spacing:.12em;color:#61736c;font-weight:900}
-.join-main strong{display:block;font-size:36px;letter-spacing:.13em;color:#174c40;line-height:1.05}
-.join-meta{margin-top:6px;color:#60716b;font-weight:800}
-.join-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.join-actions button{border:1px solid #bfd0ca;background:#fff;color:#174c40;border-radius:9px;padding:9px 12px;font-weight:850}
-.join-actions .primary{background:#0f6a57;color:#fff;border-color:#0f6a57}
-.persistent-join-panel.compact{grid-template-columns:58px 1fr auto;padding:8px 12px}
-.persistent-join-panel.compact .join-qr{width:48px;height:48px}
-.persistent-join-panel.compact .join-main strong{font-size:24px}
-
-.live-modal[hidden]{display:none}.live-modal{position:fixed;inset:0;z-index:2000;display:grid;place-items:center}
-.live-backdrop{position:absolute;inset:0;background:rgba(15,34,29,.42);backdrop-filter:blur(3px)}
-.live-dialog{position:relative;width:min(620px,92vw);background:#fbfcfb;border-radius:18px;overflow:hidden;box-shadow:0 24px 70px rgba(20,49,41,.25)}
-.live-dialog-head{display:flex;justify-content:space-between;gap:18px;padding:22px 24px;background:linear-gradient(135deg,#f7fbf9,#e8f1ed)}
-.live-dialog-head span{font-size:11px;letter-spacing:.13em;font-weight:900;color:#0f6a57}
-.live-dialog-head h3{font:700 30px/1.1 Georgia,"Times New Roman",serif;margin:4px 0 5px}.live-dialog-head p{margin:0;color:#60716b}
-.close-x{border:0;background:transparent;font-size:32px;line-height:1}.live-dialog-body{padding:22px 24px}
-.live-dialog-body label{font-weight:850}.live-dialog-body input{width:100%;box-sizing:border-box;margin-top:7px;padding:12px;border:1px solid #b9c9c3;border-radius:9px;font:inherit}
-.live-dialog-body .wide{width:100%;margin-top:14px;border:0;border-radius:9px;background:#0f6a57;color:#fff;padding:11px 14px;font-weight:900}
-#liveCreateStatus{margin-top:9px;color:#8a3c3c;font-weight:700}
-
-.poll-response-area{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
-.poll-response-area textarea{width:100%;box-sizing:border-box;min-height:96px;border:1px solid #b9c9c3;border-radius:9px;padding:11px;font:inherit;font-size:18px}
-.response-actions{display:flex;justify-content:flex-end;margin-top:7px}.response-actions button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 11px;font-weight:800}
-
-/* Slide 3: center the approved baseline activity; keep 1→title→support reveal */
-.strategy-screen{text-align:center}
-.strategy-screen .instruction{max-width:1050px;margin-left:auto;margin-right:auto}
-.strategy-screen .media-layout{grid-template-columns:1fr;max-width:1040px;margin:0 auto;gap:14px}
-.strategy-screen video{display:block;width:min(760px,76vw);max-height:42vh;margin:0 auto}
-.strategy-screen .layer-grid{grid-template-columns:repeat(4,1fr);max-width:1040px;margin:0 auto}
-.strategy-screen .layer-card{text-align:center;min-height:92px}
-
-/* Slide 12 recorder: additive only */
-.recorder-card{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
-.recorder-card span{display:block;color:var(--muted);margin-top:3px}.recorder-controls{display:flex;gap:8px;flex-wrap:wrap}
-.recorder-controls button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 11px;font-weight:850}.recorder-controls button:first-child{background:#0f6a57;color:#fff;border-color:#0f6a57}
-#recordPlayback{grid-column:1/-1;width:100%}.record-status{grid-column:1/-1;color:var(--muted);font-size:14px}
-
-/* Private media states */
-[data-media-state="loading"]{min-height:54px;background:#f1f4f2}
-.media-error{display:block;padding:12px;border-radius:8px;background:#faeeee;color:#8a4d4d}
-
-/* Projection safety: content centered, navigation always visible */
-.screen{max-width:none}
-.footer{z-index:1200}
-#nextBtn{min-width:105px;background:#fff;color:var(--green);opacity:1!important;visibility:visible!important}
-#nextBtn:not(:disabled){background:var(--green);color:#fff;border-color:var(--green)}
-@media(max-width:900px){
- .persistent-join-panel{grid-template-columns:70px 1fr;top:76px}
- .join-actions{grid-column:1/-1;justify-content:flex-start}
- .strategy-screen .layer-grid{grid-template-columns:1fr 1fr}
- .recorder-card{grid-template-columns:1fr}
-}
-
-
-/* ===== FINAL LOCKED v1.1 interaction completion ===== */
-.learner-input-card,.response-mode-card{
-  margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px
-}
-.learner-input-card label,.response-mode-head b{font-size:18px;color:var(--green)}
-.input-row{display:grid;grid-template-columns:1fr auto;gap:9px;margin-top:10px}
-.input-row input,.response-mode-panel textarea,.challenge-input{
-  width:100%;box-sizing:border-box;border:1px solid #b9c9c3;border-radius:9px;
-  padding:10px 12px;font:inherit;font-size:17px;background:#fff
-}
-.input-row button,.mode-tab{
-  border:1px solid var(--line);background:#fff;border-radius:8px;padding:9px 12px;font-weight:850;color:var(--green2)
-}
-.added-word-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;min-height:8px}
-.added-word-list span{background:var(--sage);border:1px solid #bfd0ca;border-radius:999px;padding:5px 9px;font-weight:750}
-
-.response-mode-head{display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap}
-.response-mode-head span{display:block;color:var(--muted);margin-top:3px}
-.response-mode-tabs{display:flex;gap:7px}.mode-tab.active{background:var(--green2);border-color:var(--green2);color:#fff}
-.response-mode-panel{margin-top:11px}.response-mode-panel textarea{min-height:105px}
-.photo-response-card .recorder-controls{justify-content:flex-start}
-.photo-response-card audio{margin-top:10px;width:100%}
-
-.challenge-grid{align-items:stretch}
-.challenge-response-item{
-  background:#fff;border:1px solid var(--line);border-radius:12px;padding:0;overflow:hidden
-}
-.challenge-response-item .challenge-card{
-  width:100%;border:0;border-radius:0;min-height:115px;border-bottom:1px solid var(--line)
-}
-.challenge-input{border:0;border-radius:0;min-height:76px;resize:vertical}
-.challenge-input:focus{outline:2px solid rgba(15,106,87,.14);outline-offset:-2px}
-
-.confidence.big{display:grid;grid-template-columns:auto repeat(5,auto);gap:8px;align-items:center;justify-content:center}
-.confidence-scale-note{
-  grid-column:1/-1;display:flex;justify-content:center;gap:28px;color:var(--muted);font-size:14px;margin-top:4px
-}
-.confidence-purpose{
-  grid-column:1/-1;text-align:center;color:var(--muted);font-size:14px;max-width:760px;margin:0 auto
-}
-
-/* Media: visible loading/error states */
-[data-private-path][data-media-state="loading"]{opacity:.65}
-.private-media-error{
-  display:flex;align-items:center;justify-content:center;gap:8px;min-height:72px;padding:12px;
-  border:1px dashed #caa7a7;border-radius:9px;background:#faeeee;color:#8a4d4d;font-weight:750
-}
-.private-media-retry{border:1px solid #caa7a7;background:#fff;border-radius:7px;padding:6px 9px;font-weight:800}
-
-/* Keep learner inputs projector-friendly */
-@media(max-width:900px){
-  .confidence.big{grid-template-columns:1fr repeat(5,auto)}
-}
-
-
-/* ===== FINAL LOCKED v1.2 Global Classroom Timer ===== */
-.footer{
-  grid-template-columns:auto auto minmax(220px,1fr) auto;
-}
-.teacher-tools{display:flex;align-items:center;justify-content:center}
-.teacher-tool-btn{
-  border:1px solid var(--line);background:#fff;color:var(--green2);
-  border-radius:9px;padding:9px 14px;font-weight:850;font-size:16px
-}
-.teacher-tool-btn:hover{background:var(--sage)}
-
-.timer-modal[hidden]{display:none}
-.timer-modal{position:fixed;inset:0;z-index:3000;display:grid;place-items:center}
-.timer-backdrop{position:absolute;inset:0;background:rgba(14,32,27,.45);backdrop-filter:blur(3px)}
-.timer-dialog{
-  position:relative;width:min(560px,92vw);background:#fbfcfb;border-radius:20px;
-  box-shadow:0 26px 76px rgba(20,49,41,.28);overflow:hidden
-}
-.timer-dialog-head{
-  display:flex;justify-content:space-between;align-items:flex-start;gap:18px;
-  padding:20px 24px;background:linear-gradient(135deg,#f7fbf9,#e8f1ed)
-}
-.timer-kicker{font-size:11px;letter-spacing:.13em;font-weight:900;color:#0f6a57}
-.timer-dialog-head h3{font:700 30px/1.1 Georgia,"Times New Roman",serif;margin:4px 0 0;color:#17352d}
-.timer-dialog-body{padding:22px 24px 24px}
-.global-timer-display{
-  text-align:center;font-size:72px;line-height:1;font-weight:950;letter-spacing:.03em;
-  color:#174c40;font-variant-numeric:tabular-nums
-}
-.global-timer-display.warning{color:#9b6500}
-.global-timer-display.danger{color:#9a3434}
-.global-timer-state{text-align:center;margin-top:7px;color:#60716b;font-weight:800}
-.timer-presets,.timer-controls-global{
-  display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px
-}
-.timer-presets button,.timer-controls-global button{
-  border:1px solid #bfd0ca;background:#fff;color:#174c40;border-radius:9px;
-  padding:9px 12px;font-weight:850
-}
-.timer-presets button.active{background:#e3f0eb;border-color:#7caf9d}
-.timer-controls-global .primary{background:#0f6a57;color:#fff;border-color:#0f6a57}
-.timer-sound-line{
-  display:flex;gap:8px;align-items:center;justify-content:center;margin-top:18px;
-  color:#60716b;font-size:14px;font-weight:700
-}
-@media(max-width:760px){
-  .footer{grid-template-columns:auto auto auto}
-  .progress-wrap{grid-column:1/-1;grid-row:2}
-  .global-timer-display{font-size:58px}
-}
-
-
-/* FINAL v1.3 media-only states */
-[data-media-key][data-media-state="loading"]{opacity:.55}
-[data-media-key][data-media-state="ready"]{opacity:1}
-.eleap-media-unavailable{
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  min-height:64px;padding:10px 14px;border:1px dashed #c9a8a8;border-radius:9px;
-  background:#faeeee;color:#8a4d4d;font-weight:750
-}
-.eleap-media-unavailable button{
-  border:1px solid #c9a8a8;background:#fff;border-radius:7px;padding:6px 9px;
-  color:#7c4545;font-weight:850
-}
-
-/* ===== FINAL v1.3.1 UI-only patch ===== */
-.ui-submit-row,.response-actions{
-  display:flex;align-items:center;gap:9px;justify-content:flex-end;flex-wrap:wrap
-}
-.ui-submit,.ui-clear{
-  border-radius:9px;padding:9px 14px;font-weight:900;font-size:15px
-}
-.ui-submit{border:1px solid #0f6a57;background:#0f6a57;color:#fff}
-.ui-clear{border:1px solid var(--line);background:#fff;color:#52655e}
-.ui-submit-status{font-size:14px;font-weight:850;color:#0f6a57;min-width:88px}
-
-/* Mask only the lime source-image labels at bottom; preserve people + 1a–4b labels. */
-.screen[data-screen="5"] .image-wrap{position:relative;overflow:hidden}
-.screen[data-screen="5"] .image-wrap::after{
-  content:"";position:absolute;left:0;right:0;bottom:0;height:32px;background:#fff;z-index:3;pointer-events:none
-}
-.screen[data-screen="5"] .hotspot-info{position:relative;z-index:4}
-
-.screen[data-screen="6"] .listening-layout{position:relative}
-.screen[data-screen="6"] .listening-layout::before{
-  content:"";position:absolute;left:0;bottom:0;width:57%;height:32px;background:#fff;z-index:3;pointer-events:none
-}
-
-
-/* ===== FINAL v1.3.2 HOTFIX ===== */
-
-/* Slide 1: make Submit unmistakably visible despite older .response-actions button rule */
-.screen[data-screen="1"] .response-actions .ui-submit{
-  display:inline-flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  min-width:112px !important;
-  min-height:40px !important;
-  border:1px solid #0f6a57 !important;
-  background:#0f6a57 !important;
-  color:#ffffff !important;
-  opacity:1 !important;
-  visibility:visible !important;
-  font-weight:900 !important;
-  font-size:15px !important;
-}
-.screen[data-screen="1"] .response-actions .ui-submit::before{
-  content:"Submit";
-  color:#ffffff;
-}
-.screen[data-screen="1"] .response-actions .ui-submit{
-  font-size:0 !important;
-}
-.screen[data-screen="1"] .response-actions .ui-submit::before{
-  font-size:15px !important;
-}
-
-/* Slides 5–6: crop ONLY the embedded bottom source labels
-   “Speaking” and “Listening” from people-photo-set.png.
-   The people and 1a–4b labels remain untouched. */
-.screen[data-screen="5"] .image-wrap > img[data-private-path*="people-photo-set"],
-.screen[data-screen="6"] .listening-layout > img[data-private-path*="people-photo-set"]{
-  clip-path: inset(0 0 6.3% 0) !important;
-  -webkit-clip-path: inset(0 0 6.3% 0) !important;
-}
-
-/* Disable the previous white pseudo-mask; clipping above is deterministic. */
-.screen[data-screen="5"] .image-wrap::after,
-.screen[data-screen="6"] .listening-layout::before{
-  display:none !important;
-}
-
-.vocab-once-note{margin:6px 0 10px;color:#61716b;font-size:15px;line-height:1.45}
-.vocab-add-card .input-row input{width:100%;box-sizing:border-box}
-
-.transcript-response-card{margin-top:14px}
-.transcript-response-card textarea{
-  width:100%;box-sizing:border-box;min-height:110px;margin-top:8px;
-  border:1px solid var(--line);border-radius:9px;padding:10px 12px;
-  font:inherit;font-size:18px;background:#fff;color:var(--ink)
-}
-.transcript-response-note{margin:6px 0 0;color:var(--muted);font-size:16px;line-height:1.4}
-</style></head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>E-LEAP Platform Master v1.0 — APPROVED</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css"/>
+</head>
 <body>
-<div class="app">
-<header class="topbar">
-<div>
-<div class="eyebrow">OBJECTIVE FIRST B2 · UNIT 1.1</div>
-<div class="course-title">Fashion Matters</div>
-</div>
-<div class="top-actions">
-<button class="top-action primary" id="liveClassBtn">Start Class</button>
-<button class="top-action" hidden="" id="responsesBtn">Responses</button>
-<span class="live-chip" hidden="" id="liveStatusChip">● Lobby · <b>0</b> joined</span>
-<span class="locked-badge">FINAL LOCKED</span>
-</div>
-</header>
-<section class="persistent-join-panel" hidden="" id="persistentJoinPanel">
-<img alt="Student join QR" class="join-qr" id="joinQr"/>
-<div class="join-main">
-<span class="join-label">JOIN CLASS</span>
-<strong id="joinCode">------</strong>
-<div class="join-meta"><span id="joinState">Lobby</span> · <b id="joinedCount">0</b> joined</div>
-</div>
-<div class="join-actions">
-<button id="copyStudentLink" type="button">Copy link</button>
-<button class="primary" id="startTeaching" type="button">Start Teaching</button>
-<button id="hideJoinPanel" type="button">Hide</button>
-</div>
-</section>
-<div class="timer-modal" hidden="" id="globalTimerModal">
-<div class="timer-backdrop" data-close-timer=""></div>
-<section aria-labelledby="timerTitle" aria-modal="true" class="timer-dialog" role="dialog">
-<div class="timer-dialog-head">
-<div>
-<span class="timer-kicker">E-LEAP CLASSROOM TIMER</span>
-<h3 id="timerTitle">Classroom Timer</h3>
-</div>
-<button class="close-x" data-close-timer="" type="button">×</button>
-</div>
-<div class="timer-dialog-body">
-<div class="global-timer-display" id="globalTimerDisplay">01:00</div>
-<div class="global-timer-state" id="globalTimerState">Ready</div>
-<div class="timer-presets">
-<button data-timer-seconds="30" type="button">30 sec</button>
-<button class="active" data-timer-seconds="60" type="button">1 min</button>
-<button data-timer-seconds="90" type="button">90 sec</button>
-<button data-timer-seconds="120" type="button">2 min</button>
-<button data-timer-seconds="180" type="button">3 min</button>
-</div>
-<div class="timer-controls-global">
-<button class="primary" id="globalTimerStart" type="button">Start</button>
-<button id="globalTimerPause" type="button">Pause</button>
-<button id="globalTimerAdd" type="button">+30s</button>
-<button id="globalTimerReset" type="button">Reset</button>
-</div>
-<label class="timer-sound-line">
-<input checked="" id="globalTimerSound" type="checkbox"/>
-        Gentle sound at start, 10 seconds, and time up
-      </label>
-</div>
-</section>
-</div>
-<div class="live-modal" hidden="" id="liveClassModal">
-<div class="live-backdrop" data-close-live=""></div>
-<div class="live-dialog">
-<div class="live-dialog-head">
-<div>
-<span>LIVE CLASSROOM</span>
-<h3>Create a class session</h3>
-<p>Students join once and stay connected for the whole lesson.</p>
-</div>
-<button class="close-x" data-close-live="">×</button>
-</div>
-<div class="live-dialog-body">
-<label>Teacher name
-        <input id="teacherNameInput" value="Dr. Nguyen Thi Kim Luyen"/>
-</label>
-<button class="primary wide" id="createClassSession">Create class session</button>
-<div id="liveCreateStatus"></div>
-</div>
-</div>
-</div>
-<main id="stage">
-<section class="screen active accent-speaking" data-screen="1">
-<div class="screen-grid hero-grid">
-<div class="hero-copy">
-<div class="stage-label">LEAD-IN</div>
-<h1>Fashion Matters</h1>
-<p class="instruction">Look at the fashion image. Discuss what clothes can communicate about a person. Choose one idea and explain your opinion.</p>
-<div class="poll-card">
-<div class="poll-title">Quick choice: What matters most when you choose clothes?</div>
-<div class="poll-options">
-<button class="poll-btn">Comfort</button>
-<button class="poll-btn">Style</button>
-<button class="poll-btn">Price</button>
-<button class="poll-btn">Occasion</button>
-</div>
-<div class="poll-result" id="pollResult">Choose one option, then type your explanation in the response box below.</div>
-<div class="poll-response-area hidden" id="pollResponseArea">
-<textarea id="pollExplanation" placeholder="Type your explanation here..."></textarea>
-<div class="response-actions">
-<button id="clearPollResponse" type="button">Clear</button>
-<button aria-label="Submit response" class="ui-submit" id="pollUiSubmit" type="button">Submit</button><span class="ui-submit-status" id="pollUiSubmitStatus"></span></div>
-</div>
-</div>
-</div>
-<img alt="Fashion runway" class="hero-img" data-media-key="u01/l01/fashion-hero.jpeg" data-media-kind="image" data-media-state="loading" data-private-path="u01/l01/fashion-hero.jpeg" loading="eager"/>
-</div>
-</section>
-<section class="screen accent-speaking" data-screen="2">
-<div class="stage-label">SPEAKING</div>
-<h2>Talk about fashion</h2>
-<p class="instruction">Work with a partner. Discuss the three questions below. First think quietly for 20 seconds, then take turns answering and asking one follow-up question.</p>
-<div class="timer-row">
-<button class="timer-btn" id="thinkTimer">Start 20-second think time</button>
-<span id="timerDisplay">20</span>
-</div>
-<div class="question-stack">
-<div class="question-card">
-<div class="question-line"><span>1</span><b>How important is fashion to you?</b></div>
-<button class="support-toggle">Show language support</button>
-<div class="support hidden">Because… · For example… · Personally, I think…</div>
-</div>
-<div class="question-card">
-<div class="question-line"><span>2</span><b>What sort of clothes do you prefer to wear?</b></div>
-<button class="support-toggle">Show language support</button>
-<div class="support hidden">I prefer… because… · I usually wear… · I feel most comfortable in…</div>
-</div>
-<div class="question-card">
-<div class="question-line"><span>3</span><b>Do you ever have to wear things you don’t really like? If so, when and why?</b></div>
-<button class="support-toggle">Show language support</button>
-<div class="support hidden">Sometimes I have to… · The main reason is… · However,…</div>
-</div>
-</div>
-</section>
-<section class="screen accent-speaking strategy-screen" data-screen="3">
-<div class="stage-label">SPEAKING STRATEGY · TEACHER-ADDED EXTENSION</div>
-<h2>Four ways to expand an answer</h2>
-<p class="instruction">Watch the video and identify the four ways to expand an answer. Then explore the four technique cards one by one and use the useful phrases to improve your own answers.</p>
-<div class="media-layout">
-<video controls="" data-media-key="u01/l01/speaking-strategy.mp4" data-media-kind="video" data-media-state="loading" data-private-path="u01/l01/speaking-strategy.mp4" playsinline="" preload="metadata"></video>
-<div class="layer-grid">
-<button class="layer-card" data-layer-support="Because… / The main reason is that…" data-layer-title="Give a reason">1</button>
-<button class="layer-card" data-layer-support="For example… / For instance…" data-layer-title="Give an example">2</button>
-<button class="layer-card" data-layer-support="However… / Unlike… / In the past…, but now…" data-layer-title="Add a contrast">3</button>
-<button class="layer-card" data-layer-support="Personally, I think… / To me,…" data-layer-title="Give an opinion">4</button>
-</div>
-</div>
-</section>
-<section class="screen accent-vocab" data-screen="4">
-<div class="stage-label">TOPIC VOCABULARY</div>
-<h2>Build your fashion vocabulary</h2>
-<p class="instruction">Explore the six categories and read the words aloud. When you finish, type one response with 3–5 extra fashion words or phrases.</p>
-<div class="tabs" id="vocabTabs">
-<button class="tab active" data-tab="clothes">Clothes</button>
-<button class="tab" data-tab="footwear">Footwear</button>
-<button class="tab" data-tab="jewellery">Jewellery</button>
-<button class="tab" data-tab="headgear">Headgear</button>
-<button class="tab" data-tab="materials">Materials</button>
-<button class="tab" data-tab="appearance">Appearance</button>
-</div>
-<div class="vocab-panel" id="vocabPanel"></div>
-<div class="mini-task">Mini task: Use at least three suitable words to describe one classmate.</div>
-<div class="learner-input-card vocab-add-card">
-<label for="vocabMoreWords">
-<b>Your vocabulary response — submit once</b>
-</label>
-<p class="vocab-once-note">
-        After exploring all six categories, type 3–5 extra fashion words or phrases below.
-        You only need to submit once for this slide.
-      </p>
-<div class="input-row">
-<input autocomplete="off" id="vocabMoreWords" placeholder="e.g. cardigan, loafers, velvet, stylish..." type="text"/>
-</div>
-<div class="ui-submit-row">
-<button class="ui-clear" id="vocabUiSubmitClear" type="button">Clear</button>
-<button class="ui-submit" id="vocabUiSubmit" type="button">Submit</button>
-<span class="ui-submit-status" id="vocabUiSubmitStatus"></span>
-</div>
-</div>
-</section>
-<section class="screen accent-speaking" data-screen="5">
-<div class="stage-label">SPEAKING · PHOTO TASK</div>
-<h2>Describe and compare the people</h2>
-<p class="instruction">Work in pairs. Choose one pair of photos. First describe what each person is wearing and their appearance. Then make one comparison. Your partner should add one extra detail.</p>
-<div class="photo-layout">
-<div class="image-wrap">
-<img alt="People in different clothes" data-media-key="u01/l01/people-photo-set.png" data-media-kind="image" data-media-state="loading" data-private-path="u01/l01/people-photo-set.png" loading="eager"/>
-<button class="hotspot hs1" data-hotspot="Clothes: striped top, jeans, sneakers">1a</button>
-<button class="hotspot hs2" data-hotspot="Clothes: leather outfit, boots, helmet">1b</button>
-<button class="hotspot hs3" data-hotspot="Bright colourful clothes and many accessories; creative/unusual style">2a</button>
-<button class="hotspot hs4" data-hotspot="Jeans, T-shirt and flip-flops; simple/natural/relaxed style">2b</button>
-<button class="hotspot hs5" data-hotspot="Clothes: suit, tie; smart/formal style">3a</button>
-<button class="hotspot hs6" data-hotspot="Clothes: red sweater, jeans; casual style">3b</button>
-<button class="hotspot hs7" data-hotspot="Black dress and white hat; fashionable/confident style">4a</button>
-<button class="hotspot hs8" data-hotspot="Coat and scarf; warm/simple/calm style">4b</button>
-<div class="hotspot-info" id="hotspotInfo">Click a photo label for language support.</div>
-</div>
-<div class="support-box">
-<h3>Useful language</h3>
-<p><b>Clothes:</b> striped top, jeans, suit, dress, boots, scarf…</p>
-<p><b>Appearance:</b> casual, smart, elegant, sporty, confident, relaxed…</p>
-<p><b>Preview only:</b> younger than · more stylish than · less serious than · as … as</p>
-<small>Comparison is taught systematically in U1.2.</small>
-</div>
-</div>
-<div class="response-mode-card photo-response-card">
-<div class="response-mode-head">
-<div>
-<b>Your response</b>
-<span>Type your description/comparison or record it.</span>
-</div>
-<div class="response-mode-tabs">
-<button class="mode-tab active" data-photo-mode="type" type="button">Type</button>
-<button class="mode-tab" data-photo-mode="record" type="button">Record</button>
-</div>
-</div>
-<div class="response-mode-panel" id="photoTypePanel">
-<textarea id="photoResponseText" placeholder="Type your description and comparison here..."></textarea>
-</div>
-<div class="response-mode-panel hidden" id="photoRecordPanel">
-<div class="recorder-controls">
-<button id="photoRecordStart" type="button">● Record</button>
-<button disabled="" id="photoRecordStop" type="button">■ Stop</button>
-<button disabled="" id="photoRecordReset" type="button">Re-record</button>
-</div>
-<audio controls="" hidden="" id="photoRecordPlayback"></audio>
-<div class="record-status" id="photoRecordStatus">Ready to record.</div>
-</div>
-<div class="ui-submit-row">
-<button class="ui-clear" id="photoUiSubmitClear" type="button">Clear</button>
-<button class="ui-submit" id="photoUiSubmit" type="button">Submit</button>
-<span class="ui-submit-status" id="photoUiSubmitStatus"></span>
-</div></div>
-</section>
-<section class="screen accent-listening" data-screen="6">
-<div class="stage-label">LISTENING</div>
-<h2>Who is speaking?</h2>
-<p class="instruction">Listen to Speakers 2–5 and match each speaker to the correct photo. Compare your answers with a partner, then check the speakers one by one.</p>
-<div class="listening-layout">
-<img alt="People photo set" data-media-key="u01/l01/people-photo-set.png" data-media-kind="image" data-media-state="loading" data-private-path="u01/l01/people-photo-set.png" loading="eager"/>
-<div>
-<div class="audio-block">
-<span>Example · Speaker 1 = photo 3b</span>
-<audio controls="" data-media-key="u01/l01/speaker-1.mp3" data-media-kind="audio" data-media-state="loading" data-private-path="u01/l01/speaker-1.mp3" preload="metadata"></audio>
-</div>
-<div class="audio-block">
-<span>Speakers 2–5</span>
-<audio controls="" data-media-key="u01/l01/speakers-2-5.mp3" data-media-kind="audio" data-media-state="loading" data-private-path="u01/l01/speakers-2-5.mp3" preload="metadata"></audio>
-</div>
-<div class="speaker-match">
-<div>Speaker 2 <button class="blank-reveal" data-answer="2a">?</button></div>
-<div>Speaker 3 <button class="blank-reveal" data-answer="1a">?</button></div>
-<div>Speaker 4 <button class="blank-reveal" data-answer="4b">?</button></div>
-<div>Speaker 5 <button class="blank-reveal" data-answer="3a">?</button></div>
-</div>
-<div class="confidence">
-<span>How confident are you?</span>
-<button>Sure</button><button>Not sure</button><button>Need help</button>
-</div>
-</div>
-</div>
-</section>
-<section class="screen accent-vocab" data-screen="7">
-<div class="stage-label">TRANSCRIPT FOCUS</div>
-<h2>Find the phrasal verbs</h2>
-<p class="instruction">Select Speakers 2–5 in turn. Read each transcript and identify the highlighted phrasal verbs. Infer their meaning from context first. Submit your ideas before the meanings are checked together as a class.</p>
-<div class="tabs" id="speakerTabs">
-<button class="tab active" data-speaker="2">Speaker 2</button>
-<button class="tab" data-speaker="3">Speaker 3</button>
-<button class="tab" data-speaker="4">Speaker 4</button>
-<button class="tab" data-speaker="5">Speaker 5</button>
-</div>
-<div class="transcript" id="speakerText"></div>
-<div class="meaning-box" id="meaningBox">Click a highlighted phrasal verb.</div>
-<div class="learner-input-card transcript-response-card" id="slide7Response">
-<label for="slide7MeaningResponse">
-<b>Your response — submit once</b>
-</label>
-<p class="transcript-response-note">Choose at least two phrasal verbs and explain what you think they mean in context. <i>Example format: dress up = ...; stand out = ...</i></p>
-<textarea id="slide7MeaningResponse" placeholder="Type at least two phrasal verbs and their meanings in context..."></textarea>
-</div></section>
-<section class="screen accent-language" data-screen="8">
-<div class="stage-label">LANGUAGE FOCUS · GUIDED DISCOVERY</div>
-<h2>How do phrasal verbs work?</h2>
-<p class="instruction">Watch the video. Discuss the three questions below with a partner. Click each question only after you have agreed on an answer, then compare your idea with the explanation.</p>
-<div class="media-layout">
-<video controls="" data-media-key="u01/l01/phrasal-verbs.mp4" data-media-kind="video" data-media-state="loading" data-private-path="u01/l01/phrasal-verbs.mp4" playsinline="" preload="metadata"></video>
-<div class="discovery-stack">
-<button class="discovery-card" data-answer="&lt;b&gt;A phrasal verb&lt;/b&gt; is a verb together with an adverb or preposition that changes its meaning.">
-<span>1</span><strong>What is a phrasal verb?</strong><small>Click to check</small>
-</button>
-<button class="discovery-card" data-answer="&lt;b&gt;Two-part:&lt;/b&gt; verb + adverb/preposition.&lt;br&gt;&lt;b&gt;Three-part:&lt;/b&gt; verb + adverb + preposition.">
-<span>2</span><strong>What two types can you identify?</strong><small>Click to check</small>
-</button>
-<button class="discovery-card" data-answer="&lt;b&gt;Word order:&lt;/b&gt; some two-part phrasal verbs can be separated; three-part phrasal verbs are not separated in the patterns taught here.">
-<span>3</span><strong>What do you notice about word order?</strong><small>Click to check</small>
-</button>
-</div>
-</div>
-</section>
-<section class="screen accent-vocab" data-screen="9">
-<div class="stage-label">EXERCISE 7 · LISTENING + MATCHING</div>
-<h2>Listen, identify, then match</h2>
-<p class="instruction"><b>Step 1:</b> Listen again to Speakers 2–5 and tick the phrasal verbs you hear. The list includes distractors. Check the items one by one. <b>Step 2:</b> Match the nine target phrasal verbs to definitions a–i.</p>
-<div class="ex7-step">
-<div class="step-title"><span>STEP 1</span> Which phrasal verbs do you hear?</div>
-<audio controls="" data-media-key="u01/l01/speakers-2-5.mp3" data-media-kind="audio" data-media-state="loading" data-private-path="u01/l01/speakers-2-5.mp3" preload="metadata"></audio>
-<div class="candidate-grid">
-<div class="candidate-item"><label><input type="checkbox"/> add to</label><button class="item-check" data-heard="no">check</button></div>
-<div class="candidate-item"><label><input type="checkbox"/> cut down (on)</label><button class="item-check" data-heard="yes">check</button></div>
-<div class="candidate-item"><label><input type="checkbox"/> dress up</label><button class="item-check" data-heard="yes">check</button></div>
-<div class="candidate-item"><label><input type="checkbox"/> fit in with</label><button class="item-check" data-heard="no">check</button></div>
-<div class="candidate-item"><label><input type="checkbox"/> go out</label><button class="item-check" data-heard="yes">check</button></div>
-<div class="candidate-item"><label><input type="checkbox"/> keep up with</label><button class="item-check" data-heard="yes">check</button></div>
-<div class="candidate-item"><label><input type="checkbox"/> pull on</label><button class="item-check" data-heard="no">check</button></div>
-<div class="candidate-item"><label><input type="checkbox"/> put together</label><button class="item-check" data-heard="yes">check</button></div>
-<div class="candidate-item"><label><input type="checkbox"/> save up</label><button class="item-check" data-heard="yes">check</button></div>
-<div class="candidate-item"><label><input type="checkbox"/> slip on</label><button class="item-check" data-heard="yes">check</button></div>
-<div class="candidate-item"><label><input type="checkbox"/> stand out</label><button class="item-check" data-heard="yes">check</button></div>
-<div class="candidate-item"><label><input type="checkbox"/> take back</label><button class="item-check" data-heard="yes">check</button></div>
-</div>
-</div>
-<div class="ex7-step">
-<div class="step-title"><span>STEP 2</span> Match the phrasal verbs to definitions a–i</div>
-<div class="matching-board">
-<div class="match-col">
-<div class="match-heading">Phrasal verbs</div>
-<button class="match-item" data-match="f">1. cut down</button>
-<button class="match-item" data-match="d">2. dress up</button>
-<button class="match-item" data-match="h">3. go out</button>
-<button class="match-item" data-match="i">4. keep up with</button>
-<button class="match-item" data-match="b">5. put together</button>
-<button class="match-item" data-match="e">6. save up</button>
-<button class="match-item" data-match="g">7. slip on</button>
-<button class="match-item" data-match="a">8. stand out</button>
-<button class="match-item" data-match="c">9. take back</button>
-</div>
-<div class="match-col definitions">
-<div class="match-heading">Definitions</div>
-<button class="definition-item" data-letter="a">a. be easy to see or notice</button>
-<button class="definition-item" data-letter="b">b. create something by joining or combining different things</button>
-<button class="definition-item" data-letter="c">c. return something</button>
-<button class="definition-item" data-letter="d">d. wear smarter clothes than usual</button>
-<button class="definition-item" data-letter="e">e. keep money for something in the future</button>
-<button class="definition-item" data-letter="f">f. reduce</button>
-<button class="definition-item" data-letter="g">g. put something on quickly</button>
-<button class="definition-item" data-letter="h">h. go somewhere for entertainment</button>
-<button class="definition-item" data-letter="i">i. understand something that is changing fast</button>
-</div>
-</div>
-<div class="match-status" id="matchStatus">Select a phrasal verb, then select its definition.</div>
-<button class="reset-match" id="resetMatch">Reset matching</button>
-</div>
-</section>
-<section class="screen accent-language" data-screen="10">
-<div class="stage-label">EXERCISE 8 · PHRASAL VERBS WITH GO</div>
-<h2>Complete the sentences</h2>
-<p class="instruction">Complete each sentence with the correct form of <b>go</b> and a particle from the box. Ask students to explain the meaning before clicking each blank to reveal the answer.</p>
-<div class="toolbar-line"><div class="go-bank">go + ahead · back · for · in · on · over · up</div><div class="mini-controls"><button class="hide-local">Hide answers</button><button class="reset-local">Reset</button></div></div>
-<div class="gap-grid">
-<div>a. The prices of leather bags have <button class="inline-blank" data-answer="gone up">__________</button> a lot recently.</div>
-<div>b. Why are you looking at me like that? What’s <button class="inline-blank" data-answer="going on">__________</button>?</div>
-<div>c. The design company <button class="inline-blank" data-answer="went for">__________</button> the applicant with the best portfolio.</div>
-<div>d. I <button class="inline-blank" data-answer="went back">__________</button> to the same shoe shop but there were no more pairs in my size.</div>
-<div>e. You’ll need to <button class="inline-blank" data-answer="go over">__________</button> all the figures in the report to check they’re correct.</div>
-<div>f. “Can I wear your necklace tonight?” “Sure, <button class="inline-blank" data-answer="go ahead">__________</button>!”</div>
-</div>
-</section>
-<section class="screen accent-language" data-screen="11">
-<div class="stage-label">EXERCISE 9 · PHRASAL VERBS IN CONTEXT</div>
-<h2>Complete Emma’s letter</h2>
-<p class="instruction">Complete the letter with phrasal verbs from Exercise 7. More than one answer may be possible. Compare your choices, then click each blank separately to check and discuss why it fits the context.</p>
-<div class="mini-controls align-right"><button class="hide-local">Hide answers</button><button class="reset-local">Reset</button></div><div class="letter">
-<p>Dear Jane,</p>
-<p>Last night, Maria, Sam and I (1) <button class="inline-blank" data-answer="went out">__________</button> clubbing.</p>
-<p>I was late back from work, so I just (2) <button class="inline-blank" data-answer="slipped on / pulled on">__________</button> some black jeans and a sparkly T-shirt, but the other two really (3) <button class="inline-blank" data-answer="dressed up">__________</button>!</p>
-<p>Maria chose a stunning purple dress and sprayed her hair pink. Sam (4) <button class="inline-blank" data-answer="put together">__________</button> the most outrageous outfit.</p>
-<p>When we got there, they both (5) <button class="inline-blank" data-answer="stood out">__________</button> on the dance floor and I looked very ordinary in comparison.</p>
-<p>Honestly, I can’t (6) <button class="inline-blank" data-answer="keep up with">__________</button> them — they’re so fashion-conscious!</p>
-<p>What would you do in my position?</p>
-</div>
-</section>
-<section class="screen accent-speaking" data-screen="12">
-<div class="stage-label">POST-TASK SPEAKING</div>
-<h2>What advice would you give Emma?</h2>
-<p class="instruction">Work in pairs. Give Emma two or three pieces of advice. For each piece of advice, give a reason or an example. Try to use at least two phrasal verbs from the lesson.</p>
-<div class="advice-layout">
-<div class="big-prompt">Prepare for 30 seconds → Speak for 60–90 seconds → Partner gives one follow-up question.</div>
-<div class="support-box">
-<h3>Useful starters</h3>
-<p>You could…</p>
-<p>If I were you, I’d…</p>
-<p>I think you should… because…</p>
-<p>Personally, I don’t think you need to…</p>
-</div>
-</div>
-<div class="recorder-card">
-<div>
-<b>Speaking recorder</b>
-<span>Record your response, listen back, and re-record if needed.</span>
-</div>
-<div class="recorder-controls">
-<button id="recordStart" type="button">● Record</button>
-<button disabled="" id="recordStop" type="button">■ Stop</button>
-<button disabled="" id="recordReset" type="button">Re-record</button>
-</div>
-<audio controls="" hidden="" id="recordPlayback"></audio>
-<div class="record-status" id="recordStatus">Ready to record.</div>
-<div class="ui-submit-row">
-<button class="ui-submit" id="adviceUiSubmit" type="button">Submit</button>
-<span class="ui-submit-status" id="adviceUiSubmitStatus"></span>
-</div></div>
-</section>
-<section class="screen accent-review" data-screen="13">
-<div class="stage-label">CONSOLIDATION CHALLENGE</div>
-<h2>Can you remember it?</h2>
-<p class="instruction">Answer each challenge aloud before clicking the card. Check one card at a time, then explain your answer or give another example.</p>
-<div class="challenge-grid">
-<div class="challenge-response-item"><button class="challenge-card" data-back="Example: suit · scarf · fashionable" data-front="Name 3 words for clothing or appearance.">Name 3 words for clothing or appearance.</button><textarea class="challenge-input" placeholder="Type your answer before checking..." rows="2"></textarea></div>
-<div class="challenge-response-item"><button class="challenge-card" data-back="Example: save up · stand out" data-front="Give 2 phrasal verbs from the listening.">Give 2 phrasal verbs from the listening.</button><textarea class="challenge-input" placeholder="Type your answer before checking..." rows="2"></textarea></div>
-<div class="challenge-response-item"><button class="challenge-card" data-back="Example: dress up" data-front="What is one two-part phrasal verb?">What is one two-part phrasal verb?</button><textarea class="challenge-input" placeholder="Type your answer before checking..." rows="2"></textarea></div>
-<div class="challenge-response-item"><button class="challenge-card" data-back="Example: You could wear what makes you feel confident." data-front="Give Emma one piece of advice.">Give Emma one piece of advice.</button><textarea class="challenge-input" placeholder="Type your answer before checking..." rows="2"></textarea></div>
-</div>
-<div class="ui-submit-row">
-<button class="ui-clear" id="consolidationUiSubmitClear" type="button">Clear</button>
-<button class="ui-submit" id="consolidationUiSubmit" type="button">Submit</button>
-<span class="ui-submit-status" id="consolidationUiSubmitStatus"></span>
-</div></section>
-<section class="screen accent-review" data-screen="14">
-<div class="stage-label">EXIT TICKET</div>
-<h2>Before you leave…</h2>
-<p class="instruction">Take one minute. Write or say one new phrasal verb you learned, one thing you can now do better, and one point you still want to practise.</p>
-<div class="exit-grid">
-<div><b>1. New phrasal verb</b><textarea placeholder="Type here..."></textarea></div>
-<div><b>2. I can now…</b><textarea placeholder="Type here..."></textarea></div>
-<div><b>3. I still need to practise…</b><textarea placeholder="Type here..."></textarea></div>
-</div>
-<div class="confidence big">
-<span>How confident are you about today’s lesson?</span>
-<button>1</button><button>2</button><button>3</button><button>4</button><button>5</button>
-<div class="confidence-scale-note">
-<span><b>1</b> = not confident yet</span>
-<span><b>5</b> = very confident</span>
-</div>
-<div class="confidence-purpose">
-  This is a self-rating for reflection and research data. It does not affect your score.
-</div>
-</div>
-<div class="ui-submit-row">
-<button class="ui-clear" id="exitUiSubmitClear" type="button">Clear</button>
-<button class="ui-submit" id="exitUiSubmit" type="button">Submit</button>
-<span class="ui-submit-status" id="exitUiSubmitStatus"></span>
-</div></section>
-<section class="screen accent-homework" data-screen="15">
-<div class="stage-label">HOMEWORK · TEACHER-ADDED EXTENSION</div>
-<h2>Reply to Emma</h2>
-<p class="instruction">Write a short reply to Emma from Exercise 9. Give clear advice, explain your reasons, and use three or four phrasal verbs from the lesson naturally and accurately.</p>
-<div class="homework-card">
-<div class="homework-checks">
-<span>✓ Give clear advice</span>
-<span>✓ Explain your reasons</span>
-<span>✓ Use 3–4 phrasal verbs naturally</span>
-<span>✓ Check word order carefully</span>
-</div>
-</div>
-</section>
-<section class="screen accent-homework" data-screen="16">
-<div class="thankyou-screen">
-<div class="stage-label">END OF UNIT 1.1</div>
-<h1>Thank You</h1>
-<p class="thankyou-sub">You have completed <b>Unit 1.1 – Fashion Matters</b>.</p>
-<div class="thankyou-line"></div>
-<p class="thankyou-note">Any questions?</p>
-</div>
-</section>
-</main>
-<footer class="footer">
-<button id="prevBtn">← Previous</button>
-<div class="teacher-tools">
-<button class="teacher-tool-btn" id="globalTimerBtn" type="button">Timer</button>
-</div>
-<div class="progress-wrap">
-<span id="counter">1 / 16</span>
-<div class="progress"><i id="progressBar"></i></div>
-</div>
-<button id="nextBtn">Next →</button>
-</footer>
-</div>
-<script src="assets/js/e-leap-live-config.js"></script><script src="assets/js/e-leap-live-api.js"></script><script src="assets/js/e-leap-sound.js"></script><script id="eleap-final-locked-app">
-const screens=[...document.querySelectorAll('.screen')];
-let current=0;
-const prev=document.getElementById('prevBtn'), next=document.getElementById('nextBtn');
-const counter=document.getElementById('counter'), bar=document.getElementById('progressBar');
-function stopMedia(){document.querySelectorAll('audio,video').forEach(m=>m.pause())}
-function showScreen(i){
-  const target=Math.max(0,Math.min(screens.length-1,i));
-  if(target!==current && typeof resetScreenState==='function') resetScreenState(screens[current]);
-  stopMedia(); current=target;
-  screens.forEach((s,idx)=>s.classList.toggle('active',idx===current));
-  counter.textContent=`${current+1} / ${screens.length}`;
-  bar.style.width=`${((current+1)/screens.length)*100}%`;
-  prev.disabled=current===0; next.disabled=current===screens.length-1;
-  if(window.ELEAP_FINAL_LIVE?.syncScreen) window.ELEAP_FINAL_LIVE.syncScreen(current+1);
-}
-prev.onclick=()=>showScreen(current-1); next.onclick=()=>showScreen(current+1);
-document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')showScreen(current+1);if(e.key==='ArrowLeft')showScreen(current-1)});
-
-// Poll
-document.querySelectorAll('.poll-btn').forEach(b=>b.onclick=()=>{
-  document.querySelectorAll('.poll-btn').forEach(x=>x.classList.remove('selected'));
-  b.classList.add('selected');
-  document.getElementById('pollResult').textContent=`Selected: ${b.textContent}. Type your explanation below.`;
-  document.getElementById('pollResponseArea')?.classList.remove('hidden');
-  document.getElementById('pollExplanation')?.focus();
-});
-
-// Timer
-let timerId=null;
-document.getElementById('thinkTimer').onclick=()=>{
-  clearInterval(timerId); let t=20; const d=document.getElementById('timerDisplay'); d.textContent=t;
-  timerId=setInterval(()=>{t--;d.textContent=t;if(t<=0){clearInterval(timerId);d.textContent='Go!'}},1000);
-};
-
-// Support toggles
-document.querySelectorAll('.support-toggle').forEach(b=>b.onclick=()=>{
-  b.nextElementSibling.classList.toggle('hidden');
-});
-
-// Speaking strategy layered reveal
-document.querySelectorAll('.layer-card').forEach(card=>card.onclick=()=>{
-  if(!card.dataset.step){card.dataset.step="1";card.textContent=card.dataset.layerTitle;card.classList.add('revealed')}
-  else if(card.dataset.step==="1"){card.dataset.step="2";card.innerHTML=`<b>${card.dataset.layerTitle}</b><br><span style="font-size:18px;font-weight:600">${card.dataset.layerSupport}</span>`}
-});
-
-// Vocabulary
-const vocab={
- clothes:['T-shirts','jeans','hoodies','skirts','dresses','blazers','suits','jackets','sweaters','shorts','uniforms'],
- footwear:['sneakers','trainers','sandals','high heels','boots','flip-flops'],
- jewellery:['earrings','necklaces','bracelets','rings','watches'],
- headgear:['caps','hats','beanies','helmets','scarves','headbands'],
- materials:['cotton','wool','leather','silk','denim','linen','polyester'],
- appearance:['casual','smart','elegant','trendy','sporty','neat','fashionable']
-};
-function loadVocab(key){document.getElementById('vocabPanel').innerHTML=vocab[key].map(x=>`<span>${x}</span>`).join('')}
-loadVocab('clothes');
-document.querySelectorAll('#vocabTabs .tab').forEach(btn=>btn.onclick=()=>{
-  document.querySelectorAll('#vocabTabs .tab').forEach(x=>x.classList.remove('active'));
-  btn.classList.add('active');loadVocab(btn.dataset.tab);
-});
-
-// Hotspots
-document.querySelectorAll('.hotspot').forEach(b=>b.onclick=()=>document.getElementById('hotspotInfo').textContent=b.dataset.hotspot);
-
-// Local answer reveals
-document.querySelectorAll('.blank-reveal,.inline-blank').forEach(b=>b.onclick=()=>{
-  if(!b.classList.contains('revealed')){b.textContent=b.dataset.answer;b.classList.add('revealed')}
-});
-
-// Confidence
-document.querySelectorAll('.confidence button').forEach(b=>b.onclick=()=>{
-  b.parentElement.querySelectorAll('button').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');
-});
-
-// Transcript tabs and clickable phrasal verbs
-const speakers={
-2:`I started working this year, so I’m able to get new clothes more regularly than before, when I had to <span class="phrasal-click" data-meaning="save money for something in the future">save up</span> for months. My mum thinks I should <span class="phrasal-click" data-meaning="reduce">cut down</span> the amount I spend on clothes. I don’t like to <span class="phrasal-click" data-meaning="go somewhere for entertainment / social activity">go out</span> in the same thing again. I always <span class="phrasal-click" data-meaning="wear smarter or special clothes than usual">dress up</span> when I go clubbing and try to <span class="phrasal-click" data-meaning="stay informed about something that changes quickly">keep up with</span> the latest fashions.`,
-3:`Shopping for clothes isn’t really my scene. I favour the casual look. I’ve got one favourite T-shirt, which a girlfriend gave me so I would always <span class="phrasal-click" data-meaning="be easy to see or notice">stand out</span> in a crowd.`,
-4:`My clothes have to be comfortable. I <span class="phrasal-click" data-meaning="put something on quickly">slip them on</span> and often <span class="phrasal-click" data-meaning="create something by combining different things">put together</span> outfits from things I find in street markets.`,
-5:`I have to make an effort to look good all the time. If I see something by chance, I’m likely to <span class="phrasal-click" data-meaning="choose / decide to take">go for</span> it. I did <span class="phrasal-click" data-meaning="return something">take back</span> a jacket last week because it was badly made.`
-};
-function loadSpeaker(n){
- const box=document.getElementById('speakerText');box.innerHTML=speakers[n];
- box.querySelectorAll('.phrasal-click').forEach(x=>x.onclick=()=>document.getElementById('meaningBox').textContent=`${x.textContent} = ${x.dataset.meaning}`);
-}
-loadSpeaker(2);
-document.querySelectorAll('#speakerTabs .tab').forEach(btn=>btn.onclick=()=>{
- document.querySelectorAll('#speakerTabs .tab').forEach(x=>x.classList.remove('active'));btn.classList.add('active');loadSpeaker(btn.dataset.speaker);
-});
-
-// Hints and rules
-document.querySelectorAll('.hint-btn').forEach(b=>b.onclick=()=>document.getElementById('hintBox').textContent=b.dataset.hint);
-document.querySelectorAll('.rule-card').forEach(b=>b.onclick=()=>{
- const box=document.getElementById('ruleBox');box.textContent=b.dataset.rule;box.classList.remove('hidden');
-});
-
-// Challenges
-document.querySelectorAll('.challenge-card').forEach(c=>c.onclick=()=>{
- if(!c.classList.contains('flipped')){c.textContent=c.dataset.back;c.classList.add('flipped')}
- else{c.textContent=c.dataset.front;c.classList.remove('flipped')}
-});
-
-showScreen(0);
-
-
-// FINAL CANDIDATE: Ex7 Step 1 listening selection check
-const ex7Btn=document.getElementById('checkEx7Listening');
-if(ex7Btn){
-  ex7Btn.addEventListener('click',()=>{
-    const boxes=[...document.querySelectorAll('.candidate-grid input[type="checkbox"]')];
-    let correct=0, totalCorrect=0;
-    boxes.forEach(b=>{
-      const should=b.dataset.correct==='true';
-      if(should) totalCorrect++;
-      if(b.checked===should) correct++;
-      b.closest('label').style.borderColor = (b.checked===should) ? '#77ad98' : '#bf8e8e';
-      b.closest('label').style.background = (b.checked===should) ? '#e8f3ee' : '#faeeee';
-    });
-    const perfect=correct===boxes.length;
-    document.getElementById('ex7ListeningFeedback').textContent=
-      perfect ? 'Correct. Now move to the matching task.' : 'Check your selection and listen again before matching.';
-    document.getElementById('ex7ListeningFeedback').style.color=perfect?'#075c49':'#8a4d4d';
-  });
-}
-
-// FINAL CANDIDATE: Ex7 real two-column matching
-let selectedVerb=null;
-document.querySelectorAll('.match-item').forEach(v=>v.addEventListener('click',()=>{
-  document.querySelectorAll('.match-item').forEach(x=>x.classList.remove('selected'));
-  selectedVerb=v;
-  v.classList.add('selected');
-  document.getElementById('matchStatus').textContent=`Selected: ${v.textContent}. Now choose a definition.`;
-}));
-document.querySelectorAll('.definition-item').forEach(d=>d.addEventListener('click',()=>{
-  if(!selectedVerb){
-    document.getElementById('matchStatus').textContent='Choose a phrasal verb first.';
-    return;
-  }
-  d.classList.add('selected');
-  const ok=selectedVerb.dataset.match===d.dataset.letter;
-  if(ok){
-    selectedVerb.classList.remove('selected'); d.classList.remove('selected');
-    selectedVerb.classList.add('matched'); d.classList.add('matched');
-    selectedVerb.disabled=true; d.disabled=true;
-    document.getElementById('matchStatus').textContent='Correct match.';
-    selectedVerb=null;
-  }else{
-    selectedVerb.classList.add('wrong'); d.classList.add('wrong');
-    document.getElementById('matchStatus').textContent='Not quite. Try again.';
-    setTimeout(()=>{
-      selectedVerb?.classList.remove('wrong');
-      d.classList.remove('wrong','selected');
-    },700);
-  }
-}));
-document.getElementById('resetMatch')?.addEventListener('click',()=>{
-  selectedVerb=null;
-  document.querySelectorAll('.match-item,.definition-item').forEach(x=>{
-    x.disabled=false;
-    x.classList.remove('selected','matched','wrong');
-  });
-  document.getElementById('matchStatus').textContent='Select a phrasal verb, then select its definition.';
-});
-
-// Hide / reset local inline answer controls
-document.querySelectorAll('.hide-local').forEach(btn=>btn.addEventListener('click',()=>{
-  const screen=btn.closest('.screen');
-  screen.querySelectorAll('.inline-blank.revealed').forEach(b=>{
-    b.textContent='__________';
-    b.classList.remove('revealed');
-  });
-}));
-document.querySelectorAll('.reset-local').forEach(btn=>btn.addEventListener('click',()=>{
-  const screen=btn.closest('.screen');
-  screen.querySelectorAll('.inline-blank').forEach(b=>{
-    b.textContent='__________';
-    b.classList.remove('revealed');
-  });
-}));
-
-
-// FINAL: Guided Discovery - each question reveals only its own answer
-document.querySelectorAll('.discovery-card').forEach(card=>{
-  card.addEventListener('click',()=>{
-    if(card.classList.contains('revealed')) return;
-    const answer=card.dataset.answer;
-    card.innerHTML=answer;
-    card.classList.add('revealed');
-  });
-});
-
-// FINAL: Exercise 7 Step 1 - check one listening item at a time
-document.querySelectorAll('.item-check').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    const heard=btn.dataset.heard==='yes';
-    btn.textContent=heard ? 'HEARD' : 'NOT HEARD';
-    btn.classList.add(heard ? 'heard' : 'not-heard');
-  });
-});
-
-
-// FINAL LOCKED: local response box
-document.getElementById('clearPollResponse')?.addEventListener('click',()=>{
-  const t=document.getElementById('pollExplanation'); if(t) t.value='';
-});
-
-// FINAL LOCKED: speaking recorder (local browser capture)
-(()=>{
-  const start=document.getElementById('recordStart'), stop=document.getElementById('recordStop'),
-        reset=document.getElementById('recordReset'), playback=document.getElementById('recordPlayback'),
-        status=document.getElementById('recordStatus');
-  if(!start || !navigator.mediaDevices?.getUserMedia) return;
-  let recorder=null, chunks=[], stream=null, url=null;
-  start.addEventListener('click', async()=>{
-    try{
-      stream=await navigator.mediaDevices.getUserMedia({audio:true});
-      chunks=[]; recorder=new MediaRecorder(stream);
-      recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
-      recorder.onstop=()=>{
-        const blob=new Blob(chunks,{type:recorder.mimeType||'audio/webm'});
-        if(url) URL.revokeObjectURL(url); url=URL.createObjectURL(blob);
-        playback.src=url; playback.hidden=false; reset.disabled=false;
-        stream?.getTracks().forEach(t=>t.stop()); stream=null;
-        status.textContent='Recording ready. Listen back or re-record.';
-      };
-      recorder.start(); start.disabled=true; stop.disabled=false; status.textContent='Recording…';
-    }catch(e){ status.textContent='Microphone permission is required to record.'; }
-  });
-  stop.addEventListener('click',()=>{if(recorder?.state==='recording'){recorder.stop();start.disabled=false;stop.disabled=true}});
-  reset.addEventListener('click',()=>{if(url)URL.revokeObjectURL(url);url=null;playback.removeAttribute('src');playback.hidden=true;reset.disabled=true;status.textContent='Ready to record.';});
-})();
-
-
-// FINAL LOCKED: Live Classroom integration — additive; lesson content remains immutable.
-window.ELEAP_FINAL_LIVE=(()=>{
-  const $=s=>document.querySelector(s);
-  const state={session:null,classState:null,timer:null,lastScreen:null};
-  const screenId=n=>`s${String(n).padStart(2,'0')}`;
-  const studentUrl=code=>{const u=new URL('student.html',location.href);u.searchParams.set('code',code);return u.toString()};
-  function modal(open){const m=$('#liveClassModal');if(m)m.hidden=!open}
-  function panel(open=true){const p=$('#persistentJoinPanel');if(p&&state.session)p.hidden=!open}
-  function updateUI(){
-    if(!state.session)return;
-    const joined=$('#joinedCount')?.textContent||'0';
-    $('#joinCode').textContent=state.session.join_code;
-    $('#joinQr').src=`https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=0&data=${encodeURIComponent(studentUrl(state.session.join_code))}`;
-    const status=state.classState?.class_status||'lobby';
-    $('#joinState').textContent=status==='live'?'Live':status==='ended'?'Ended':'Lobby';
-    $('#startTeaching').textContent=status==='live'?'Pause Class':'Start Teaching';
-    $('#persistentJoinPanel')?.classList.toggle('compact',status==='live');
-    const chip=$('#liveStatusChip'); chip.hidden=false; chip.classList.toggle('is-live',status==='live');
-    chip.innerHTML=`● ${status==='live'?'Live':'Lobby'} · <b>${joined}</b> joined`;
-    $('#liveClassBtn').textContent=state.session?'Class Controls':'Start Class';
-    $('#responsesBtn').hidden=false;
-  }
-  async function refresh(){
-    if(!state.session || !window.ELeapLive)return;
-    try{
-      const cs0=await ELeapLive.getClassState({joinCode:state.session.join_code});
-      state.classState=Array.isArray(cs0)?cs0[0]:cs0;
-      const st0=await ELeapLive.getTeacherStats({joinCode:state.session.join_code,teacherToken:state.session.teacher_token,screenId:screenId(current+1)});
-      const st=Array.isArray(st0)?st0[0]:st0;
-      if($('#joinedCount'))$('#joinedCount').textContent=st?.joined_count??0;
-      updateUI();
-    }catch(e){console.error('Live refresh',e)}
-  }
-  async function create(){
-    const name=$('#teacherNameInput').value.trim(), msg=$('#liveCreateStatus');
-    if(!name){msg.textContent='Enter the teacher name.';return}
-    msg.textContent='Creating session…';
-    try{
-      const d0=await ELeapLive.createSession(name);state.session=Array.isArray(d0)?d0[0]:d0;
-      localStorage.setItem('eleap_teacher_session',JSON.stringify(state.session));
-      msg.textContent=''; modal(false);panel(true);await refresh();startRefresh();await syncScreen(current+1);
-    }catch(e){msg.textContent=e.message}
-  }
-  async function toggle(){
-    if(!state.session)return;
-    const nextState=state.classState?.class_status==='live'?'lobby':'live';
-    try{
-      const d0=await ELeapLive.setClassStatus({joinCode:state.session.join_code,teacherToken:state.session.teacher_token,status:nextState});
-      state.classState=Array.isArray(d0)?d0[0]:d0;
-      if(nextState==='live') window.ELeapSound?.start?.();
-      updateUI(); await syncScreen(current+1);
-    }catch(e){alert(e.message)}
-  }
-  let syncSeq=0;
-  async function syncScreen(n){
-    if(!state.session || !window.ELeapLive)return;
-    const id=screenId(n);
-    const seq=++syncSeq;
-    try{
-      // Teacher lesson is the source of truth: always push the current slide.
-      await ELeapLive.goToScreen({
-        joinCode:state.session.join_code,
-        teacherToken:state.session.teacher_token,
-        screenId:id
-      });
-
-      // Verify once; retry if the session did not move.
-      const cs0=await ELeapLive.getClassState({joinCode:state.session.join_code});
-      const cs=Array.isArray(cs0)?cs0[0]:cs0;
-      if(seq!==syncSeq)return;
-
-      if(cs?.current_screen_id!==id){
-        await new Promise(r=>setTimeout(r,250));
-        if(seq!==syncSeq)return;
-        await ELeapLive.goToScreen({
-          joinCode:state.session.join_code,
-          teacherToken:state.session.teacher_token,
-          screenId:id
-        });
-      }
-      if(seq===syncSeq) state.lastScreen=id;
-    }catch(e){
-      console.error('Screen sync',e);
-    }
-  }
-  function startRefresh(){clearInterval(state.timer);state.timer=setInterval(refresh,1500)}
-  $('#liveClassBtn')?.addEventListener('click',()=>{state.session?panel(true):modal(true)});
-  $('#responsesBtn')?.addEventListener('click',()=>window.open('teacher-live.html','_blank'));
-  $('#createClassSession')?.addEventListener('click',create);
-  $('#copyStudentLink')?.addEventListener('click',async()=>{await navigator.clipboard.writeText(studentUrl(state.session.join_code));const b=$('#copyStudentLink');b.textContent='Copied';setTimeout(()=>b.textContent='Copy link',900)});
-  $('#startTeaching')?.addEventListener('click',toggle);
-  $('#hideJoinPanel')?.addEventListener('click',()=>panel(false));
-  document.querySelectorAll('[data-close-live]').forEach(x=>x.addEventListener('click',()=>modal(false)));
-  try{
-    const saved=JSON.parse(localStorage.getItem('eleap_teacher_session')||'null');
-    if(saved?.join_code&&saved?.teacher_token){
-      state.session=saved;
-      panel(true);
-      refresh();
-      startRefresh();
-      setTimeout(()=>syncScreen(current+1),150);
-    }
-  }catch{}
-  return {syncScreen};
-})();
-
-
-
-// Slide 4: one student response after exploring all categories.
-(()=>{
-  const input=document.getElementById("vocabMoreWords");
-  window.__resetVocabAdded=()=>{
-    if(input) input.value="";
-  };
-})();
-
-// Generic local recorder helper.
-function makeLocalRecorder(ids){
-  const start=document.getElementById(ids.start),stop=document.getElementById(ids.stop),
-        reset=document.getElementById(ids.reset),play=document.getElementById(ids.play),
-        status=document.getElementById(ids.status);
-  if(!start||!stop||!reset||!play||!status)return ()=>{};
-  let recorder=null,chunks=[],stream=null,url=null;
-  async function begin(){
-    if(!navigator.mediaDevices?.getUserMedia){status.textContent="Recording is not supported in this browser.";return}
-    try{
-      stream=await navigator.mediaDevices.getUserMedia({audio:true});chunks=[];
-      recorder=new MediaRecorder(stream);
-      recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
-      recorder.onstop=()=>{
-        const blob=new Blob(chunks,{type:recorder.mimeType||"audio/webm"});
-        if(url)URL.revokeObjectURL(url);url=URL.createObjectURL(blob);
-        play.src=url;play.hidden=false;reset.disabled=false;
-        stream?.getTracks().forEach(t=>t.stop());stream=null;
-        status.textContent="Recording ready. Listen back or re-record.";
-      };
-      recorder.start();start.disabled=true;stop.disabled=false;status.textContent="Recording…";
-    }catch(e){status.textContent="Microphone permission is required to record."}
-  }
-  function end(){if(recorder?.state==="recording")recorder.stop();start.disabled=false;stop.disabled=true}
-  function clear(){
-    if(recorder?.state==="recording")recorder.stop();
-    stream?.getTracks().forEach(t=>t.stop());stream=null;
-    if(url)URL.revokeObjectURL(url);url=null;
-    play.removeAttribute("src");play.hidden=true;reset.disabled=true;start.disabled=false;stop.disabled=true;
-    status.textContent="Ready to record.";
-  }
-  start.onclick=begin;stop.onclick=end;reset.onclick=clear;
-  return clear;
-}
-
-// Slide 5 type/record mode.
-const resetPhotoRecorder=makeLocalRecorder({
-  start:"photoRecordStart",stop:"photoRecordStop",reset:"photoRecordReset",
-  play:"photoRecordPlayback",status:"photoRecordStatus"
-});
-document.querySelectorAll("[data-photo-mode]").forEach(b=>b.addEventListener("click",()=>{
-  document.querySelectorAll("[data-photo-mode]").forEach(x=>x.classList.toggle("active",x===b));
-  const type=b.dataset.photoMode==="type";
-  document.getElementById("photoTypePanel")?.classList.toggle("hidden",!type);
-  document.getElementById("photoRecordPanel")?.classList.toggle("hidden",type);
-}));
-
-// FINAL LOCKED v1.1: automatic local reset whenever teacher leaves a screen.
-// Live/backend submissions are NOT deleted; only the projected local UI is reset.
-function resetScreenState(screen){
-  if(!screen)return;
-  const n=Number(screen.dataset.screen);
-
-  // text inputs / textareas local to the departing lesson screen
-  screen.querySelectorAll('textarea,input[type="text"]').forEach(el=>el.value="");
-
-  // selected buttons / confidence
-  screen.querySelectorAll('.selected').forEach(el=>el.classList.remove('selected'));
-
-  // local support
-  screen.querySelectorAll('.support').forEach(el=>el.classList.add('hidden'));
-
-  // local answer reveals
-  screen.querySelectorAll('.blank-reveal.revealed,.inline-blank.revealed').forEach(el=>{
-    el.textContent=el.classList.contains("blank-reveal")?"?":"__________";
-    el.classList.remove("revealed");
-  });
-
-  // Slide 1 response
-  if(n===1){
-    document.getElementById("pollResponseArea")?.classList.add("hidden");
-    const r=document.getElementById("pollResult");
-    if(r)r.textContent="Choose one option, then type your explanation in the response box below.";
-  }
-
-  // Slide 2 timer
-  if(n===2){
-    clearInterval(timerId);timerId=null;
-    const d=document.getElementById("timerDisplay");if(d)d.textContent="20";
-  }
-
-  // Slide 3 two-step cards
-  if(n===3){
-    screen.querySelectorAll(".layer-card").forEach((c,i)=>{
-      c.dataset.step="";
-      c.classList.remove("revealed");
-      c.textContent=String(i+1);
-    });
-  }
-
-  // Slide 4
-  if(n===4){
-    window.__resetVocabAdded?.();
-    const first=document.querySelector('#vocabTabs .tab[data-tab="clothes"]');
-    document.querySelectorAll("#vocabTabs .tab").forEach(x=>x.classList.toggle("active",x===first));
-    loadVocab("clothes");
-  }
-
-  // Slide 5
-  if(n===5){
-    const info=document.getElementById("hotspotInfo");if(info)info.textContent="Click a photo label for language support.";
-    resetPhotoRecorder?.();
-    document.querySelectorAll("[data-photo-mode]").forEach((x,i)=>x.classList.toggle("active",i===0));
-    document.getElementById("photoTypePanel")?.classList.remove("hidden");
-    document.getElementById("photoRecordPanel")?.classList.add("hidden");
-  }
-
-  // Slide 7 transcript
-  if(n===7){
-    const first=document.querySelector('#speakerTabs .tab[data-speaker="2"]');
-    document.querySelectorAll("#speakerTabs .tab").forEach(x=>x.classList.toggle("active",x===first));
-    loadSpeaker(2);
-    const mb=document.getElementById("meaningBox");if(mb)mb.textContent="Click a highlighted phrasal verb.";
-  }
-
-  // Slide 8 discovery cards: restore the initial prompt from data attributes saved below
-  if(n===8){
-    screen.querySelectorAll(".discovery-card").forEach(c=>{
-      if(c.dataset.initialHtml)c.innerHTML=c.dataset.initialHtml;
-      c.classList.remove("revealed");
-    });
-  }
-
-  // Slide 9 selection/matching
-  if(n===9){
-    screen.querySelectorAll('input[type="checkbox"]').forEach(x=>x.checked=false);
-    screen.querySelectorAll(".candidate-item label").forEach(x=>{x.style.borderColor="";x.style.background=""});
-    const f=document.getElementById("ex7ListeningFeedback");if(f)f.textContent="";
-    selectedVerb=null;
-    screen.querySelectorAll(".match-item,.definition-item").forEach(x=>{
-      x.disabled=false;x.classList.remove("selected","matched","wrong");
-    });
-    const ms=document.getElementById("matchStatus");if(ms)ms.textContent="Select a phrasal verb, then select its definition.";
-  }
-
-  // Slide 12 recorder
-  if(n===12){
-    document.getElementById("recordReset")?.click();
-  }
-
-  // Slide 13 cards
-  if(n===13){
-    screen.querySelectorAll(".challenge-card").forEach(c=>{
-      c.textContent=c.dataset.front;c.classList.remove("flipped");
-    });
-  }
-}
-
-// Save initial HTML for guided-discovery reset.
-document.querySelectorAll(".discovery-card").forEach(c=>{c.dataset.initialHtml=c.innerHTML});
-
-
-// FINAL LOCKED v1.2: global classroom timer
-(()=>{
-  const $=s=>document.querySelector(s);
-  const modal=$("#globalTimerModal");
-  const display=$("#globalTimerDisplay");
-  const stateLabel=$("#globalTimerState");
-  const soundToggle=$("#globalTimerSound");
-  let selected=60, remaining=60, timer=null, running=false, warned=false;
-
-  const fmt=n=>{
-    n=Math.max(0,Math.round(n));
-    return `${String(Math.floor(n/60)).padStart(2,"0")}:${String(n%60).padStart(2,"0")}`;
-  };
-
-  function render(){
-    display.textContent=fmt(remaining);
-    display.classList.toggle("warning",running && remaining<=30 && remaining>10);
-    display.classList.toggle("danger",running && remaining<=10);
-    stateLabel.textContent=remaining===0?"Time's up":running?"Running":"Ready";
-    $("#globalTimerPause").textContent=running?"Pause":"Resume";
-    $("#globalTimerPause").disabled=remaining<=0 || (!running && remaining===selected);
-  }
-
-  function gentle(kind){
-    if(!soundToggle?.checked)return;
-    if(window.ELeapSound){
-      if(kind==="start") return ELeapSound.start?.();
-      if(kind==="warning") return ELeapSound.warning?.();
-      if(kind==="end") return ELeapSound.timeUp?.();
-    }
-    // Browser-tone fallback
-    try{
-      const ctx=new (window.AudioContext||window.webkitAudioContext)();
-      const osc=ctx.createOscillator(), gain=ctx.createGain();
-      osc.connect(gain);gain.connect(ctx.destination);
-      osc.frequency.value=kind==="warning"?660:kind==="end"?520:440;
-      gain.gain.setValueAtTime(.0001,ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(.045,ctx.currentTime+.02);
-      gain.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+.25);
-      osc.start();osc.stop(ctx.currentTime+.28);
-    }catch{}
-  }
-
-  function stopInterval(){if(timer){clearInterval(timer);timer=null}}
-  function start(){
-    if(remaining<=0)remaining=selected;
-    stopInterval();running=true;warned=false;gentle("start");render();
-    timer=setInterval(()=>{
-      remaining=Math.max(0,remaining-1);
-      if(remaining===10 && !warned){warned=true;gentle("warning")}
-      if(remaining===0){
-        stopInterval();running=false;gentle("end");
-      }
-      render();
-    },1000);
-  }
-  function pause(){
-    if(running){stopInterval();running=false;render()}
-    else if(remaining>0){start()}
-  }
-  function reset(){
-    stopInterval();running=false;remaining=selected;warned=false;render();
-  }
-  function setPreset(sec){
-    selected=sec;remaining=sec;stopInterval();running=false;warned=false;
-    document.querySelectorAll("[data-timer-seconds]").forEach(b=>
-      b.classList.toggle("active",Number(b.dataset.timerSeconds)===sec));
-    render();
-  }
-
-  $("#globalTimerBtn")?.addEventListener("click",()=>{modal.hidden=false;render()});
-  document.querySelectorAll("[data-close-timer]").forEach(x=>x.addEventListener("click",()=>modal.hidden=true));
-  document.querySelectorAll("[data-timer-seconds]").forEach(b=>b.addEventListener("click",()=>setPreset(Number(b.dataset.timerSeconds))));
-  $("#globalTimerStart")?.addEventListener("click",start);
-  $("#globalTimerPause")?.addEventListener("click",pause);
-  $("#globalTimerAdd")?.addEventListener("click",()=>{remaining+=30;selected=Math.max(selected,remaining);render()});
-  $("#globalTimerReset")?.addEventListener("click",reset);
-
-  soundToggle.checked=window.ELeapSound?.isEnabled?.() ?? true;
-  soundToggle.addEventListener("change",()=>window.ELeapSound?.setEnabled?.(soundToggle.checked));
-  render();
-})();
-
-
-// FINAL v1.3 MEDIA RESTORE — proven Supabase private-media loader.
-// Intentionally isolated: no lesson, timer, join, or interaction logic is changed.
-(()=>{
-  const MEDIA_SIGN_ENDPOINT="https://xfisojqahojcsfrjjxab.supabase.co/functions/v1/get-media-url";
-  const mediaUrlCache=new Map();
-
-  async function getSignedMediaUrl(raw){
-    if(!raw) return "";
-    const key=String(raw).replace(/^PRIVATE_MEDIA\//,"");
-    const cached=mediaUrlCache.get(key);
-    if(cached && cached.expiresAt>Date.now()+60000) return cached.url;
-
-    try{
-      const res=await fetch(MEDIA_SIGN_ENDPOINT,{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({path:key})
-      });
-      if(!res.ok) throw new Error("Signed media request failed: "+res.status);
-      const data=await res.json();
-      if(!data?.url) throw new Error("No signed URL returned");
-      const ttl=Math.max(60,Number(data.expiresIn)||3600);
-      mediaUrlCache.set(key,{url:data.url,expiresAt:Date.now()+ttl*1000});
-      return data.url;
-    }catch(err){
-      console.error("E-LEAP private media error",key,err);
-      return "";
-    }
-  }
-
-  function showUnavailable(el){
-    el.dataset.mediaState="error";
-    el.style.display="none";
-    const existing=el.nextElementSibling;
-    if(existing?.classList?.contains("eleap-media-unavailable")) return;
-    const box=document.createElement("div");
-    box.className="eleap-media-unavailable";
-    box.innerHTML='<span>Private media unavailable.</span><button type="button">Retry</button>';
-    el.insertAdjacentElement("afterend",box);
-    box.querySelector("button").addEventListener("click",()=>{
-      box.remove();
-      el.style.display="";
-      hydrateOne(el,true);
-    });
-  }
-
-  async function hydrateOne(el,force=false){
-    const key=el.dataset.mediaKey || el.dataset.privatePath;
-    if(!key) return;
-
-    el.dataset.mediaState="loading";
-    const oldError=el.nextElementSibling;
-    if(oldError?.classList?.contains("eleap-media-unavailable")) oldError.remove();
-
-    if(force) mediaUrlCache.delete(String(key).replace(/^PRIVATE_MEDIA\//,""));
-    const url=await getSignedMediaUrl(key);
-    if(!url){ showUnavailable(el); return; }
-
-    try{
-      el.onerror=()=>showUnavailable(el);
-
-      if(el.tagName==="IMG"){
-        el.src=url;
-        await new Promise((resolve,reject)=>{
-          if(el.complete && el.naturalWidth>0) return resolve();
-          const ok=()=>{cleanup();resolve()};
-          const bad=()=>{cleanup();reject(new Error("Image load failed"))};
-          const cleanup=()=>{el.removeEventListener("load",ok);el.removeEventListener("error",bad)};
-          el.addEventListener("load",ok,{once:true});
-          el.addEventListener("error",bad,{once:true});
-        });
-      }else if(el.tagName==="AUDIO" || el.tagName==="VIDEO"){
-        el.src=url;
-        el.load();
-        // Metadata is enough to confirm that the private URL is usable.
-        await new Promise((resolve,reject)=>{
-          if(el.readyState>=1) return resolve();
-          const ok=()=>{cleanup();resolve()};
-          const bad=()=>{cleanup();reject(new Error("Media metadata load failed"))};
-          const cleanup=()=>{
-            el.removeEventListener("loadedmetadata",ok);
-            el.removeEventListener("error",bad);
-          };
-          el.addEventListener("loadedmetadata",ok,{once:true});
-          el.addEventListener("error",bad,{once:true});
-          setTimeout(()=>{cleanup();resolve()},8000);
-        });
-      }
-      el.dataset.mediaState="ready";
-      el.style.display="";
-    }catch(err){
-      console.error("E-LEAP media element failed",key,err);
-      showUnavailable(el);
-    }
-  }
-
-  async function hydrateMedia(root=document){
-    const nodes=[...root.querySelectorAll("[data-media-key]")];
-    await Promise.all(nodes.map(el=>hydrateOne(el)));
-  }
-
-  // Run after the page DOM exists, exactly once.
-  if(document.readyState==="loading"){
-    document.addEventListener("DOMContentLoaded",()=>hydrateMedia(document),{once:true});
-  }else{
-    hydrateMedia(document);
-  }
-
-  // Expose only for manual retry/testing.
-  window.ELEAP_PRIVATE_MEDIA={
-    hydrate:()=>hydrateMedia(document),
-    retryAll:()=>{
-      mediaUrlCache.clear();
-      return hydrateMedia(document);
-    }
-  };
-})();
-
-// FINAL v1.3.1 — UI-only Submit state.
-// No SQL, no backend schema, no Response Wall rewrite.
-(()=>{
-  const setStatus=(id,msg)=>{
-    const s=document.getElementById(id+"Status");
-    if(s) s.textContent=msg;
-  };
-
-  document.getElementById("pollUiSubmit")?.addEventListener("click",()=>{
-    const choice=document.querySelector('[data-screen="1"] .poll-btn.selected');
-    const text=document.getElementById("pollExplanation")?.value.trim();
-    setStatus("pollUiSubmit", choice&&text ? "Submitted ✓" : "Choose + type first");
-  });
-
-  document.getElementById("vocabUiSubmit")?.addEventListener("click",()=>{
-    const text=document.getElementById("vocabMoreWords")?.value.trim();
-    setStatus("vocabUiSubmit",text ? "Submitted ✓" : "Type your response first");
-  });
-  document.getElementById("vocabUiSubmitClear")?.addEventListener("click",()=>{
-    window.__resetVocabAdded?.();setStatus("vocabUiSubmit","");
-  });
-
-  document.getElementById("photoUiSubmit")?.addEventListener("click",()=>{
-    const typeVisible=!document.getElementById("photoTypePanel")?.classList.contains("hidden");
-    const typed=document.getElementById("photoResponseText")?.value.trim();
-    const recorded=!document.getElementById("photoRecordPlayback")?.hidden;
-    setStatus("photoUiSubmit",
-      typeVisible ? (typed?"Submitted ✓":"Type first") : (recorded?"Submitted ✓":"Record first")
-    );
-  });
-  document.getElementById("photoUiSubmitClear")?.addEventListener("click",()=>{
-    const t=document.getElementById("photoResponseText"); if(t)t.value="";
-    document.getElementById("photoRecordReset")?.click();
-    setStatus("photoUiSubmit","");
-  });
-
-  document.getElementById("adviceUiSubmit")?.addEventListener("click",()=>{
-    const recorded=!document.getElementById("recordPlayback")?.hidden;
-    setStatus("adviceUiSubmit",recorded?"Submitted ✓":"Record first");
-  });
-
-  document.getElementById("consolidationUiSubmit")?.addEventListener("click",()=>{
-    const a=[...document.querySelectorAll('[data-screen="13"] .challenge-input')].map(x=>x.value.trim());
-    setStatus("consolidationUiSubmit",a.length && a.every(Boolean) ? "Submitted ✓" : "Complete all answers");
-  });
-  document.getElementById("consolidationUiSubmitClear")?.addEventListener("click",()=>{
-    document.querySelectorAll('[data-screen="13"] .challenge-input').forEach(x=>x.value="");
-    setStatus("consolidationUiSubmit","");
-  });
-
-  document.getElementById("exitUiSubmit")?.addEventListener("click",()=>{
-    const a=[...document.querySelectorAll('[data-screen="14"] textarea')].map(x=>x.value.trim());
-    const conf=document.querySelector('[data-screen="14"] .confidence button.selected');
-    setStatus("exitUiSubmit",a.length && a.every(Boolean) && conf ? "Submitted ✓" : "Complete all fields");
-  });
-  document.getElementById("exitUiSubmitClear")?.addEventListener("click",()=>{
-    document.querySelectorAll('[data-screen="14"] textarea').forEach(x=>x.value="");
-    document.querySelectorAll('[data-screen="14"] .confidence button').forEach(x=>x.classList.remove("selected"));
-    setStatus("exitUiSubmit","");
-  });
-})();
-</script>
+<div class="app" data-role="teacher">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">E</div>
+      <div class="brand-copy">
+        <div class="brand-name">E-LEAP</div>
+        <div class="brand-sub">English Learning, Evaluation<br>& Analytics Platform</div><div class="approved-mark">APPROVED MASTER · v1.0</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <button class="nav-item active" data-view="courses"><span>▦</span><b>Courses</b></button>
+      <button class="nav-item" data-view="skills"><span>◫</span><b>Skills Lab</b></button>
+      <button class="nav-item" data-view="assignments"><span>✓</span><b>Assignments</b><em class="badge student-only">2</em></button>
+      <button class="nav-item" data-view="mock"><span>◉</span><b>Mock Tests</b></button>
+      <button class="nav-item" data-view="progress"><span>↗</span><b>Progress</b></button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="role-box">
+        <span>VIEW AS</span>
+        <div class="role-switch">
+          <button class="role-btn active" data-role="teacher">Teacher</button>
+          <button class="role-btn" data-role="student">Student</button>
+        </div>
+      </div>
+      <button class="side-minor">Profile</button>
+      <button class="side-minor">Settings</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <div class="top-title" id="topTitle">Courses</div>
+        <div class="top-sub" id="topSub">Programmes, classes and lessons</div>
+      </div>
+      <div class="top-actions">
+        <button class="icon-btn">⌕</button>
+        <button class="icon-btn">○</button>
+        <div class="user-chip"><span class="avatar">MP</span><span id="roleText">Teacher</span></div>
+      </div>
+    </header>
+
+    <!-- COURSES -->
+    <section class="view active" id="courses">
+      <div class="page-intro">
+        <div>
+          <div class="kicker">COURSES</div>
+          <h1 class="teacher-only">Teaching programmes</h1>
+          <h1 class="student-only">My courses</h1>
+          <p class="teacher-only">Open a course, choose a class, and continue from the current lesson.</p>
+          <p class="student-only">Continue your course from where you stopped.</p>
+        </div>
+      </div>
+
+      <div class="programme-list">
+        <button class="programme-row open-course" data-course="objective">
+          <span class="programme-accent"></span>
+          <span class="programme-copy">
+            <span class="meta-line"><em>B2 · MAIN COURSE</em><small class="teacher-only">3 classes</small><small class="student-only">42% complete</small></span>
+            <b>Objective First B2</b>
+            <small>12 units · Exam-oriented English</small>
+          </span>
+          <span class="programme-current teacher-only"><small>Current delivery</small><b>U2 · L3</b></span>
+          <span class="programme-current student-only"><small>Next</small><b>U2 · L3</b></span>
+          <span class="arrow">→</span>
+        </button>
+
+        <button class="programme-row open-course" data-course="life">
+          <span class="programme-accent muted"></span>
+          <span class="programme-copy">
+            <span class="meta-line"><em>INTERMEDIATE</em><small class="teacher-only">2 classes</small><small class="student-only">31% complete</small></span>
+            <b>Life Intermediate</b>
+            <small>12 units · General English</small>
+          </span>
+          <span class="programme-current"><small>Current</small><b>U4 · L1</b></span>
+          <span class="arrow">→</span>
+        </button>
+
+        <div class="programme-row esp-family">
+          <span class="programme-accent soft"></span>
+          <span class="programme-copy">
+            <span class="meta-line"><em>COURSE FAMILY</em><small>2 programmes</small></span>
+            <b>ESP</b>
+            <small>English for Specific Purposes</small>
+          </span>
+          <span class="esp-branches">
+            <button class="branch open-course" data-course="pharmacy"><b>English for Pharmacy</b><small>Open →</small></button>
+            <button class="branch open-course" data-course="medical"><b>Medical English</b><small>Open →</small></button>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- COURSE DETAIL -->
+    <section class="view" id="course-detail">
+      <button class="back-link" id="backToCourses">← Courses</button>
+      <div class="course-header">
+        <div>
+          <div class="kicker" id="courseLevel">B2 COURSE</div>
+          <h1 id="courseTitle">Objective First B2</h1>
+          <p id="courseDesc">Exam-oriented English with classroom delivery and self-study.</p>
+        </div>
+        <div class="course-summary">
+          <div><span>Units</span><strong id="summaryUnits">12</strong></div>
+          <div class="teacher-only"><span>Classes</span><strong id="summaryClasses">3</strong></div>
+          <div><span class="teacher-only">Current delivery</span><span class="student-only">Progress</span><strong id="summaryCurrent">U2 · L3</strong></div>
+        </div>
+      </div>
+
+      <div class="course-continue">
+        <div>
+          <span class="eyebrow teacher-only">CURRENT CLASS POSITION</span>
+          <span class="eyebrow student-only">CONTINUE LEARNING</span>
+          <strong class="teacher-only">B2-A · Unit 2 · Lesson 3</strong>
+          <strong class="student-only">Unit 2 · Lesson 3</strong>
+          <small class="teacher-only">Last taught: 24 Sep · Next: Unit 2 · Lesson 4</small>
+          <small class="student-only">42% complete · Last activity: yesterday</small>
+        </div>
+        <button class="primary teacher-only" id="courseStartClass">Start Class</button>
+        <button class="primary student-only" id="courseContinueLearn">Continue</button>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" data-course-tab="units">Units</button>
+        <button class="tab teacher-only" data-course-tab="classes">Classes</button>
+        <button class="tab" data-course-tab="progress">Progress</button>
+      </div>
+
+      <div class="course-panel active" data-course-panel="units">
+        <div class="section-tools">
+          <div>
+            <h3>Units</h3>
+            <p>Course → Unit → Lesson → Activity</p>
+          </div>
+          <div class="tools-right">
+            <input class="search-input" placeholder="Search units or lessons"/>
+            <select class="teacher-only"><option>All status</option><option>Published</option><option>Review</option><option>Draft</option></select>
+          </div>
+        </div>
+
+        <div class="unit-list">
+          <button class="unit-row open-unit">
+            <span class="unit-no">01</span>
+            <span class="unit-copy"><b>Unit 1</b><small>A question of sport</small></span>
+            <span class="unit-meta">6 lessons</span>
+            <span class="student-only unit-meta">100%</span>
+            <span class="teacher-only status-pill published">Published</span>
+            <span class="arrow">→</span>
+          </button>
+          <button class="unit-row">
+            <span class="unit-no">02</span>
+            <span class="unit-copy"><b>Unit 2</b><small>Topic title</small></span>
+            <span class="unit-meta">6 lessons</span>
+            <span class="student-only unit-meta">42%</span>
+            <span class="teacher-only status-pill review">Review</span>
+            <span class="arrow">→</span>
+          </button>
+          <button class="unit-row">
+            <span class="unit-no">03</span>
+            <span class="unit-copy"><b>Unit 3</b><small>Topic title</small></span>
+            <span class="unit-meta">6 lessons</span>
+            <span class="student-only unit-meta">0%</span>
+            <span class="teacher-only status-pill draft">Draft</span>
+            <span class="arrow">→</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="course-panel" data-course-panel="classes">
+        <div class="section-tools">
+          <div><h3>Classes</h3><p>Each class has its own teaching sessions, students and progress.</p></div>
+          <button class="primary small">+ Create class</button>
+        </div>
+        <div class="class-list">
+          <button class="class-row open-class">
+            <span><b>B2-A</b><small>28 students</small></span>
+            <span><small>Current lesson</small><b>U2 · L3</b></span>
+            <span><small>Next lesson</small><b>U2 · L4</b></span>
+            <span><small>Last taught</small><b>24 Sep</b></span>
+            <span class="arrow">→</span>
+          </button>
+          <button class="class-row">
+            <span><b>B2-B</b><small>26 students</small></span>
+            <span><small>Current lesson</small><b>U2 · L1</b></span>
+            <span><small>Next lesson</small><b>U2 · L2</b></span>
+            <span><small>Last taught</small><b>23 Sep</b></span>
+            <span class="arrow">→</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="course-panel" data-course-panel="progress">
+        <div class="metric-grid three">
+          <div class="metric"><span>Completion</span><strong>68%</strong><small>+9% this month</small></div>
+          <div class="metric"><span>Performance</span><strong>74%</strong><small>+4 points</small></div>
+          <div class="metric"><span>Assignments</span><strong>86%</strong><small>5 late</small></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- UNIT -->
+    <section class="view" id="unit-detail">
+      <button class="back-link" id="backToCourse">← Objective First B2</button>
+      <div class="page-intro">
+        <div>
+          <div class="kicker">UNIT 1</div>
+          <h1>A question of sport</h1>
+          <p>6 lessons · 1 review · 1 unit check</p>
+        </div>
+      </div>
+      <div class="lesson-list">
+        <button class="lesson-row open-lesson">
+          <span class="lesson-no">L1</span>
+          <span class="lesson-copy"><b>Vocabulary & Speaking</b><small>Lead-in · Vocabulary · Speaking</small></span>
+          <span class="teacher-only status-pill published">Approved</span>
+          <span class="student-only lesson-progress">Complete</span>
+          <span class="lesson-mode-text">Classroom + Self-study</span>
+          <span class="arrow">→</span>
+        </button>
+        <button class="lesson-row">
+          <span class="lesson-no">L2</span>
+          <span class="lesson-copy"><b>Reading</b><small>Reading · Vocabulary · Review</small></span>
+          <span class="teacher-only status-pill review">Review</span>
+          <span class="student-only lesson-progress">42%</span>
+          <span class="lesson-mode-text">Classroom + Self-study</span>
+          <span class="arrow">→</span>
+        </button>
+        <button class="lesson-row">
+          <span class="lesson-no">L3</span>
+          <span class="lesson-copy"><b>Language Focus</b><small>Guided discovery · Practice</small></span>
+          <span class="teacher-only status-pill draft">Draft</span>
+          <span class="student-only lesson-progress">Not started</span>
+          <span class="lesson-mode-text">Classroom + Self-study</span>
+          <span class="arrow">→</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- LESSON -->
+    <section class="view" id="lesson">
+      <button class="back-link" id="backToUnit">← Unit 1</button>
+      <div class="lesson-header">
+        <div>
+          <div class="kicker">OBJECTIVE FIRST B2 · UNIT 1</div>
+          <div class="lesson-title-line">
+            <h1>Lesson 1 · Vocabulary & Speaking</h1>
+            <span class="teacher-only status-pill published">Approved</span>
+          </div>
+        </div>
+        <div class="segmented">
+          <button class="lesson-mode active" data-mode="classroom">Classroom</button>
+          <button class="lesson-mode" data-mode="selfstudy">Self-study</button>
+          <button class="lesson-mode teacher-only" data-mode="edit">Edit</button>
+        </div>
+      </div>
+
+      <div class="lesson-layout">
+        <aside class="stage-nav">
+          <button class="stage active"><span>01</span><b>Lead-in</b></button>
+          <button class="stage"><span>02</span><b>Vocabulary</b></button>
+          <button class="stage"><span>03</span><b>Reading</b></button>
+          <button class="stage"><span>04</span><b>Language</b></button>
+          <button class="stage"><span>05</span><b>Practice</b></button>
+          <button class="stage"><span>06</span><b>Speaking</b></button>
+          <button class="stage"><span>07</span><b>Review</b></button>
+        </aside>
+
+        <div class="lesson-canvas">
+          <div class="canvas-top">
+            <span class="activity-label">LEAD-IN</span>
+            <button class="ghost tiny teacher-only">Teacher panel</button>
+          </div>
+          <h2>What makes a sport exciting to watch?</h2>
+          <p class="lead-copy">Discuss with a partner. Give one example and explain your choice.</p>
+
+          <div class="student-only selfstudy-flow">
+            <span>Learn</span><i>→</i><span>Try</span><i>→</i><span>Check</span><i>→</i><span>Feedback</span><i>→</i><span>Retry</span><i>→</i><span>Complete</span>
+          </div>
+
+          <div class="activity-steps">
+            <div><span>01</span><b>Think</b><small>Choose one sport.</small></div>
+            <div><span>02</span><b>Pair</b><small>Compare your reasons.</small></div>
+            <div><span>03</span><b>Share</b><small>Report one idea.</small></div>
+          </div>
+
+          <div class="canvas-bottom">
+            <span class="teacher-only">Question → Student response → Reveal → Explanation → Next</span>
+            <span class="student-only">Your progress is saved at meaningful checkpoints only.</span>
+            <button class="primary teacher-only" id="startClassBtn">Start Class</button>
+            <button class="primary student-only">Continue Activity</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CLASS DETAIL -->
+    <section class="view" id="class-detail">
+      <button class="back-link" id="backToClasses">← Objective First B2 · Classes</button>
+      <div class="class-header">
+        <div>
+          <div class="kicker">OBJECTIVE FIRST B2</div>
+          <h1>B2-A</h1>
+          <p>28 students · Active class</p>
+        </div>
+        <div class="join-card">
+          <span>JOIN CODE</span><strong>B2A-2468</strong><button>Copy</button>
+        </div>
+      </div>
+
+      <div class="class-current">
+        <div><span>Current lesson</span><strong>Unit 2 · Lesson 3</strong></div>
+        <div><span>Last taught</span><strong>24 Sep</strong></div>
+        <div><span>Next lesson</span><strong>Unit 2 · Lesson 4</strong></div>
+        <button class="primary" id="classStartBtn">Start Class</button>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" data-class-tab="students">Students</button>
+        <button class="tab" data-class-tab="sessions">Sessions</button>
+        <button class="tab" data-class-tab="assignments">Assignments</button>
+        <button class="tab" data-class-tab="results">Results</button>
+      </div>
+
+      <div class="class-panel active" data-class-panel="students">
+        <div class="student-table">
+          <div class="student-head"><span>Student</span><span>Completion</span><span>Assignments</span><span>Last active</span><span></span></div>
+          <button class="student-row open-student"><span><b>Nguyen Minh Anh</b><small>Student ID 001</small></span><span>82%</span><span>12/14</span><span>Today</span><span>View →</span></button>
+          <button class="student-row"><span><b>Tran Gia Han</b><small>Student ID 002</small></span><span>74%</span><span>13/14</span><span>Yesterday</span><span>View →</span></button>
+          <button class="student-row"><span><b>Le Duc Minh</b><small>Student ID 003</small></span><span>51%</span><span>9/14</span><span>5 days ago</span><span>View →</span></button>
+        </div>
+      </div>
+
+      <div class="class-panel" data-class-panel="sessions">
+        <div class="session-list">
+          <div class="session-row"><span><b>24 Sep</b><small>Unit 2 · Lesson 3</small></span><span>26/28 joined</span><span>84% response rate</span><span>Completed</span></div>
+          <div class="session-row"><span><b>22 Sep</b><small>Unit 2 · Lesson 2</small></span><span>27/28 joined</span><span>81% response rate</span><span>Completed</span></div>
+        </div>
+      </div>
+
+      <div class="class-panel" data-class-panel="assignments">
+        <div class="empty-state"><h3>Class assignments</h3><p>Assignments targeted to B2-A appear here.</p></div>
+      </div>
+
+      <div class="class-panel" data-class-panel="results">
+        <div class="metric-grid three">
+          <div class="metric"><span>Completion</span><strong>78%</strong><small>+9%</small></div>
+          <div class="metric"><span>Performance</span><strong>74%</strong><small>+4 points</small></div>
+          <div class="metric"><span>Participation</span><strong>82%</strong><small>Stable</small></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STUDENT PROFILE -->
+    <section class="view" id="student-profile">
+      <button class="back-link" id="backToClass">← B2-A · Students</button>
+      <div class="student-profile-header">
+        <div>
+          <div class="kicker">STUDENT PROFILE</div>
+          <h1>Nguyen Minh Anh</h1>
+          <p>Objective First B2 · B2-A · Active</p>
+        </div>
+      </div>
+
+      <div class="profile-grid">
+        <div class="profile-card"><span>Course completion</span><strong>82%</strong><small>+12% this month</small></div>
+        <div class="profile-card"><span>Assignments</span><strong>12/14</strong><small>1 late · 1 missing</small></div>
+        <div class="profile-card"><span>Mock Tests</span><strong>2</strong><small>Latest: 71%</small></div>
+        <div class="profile-card"><span>Engagement</span><strong>High</strong><small>Active today</small></div>
+      </div>
+
+      <div class="profile-panels">
+        <div class="panel">
+          <div class="panel-title"><h3>Skill profile</h3><span>Trend</span></div>
+          <div class="skill-progress"><span>Reading</span><div class="bar"><i style="width:78%"></i></div><b>78</b><em>+6</em></div>
+          <div class="skill-progress"><span>Listening</span><div class="bar"><i style="width:69%"></i></div><b>69</b><em>+8</em></div>
+          <div class="skill-progress"><span>Speaking</span><div class="bar"><i style="width:74%"></i></div><b>74</b><em>+3</em></div>
+          <div class="skill-progress"><span>Writing</span><div class="bar"><i style="width:67%"></i></div><b>67</b><em>-2</em></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title"><h3>Recent feedback</h3><span>Latest</span></div>
+          <div class="feedback-item"><b>Writing Task 1</b><small>Good organisation. Review tense consistency.</small></div>
+          <div class="feedback-item"><b>Speaking Practice 02</b><small>Clear ideas; work on fluency between points.</small></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS LAB -->
+    <section class="view" id="skills">
+      <div class="page-intro">
+        <div><div class="kicker">SKILLS LAB</div><h1>Focused practice</h1><p>Practice beyond the core lesson with a clear next step.</p></div>
+      </div>
+      <div class="skills-list">
+        <button class="skill-row"><span class="skill-letter">R</span><span><b>Reading</b><small>Current focus: inference</small></span><span><small>Recent</small><b>76%</b></span><span><small>Recommended next</small><b>B2 Reading Set 4</b></span><span class="arrow">→</span></button>
+        <button class="skill-row"><span class="skill-letter">L</span><span><b>Listening</b><small>Current focus: detail</small></span><span><small>Recent</small><b>69%</b></span><span><small>Recommended next</small><b>B2 Listening Set 4</b></span><span class="arrow">→</span></button>
+        <button class="skill-row"><span class="skill-letter">S</span><span><b>Speaking</b><small>Current focus: fluency</small></span><span><small>Recent</small><b>72%</b></span><span><small>Recommended next</small><b>Speaking Set 3</b></span><span class="arrow">→</span></button>
+        <button class="skill-row"><span class="skill-letter">W</span><span><b>Writing</b><small>Current focus: organisation</small></span><span><small>Recent</small><b>67%</b></span><span><small>Recommended next</small><b>Writing Set 2</b></span><span class="arrow">→</span></button>
+      </div>
+    </section>
+
+    <!-- ASSIGNMENTS -->
+    <section class="view" id="assignments">
+      <div class="page-intro with-action">
+        <div>
+          <div class="kicker">ASSIGNMENTS</div>
+          <h1 class="teacher-only">Assign, submit and grade</h1>
+          <h1 class="student-only">My assignments</h1>
+          <p class="teacher-only">One workflow for online tasks, typed writing, speaking and paper uploads.</p>
+          <p class="student-only">Complete work online or upload photos/PDF when required.</p>
+        </div>
+        <button class="primary teacher-only">+ New assignment</button>
+      </div>
+
+      <div class="tabs assignment-tabs">
+        <button class="tab active" data-assignment-tab="current">Current</button>
+        <button class="tab teacher-only" data-assignment-tab="grade">To Grade <span class="count">18</span></button>
+        <button class="tab" data-assignment-tab="returned">Returned</button>
+      </div>
+
+      <div class="assignment-panel active" data-assignment-panel="current">
+        <div class="filter-row teacher-only">
+          <select><option>All courses</option><option>Objective First B2</option><option>Life Intermediate</option></select>
+          <select><option>All classes</option><option>B2-A</option><option>B2-B</option></select>
+          <select><option>All types</option><option>Online</option><option>Writing</option><option>Speaking</option><option>Paper upload</option></select>
+        </div>
+        <div class="assignment-table">
+          <div class="assignment-head"><span>Assignment</span><span>Type</span><span>Status</span><span>Due</span><span></span></div>
+          <div class="assignment-item">
+            <span><b>Writing Task 1</b><small>Objective First B2 · B2-A</small></span>
+            <span>Typed / Paper</span>
+            <span class="teacher-only">24 / 28 submitted</span><span class="student-only">Submitted</span>
+            <span>28 Sep</span>
+            <button>Open →</button>
+          </div>
+          <div class="assignment-item">
+            <span><b>Speaking Practice 02</b><small>Life Intermediate · LI-B</small></span>
+            <span>Audio recording</span>
+            <span class="teacher-only">19 / 22 submitted</span><span class="student-only">Due soon</span>
+            <span>30 Sep</span>
+            <button>Open →</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="assignment-panel" data-assignment-panel="grade">
+        <div class="grading-shell">
+          <aside class="submission-list">
+            <div class="submission-title"><span class="kicker">TO GRADE</span><h3>Writing Task 1</h3><p>B2-A · 24 submitted</p></div>
+            <button class="submission-row active"><span>Nguyen Minh Anh</span><small>Paper upload · 3 pages</small></button>
+            <button class="submission-row"><span>Tran Gia Han</span><small>Typed writing</small></button>
+            <button class="submission-row"><span>Le Duc Minh</span><small>Paper upload · 2 pages</small></button>
+          </aside>
+
+          <section class="submission-view">
+            <div class="viewer-toolbar">
+              <span>Page 1 of 3</span>
+              <div><button>−</button><button>100%</button><button>+</button><button>Rotate</button><button>Pen</button><button>Highlight</button><button>Comment</button></div>
+            </div>
+            <div class="paper">
+              <div class="paper-title">Student handwritten response</div>
+              <div class="line l90"></div><div class="line l74"></div><div class="line l84"></div>
+              <div class="annotation good">✓ Clear idea</div>
+              <div class="line l95"></div><div class="line l68"></div>
+              <div class="annotation note">Check tense consistency</div>
+              <div class="line l88"></div><div class="line l62"></div>
+            </div>
+          </section>
+
+          <aside class="grading-panel">
+            <div class="grading-head"><span class="kicker">GRADING</span><h3>Nguyen Minh Anh</h3><p>Teacher controls the final score.</p></div>
+            <label><span>Task achievement</span><input value="7" type="number"></label>
+            <label><span>Organisation</span><input value="8" type="number"></label>
+            <label><span>Vocabulary</span><input value="7" type="number"></label>
+            <label><span>Grammar</span><input value="6" type="number"></label>
+            <label class="feedback-label"><span>Teacher feedback</span><textarea>Good organisation. Review verb tense consistency.</textarea></label>
+            <div class="total-row"><span>Total</span><strong>28 / 40</strong></div>
+            <div class="grading-actions"><button class="ghost">Save draft</button><button class="primary">Save & Next</button></div>
+            <div class="grading-nav"><button>← Previous</button><button>Next →</button></div>
+          </aside>
+        </div>
+
+        <div class="renderer-notes">
+          <div><b>Typed writing</b><span>Inline comments + highlight + rubric + overall feedback</span></div>
+          <div><b>Speaking</b><span>Audio player + 0.75×/1×/1.25× + timestamp comments + rubric</span></div>
+        </div>
+      </div>
+
+      <div class="assignment-panel" data-assignment-panel="returned">
+        <div class="empty-state"><h3>Returned work</h3><p>Graded work and feedback appear here.</p></div>
+      </div>
+    </section>
+
+    <!-- MOCK -->
+    <section class="view" id="mock">
+      <div class="page-intro">
+        <div><div class="kicker">MOCK TESTS</div><h1>Four-skill assessment</h1><p>Full mock tests and skill-specific tests with clear status.</p></div>
+      </div>
+
+      <div class="mock-list">
+        <div class="mock-row">
+          <span><em>FULL MOCK</em><b>Mock Test 01</b><small>Reading · Listening · Writing · Speaking</small></span>
+          <span><small>Status</small><b>Available</b></span>
+          <span><small>Duration</small><b>180 min</b></span>
+          <button>Open →</button>
+        </div>
+        <div class="mock-row">
+          <span><em>FULL MOCK</em><b>Mock Test 00</b><small>Reading · Listening · Writing · Speaking</small></span>
+          <span><small>Status</small><b>Completed</b></span>
+          <span><small>Latest score</small><b>71%</b></span>
+          <button>Results →</button>
+        </div>
+      </div>
+
+      <div class="skill-test-grid">
+        <button><b>Reading</b><span>45 min · Available →</span></button>
+        <button><b>Listening</b><span>40 min · Available →</span></button>
+        <button><b>Writing</b><span>80 min · In progress →</span></button>
+        <button><b>Speaking</b><span>15 min · Completed →</span></button>
+      </div>
+    </section>
+
+    <!-- PROGRESS -->
+    <section class="view" id="progress">
+      <div class="page-intro with-action">
+        <div><div class="kicker">PROGRESS</div><h1 id="progressTitle">Class progress</h1><p>Completion, performance, engagement and skill trends.</p></div>
+        <select class="teacher-only"><option>B2-A</option><option>B2-B</option><option>LI-A</option></select>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active">Overview</button>
+        <button class="tab">Gradebook</button>
+        <button class="tab">Skills</button>
+        <button class="tab">Engagement</button>
+        <button class="tab teacher-only">Students</button>
+      </div>
+
+      <div class="progress-strip">
+        <div><span>Completion</span><strong>78%</strong><small>+9%</small></div>
+        <div><span>Performance</span><strong>74%</strong><small>+4 pts</small></div>
+        <div><span>Assignments</span><strong>86%</strong><small>5 late</small></div>
+        <div><span>Participation</span><strong>82%</strong><small>Stable</small></div>
+      </div>
+
+      <div class="progress-grid">
+        <div class="panel">
+          <div class="panel-title"><h3>Skill profile</h3><span>Trend</span></div>
+          <div class="skill-progress"><span>Reading</span><div class="bar"><i style="width:76%"></i></div><b>76</b><em>+6</em></div>
+          <div class="skill-progress"><span>Listening</span><div class="bar"><i style="width:69%"></i></div><b>69</b><em>+8</em></div>
+          <div class="skill-progress"><span>Speaking</span><div class="bar"><i style="width:72%"></i></div><b>72</b><em>+3</em></div>
+          <div class="skill-progress"><span>Writing</span><div class="bar"><i style="width:67%"></i></div><b>67</b><em>-2</em></div>
+        </div>
+        <div class="panel teacher-only">
+          <div class="panel-title"><h3>Needs attention</h3><span>Actionable</span></div>
+          <button class="attention-row"><span><b>3 students</b><small>Not active this week</small></span><span>View →</span></button>
+          <button class="attention-row"><span><b>4 students</b><small>Below 50% in Listening</small></span><span>View →</span></button>
+          <button class="attention-row"><span><b>2 students</b><small>Missing assignments</small></span><span>View →</span></button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- CLASSROOM -->
+<div class="classroom" id="classroom">
+  <div class="classroom-top">
+    <div>
+      <span>Objective First B2 · B2-A</span>
+      <small>Unit 2 · Lesson 3</small>
+    </div>
+    <button id="exitClassroom">Exit Class</button>
+  </div>
+  <div class="classroom-main">
+    <span class="activity-label">LEAD-IN</span>
+    <h1>What makes a sport exciting to watch?</h1>
+    <p>Discuss with a partner. Give one example and explain your choice.</p>
+    <div class="live-row"><span>Connected <b>26 / 28</b></span><span>Responded <b>21 / 26</b></span></div>
+  </div>
+  <div class="classroom-toolbar">
+    <button>← Back</button><button>Timer</button><button>Reveal</button><button>Responses</button><button>Teacher Notes</button><button class="primary">Next →</button>
+  </div>
+</div>
+
+<script src="assets/js/app.js"></script>
 </body>
 </html>
