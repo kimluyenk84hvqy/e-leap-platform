@@ -416,10 +416,12 @@
 
   async function load(){
     try{
-      const r=await fetch("courses/objective-first-b2/unit-01/lesson-01/lesson.json",{cache:"no-store"});
+ const lessonPath=window.ELEAP_LESSON_PATH||"courses/objective-first-b2/unit-01/lesson-01/lesson.json";
+      const r=await fetch(lessonPath,{cache:"no-store"});
       state.lesson=await r.json();
       render();
-      document.addEventListener("eleap-open-u11",()=>{state.index=0;render()});
+      document.addEventListener("eleap-open-u11",async()=>{const r=await fetch("courses/objective-first-b2/unit-01/lesson-01/lesson.json",{cache:"no-store"});state.lesson=await r.json();state.index=0;render();});
+      document.addEventListener("eleap-open-u12",async()=>{const r=await fetch("courses/objective-first-b2/unit-01/lesson-02/lesson.json",{cache:"no-store"});state.lesson=await r.json();state.index=0;render();});
       q("#classroomPrev")?.addEventListener("click",()=>{if(state.index>0){state.index--;renderPresentation()}});
       q("#classroomNext")?.addEventListener("click",()=>{if(state.index<state.lesson.screens.length-1){state.index++;renderPresentation()}});
       q("#exitClassroom")?.addEventListener("click",()=>q("#classroom").classList.remove("active"));
