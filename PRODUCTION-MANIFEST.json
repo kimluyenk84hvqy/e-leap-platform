@@ -1,0 +1,30 @@
+{
+  "product": {
+    "id": "e-leap",
+    "brand": "E-LEAP",
+    "formalName": "English Learning, Engagement and Assessment Platform"
+  },
+  "release": "Production FULL v1.0",
+  "replacementMode": "clean-root-replacement",
+  "sourceOfTruth": true,
+  "largeShells": [
+    "Courses",
+    "Skills Lab",
+    "Assignments",
+    "Mock Tests",
+    "Progress"
+  ],
+  "goldenReferences": [
+    "res-objective-first-b2-u01-l01",
+    "res-objective-first-b2-u01-l02"
+  ],
+  "principles": [
+    "modular",
+    "movable",
+    "detachable",
+    "reusable",
+    "content-data-separated",
+    "license-aware"
+  ],
+  "mediaPolicy": "Heavy image/audio/video files are externalized; repository contains references and audit metadata only."
+}

@@ -1,0 +1,386 @@
+{
+  "release": "Production FULL v1.0",
+  "fileCount": 76,
+  "files": [
+    {
+      "path": ".env.example",
+      "bytes": 104,
+      "sha256": "3301f3d579f734680966cde177a4a12c87d5da649c797d8a839747d764b447c9"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 168,
+      "sha256": "7838d2620ccbe8fea978437aa42c56677b164f02da8458570ceca4e9b03751f4"
+    },
+    {
+      "path": ".nojekyll",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "CLEAN-REPLACEMENT.md",
+      "bytes": 799,
+      "sha256": "a101a5efc0b1f325749b1074e89150ce86f64f1ed754c1fdc646d7002cf1b757"
+    },
+    {
+      "path": "MEDIA_EXTERNALIZED.md",
+      "bytes": 661,
+      "sha256": "b275a9d194edcf0a3fae0701751d72c47c608856c53caa1f840e22de0ecd1757"
+    },
+    {
+      "path": "PRODUCTION-MANIFEST.json",
+      "bytes": 722,
+      "sha256": "1403f5a25cdad3761e63a0548cfd86b515fee9c08632935c7ab436cd022083d6"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1165,
+      "sha256": "31ba4ec658f6cb3c79f185b029c3615c0ac3c36a9ba76264e371e6e74810c841"
+    },
+    {
+      "path": "VERSION",
+      "bytes": 50,
+      "sha256": "5709dc42e8e6e252473314a96091fa7c768ea94c06ea65d659f362735ac4f3fe"
+    },
+    {
+      "path": "assets/css/styles.css",
+      "bytes": 5505,
+      "sha256": "666bbc3b4a0b60b599f4f6e0def61cacd9a1d79ca3dfc21e84aa9fd6b9cd1f90"
+    },
+    {
+      "path": "assets/js/app.js",
+      "bytes": 9777,
+      "sha256": "802187a9228722912b9079adab863e38170fe0f322ffd5527b6e0a9d2f89b3d4"
+    },
+    {
+      "path": "assets/js/foundation-store.js",
+      "bytes": 2788,
+      "sha256": "3ddf514695be0b12827569767cddbf38b6600cec3a124603233a6f492becc39a"
+    },
+    {
+      "path": "assets/js/learning-events.js",
+      "bytes": 1673,
+      "sha256": "ab68d4740a6c867ab039093e0f0f5bf82bb4a161ba17be5c6782d539b1405286"
+    },
+    {
+      "path": "assets/js/lesson-engine.js",
+      "bytes": 1188,
+      "sha256": "65b73b78296924da78dc77e69f90dac73415fd8f5db5e2e54a0f233cc25299bc"
+    },
+    {
+      "path": "assets/js/native-activity.js",
+      "bytes": 2764,
+      "sha256": "6e60a7231eb6377d948220e4c9feb1c47083bd30df727c8e0cea0e0e409b1309"
+    },
+    {
+      "path": "assets/js/submissions.js",
+      "bytes": 2898,
+      "sha256": "756b6a37bfc8bb41cc470a81f5632eab7354928eae74322e3e22933a597b5298"
+    },
+    {
+      "path": "courses/esp/english-for-pharmacy/course.json",
+      "bytes": 266,
+      "sha256": "a20cc08c5f2223b8547a28c62905e37eb9ce24adebfdce1736b8f12d8eb6e2b3"
+    },
+    {
+      "path": "courses/esp/medical-english/course.json",
+      "bytes": 1395,
+      "sha256": "97df7522e87c84cd2bf64744d33cad40732dd699cf06c7562022e24fc583784f"
+    },
+    {
+      "path": "courses/life-intermediate/course.json",
+      "bytes": 5986,
+      "sha256": "974fde74b6dae535fe029ef9555efbc2369b90c89d216f8293c5c239f0bab6ea"
+    },
+    {
+      "path": "courses/objective-first-b2/course.json",
+      "bytes": 330,
+      "sha256": "a514bca373e30bd16a25f501104ebcd9eca5497dfaee63ec61738a1e2a97f09f"
+    },
+    {
+      "path": "courses/objective-first-b2/unit-01/unit.json",
+      "bytes": 520,
+      "sha256": "79c0df90e500b3e1efdb116d7be9dae03ce7468d7f2572544e7ab48f23e0e52f"
+    },
+    {
+      "path": "courses/registry.json",
+      "bytes": 831,
+      "sha256": "4b70bb3ae7b4e8db18aeb2b66acf24caae5204107684b3051035fcead7230192"
+    },
+    {
+      "path": "data/fixtures/native-activities.json",
+      "bytes": 833,
+      "sha256": "72515531ff6832d99df142017947eea38110a12b04eab95fc8dcf8d2c104aab1"
+    },
+    {
+      "path": "data/media-audit/u01-l01.json",
+      "bytes": 3005,
+      "sha256": "6ed45aae52434ee963651efc9983b7c1e399d3c2264092da2a46970a39d95846"
+    },
+    {
+      "path": "data/media-audit/u01-l02.json",
+      "bytes": 12045,
+      "sha256": "18c7cbef657b3dae95c8346e2b96e4816c055d22490dbf35b9d4e3a0b2f42f10"
+    },
+    {
+      "path": "data/resources.json",
+      "bytes": 2220,
+      "sha256": "2a907fbac0c6255a0199cd59d9d36a1cf8b062f519532779b64038a9590d9b97"
+    },
+    {
+      "path": "data/shells.json",
+      "bytes": 3986,
+      "sha256": "5678ba250d8bcbcc94f6e20779c7557b2c785015c4dedf8873814a0c0e5864a4"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "bytes": 664,
+      "sha256": "50418722cf8f10de7551f91d187ce582eca4c2e4c6f62f66b79c7ab06b0191c6"
+    },
+    {
+      "path": "docs/DEPLOY-GITHUB-PAGES.md",
+      "bytes": 517,
+      "sha256": "043522ff90d56b1d3aa5bed3e8d53f72b5d5b66804131d90e7974d09136f5a1c"
+    },
+    {
+      "path": "docs/GOLDEN-REFERENCE-INTEGRATION.md",
+      "bytes": 955,
+      "sha256": "a60dec5addbd827cbd2983a7525bc2675d5ea92b63dea2205b241db6af8a12d5"
+    },
+    {
+      "path": "docs/LEARNING-EVENT-CONTRACT-v1.0.md",
+      "bytes": 1679,
+      "sha256": "ca95987f29ed51248f2a119023eeed4e9ca7063b6e48a21c0701d48aae7e37e6"
+    },
+    {
+      "path": "docs/NATIVE-ACTIVITY-SUBMISSION-CONTRACT-v1.0.md",
+      "bytes": 1405,
+      "sha256": "548bbcb8a0b6ea667667c192a3d6b59183ce57699377cbe44267c1144bfad18c"
+    },
+    {
+      "path": "docs/PRODUCTION-FOUNDATION.md",
+      "bytes": 1860,
+      "sha256": "9e41991353a7b87b4ae0aa860189d855b108ff94178e9a2e765373ce547280a1"
+    },
+    {
+      "path": "docs/QA-FULL-v1.0.json",
+      "bytes": 425,
+      "sha256": "5732d35e797dad2ae0e0bbb99cd17cb9a9a5a8940092db2df9369c2fc3168564"
+    },
+    {
+      "path": "docs/SHARED-LESSON-ENGINE-v0.1.md",
+      "bytes": 1245,
+      "sha256": "d415a1fe3d96ec4c8066c50b0a1fa5584263c9d06896677e7d837a14b71937ad"
+    },
+    {
+      "path": "engine/lesson-host.html",
+      "bytes": 2315,
+      "sha256": "e700654e562f055639f2982ace1a2d8f43c6285f353c1e266736b28d0ed93f5b"
+    },
+    {
+      "path": "engine/native-activity-qa.html",
+      "bytes": 2918,
+      "sha256": "4318ba68eb2f535cbbbf504c70ffc1c588f61e8e1898b97af481589afccd7daa"
+    },
+    {
+      "path": "index.html",
+      "bytes": 1527,
+      "sha256": "80ebf1cba61f385a4f4fe367a69060ed408e5c425ed0a607e9204a6265a40ea4"
+    },
+    {
+      "path": "media-private/README.md",
+      "bytes": 389,
+      "sha256": "154cfd9ba8d836d94c37ef53d81f705879dd0f48c4ce1e35f8021313626b28f8"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l01/lesson.json",
+      "bytes": 492,
+      "sha256": "b7c1df0bcbbc7dc0cf78680a55a6bf3d93332a7270d64471e5b940c0192c1ebf"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l01/standalone/README.md",
+      "bytes": 2373,
+      "sha256": "01d11b2c0ac7b45d0c5a8beb11a90ad89776d202722daf4e816197f10ab44faa"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l01/standalone/app.js",
+      "bytes": 10203,
+      "sha256": "cd693602b40266166801d7ebeae18bd19205465ce836fa9b036f11cabbfc36ba"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l01/standalone/assets/images/README.md",
+      "bytes": 102,
+      "sha256": "d4ce5c00bf105c5bc03680cc7a22ff83244f2442f02ef3cc5e702c119b65de80"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l01/standalone/assets/media/README.md",
+      "bytes": 131,
+      "sha256": "3097fb57ccd4d08f5f6fb17a2e0bc6708dac00946c4f88b8708faa1f837e5645"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l01/standalone/index.html",
+      "bytes": 23223,
+      "sha256": "9af2ea97970d2fbde8319b6b47d3869ff4d2fc943fa5ee093c0dad86c62186d7"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l01/standalone/styles.css",
+      "bytes": 18944,
+      "sha256": "ce94e9c75e1d38935bd020d6efb4c5eb8b89397329c4129e10f5d660b131a8d3"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l02/lesson.json",
+      "bytes": 29053,
+      "sha256": "a7c21e9292f443d58fd2bb1ab5c5f70a01b2b0375365564663b223a5a5482065"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l02/standalone/QA_FINAL.md",
+      "bytes": 797,
+      "sha256": "018e6a4ed5db8573b9262f952fc034adce3357595c05b6b37c1a612c960fd4ac"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l02/standalone/QA_v4.md",
+      "bytes": 3536,
+      "sha256": "5a2543780cf6a2543f4d2cfbeb2fa3329c2eeb5ca63fa22c6f98bf8e445c33e0"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l02/standalone/QA_v5.md",
+      "bytes": 1732,
+      "sha256": "033cf23fe46169b7ca776e1e072a18258e1a462c6128e8e1feba62246040732c"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l02/standalone/QA_v8.md",
+      "bytes": 1247,
+      "sha256": "f8ec79b417904c620f4def5c5b324028a4199c1cad4f4f9aec02684df9bbe45b"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l02/standalone/README.md",
+      "bytes": 681,
+      "sha256": "da1ac8d2dee5501d2227fcca840735315c086e658dade418041327fa2f2b5e1d"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l02/standalone/README_FINAL.md",
+      "bytes": 748,
+      "sha256": "3e7a1a8fea97165151a6d2733eb091254ae672e68a0eaac7557b185abdfcfd0d"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l02/standalone/README_FINAL_v11.md",
+      "bytes": 580,
+      "sha256": "d72b2560474b6ac35e8cc4bbd9d56f3175c13065110c22418ce36b845da416a7"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l02/standalone/README_FINAL_v12.md",
+      "bytes": 467,
+      "sha256": "47b52a5593df2782f72c0b008c611cc67e631f4dcfe8c7ff968b69ac970b8c85"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l02/standalone/README_FINAL_v13.md",
+      "bytes": 497,
+      "sha256": "16bbaf7c0d0a76d230b07709dbb38dde588c630b43336376764da22099a08877"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l02/standalone/README_FINAL_v14.md",
+      "bytes": 538,
+      "sha256": "37a4d72ac81e6dc67d77ecf35f60666c5bbeee7dd19e4047fa06b8456f260116"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l02/standalone/README_FINAL_v15.md",
+      "bytes": 574,
+      "sha256": "777341f77f06d607bbda2ef82a23f81b7cf088875a97254728316b6137ecd025"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l02/standalone/README_FINAL_v16.md",
+      "bytes": 343,
+      "sha256": "35ea91f189f49a043c791e4bf0a6a07c2d48a6f9e93e1637dcf1e0205e27f9b3"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l02/standalone/README_FINAL_v17.md",
+      "bytes": 517,
+      "sha256": "4acf3c63267de14243b40ac5a6b96b5d1079b89d797eae44c67c7f07fdeb17d4"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l02/standalone/README_FINAL_v18.md",
+      "bytes": 554,
+      "sha256": "cdeea56399b34d41813949cbaadcd9a38c8f40ecb86805b0aac0646973d95da6"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l02/standalone/README_FINAL_v19.md",
+      "bytes": 578,
+      "sha256": "721d51b18b1bb6285ce10360b62adaec4b21b473b2acca656c8644fb3ed4e0f9"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l02/standalone/README_FINAL_v20.md",
+      "bytes": 484,
+      "sha256": "0f3dd83cbf699b9c67b1f7046350ce5b8e54fce255c38dbe40b2f8f9bd10d903"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l02/standalone/README_v10.md",
+      "bytes": 720,
+      "sha256": "bde61f27a3c67c80d5a482050d4c7272dabf44d243e640b6d2fbc4732bbd92b2"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l02/standalone/README_v9.md",
+      "bytes": 393,
+      "sha256": "c55053d8396865aa0fc6c1e9b4d7ccabd742447bb01cf1cf2641197364c045f6"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l02/standalone/assets/app.css",
+      "bytes": 66134,
+      "sha256": "2d5963eb9ad9f3046db24be3fe820a6161e6fc651ef83a64570b589e594d9b49"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l02/standalone/index.html",
+      "bytes": 1426,
+      "sha256": "22837cdfa448cbe9172aa006a414e1497e190a1ac54fa77d8d210b90e41026c7"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l02/standalone/media/README.md",
+      "bytes": 133,
+      "sha256": "1333b80f002e9e5c7a7c4547cfe1a075d5a52050fef584bfd1a924ea80d413b5"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l02/standalone/media/video/README.md",
+      "bytes": 102,
+      "sha256": "e1f7d1eae1f532a9f8af8c9208631dd4beef804ed00e7ef058d53d7d765d9dc6"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l02/standalone/src/app.js",
+      "bytes": 26995,
+      "sha256": "85e734963db1ff7e3b434b00c50c1cfe3ad2396115043d429351201b2dbc063e"
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l02/standalone/src/lesson-data.js",
+      "bytes": 21711,
+      "sha256": "0cb6431a12f83cfcbc0f3b9b93d806eb834f6aa223d87521946dd28bef068fd4"
+    },
+    {
+      "path": "schemas/activity.contract.json",
+      "bytes": 1174,
+      "sha256": "79a3081332ea59a5febd32b3e4277a2f1c1bd26e11e578c4c8e7011cf8b2a4e4"
+    },
+    {
+      "path": "schemas/learning-event.schema.json",
+      "bytes": 1344,
+      "sha256": "237ac42bdc472ceafd2ac24bea24723ec9789e22e8786babae2c62712f55c865"
+    },
+    {
+      "path": "schemas/lesson-package.contract.json",
+      "bytes": 651,
+      "sha256": "0ae615b2a6ee078efe45d98b92048eae8ffd0b1d6ff7910edb1b0e7123846477"
+    },
+    {
+      "path": "schemas/resource.schema.json",
+      "bytes": 1154,
+      "sha256": "fbdcda11157e916529d8cf4cd10bf9b540f42d8306626a10609f582e4463cd4e"
+    },
+    {
+      "path": "schemas/shell.schema.json",
+      "bytes": 604,
+      "sha256": "a554a7794c92ec21cb860e851c84d271c4c1044ea2a26fa41467aa9e32e8745c"
+    },
+    {
+      "path": "schemas/submission.schema.json",
+      "bytes": 941,
+      "sha256": "9f07651da28ef1ce63f1c412b419f0f82a994794dd26cf881f7144dabb22cd8c"
+    }
+  ]
+}

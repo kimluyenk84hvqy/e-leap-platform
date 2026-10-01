@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://e-leap.local/schemas/learning-event.schema.json",
+  "title": "E-LEAP Learning Event",
+  "type": "object",
+  "required": ["eventId","eventType","occurredAt","resourceId","context"],
+  "properties": {
+    "eventId": {"type":"string","minLength":1},
+    "eventType": {"enum":["lesson.opened","lesson.closed","activity.viewed","response.drafted","response.submitted","attempt.checked","media.played","media.completed","progress.updated","feedback.created"]},
+    "occurredAt": {"type":"string","format":"date-time"},
+    "resourceId": {"type":"string","minLength":1},
+    "activityId": {"type":["string","null"]},
+    "studentId": {"type":["string","null"]},
+    "sessionId": {"type":["string","null"]},
+    "context": {
+      "type":"object",
+      "required":["mode"],
+      "properties": {
+        "mode":{"enum":["classroom","self-study","presentation","assignment","mock-test","standalone"]},
+        "courseId":{"type":["string","null"]},
+        "unitId":{"type":["string","null"]},
+        "shellId":{"type":["string","null"]},
+        "classId":{"type":["string","null"]}
+      },
+      "additionalProperties":true
+    },
+    "payload":{"type":"object"},
+    "source":{"enum":["native","compatibility-bridge","system"]}
+  },
+  "additionalProperties": true
+}

@@ -1,92 +1,16 @@
-
-const $=(s,c=document)=>c.querySelector(s);
-const $$=(s,c=document)=>[...c.querySelectorAll(s)];
-const app=$(".app");
-let role="teacher";
-const meta={
-  courses:["Courses","Programmes, classes and lessons"],
-  skills:["Skills Lab","Focused practice by skill"],
-  assignments:["Assignments","Submit, grade and return work"],
-  mock:["Mock Tests","Four-skill assessment"],
-  progress:["Progress","Completion, performance and engagement"]
-};
-
-function showView(id){
-  $$(".view").forEach(v=>v.classList.remove("active"));
-  $("#"+id)?.classList.add("active");
-  const m=meta[id]||[id.replaceAll("-"," "),""];
-  $("#topTitle").textContent=m[0];
-  $("#topSub").textContent=m[1];
-  $$(".nav-item").forEach(b=>b.classList.toggle("active",b.dataset.view===id));
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-$$(".nav-item").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.view)));
-
-function applyRole(){
-  app.dataset.role=role;
-  $("#roleText").textContent=role==="teacher"?"Teacher":"Student";
-  $("#progressTitle").textContent=role==="teacher"?"Class progress":"My progress";
-  $$(".role-btn").forEach(b=>b.classList.toggle("active",b.dataset.role===role));
-}
-$$(".role-btn").forEach(b=>b.addEventListener("click",()=>{role=b.dataset.role;applyRole()}));
-applyRole();
-
-const courses={
- objective:{title:"Objective First B2",level:"B2 COURSE",desc:"Exam-oriented English with classroom delivery and self-study.",units:"12",classes:"3",current:"U2 · L3"},
- life:{title:"Life Intermediate",level:"INTERMEDIATE COURSE",desc:"General English with communicative lessons, practice and tracked progress.",units:"12",classes:"2",current:"U4 · L1"},
- pharmacy:{title:"English for Pharmacy",level:"ESP PROGRAMME",desc:"English for Specific Purposes for pharmacy learners.",units:"8",classes:"1",current:"U1 · L1"},
- medical:{title:"Medical English",level:"ESP PROGRAMME",desc:"English for Specific Purposes for medical learners.",units:"8",classes:"1",current:"U1 · L1"}
-};
-$$(".open-course").forEach(b=>b.addEventListener("click",()=>{
-  const c=courses[b.dataset.course];
-  $("#courseTitle").textContent=c.title;
-  $("#courseLevel").textContent=c.level;
-  $("#courseDesc").textContent=c.desc;
-  $("#summaryUnits").textContent=c.units;
-  $("#summaryClasses").textContent=c.classes;
-  $("#summaryCurrent").textContent=c.current;
-  showView("course-detail");
-}));
-
-$("#backToCourses").addEventListener("click",()=>showView("courses"));
-$("#backToCourse").addEventListener("click",()=>showView("course-detail"));
-$("#backToUnit").addEventListener("click",()=>showView("unit-detail"));
-$("#backToClasses").addEventListener("click",()=>showView("course-detail"));
-$("#backToClass").addEventListener("click",()=>showView("class-detail"));
-$(".open-unit").addEventListener("click",()=>showView("unit-detail"));
-$(".open-lesson").addEventListener("click",()=>showView("lesson"));
-$(".open-class").addEventListener("click",()=>showView("class-detail"));
-$(".open-student").addEventListener("click",()=>showView("student-profile"));
-
-$$("[data-course-tab]").forEach(b=>b.addEventListener("click",()=>{
-  $$(".course-panel").forEach(p=>p.classList.remove("active"));
-  $$("[data-course-tab]").forEach(x=>x.classList.remove("active"));
-  b.classList.add("active");
-  $(`[data-course-panel="${b.dataset.courseTab}"]`)?.classList.add("active");
-}));
-$$("[data-class-tab]").forEach(b=>b.addEventListener("click",()=>{
-  $$(".class-panel").forEach(p=>p.classList.remove("active"));
-  $$("[data-class-tab]").forEach(x=>x.classList.remove("active"));
-  b.classList.add("active");
-  $(`[data-class-panel="${b.dataset.classTab}"]`)?.classList.add("active");
-}));
-$$("[data-assignment-tab]").forEach(b=>b.addEventListener("click",()=>{
-  $$(".assignment-panel").forEach(p=>p.classList.remove("active"));
-  $$("[data-assignment-tab]").forEach(x=>x.classList.remove("active"));
-  b.classList.add("active");
-  $(`[data-assignment-panel="${b.dataset.assignmentTab}"]`)?.classList.add("active");
-}));
-$$(".lesson-mode").forEach(b=>b.addEventListener("click",()=>{
-  $$(".lesson-mode").forEach(x=>x.classList.remove("active"));
-  b.classList.add("active");
-}));
-$$(".stage").forEach(b=>b.addEventListener("click",()=>{
-  $$(".stage").forEach(x=>x.classList.remove("active"));
-  b.classList.add("active");
-}));
-
-function openClassroom(){ $("#classroom").classList.add("active"); }
-["courseStartClass","startClassBtn","classStartBtn"].forEach(id=>$("#"+id)?.addEventListener("click",openClassroom));
-$("#exitClassroom").addEventListener("click",()=>$("#classroom").classList.remove("active"));
-
-$("#courseOpenLesson")?.addEventListener("click",()=>showView("lesson"));
+const $=(s,c=document)=>c.querySelector(s);const app=$('.app'),content=$('#content'),nav=$('#mainNav');
+let role='teacher', route=['courses'];
+const NAV=[['courses','▦','Courses'],['skills-lab','◫','Skills Lab'],['assignments','✓','Assignments'],['mock-tests','◉','Mock Tests'],['progress','↗','Progress']];
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+async function getJSON(p){const r=await fetch(p,{cache:'no-store'});if(!r.ok)throw new Error(`${p}: ${r.status}`);return r.json()}
+function renderNav(){nav.innerHTML='<div class="nav-group-label">WORKSPACE</div>'+NAV.map(([id,ic,n])=>`<button class="nav-btn ${route[0]===id?'active':''}" data-nav="${id}"><span class="nav-icon">${ic}</span>${n}</button>`).join('');nav.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>go([b.dataset.nav]))}
+function go(r){route=r;render()}
+function setHeader(title){$('#pageTitle').textContent=title;$('#crumb').textContent='E-LEAP / '+route.map(x=>x.replaceAll('-',' ')).join(' / ');renderNav()}
+function hero(k,t,p){return `<div class="hero"><div class="kicker">${k}</div><h1>${t}</h1><p>${p}</p></div>`}
+async function coursesHome(){setHeader('Courses');const reg=await getJSON('courses/registry.json');const cards=reg.courses.map(c=>`<button class="card clickable" data-course="${c.id}"><span class="tag">Coursebook · ${esc(c.level)}</span><h3>${esc(c.title)}</h3><p>${c.id==='objective-first-b2'?'Golden Reference course · classroom + self-study':'Shell ready for structured course content'}</p><span class="status ${c.id==='objective-first-b2'?'':'planned'}">${c.id==='objective-first-b2'?'ACTIVE':'SHELL READY'}</span><span class="arrow">→</span></button>`).join('');content.innerHTML=hero('COURSES','Learning programmes','Structured teaching lives here. Coursebooks and advanced skills are separate collections, while every item remains movable and reusable.')+`<div class="section-title"><div><h3>Coursebooks</h3><p>Course → Unit → Lesson → Activity</p></div></div><div class="grid">${cards}</div><div class="section-title"><div><h3>Advanced Skills Courses</h3><p>Systematic skills teaching — not practice-only.</p></div></div><div class="grid"><button class="card clickable wide" data-advanced="1"><span class="tag">GENERAL · MEDICAL · PHARMACEUTICAL</span><h3>Advanced Skills</h3><p>General English contains VSTEP now and can accept IELTS later. Each domain can contain Listening, Speaking, Reading and Writing shells without changing the core.</p><div class="path"><span class="pill">General English → VSTEP</span><span class="pill">Medical English</span><span class="pill">Pharmaceutical English</span></div><span class="arrow">→</span></button></div>`;content.querySelectorAll('[data-course]').forEach(b=>b.onclick=()=>go(['courses','course',b.dataset.course]));$('[data-advanced]')?.addEventListener('click',()=>go(['courses','advanced']))}
+async function coursePage(id){setHeader('Course');const reg=await getJSON('courses/registry.json');const c=reg.courses.find(x=>x.id===id);if(!c)return coursesHome();let detail=await getJSON(c.path);content.innerHTML=`<button class="back" id="back">← Coursebooks</button>${hero(c.level+' COURSEBOOK',esc(c.title),id==='objective-first-b2'?'Golden Reference course. Content is mounted by resource identity; learning data remains independent of placement.':'Course shell ready for content.')}`;if(id==='objective-first-b2'){const units=detail.units.map((u,i)=>`<button class="row clickable" data-unit="${u.id}"><span class="row-no">${String(i+1).padStart(2,'0')}</span><span><b>${esc(u.title)}</b><small>${u.id==='unit-01'?'Golden Reference integration':'Content not yet mounted'}</small></span><span class="row-meta">${u.id==='unit-01'?'2 approved lessons':'Shell ready'}</span><span>→</span></button>`).join('');content.innerHTML+=`<div class="section-title"><div><h3>Units</h3><p>Only verified content is shown; legacy demo metadata has been removed.</p></div></div><div class="list">${units}</div><div class="notice">Unit and lesson counts are data-driven. Legacy demo counts, positions and topic labels are not used in this Production Shell.</div>`}else content.innerHTML+=`<div class="section-title"><div><h3>Course structure</h3><p>Shell prepared — content will be added from the approved syllabus/course source.</p></div></div><div class="empty"><b>No demo content inserted.</b>Production Shell does not invent Unit titles or lesson counts.</div>`;$('#back').onclick=()=>go(['courses']);content.querySelectorAll('[data-unit]').forEach(b=>b.onclick=()=>go(['courses','course',id,'unit',b.dataset.unit]))}
+async function unitPage(courseId,unitId){setHeader('Unit');const u=await getJSON(`courses/${courseId}/${unitId}/unit.json`);const resources=await getJSON('data/resources.json');const rows=u.lessons.sort((a,b)=>a.order-b.order).map((l,i)=>{const r=resources.resources.find(x=>x.id===l.resourceId);return `<button class="row lesson-row clickable" data-resource="${r.id}"><span class="row-no">U1.${i+1}</span><span><b>${esc(r.name.replace(/^U1\.\d · /,''))}</b><small>${i===0?'Golden Reference · Interactive lesson':'Golden Reference · FINAL v20 E-LEAP MASTER'}</small></span><span class="approved">APPROVED</span><span>→</span></button>`}).join('');content.innerHTML=`<button class="back" id="back">← Objective First B2</button>${hero('UNIT 1','Golden Reference Unit','U1.1 and U1.2 are mounted as reusable resources. They can run inside E-LEAP or independently.')}`+`<div class="section-title"><div><h3>Lessons</h3><p>Resource identity is separate from placement.</p></div></div><div class="list">${rows}</div>`;$('#back').onclick=()=>go(['courses','course',courseId]);content.querySelectorAll('[data-resource]').forEach(b=>b.onclick=()=>location.href=`engine/lesson-host.html?resource=${encodeURIComponent(b.dataset.resource)}`)}
+function advanced(){setHeader('Advanced Skills');content.innerHTML=`<button class="back" id="back">← Courses</button>${hero('ADVANCED SKILLS COURSES','Teach skills systematically','These are teaching tracks with sequenced lessons and objectives. Skills Lab remains the independent-practice area.')}`+`<div class="section-title"><div><h3>Domains</h3><p>Generic nested shells — no hard-coded depth.</p></div></div><div class="grid"><div class="card"><span class="tag">GENERAL ENGLISH</span><h3>VSTEP</h3><p>Skills teaching according to VSTEP format.</p><div class="path"><span class="pill">Listening</span><span class="pill">Speaking</span><span class="pill">Reading</span><span class="pill">Writing</span></div><span class="status planned">TRACK READY</span></div><div class="card"><span class="tag">FUTURE TRACK</span><h3>IELTS</h3><p>Can be added under General English without changing the platform core.</p><span class="status planned">EXTENSIBLE</span></div><div class="card"><span class="tag">DOMAIN</span><h3>Medical English</h3><p>Listening · Speaking · Reading · Writing</p><span class="status planned">SHELL READY</span></div><div class="card"><span class="tag">DOMAIN</span><h3>Pharmaceutical English</h3><p>Listening · Speaking · Reading · Writing</p><span class="status planned">SHELL READY</span></div></div>`;$('#back').onclick=()=>go(['courses'])}
+function generic(id){const cfg={ 'skills-lab':['SKILLS LAB','Practice by skill','Independent practice is organised first by General, Medical and Pharmaceutical English, then Skill → Level → Practice Set → Activity.'],assignments:['ASSIGNMENTS','Assign, submit and review','Assignments reference existing resources instead of duplicating content.'], 'mock-tests':['MOCK TESTS','Assessment and simulation','Test tracks are configurable. VSTEP belongs under General English; Medical and Pharmaceutical assessments can use their own section structures.'],progress:['PROGRESS','Unified learning evidence','One view aggregates course, self-study, assignment and mock-test evidence without storing lesson content here.']};const [k,t,p]=cfg[id];setHeader(t);let extra=id==='skills-lab'?'<div class="shell-map"><div class="mini"><b>General English</b><small>Listening · Speaking · Reading · Writing · Vocabulary · Grammar</small></div><div class="mini"><b>Medical English</b><small>Skills practice + professional communication</small></div><div class="mini"><b>Pharmaceutical English</b><small>Skills practice + professional communication</small></div></div>':id==='mock-tests'?'<div class="shell-map"><div class="mini"><b>General English</b><small>VSTEP · future test tracks</small></div><div class="mini"><b>Medical English</b><small>Progress · Module · Final/Mock</small></div><div class="mini"><b>Pharmaceutical English</b><small>Progress · Module · Final/Mock</small></div></div>':'<div class="empty"><b>Production shell is ready.</b>Operational data will populate this area; demo records are intentionally excluded.</div>';content.innerHTML=hero(k,t,p)+`<div class="section-title"><div><h3>Foundation structure</h3><p>Content and learning data stay separate.</p></div></div>`+extra}
+async function render(){app.className='app role-'+role;try{if(route[0]==='courses'){if(route[1]==='advanced')advanced();else if(route[1]==='course'&&route[3]==='unit')await unitPage(route[2],route[4]);else if(route[1]==='course')await coursePage(route[2]);else await coursesHome()}else generic(route[0])}catch(e){console.error(e);content.innerHTML=`<div class="empty"><b>Shell data could not be loaded.</b>${esc(e.message)}</div>`}}
+document.querySelectorAll('.role-switch button').forEach(b=>b.onclick=()=>{role=b.dataset.role;document.querySelectorAll('.role-switch button').forEach(x=>x.classList.toggle('active',x===b));$('#roleText').textContent=role==='teacher'?'Teacher':'Student';render()});render();

@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "1.0",
+  "resources": [
+    {
+      "id": "res-objective-first-b2-u01-l01",
+      "name": "U1.1 · Fashion Matters",
+      "type": "interactive-lesson",
+      "version": "APPROVED",
+      "status": "approved",
+      "source": {
+        "kind": "lesson-data",
+        "path": "resources/objective-first-b2/u01/l01/lesson.json",
+        "standaloneUrl": "resources/objective-first-b2/u01/l01/standalone/index.html",
+        "package": "E-LEAP-Objective-First-B2-U1.1-FINAL-v2"
+      },
+      "capabilities": [
+        "classroom",
+        "self-study",
+        "presentation",
+        "responses",
+        "progress"
+      ],
+      "copyright": {
+        "reviewStatus": "pending-audit",
+        "trafficLight": "amber",
+        "owner": null,
+        "license": null,
+        "attributionRequired": null,
+        "usageScope": "private-until-cleared",
+        "evidence": null
+      }
+    },
+    {
+      "id": "res-objective-first-b2-u01-l02",
+      "name": "U1.2 · Fashion Matters",
+      "type": "interactive-lesson",
+      "version": "U1.2 FINAL v20 E-LEAP MASTER",
+      "status": "approved",
+      "source": {
+        "kind": "lesson-data",
+        "path": "resources/objective-first-b2/u01/l02/lesson.json",
+        "standaloneUrl": "resources/objective-first-b2/u01/l02/standalone/index.html",
+        "package": "E-LEAP_Objective_First_B2_U1.2_FINAL_v20_ELEAP_MASTER"
+      },
+      "capabilities": [
+        "classroom",
+        "self-study",
+        "presentation",
+        "responses",
+        "progress"
+      ],
+      "copyright": {
+        "reviewStatus": "pending-audit",
+        "trafficLight": "amber",
+        "owner": null,
+        "license": null,
+        "attributionRequired": null,
+        "usageScope": "private-until-cleared",
+        "evidence": null
+      }
+    }
+  ],
+  "placements": [
+    {
+      "id": "placement-u01-l01",
+      "resourceId": "res-objective-first-b2-u01-l01",
+      "shellId": "objective-first-b2-u01-l01",
+      "order": 1,
+      "status": "active"
+    },
+    {
+      "id": "placement-u01-l02",
+      "resourceId": "res-objective-first-b2-u01-l02",
+      "shellId": "objective-first-b2-u01-l02",
+      "order": 1,
+      "status": "active"
+    }
+  ]
+}

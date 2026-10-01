@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "1.0",
+  "resourceId": "res-objective-first-b2-u01-l01",
+  "policy": "No public production release until each item is GREEN or has documented permitted AMBER scope. Attribution alone does not create permission.",
+  "items": [
+    {
+      "path": "resources/objective-first-b2/u01/l01/standalone/assets/images/people-photo-set.png",
+      "mediaType": "png",
+      "sha256": "3b707ca9ee1c658a1b8665ba26e7bf517521f266e3328a868bf2e64280389316",
+      "trafficLight": "amber",
+      "reviewStatus": "source-and-license-not-yet-verified",
+      "owner": null,
+      "license": null,
+      "attributionRequired": null,
+      "usageScope": "private-until-cleared",
+      "evidence": null
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l01/standalone/assets/images/fashion-hero.jpeg",
+      "mediaType": "jpeg",
+      "sha256": "588578156d16c34caf82948b84bebdd8f5f64b07b43258dd683c00b50775a0e3",
+      "trafficLight": "amber",
+      "reviewStatus": "source-and-license-not-yet-verified",
+      "owner": null,
+      "license": null,
+      "attributionRequired": null,
+      "usageScope": "private-until-cleared",
+      "evidence": null
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l01/standalone/assets/media/speaker-1.mp3",
+      "mediaType": "mp3",
+      "sha256": "d1e9e5edd06e4e5b07b489874e3db414435e5da2339fd0b06f2ee834385cc501",
+      "trafficLight": "amber",
+      "reviewStatus": "source-and-license-not-yet-verified",
+      "owner": null,
+      "license": null,
+      "attributionRequired": null,
+      "usageScope": "private-until-cleared",
+      "evidence": null
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l01/standalone/assets/media/phrasal-verbs.mp4",
+      "mediaType": "mp4",
+      "sha256": "c8b9ce7ef779d616911b7de8511ad8e61bbbae4a3881624285d0889a26b0a1d7",
+      "trafficLight": "amber",
+      "reviewStatus": "source-and-license-not-yet-verified",
+      "owner": null,
+      "license": null,
+      "attributionRequired": null,
+      "usageScope": "private-until-cleared",
+      "evidence": null
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l01/standalone/assets/media/speakers-2-5.mp3",
+      "mediaType": "mp3",
+      "sha256": "524c814adfb14b8f79a68b572971e84be49c0aa17cad6631a7601bb788385fe3",
+      "trafficLight": "amber",
+      "reviewStatus": "source-and-license-not-yet-verified",
+      "owner": null,
+      "license": null,
+      "attributionRequired": null,
+      "usageScope": "private-until-cleared",
+      "evidence": null
+    },
+    {
+      "path": "resources/objective-first-b2/u01/l01/standalone/assets/media/speaking-strategy.mp4",
+      "mediaType": "mp4",
+      "sha256": "29b883194ff1548be3580b424b51b6688398f27fb7cf803cf05a5d60c0044d72",
+      "trafficLight": "amber",
+      "reviewStatus": "source-and-license-not-yet-verified",
+      "owner": null,
+      "license": null,
+      "attributionRequired": null,
+      "usageScope": "private-until-cleared",
+      "evidence": null
+    }
+  ]
+}

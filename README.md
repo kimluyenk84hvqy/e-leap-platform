@@ -1,41 +1,21 @@
-# E-LEAP Platform Master v1.0 — APPROVED
+# E-LEAP — English Learning, Engagement and Assessment Platform
 
-GitHub-ready package for the approved E-LEAP platform shell.
+**Release:** Production FULL v1.0 — Clean Replacement  
+**Technical ID:** `e-leap`
 
-## Open locally
-Open `index.html`.
+This is the single clean source tree for the new E-LEAP Production architecture. It replaces development checkpoint overlays.
 
-## GitHub Pages
-This repository is ready for GitHub Pages deployment from the repository root.
+## Large shells
+Courses · Skills Lab · Assignments · Mock Tests · Progress
 
-See:
-- `docs/DEPLOY-GITHUB-PAGES.md`
-- `docs/ARCHITECTURE.md`
+## Core architecture
+Generic nested Shell model + Resource Registry + Shared Lesson Engine + Native Activity/Submission contracts + Learning Event contract + copyright/license metadata.
 
-## Repository structure
+## Golden Reference lessons
+Objective First B2 → Unit 1 → U1.1 and U1.2. They can be mounted inside E-LEAP while retaining standalone entry points.
 
-```text
-/
-├── index.html
-├── assets/
-│   ├── css/styles.css
-│   └── js/app.js
-├── courses/
-│   ├── registry.json
-│   ├── objective-first-b2/
-│   │   ├── course.json
-│   │   └── unit-01/unit.json
-│   ├── life-intermediate/
-│   └── esp/
-├── docs/
-├── media-private/
-├── .gitignore
-├── .nojekyll
-└── .env.example
-```
+## Content policy
+Course structures are data-driven. Life has 12 Unit shells with 3 Lesson shells per Unit as approved project requirements. Medical English supports teacher-led and self-study tracking. Pharmaceutical English does not invent unit structure before the approved syllabus is supplied.
 
-## Production rule
-The platform shell is locked. Add new courses, units, lessons, activities and classes as data/content without redesigning the shell.
-
-## Next production task
-Build **Objective First B2 — Unit 1** from an approved Content Map.
+## Media policy
+Heavy image/audio/video files are not stored in this GitHub-safe package. Resource references and copyright audit metadata remain in the repository.

@@ -1,6 +1,8 @@
 {
+  "id": "english-for-pharmacy",
   "title": "English for Pharmacy",
   "level": "ESP",
-  "status": "planned",
-  "units": []
+  "status": "shell-ready",
+  "units": [],
+  "rule": "Course shell is ready. Unit and lesson structure will be populated only from the approved Pharmaceutical English syllabus."
 }

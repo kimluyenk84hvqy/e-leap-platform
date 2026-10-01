@@ -1,0 +1,13 @@
+import {ELeapSubmissionService,LocalSubmissionStore} from './submissions.js';
+export class ELeapNativeActivity{
+  constructor({root,activity,events,resourceId,studentId=null,sessionId=null,context={}}){Object.assign(this,{root,activity,events,resourceId,studentId,sessionId,context});this.service=new ELeapSubmissionService({resourceId,studentId,sessionId,context,store:new LocalSubmissionStore(),events});}
+  response(){const a=this.activity;if(a.type==='choose')return {kind:'choice',value:this.root.querySelector('input[name="answer"]:checked')?.value||''};if(a.type==='type')return {kind:'text',value:this.root.querySelector('textarea')?.value.trim()||''};if(a.type==='record')return {kind:'audio',value:this.root.dataset.audioRef||''};return {kind:'text',value:''};}
+  valid(r){return !this.activity.submission?.required || (typeof r.value==='string'&&r.value.length>0);}
+  async mount(){const a=this.activity;this.root.innerHTML=`<section class="native-card"><div class="native-kicker">${a.type.toUpperCase()}</div><h2>${a.title||'Activity'}</h2><p>${a.prompt}</p><div class="native-input"></div><div class="native-actions"><button data-submit>Submit</button><strong data-status>Not submitted</strong></div><div data-feedback></div></section>`;const input=this.root.querySelector('.native-input');
+    if(a.type==='choose')input.innerHTML=a.options.map(o=>`<label class="native-option"><input type="radio" name="answer" value="${o.id}"> <span>${o.label}</span></label>`).join('');
+    if(a.type==='type')input.innerHTML=`<textarea rows="5" placeholder="${a.placeholder||'Type your answer…'}"></textarea>`;
+    if(a.type==='record')input.innerHTML=`<button type="button" data-record>Record response</button><small data-record-state>No recording yet. Development contract uses a local reference; production will use secure media upload.</small>`;
+    if(a.type==='record')this.root.querySelector('[data-record]').onclick=()=>{this.root.dataset.audioRef=`local-audio-${Date.now()}`;this.root.querySelector('[data-record-state]').textContent='Recording reference ready.';};
+    await this.events?.emit('activity.viewed',{activityId:a.id,studentId:this.studentId,sessionId:this.sessionId});
+    this.root.querySelector('[data-submit]').onclick=async()=>{const r=this.response(),status=this.root.querySelector('[data-status]'),feedback=this.root.querySelector('[data-feedback]');if(!this.valid(r)){status.textContent='Complete the activity first';return;}const row=await this.service.submit(a,r);status.textContent='Submitted';feedback.textContent=row.grading?`Auto-check: ${row.grading.correct?'Correct':'Try again'}`:'Response saved for teacher review.';this.root.dispatchEvent(new CustomEvent('e-leap:submission',{bubbles:true,detail:row}));};return this;}
+}

@@ -7,10 +7,9 @@
     {
       "id": "unit-01",
       "title": "Unit 1",
-      "subtitle": "Fashion Matters",
-      "status": "in-progress",
-      "periods": 8,
+      "status": "published",
       "path": "unit-01/unit.json"
     }
-  ]
+  ],
+  "description": "Golden Reference course with classroom and self-study delivery."
 }
