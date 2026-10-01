@@ -54,7 +54,13 @@ $("#backToUnit").addEventListener("click",()=>showView("unit-detail"));
 $("#backToClasses").addEventListener("click",()=>showView("course-detail"));
 $("#backToClass").addEventListener("click",()=>showView("class-detail"));
 $(".open-unit").addEventListener("click",()=>showView("unit-detail"));
-$(".open-lesson").addEventListener("click",()=>{showView("lesson");document.dispatchEvent(new Event("eleap-open-u11"));});
+$$(".open-lesson").forEach((btn,index)=>btn.addEventListener("click",()=>{
+  window.ELEAP_LESSON_PATH = index === 0
+    ? "courses/objective-first-b2/unit-01/lesson-01/lesson.json"
+    : "courses/objective-first-b2/unit-01/lesson-02/lesson.json";
+  showView("lesson");
+  document.dispatchEvent(new Event(index === 0 ? "eleap-open-u11" : "eleap-open-u12"));
+}));
 $(".open-class").addEventListener("click",()=>showView("class-detail"));
 $(".open-student").addEventListener("click",()=>showView("student-profile"));
 
