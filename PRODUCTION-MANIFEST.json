@@ -4,7 +4,7 @@
     "brand": "E-LEAP",
     "formalName": "English Learning, Engagement and Assessment Platform"
   },
-  "release": "Production FULL v1.0",
+  "release": "Production FULL v1.1",
   "replacementMode": "clean-root-replacement",
   "sourceOfTruth": true,
   "largeShells": [
@@ -26,5 +26,6 @@
     "content-data-separated",
     "license-aware"
   ],
-  "mediaPolicy": "Heavy image/audio/video files are externalized; repository contains references and audit metadata only."
+  "mediaPolicy": "Heavy image/audio/video files are externalized; repository contains references and audit metadata only.",
+  "upgrade": "Shell → Sub-shell → Furniture Layer"
 }

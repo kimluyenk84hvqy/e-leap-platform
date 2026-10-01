@@ -5,41 +5,1469 @@
   "formalName": "English Learning, Engagement and Assessment Platform",
   "rootId": "e-leap-root",
   "shells": [
-    {"id":"e-leap-root","parentId":null,"name":"E-LEAP","type":"root","order":0,"status":"published"},
-    {"id":"courses","parentId":"e-leap-root","name":"Courses","type":"large-shell","order":1,"status":"published"},
-    {"id":"skills-lab","parentId":"e-leap-root","name":"Skills Lab","type":"large-shell","order":2,"status":"published"},
-    {"id":"assignments","parentId":"e-leap-root","name":"Assignments","type":"large-shell","order":3,"status":"published"},
-    {"id":"mock-tests","parentId":"e-leap-root","name":"Mock Tests","type":"large-shell","order":4,"status":"published"},
-    {"id":"progress","parentId":"e-leap-root","name":"Progress","type":"large-shell","order":5,"status":"published"},
-
-    {"id":"coursebooks","parentId":"courses","name":"Coursebooks","type":"collection","order":1,"status":"published"},
-    {"id":"advanced-skills","parentId":"courses","name":"Advanced Skills Courses","type":"collection","order":2,"status":"published"},
-
-    {"id":"objective-first-b2","parentId":"coursebooks","name":"Objective First B2","type":"course","order":1,"status":"published"},
-    {"id":"life-intermediate","parentId":"coursebooks","name":"Life Intermediate","type":"course","order":2,"status":"planned"},
-    {"id":"medical-english","parentId":"coursebooks","name":"Medical English","type":"course","order":3,"status":"planned"},
-    {"id":"english-for-pharmacy","parentId":"coursebooks","name":"English for Pharmacy","type":"course","order":4,"status":"planned"},
-
-    {"id":"objective-first-b2-u01","parentId":"objective-first-b2","name":"Unit 1","type":"unit","order":1,"status":"published"},
-    {"id":"objective-first-b2-u01-l01","parentId":"objective-first-b2-u01","name":"U1.1 · Fashion Matters","type":"lesson","order":1,"status":"approved"},
-    {"id":"objective-first-b2-u01-l02","parentId":"objective-first-b2-u01","name":"U1.2 · Fashion Matters","type":"lesson","order":2,"status":"approved"},
-
-    {"id":"general-english-skills","parentId":"advanced-skills","name":"General English","type":"domain","order":1,"status":"planned"},
-    {"id":"medical-english-skills","parentId":"advanced-skills","name":"Medical English","type":"domain","order":2,"status":"planned"},
-    {"id":"pharmaceutical-english-skills","parentId":"advanced-skills","name":"Pharmaceutical English","type":"domain","order":3,"status":"planned"},
-    {"id":"vstep","parentId":"general-english-skills","name":"VSTEP","type":"skills-track","order":1,"status":"planned"},
-    {"id":"vstep-listening","parentId":"vstep","name":"Listening","type":"skill","order":1,"status":"planned"},
-    {"id":"vstep-speaking","parentId":"vstep","name":"Speaking","type":"skill","order":2,"status":"planned"},
-    {"id":"vstep-reading","parentId":"vstep","name":"Reading","type":"skill","order":3,"status":"planned"},
-    {"id":"vstep-writing","parentId":"vstep","name":"Writing","type":"skill","order":4,"status":"planned"},
-
-    {"id":"skills-general","parentId":"skills-lab","name":"General English","type":"domain","order":1,"status":"planned"},
-    {"id":"skills-medical","parentId":"skills-lab","name":"Medical English","type":"domain","order":2,"status":"planned"},
-    {"id":"skills-pharmaceutical","parentId":"skills-lab","name":"Pharmaceutical English","type":"domain","order":3,"status":"planned"},
-
-    {"id":"mock-general","parentId":"mock-tests","name":"General English","type":"domain","order":1,"status":"planned"},
-    {"id":"mock-medical","parentId":"mock-tests","name":"Medical English","type":"domain","order":2,"status":"planned"},
-    {"id":"mock-pharmaceutical","parentId":"mock-tests","name":"Pharmaceutical English","type":"domain","order":3,"status":"planned"},
-    {"id":"mock-vstep","parentId":"mock-general","name":"VSTEP","type":"test-track","order":1,"status":"planned"}
+    {
+      "id": "e-leap-root",
+      "parentId": null,
+      "name": "E-LEAP",
+      "type": "root",
+      "order": 0,
+      "status": "published"
+    },
+    {
+      "id": "courses",
+      "parentId": "e-leap-root",
+      "name": "Courses",
+      "type": "large-shell",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "skills-lab",
+      "parentId": "e-leap-root",
+      "name": "Skills Lab",
+      "type": "large-shell",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "assignments",
+      "parentId": "e-leap-root",
+      "name": "Assignments",
+      "type": "large-shell",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "mock-tests",
+      "parentId": "e-leap-root",
+      "name": "Mock Tests",
+      "type": "large-shell",
+      "order": 4,
+      "status": "published"
+    },
+    {
+      "id": "progress",
+      "parentId": "e-leap-root",
+      "name": "Progress",
+      "type": "large-shell",
+      "order": 5,
+      "status": "published"
+    },
+    {
+      "id": "coursebooks",
+      "parentId": "courses",
+      "name": "Coursebooks",
+      "type": "collection",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "advanced-skills",
+      "parentId": "courses",
+      "name": "Advanced Skills Courses",
+      "type": "collection",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "objective-first-b2",
+      "parentId": "coursebooks",
+      "name": "Objective First B2",
+      "type": "course",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "life-intermediate",
+      "parentId": "coursebooks",
+      "name": "Life Intermediate",
+      "type": "course",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "medical-english",
+      "parentId": "coursebooks",
+      "name": "Medical English",
+      "type": "course",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "english-for-pharmacy",
+      "parentId": "coursebooks",
+      "name": "English for Pharmacy",
+      "type": "course",
+      "order": 4,
+      "status": "planned"
+    },
+    {
+      "id": "objective-first-b2-u01",
+      "parentId": "objective-first-b2",
+      "name": "Unit 1",
+      "type": "unit",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "objective-first-b2-u01-l01",
+      "parentId": "objective-first-b2-u01",
+      "name": "U1.1 · Fashion Matters",
+      "type": "lesson",
+      "order": 1,
+      "status": "approved"
+    },
+    {
+      "id": "objective-first-b2-u01-l02",
+      "parentId": "objective-first-b2-u01",
+      "name": "U1.2 · Fashion Matters",
+      "type": "lesson",
+      "order": 2,
+      "status": "approved"
+    },
+    {
+      "id": "general-english-skills",
+      "parentId": "advanced-skills",
+      "name": "General English",
+      "type": "domain",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "medical-english-skills",
+      "parentId": "advanced-skills",
+      "name": "Medical English",
+      "type": "domain",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "pharmaceutical-english-skills",
+      "parentId": "advanced-skills",
+      "name": "Pharmaceutical English",
+      "type": "domain",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "vstep",
+      "parentId": "general-english-skills",
+      "name": "VSTEP",
+      "type": "skills-track",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "vstep-listening",
+      "parentId": "vstep",
+      "name": "Listening",
+      "type": "skill",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "vstep-speaking",
+      "parentId": "vstep",
+      "name": "Speaking",
+      "type": "skill",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "vstep-reading",
+      "parentId": "vstep",
+      "name": "Reading",
+      "type": "skill",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "vstep-writing",
+      "parentId": "vstep",
+      "name": "Writing",
+      "type": "skill",
+      "order": 4,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general",
+      "parentId": "skills-lab",
+      "name": "General English",
+      "type": "domain",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical",
+      "parentId": "skills-lab",
+      "name": "Medical English",
+      "type": "domain",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical",
+      "parentId": "skills-lab",
+      "name": "Pharmaceutical English",
+      "type": "domain",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "mock-general",
+      "parentId": "mock-tests",
+      "name": "General English",
+      "type": "domain",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "mock-medical",
+      "parentId": "mock-tests",
+      "name": "Medical English",
+      "type": "domain",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "mock-pharmaceutical",
+      "parentId": "mock-tests",
+      "name": "Pharmaceutical English",
+      "type": "domain",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "mock-vstep",
+      "parentId": "mock-general",
+      "name": "VSTEP",
+      "type": "test-track",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-listening",
+      "parentId": "skills-general",
+      "name": "Listening",
+      "type": "skill",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-listening-level-1",
+      "parentId": "skills-general-listening",
+      "name": "Foundation",
+      "type": "level",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-listening-level-1-practice-sets",
+      "parentId": "skills-general-listening-level-1",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-listening-level-2",
+      "parentId": "skills-general-listening",
+      "name": "Developing",
+      "type": "level",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-listening-level-2-practice-sets",
+      "parentId": "skills-general-listening-level-2",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-listening-level-3",
+      "parentId": "skills-general-listening",
+      "name": "Independent",
+      "type": "level",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-listening-level-3-practice-sets",
+      "parentId": "skills-general-listening-level-3",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-speaking",
+      "parentId": "skills-general",
+      "name": "Speaking",
+      "type": "skill",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-speaking-level-1",
+      "parentId": "skills-general-speaking",
+      "name": "Foundation",
+      "type": "level",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-speaking-level-1-practice-sets",
+      "parentId": "skills-general-speaking-level-1",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-speaking-level-2",
+      "parentId": "skills-general-speaking",
+      "name": "Developing",
+      "type": "level",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-speaking-level-2-practice-sets",
+      "parentId": "skills-general-speaking-level-2",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-speaking-level-3",
+      "parentId": "skills-general-speaking",
+      "name": "Independent",
+      "type": "level",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-speaking-level-3-practice-sets",
+      "parentId": "skills-general-speaking-level-3",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-reading",
+      "parentId": "skills-general",
+      "name": "Reading",
+      "type": "skill",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-reading-level-1",
+      "parentId": "skills-general-reading",
+      "name": "Foundation",
+      "type": "level",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-reading-level-1-practice-sets",
+      "parentId": "skills-general-reading-level-1",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-reading-level-2",
+      "parentId": "skills-general-reading",
+      "name": "Developing",
+      "type": "level",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-reading-level-2-practice-sets",
+      "parentId": "skills-general-reading-level-2",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-reading-level-3",
+      "parentId": "skills-general-reading",
+      "name": "Independent",
+      "type": "level",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-reading-level-3-practice-sets",
+      "parentId": "skills-general-reading-level-3",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-writing",
+      "parentId": "skills-general",
+      "name": "Writing",
+      "type": "skill",
+      "order": 4,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-writing-level-1",
+      "parentId": "skills-general-writing",
+      "name": "Foundation",
+      "type": "level",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-writing-level-1-practice-sets",
+      "parentId": "skills-general-writing-level-1",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-writing-level-2",
+      "parentId": "skills-general-writing",
+      "name": "Developing",
+      "type": "level",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-writing-level-2-practice-sets",
+      "parentId": "skills-general-writing-level-2",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-writing-level-3",
+      "parentId": "skills-general-writing",
+      "name": "Independent",
+      "type": "level",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-writing-level-3-practice-sets",
+      "parentId": "skills-general-writing-level-3",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-vocabulary",
+      "parentId": "skills-general",
+      "name": "Vocabulary",
+      "type": "skill",
+      "order": 5,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-vocabulary-level-1",
+      "parentId": "skills-general-vocabulary",
+      "name": "Foundation",
+      "type": "level",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-vocabulary-level-1-practice-sets",
+      "parentId": "skills-general-vocabulary-level-1",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-vocabulary-level-2",
+      "parentId": "skills-general-vocabulary",
+      "name": "Developing",
+      "type": "level",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-vocabulary-level-2-practice-sets",
+      "parentId": "skills-general-vocabulary-level-2",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-vocabulary-level-3",
+      "parentId": "skills-general-vocabulary",
+      "name": "Independent",
+      "type": "level",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-vocabulary-level-3-practice-sets",
+      "parentId": "skills-general-vocabulary-level-3",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-grammar",
+      "parentId": "skills-general",
+      "name": "Grammar",
+      "type": "skill",
+      "order": 6,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-grammar-level-1",
+      "parentId": "skills-general-grammar",
+      "name": "Foundation",
+      "type": "level",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-grammar-level-1-practice-sets",
+      "parentId": "skills-general-grammar-level-1",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-grammar-level-2",
+      "parentId": "skills-general-grammar",
+      "name": "Developing",
+      "type": "level",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-grammar-level-2-practice-sets",
+      "parentId": "skills-general-grammar-level-2",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-grammar-level-3",
+      "parentId": "skills-general-grammar",
+      "name": "Independent",
+      "type": "level",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "skills-general-grammar-level-3-practice-sets",
+      "parentId": "skills-general-grammar-level-3",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-listening",
+      "parentId": "skills-medical",
+      "name": "Listening",
+      "type": "skill",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-listening-level-1",
+      "parentId": "skills-medical-listening",
+      "name": "Foundation",
+      "type": "level",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-listening-level-1-practice-sets",
+      "parentId": "skills-medical-listening-level-1",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-listening-level-2",
+      "parentId": "skills-medical-listening",
+      "name": "Developing",
+      "type": "level",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-listening-level-2-practice-sets",
+      "parentId": "skills-medical-listening-level-2",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-listening-level-3",
+      "parentId": "skills-medical-listening",
+      "name": "Independent",
+      "type": "level",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-listening-level-3-practice-sets",
+      "parentId": "skills-medical-listening-level-3",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-speaking",
+      "parentId": "skills-medical",
+      "name": "Speaking",
+      "type": "skill",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-speaking-level-1",
+      "parentId": "skills-medical-speaking",
+      "name": "Foundation",
+      "type": "level",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-speaking-level-1-practice-sets",
+      "parentId": "skills-medical-speaking-level-1",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-speaking-level-2",
+      "parentId": "skills-medical-speaking",
+      "name": "Developing",
+      "type": "level",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-speaking-level-2-practice-sets",
+      "parentId": "skills-medical-speaking-level-2",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-speaking-level-3",
+      "parentId": "skills-medical-speaking",
+      "name": "Independent",
+      "type": "level",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-speaking-level-3-practice-sets",
+      "parentId": "skills-medical-speaking-level-3",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-reading",
+      "parentId": "skills-medical",
+      "name": "Reading",
+      "type": "skill",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-reading-level-1",
+      "parentId": "skills-medical-reading",
+      "name": "Foundation",
+      "type": "level",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-reading-level-1-practice-sets",
+      "parentId": "skills-medical-reading-level-1",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-reading-level-2",
+      "parentId": "skills-medical-reading",
+      "name": "Developing",
+      "type": "level",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-reading-level-2-practice-sets",
+      "parentId": "skills-medical-reading-level-2",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-reading-level-3",
+      "parentId": "skills-medical-reading",
+      "name": "Independent",
+      "type": "level",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-reading-level-3-practice-sets",
+      "parentId": "skills-medical-reading-level-3",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-writing",
+      "parentId": "skills-medical",
+      "name": "Writing",
+      "type": "skill",
+      "order": 4,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-writing-level-1",
+      "parentId": "skills-medical-writing",
+      "name": "Foundation",
+      "type": "level",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-writing-level-1-practice-sets",
+      "parentId": "skills-medical-writing-level-1",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-writing-level-2",
+      "parentId": "skills-medical-writing",
+      "name": "Developing",
+      "type": "level",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-writing-level-2-practice-sets",
+      "parentId": "skills-medical-writing-level-2",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-writing-level-3",
+      "parentId": "skills-medical-writing",
+      "name": "Independent",
+      "type": "level",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-writing-level-3-practice-sets",
+      "parentId": "skills-medical-writing-level-3",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-vocabulary",
+      "parentId": "skills-medical",
+      "name": "Vocabulary",
+      "type": "skill",
+      "order": 5,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-vocabulary-level-1",
+      "parentId": "skills-medical-vocabulary",
+      "name": "Foundation",
+      "type": "level",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-vocabulary-level-1-practice-sets",
+      "parentId": "skills-medical-vocabulary-level-1",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-vocabulary-level-2",
+      "parentId": "skills-medical-vocabulary",
+      "name": "Developing",
+      "type": "level",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-vocabulary-level-2-practice-sets",
+      "parentId": "skills-medical-vocabulary-level-2",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-vocabulary-level-3",
+      "parentId": "skills-medical-vocabulary",
+      "name": "Independent",
+      "type": "level",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-vocabulary-level-3-practice-sets",
+      "parentId": "skills-medical-vocabulary-level-3",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-professional-communication",
+      "parentId": "skills-medical",
+      "name": "Professional Communication",
+      "type": "skill",
+      "order": 6,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-professional-communication-level-1",
+      "parentId": "skills-medical-professional-communication",
+      "name": "Foundation",
+      "type": "level",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-professional-communication-level-1-practice-sets",
+      "parentId": "skills-medical-professional-communication-level-1",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-professional-communication-level-2",
+      "parentId": "skills-medical-professional-communication",
+      "name": "Developing",
+      "type": "level",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-professional-communication-level-2-practice-sets",
+      "parentId": "skills-medical-professional-communication-level-2",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-professional-communication-level-3",
+      "parentId": "skills-medical-professional-communication",
+      "name": "Independent",
+      "type": "level",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "skills-medical-professional-communication-level-3-practice-sets",
+      "parentId": "skills-medical-professional-communication-level-3",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-listening",
+      "parentId": "skills-pharmaceutical",
+      "name": "Listening",
+      "type": "skill",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-listening-level-1",
+      "parentId": "skills-pharmaceutical-listening",
+      "name": "Foundation",
+      "type": "level",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-listening-level-1-practice-sets",
+      "parentId": "skills-pharmaceutical-listening-level-1",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-listening-level-2",
+      "parentId": "skills-pharmaceutical-listening",
+      "name": "Developing",
+      "type": "level",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-listening-level-2-practice-sets",
+      "parentId": "skills-pharmaceutical-listening-level-2",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-listening-level-3",
+      "parentId": "skills-pharmaceutical-listening",
+      "name": "Independent",
+      "type": "level",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-listening-level-3-practice-sets",
+      "parentId": "skills-pharmaceutical-listening-level-3",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-speaking",
+      "parentId": "skills-pharmaceutical",
+      "name": "Speaking",
+      "type": "skill",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-speaking-level-1",
+      "parentId": "skills-pharmaceutical-speaking",
+      "name": "Foundation",
+      "type": "level",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-speaking-level-1-practice-sets",
+      "parentId": "skills-pharmaceutical-speaking-level-1",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-speaking-level-2",
+      "parentId": "skills-pharmaceutical-speaking",
+      "name": "Developing",
+      "type": "level",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-speaking-level-2-practice-sets",
+      "parentId": "skills-pharmaceutical-speaking-level-2",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-speaking-level-3",
+      "parentId": "skills-pharmaceutical-speaking",
+      "name": "Independent",
+      "type": "level",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-speaking-level-3-practice-sets",
+      "parentId": "skills-pharmaceutical-speaking-level-3",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-reading",
+      "parentId": "skills-pharmaceutical",
+      "name": "Reading",
+      "type": "skill",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-reading-level-1",
+      "parentId": "skills-pharmaceutical-reading",
+      "name": "Foundation",
+      "type": "level",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-reading-level-1-practice-sets",
+      "parentId": "skills-pharmaceutical-reading-level-1",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-reading-level-2",
+      "parentId": "skills-pharmaceutical-reading",
+      "name": "Developing",
+      "type": "level",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-reading-level-2-practice-sets",
+      "parentId": "skills-pharmaceutical-reading-level-2",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-reading-level-3",
+      "parentId": "skills-pharmaceutical-reading",
+      "name": "Independent",
+      "type": "level",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-reading-level-3-practice-sets",
+      "parentId": "skills-pharmaceutical-reading-level-3",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-writing",
+      "parentId": "skills-pharmaceutical",
+      "name": "Writing",
+      "type": "skill",
+      "order": 4,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-writing-level-1",
+      "parentId": "skills-pharmaceutical-writing",
+      "name": "Foundation",
+      "type": "level",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-writing-level-1-practice-sets",
+      "parentId": "skills-pharmaceutical-writing-level-1",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-writing-level-2",
+      "parentId": "skills-pharmaceutical-writing",
+      "name": "Developing",
+      "type": "level",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-writing-level-2-practice-sets",
+      "parentId": "skills-pharmaceutical-writing-level-2",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-writing-level-3",
+      "parentId": "skills-pharmaceutical-writing",
+      "name": "Independent",
+      "type": "level",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-writing-level-3-practice-sets",
+      "parentId": "skills-pharmaceutical-writing-level-3",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-vocabulary",
+      "parentId": "skills-pharmaceutical",
+      "name": "Vocabulary",
+      "type": "skill",
+      "order": 5,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-vocabulary-level-1",
+      "parentId": "skills-pharmaceutical-vocabulary",
+      "name": "Foundation",
+      "type": "level",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-vocabulary-level-1-practice-sets",
+      "parentId": "skills-pharmaceutical-vocabulary-level-1",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-vocabulary-level-2",
+      "parentId": "skills-pharmaceutical-vocabulary",
+      "name": "Developing",
+      "type": "level",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-vocabulary-level-2-practice-sets",
+      "parentId": "skills-pharmaceutical-vocabulary-level-2",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-vocabulary-level-3",
+      "parentId": "skills-pharmaceutical-vocabulary",
+      "name": "Independent",
+      "type": "level",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-vocabulary-level-3-practice-sets",
+      "parentId": "skills-pharmaceutical-vocabulary-level-3",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-professional-communication",
+      "parentId": "skills-pharmaceutical",
+      "name": "Professional Communication",
+      "type": "skill",
+      "order": 6,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-professional-communication-level-1",
+      "parentId": "skills-pharmaceutical-professional-communication",
+      "name": "Foundation",
+      "type": "level",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-professional-communication-level-1-practice-sets",
+      "parentId": "skills-pharmaceutical-professional-communication-level-1",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-professional-communication-level-2",
+      "parentId": "skills-pharmaceutical-professional-communication",
+      "name": "Developing",
+      "type": "level",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-professional-communication-level-2-practice-sets",
+      "parentId": "skills-pharmaceutical-professional-communication-level-2",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-professional-communication-level-3",
+      "parentId": "skills-pharmaceutical-professional-communication",
+      "name": "Independent",
+      "type": "level",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "skills-pharmaceutical-professional-communication-level-3-practice-sets",
+      "parentId": "skills-pharmaceutical-professional-communication-level-3",
+      "name": "Practice Sets",
+      "type": "collection",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "assign-library",
+      "parentId": "assignments",
+      "name": "Assignment Library",
+      "type": "workflow-shell",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "assign-active",
+      "parentId": "assignments",
+      "name": "Active Assignments",
+      "type": "workflow-shell",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "assign-submissions",
+      "parentId": "assignments",
+      "name": "Submissions",
+      "type": "workflow-shell",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "assign-review",
+      "parentId": "assignments",
+      "name": "Review & Grading",
+      "type": "workflow-shell",
+      "order": 4,
+      "status": "planned"
+    },
+    {
+      "id": "assign-archive",
+      "parentId": "assignments",
+      "name": "Archive",
+      "type": "workflow-shell",
+      "order": 5,
+      "status": "planned"
+    },
+    {
+      "id": "mock-vstep-full-mock",
+      "parentId": "mock-vstep",
+      "name": "Full Mock",
+      "type": "test-type",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "mock-vstep-listening",
+      "parentId": "mock-vstep",
+      "name": "Listening",
+      "type": "test-type",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "mock-vstep-speaking",
+      "parentId": "mock-vstep",
+      "name": "Speaking",
+      "type": "test-type",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "mock-vstep-reading",
+      "parentId": "mock-vstep",
+      "name": "Reading",
+      "type": "test-type",
+      "order": 4,
+      "status": "planned"
+    },
+    {
+      "id": "mock-vstep-writing",
+      "parentId": "mock-vstep",
+      "name": "Writing",
+      "type": "test-type",
+      "order": 5,
+      "status": "planned"
+    },
+    {
+      "id": "mock-medical-progress-tests",
+      "parentId": "mock-medical",
+      "name": "Progress Tests",
+      "type": "test-type",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "mock-medical-module-tests",
+      "parentId": "mock-medical",
+      "name": "Module Tests",
+      "type": "test-type",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "mock-medical-final-mock",
+      "parentId": "mock-medical",
+      "name": "Final / Mock",
+      "type": "test-type",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "mock-pharmaceutical-progress-tests",
+      "parentId": "mock-pharmaceutical",
+      "name": "Progress Tests",
+      "type": "test-type",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "mock-pharmaceutical-module-tests",
+      "parentId": "mock-pharmaceutical",
+      "name": "Module Tests",
+      "type": "test-type",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "mock-pharmaceutical-final-mock",
+      "parentId": "mock-pharmaceutical",
+      "name": "Final / Mock",
+      "type": "test-type",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "progress-student",
+      "parentId": "progress",
+      "name": "Student Overview",
+      "type": "progress-view",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "progress-class",
+      "parentId": "progress",
+      "name": "Class Overview",
+      "type": "progress-view",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "progress-course",
+      "parentId": "progress",
+      "name": "Course Progress",
+      "type": "progress-view",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "progress-skill",
+      "parentId": "progress",
+      "name": "Skill Progress",
+      "type": "progress-view",
+      "order": 4,
+      "status": "planned"
+    },
+    {
+      "id": "progress-self-study",
+      "parentId": "progress",
+      "name": "Self-study Progress",
+      "type": "progress-view",
+      "order": 5,
+      "status": "planned"
+    },
+    {
+      "id": "progress-assignments",
+      "parentId": "progress",
+      "name": "Assignment Results",
+      "type": "progress-view",
+      "order": 6,
+      "status": "planned"
+    },
+    {
+      "id": "progress-mocks",
+      "parentId": "progress",
+      "name": "Mock Test Results",
+      "type": "progress-view",
+      "order": 7,
+      "status": "planned"
+    },
+    {
+      "id": "progress-ai",
+      "parentId": "progress",
+      "name": "AI Feedback History",
+      "type": "progress-view",
+      "order": 8,
+      "status": "planned"
+    },
+    {
+      "id": "progress-teacher",
+      "parentId": "progress",
+      "name": "Teacher Feedback",
+      "type": "progress-view",
+      "order": 9,
+      "status": "planned"
+    },
+    {
+      "id": "progress-history",
+      "parentId": "progress",
+      "name": "Learning History",
+      "type": "progress-view",
+      "order": 10,
+      "status": "planned"
+    },
+    {
+      "id": "progress-analytics",
+      "parentId": "progress",
+      "name": "Analytics & Export",
+      "type": "progress-view",
+      "order": 11,
+      "status": "planned"
+    }
   ]
 }
