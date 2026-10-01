@@ -54,7 +54,11 @@ $("#backToUnit").addEventListener("click",()=>showView("unit-detail"));
 $("#backToClasses").addEventListener("click",()=>showView("course-detail"));
 $("#backToClass").addEventListener("click",()=>showView("class-detail"));
 $(".open-unit").addEventListener("click",()=>showView("unit-detail"));
-$(".open-lesson").addEventListener("click",()=>showView("lesson"));
+$(".open-lesson")?.addEventListener("click",()=>showView("lesson"));
+$$('.open-resource').forEach(b=>b.addEventListener('click',()=>{
+  const id=b.dataset.resource;
+  window.location.href=`engine/lesson-host.html?resource=${encodeURIComponent(id)}`;
+}));
 $(".open-class").addEventListener("click",()=>showView("class-detail"));
 $(".open-student").addEventListener("click",()=>showView("student-profile"));
 

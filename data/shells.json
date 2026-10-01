@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "1.0",
+  "platformId": "e-leap",
+  "platformName": "E-LEAP",
+  "formalName": "English Learning, Engagement and Assessment Platform",
+  "rootId": "e-leap-root",
+  "shells": [
+    {"id":"e-leap-root","parentId":null,"name":"E-LEAP","type":"root","order":0,"status":"published"},
+    {"id":"courses","parentId":"e-leap-root","name":"Courses","type":"large-shell","order":1,"status":"published"},
+    {"id":"skills-lab","parentId":"e-leap-root","name":"Skills Lab","type":"large-shell","order":2,"status":"published"},
+    {"id":"assignments","parentId":"e-leap-root","name":"Assignments","type":"large-shell","order":3,"status":"published"},
+    {"id":"mock-tests","parentId":"e-leap-root","name":"Mock Tests","type":"large-shell","order":4,"status":"published"},
+    {"id":"progress","parentId":"e-leap-root","name":"Progress","type":"large-shell","order":5,"status":"published"},
+
+    {"id":"coursebooks","parentId":"courses","name":"Coursebooks","type":"collection","order":1,"status":"published"},
+    {"id":"advanced-skills","parentId":"courses","name":"Advanced Skills Courses","type":"collection","order":2,"status":"published"},
+
+    {"id":"objective-first-b2","parentId":"coursebooks","name":"Objective First B2","type":"course","order":1,"status":"published"},
+    {"id":"life-intermediate","parentId":"coursebooks","name":"Life Intermediate","type":"course","order":2,"status":"planned"},
+    {"id":"medical-english","parentId":"coursebooks","name":"Medical English","type":"course","order":3,"status":"planned"},
+    {"id":"english-for-pharmacy","parentId":"coursebooks","name":"English for Pharmacy","type":"course","order":4,"status":"planned"},
+
+    {"id":"objective-first-b2-u01","parentId":"objective-first-b2","name":"Unit 1","type":"unit","order":1,"status":"published"},
+    {"id":"objective-first-b2-u01-l01","parentId":"objective-first-b2-u01","name":"U1.1 · Fashion Matters","type":"lesson","order":1,"status":"approved"},
+    {"id":"objective-first-b2-u01-l02","parentId":"objective-first-b2-u01","name":"U1.2 · Fashion Matters","type":"lesson","order":2,"status":"approved"},
+
+    {"id":"general-english-skills","parentId":"advanced-skills","name":"General English","type":"domain","order":1,"status":"planned"},
+    {"id":"medical-english-skills","parentId":"advanced-skills","name":"Medical English","type":"domain","order":2,"status":"planned"},
+    {"id":"pharmaceutical-english-skills","parentId":"advanced-skills","name":"Pharmaceutical English","type":"domain","order":3,"status":"planned"},
+    {"id":"vstep","parentId":"general-english-skills","name":"VSTEP","type":"skills-track","order":1,"status":"planned"},
+    {"id":"vstep-listening","parentId":"vstep","name":"Listening","type":"skill","order":1,"status":"planned"},
+    {"id":"vstep-speaking","parentId":"vstep","name":"Speaking","type":"skill","order":2,"status":"planned"},
+    {"id":"vstep-reading","parentId":"vstep","name":"Reading","type":"skill","order":3,"status":"planned"},
+    {"id":"vstep-writing","parentId":"vstep","name":"Writing","type":"skill","order":4,"status":"planned"},
+
+    {"id":"skills-general","parentId":"skills-lab","name":"General English","type":"domain","order":1,"status":"planned"},
+    {"id":"skills-medical","parentId":"skills-lab","name":"Medical English","type":"domain","order":2,"status":"planned"},
+    {"id":"skills-pharmaceutical","parentId":"skills-lab","name":"Pharmaceutical English","type":"domain","order":3,"status":"planned"},
+
+    {"id":"mock-general","parentId":"mock-tests","name":"General English","type":"domain","order":1,"status":"planned"},
+    {"id":"mock-medical","parentId":"mock-tests","name":"Medical English","type":"domain","order":2,"status":"planned"},
+    {"id":"mock-pharmaceutical","parentId":"mock-tests","name":"Pharmaceutical English","type":"domain","order":3,"status":"planned"},
+    {"id":"mock-vstep","parentId":"mock-general","name":"VSTEP","type":"test-track","order":1,"status":"planned"}
+  ]
+}

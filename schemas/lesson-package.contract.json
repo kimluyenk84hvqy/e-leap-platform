@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.0",
+  "contract": "E-LEAP Lesson Package Contract",
+  "resourceIdentity": "Stable Resource ID; URL/path is replaceable",
+  "required": [
+    "id",
+    "courseId",
+    "unitId",
+    "lessonNumber",
+    "title",
+    "status"
+  ],
+  "modes": [
+    "embedded-in-e-leap",
+    "standalone"
+  ],
+  "dataBoundary": {
+    "content": "portable lesson package",
+    "learningData": "central E-LEAP data layer"
+  },
+  "copyrightGate": [
+    "green-cleared",
+    "amber-documented-private-scope"
+  ],
+  "rule": "A lesson may be mounted in E-LEAP and opened standalone from the same canonical resource; do not duplicate learning content."
+}

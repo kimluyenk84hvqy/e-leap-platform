@@ -7,9 +7,8 @@
     {
       "id": "unit-01",
       "title": "Unit 1",
-      "subtitle": "Fashion Matters",
-      "status": "in-progress",
-      "periods": 8,
+      "subtitle": "A question of sport",
+      "status": "planned",
       "path": "unit-01/unit.json"
     }
   ]

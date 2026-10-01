@@ -1,0 +1,30 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"e-leap/schemas/resource.schema.json",
+  "title":"E-LEAP Resource",
+  "type":"object",
+  "required":["id","name","type","version","status","source","copyright"],
+  "properties":{
+    "id":{"type":"string","minLength":1},
+    "name":{"type":"string","minLength":1},
+    "type":{"type":"string","minLength":1},
+    "version":{"type":"string"},
+    "status":{"enum":["draft","review","approved","published","archived"]},
+    "source":{"type":"object"},
+    "capabilities":{"type":"array","items":{"type":"string"},"uniqueItems":true},
+    "copyright":{
+      "type":"object",
+      "required":["reviewStatus","trafficLight","usageScope"],
+      "properties":{
+        "reviewStatus":{"enum":["pending-audit","cleared","restricted","blocked"]},
+        "trafficLight":{"enum":["green","amber","red"]},
+        "owner":{"type":["string","null"]},
+        "license":{"type":["string","null"]},
+        "attributionRequired":{"type":["boolean","null"]},
+        "usageScope":{"type":"string"},
+        "evidence":{"type":["string","null"]}
+      }
+    }
+  },
+  "additionalProperties":true
+}

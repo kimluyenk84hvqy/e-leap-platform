@@ -1,0 +1,21 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://e-leap.local/schemas/submission.schema.json",
+  "title":"E-LEAP Submission v1.0",
+  "type":"object",
+  "required":["submissionId","resourceId","activityId","attemptNo","status","response","submittedAt"],
+  "properties":{
+    "submissionId":{"type":"string","minLength":1},
+    "resourceId":{"type":"string","minLength":1},
+    "activityId":{"type":"string","minLength":1},
+    "studentId":{"type":["string","null"]},
+    "sessionId":{"type":["string","null"]},
+    "attemptNo":{"type":"integer","minimum":1},
+    "status":{"enum":["draft","submitted","graded"]},
+    "response":{"type":"object","required":["kind","value"],"properties":{"kind":{"enum":["choice","text","audio"]},"value":{}}},
+    "submittedAt":{"type":"string","format":"date-time"},
+    "grading":{"type":["object","null"]},
+    "context":{"type":"object"}
+  },
+  "additionalProperties":true
+}

@@ -39,3 +39,9 @@ The platform shell is locked. Add new courses, units, lessons, activities and cl
 
 ## Next production task
 Build **Objective First B2 — Unit 1** from an approved Content Map.
+
+## Production Foundation v1.3 — Learning Event Contract
+Adds the first central, UI-independent learning-event contract and a development-only local sink. Golden Reference lesson code is still preserved unchanged. The compatibility host records only truthful platform-level open/close events; it does not fabricate activity responses. See `docs/LEARNING-EVENT-CONTRACT-v1.0.md`.
+
+## Production Foundation 1.4
+Adds Native Activity Contract + Submission Model. Foundation QA: `engine/native-activity-qa.html`. This proves the normalized Choose/Type/Record → Submit → Teacher Responses → Progress path without changing U1.1/U1.2 Golden References. Local persistence is development-only.

@@ -1,0 +1,8 @@
+{
+  "resourceId":"res-foundation-native-activity-qa",
+  "activities":[
+    {"id":"qa-choose","type":"choose","title":"Choose","prompt":"Choose the best answer.","options":[{"id":"a","label":"Option A"},{"id":"b","label":"Option B"}],"submission":{"required":true,"attemptPolicy":"multiple","allowDraft":false},"grading":{"mode":"auto","correctOptionId":"b"}},
+    {"id":"qa-type","type":"type","title":"Type","prompt":"Type a short explanation.","placeholder":"Type here…","submission":{"required":true,"attemptPolicy":"multiple","allowDraft":true},"grading":{"mode":"teacher"}},
+    {"id":"qa-record","type":"record","title":"Record","prompt":"Record a short spoken response.","submission":{"required":true,"attemptPolicy":"multiple","allowDraft":false},"grading":{"mode":"ai-assisted","rubricId":"future-speaking-rubric"}}
+  ]
+}
