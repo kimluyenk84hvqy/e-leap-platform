@@ -32,7 +32,7 @@ $$(".role-btn").forEach(b=>b.addEventListener("click",()=>{role=b.dataset.role;a
 applyRole();
 
 const courses={
- objective:{title:"Objective First B2",level:"B2 COURSE",desc:"Exam-oriented English with classroom delivery and self-study.",units:"12",classes:"3",current:"U1.1"},
+ objective:{title:"Objective First B2",level:"B2 COURSE",desc:"Exam-oriented English with classroom delivery and self-study.",units:"12",classes:"3",current:"U2 · L3"},
  life:{title:"Life Intermediate",level:"INTERMEDIATE COURSE",desc:"General English with communicative lessons, practice and tracked progress.",units:"12",classes:"2",current:"U4 · L1"},
  pharmacy:{title:"English for Pharmacy",level:"ESP PROGRAMME",desc:"English for Specific Purposes for pharmacy learners.",units:"8",classes:"1",current:"U1 · L1"},
  medical:{title:"Medical English",level:"ESP PROGRAMME",desc:"English for Specific Purposes for medical learners.",units:"8",classes:"1",current:"U1 · L1"}
@@ -54,13 +54,7 @@ $("#backToUnit").addEventListener("click",()=>showView("unit-detail"));
 $("#backToClasses").addEventListener("click",()=>showView("course-detail"));
 $("#backToClass").addEventListener("click",()=>showView("class-detail"));
 $(".open-unit").addEventListener("click",()=>showView("unit-detail"));
-$$(".open-lesson").forEach((btn,index)=>btn.addEventListener("click",()=>{
-  window.ELEAP_LESSON_PATH = index === 0
-    ? "courses/objective-first-b2/unit-01/lesson-01/lesson.json"
-    : "courses/objective-first-b2/unit-01/lesson-02/lesson.json";
-  showView("lesson");
-  document.dispatchEvent(new Event(index === 0 ? "eleap-open-u11" : "eleap-open-u12"));
-}));
+$(".open-lesson").addEventListener("click",()=>showView("lesson"));
 $(".open-class").addEventListener("click",()=>showView("class-detail"));
 $(".open-student").addEventListener("click",()=>showView("student-profile"));
 
