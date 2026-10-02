@@ -27,5 +27,6 @@
     "license-aware"
   ],
   "mediaPolicy": "Heavy image/audio/video files are externalized; repository contains references and audit metadata only.",
-  "upgrade": "Shell → Sub-shell → Furniture Layer"
+  "upgrade": "Modular Shell Engine + CEFR Levels + Resource terminology",
+  "branchTarget": "production-full-v1"
 }

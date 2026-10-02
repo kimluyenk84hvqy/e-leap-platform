@@ -419,3 +419,74 @@ body{color:var(--charcoal)}
   color:var(--navy-strong);
   font-weight:800;
 }
+
+/* =========================================================
+   E-LEAP Responsive Classroom Standard v1.0
+   Golden Reference retrofit: U1.1
+   One lesson package; layout adapts automatically by viewport.
+   ========================================================= */
+:root{
+  --eleap-touch:44px;
+  --eleap-mobile-font:18px;
+}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+img,video,audio,svg{max-width:100%}
+button,input,textarea,select{min-height:var(--eleap-touch)}
+button{touch-action:manipulation}
+input,textarea,select{max-width:100%}
+
+/* Desktop / projector: preserve the approved slide-like composition. */
+@media (min-width:1100px){
+  .screen.active{height:calc(100vh - 148px);overflow:auto}
+  .screen-grid,.media-layout,.photo-layout,.listening-layout,.advice-layout,.exercise7{min-width:0}
+  .screen-grid>* ,.media-layout>* ,.photo-layout>* ,.listening-layout>* ,.advice-layout>* ,.exercise7>*{min-width:0}
+}
+
+/* Tablet / small laptop: one coherent activity, reduced chrome. */
+@media (max-width:900px){
+  .app{grid-template-rows:auto 1fr auto}
+  .topbar{min-height:64px;height:auto;padding:10px 14px;gap:10px;flex-wrap:wrap}
+  .course-title{font-size:20px}
+  .eyebrow,.stage-label{font-size:12px}
+  .review-badge{padding:6px 8px}
+  main{overflow:visible}
+  .screen{min-height:calc(100dvh - 130px);padding:20px 16px 92px;overflow:visible}
+  h1{font-size:40px}h2{font-size:32px}h3{font-size:24px}
+  .instruction{font-size:21px;line-height:1.4}
+  .question-line,.transcript,.big-prompt{font-size:21px}
+  .support-box p,.speaker-match>div,.vocab-panel span,.rule-card,.gap-grid>div{font-size:19px}
+  .footer{position:sticky;bottom:0;z-index:30;min-height:64px;height:auto;padding:8px 12px;gap:8px;box-shadow:0 -8px 24px rgba(18,63,52,.08)}
+  .footer button{min-height:44px;padding:9px 13px;font-size:16px}
+  .progress-wrap{min-width:0;flex:1;justify-content:center}.progress{width:min(34vw,160px)}
+  .letter{max-height:none}
+}
+
+/* Phone: content becomes a single vertical reading/interaction flow. */
+@media (max-width:640px){
+  body{background:#f4f7f5}
+  .topbar{padding:8px 10px}
+  .topbar>div:first-child{min-width:0;flex:1}
+  .course-title{font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .eyebrow{font-size:10px}.review-badge{font-size:10px}
+  .screen{padding:16px 12px 88px;min-height:calc(100dvh - 118px)}
+  h1{font-size:34px;line-height:1.06}h2{font-size:28px;line-height:1.12}h3{font-size:22px}
+  .instruction{font-size:18px;line-height:1.42;margin-bottom:14px;padding:10px 12px}
+  .hero-grid,.media-layout,.photo-layout,.listening-layout,.advice-layout,.exercise7,
+  .layer-grid,.speaker-match,.rule-grid,.check-grid,.gap-grid,.challenge-grid,.exit-grid,.homework-checks{grid-template-columns:1fr!important}
+  .hero-img,.image-wrap>img,.listening-layout>img,video{max-height:none;height:auto}
+  .question-card,.poll-card,.support-box,.audio-block,.mini-task,.meaning-box,.hint-box,.homework-card{padding:12px}
+  .question-line,.transcript,.big-prompt,.support-box p,.speaker-match>div,.vocab-panel span,.rule-card,.gap-grid>div,.letter p{font-size:18px;line-height:1.45}
+  .question-line span{min-width:32px;height:32px}
+  .poll-options,.tabs,.hint-row,.confidence{gap:8px}
+  .poll-btn,.timer-btn,.support-toggle,.hint-btn,.tab,.confidence button{min-height:44px;padding:10px 12px}
+  .match-table>div{grid-template-columns:1fr;font-size:17px}
+  .blank-reveal,.inline-blank{min-width:54px}
+  .footer{min-height:58px;padding:7px 8px}.footer button{font-size:14px;padding:8px 10px}
+  .progress-wrap{gap:6px}.progress{width:90px}#counter{font-size:12px}
+}
+
+@media (max-width:390px){
+  .review-badge{display:none}
+  .progress{display:none}
+  .footer{justify-content:space-between}
+}

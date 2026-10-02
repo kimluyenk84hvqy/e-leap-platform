@@ -438,3 +438,86 @@ body.presentation[data-screen="7"] .formtable .tr:not(.head)>div:first-child{
   font-size:27px!important;
 }
 body.presentation[data-screen="7"] .formtable .cellinput{font-size:26px!important}
+
+/* =========================================================
+   E-LEAP Responsive Classroom Standard v1.0
+   Golden Reference retrofit: U1.2 FINAL v20
+   Content, answers and approved interactions remain unchanged.
+   ========================================================= */
+:root{
+  --eleap-touch:44px;
+  --eleap-mobile-font:18px;
+}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+img,video,audio,svg{max-width:100%}
+button,input,textarea,select{min-height:var(--eleap-touch)}
+button{touch-action:manipulation}
+input,textarea,select{max-width:100%}
+.stage,.content,.top,.reading-layout,.reading-task-split,.image-question-layout,.video-round-shell{min-width:0}
+
+/* Large classroom screens: retain slide-like overview and 2-column layouts. */
+@media (min-width:1100px){
+  .stage{height:calc(100vh - 76px);overflow:hidden}
+  .content{flex:1;min-height:0;max-height:none}
+  footer{flex:0 0 auto}
+}
+
+/* Tablet / small laptop: hide navigation chrome, keep the activity itself primary. */
+@media (max-width:980px){
+  header{min-height:64px;padding:9px 14px;gap:10px}
+  .brand{min-width:0}.brand b{font-size:21px}.brand span{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:52vw}
+  main{min-height:calc(100dvh - 64px)}
+  .stage{padding:14px 16px;min-height:calc(100dvh - 64px)}
+  .top{gap:10px}.top h1,h1{font-size:34px;margin-bottom:10px}
+  .eyebrow{font-size:12px}
+  .content{padding:18px 18px;font-size:21px;line-height:1.42;min-height:0;max-height:none;overflow:visible}
+  .content:before{margin:-18px -18px 16px}
+  .subtitle,.instruction{font-size:21px!important}
+  .activity p,.activity li,.question,.reading-question,.structure-q,.inline-q,.degree-q,.vocab-q,
+  .transform-source,.transform-answer,.word-item,.tf-row,.mcq-row,.article-text,.reading-text{font-size:20px!important;line-height:1.45!important}
+  input,textarea,.miniinput,.inlineinput,.stackinput,.cellinput,.transform-input{font-size:19px!important;min-height:46px}
+  .media-grid,.cardgrid,.source-sections,.groups.horizontal,.compact-grid,.rewrite-grid,.grouped-three,.grammar-card-grid,.response-videos{grid-template-columns:1fr!important}
+  .video-round-side{display:flex!important;flex-direction:column!important}
+  .round-dots,.round-status{grid-column:auto!important}
+  .video-round-main video{height:auto!important;max-height:48vh}
+  footer{position:sticky;bottom:0;z-index:30;background:#edf4f1;padding:9px 0 2px;gap:8px;box-shadow:0 -8px 24px rgba(18,63,52,.06)}
+  footer button{min-height:44px;padding:9px 12px}
+  #progress{font-size:13px;text-align:center}
+  .action{position:sticky;bottom:58px;z-index:25;background:linear-gradient(180deg,transparent,#edf4f1 24%);padding-top:18px}
+}
+
+/* Phone: one-column flow; no device choice required. */
+@media (max-width:640px){
+  header{min-height:56px;padding:7px 10px}
+  .brand{gap:7px;flex-wrap:nowrap;width:100%}.brand b{font-size:18px;flex:0 0 auto}.brand span{font-size:12px;max-width:none;flex:1}.brand em{font-size:9px;padding:4px 6px}
+  .stage{padding:10px 10px 0;min-height:calc(100dvh - 56px)}
+  .top{display:block}.top h1,h1{font-size:29px!important;line-height:1.08;margin:4px 0 9px}.eyebrow{font-size:10px}
+  .teacher-tools{margin-bottom:8px;justify-content:flex-start}.teacher-tools button{font-size:13px;padding:8px 10px}
+  .content{border-radius:16px;padding:14px 12px;font-size:18px!important;line-height:1.45!important;box-shadow:0 10px 28px rgba(18,63,58,.08)}
+  .content:before{height:4px;margin:-14px -12px 12px}
+  .subtitle,.instruction{font-size:18px!important;line-height:1.4!important}.instruction{padding:10px 11px;border-left-width:4px;margin-bottom:12px}
+  .activity p,.activity li,.question,.reading-question,.structure-q,.inline-q,.degree-q,.vocab-q,
+  .transform-source,.transform-answer,.word-item,.tf-row,.mcq-row,.article-text,.reading-text,
+  .group .bullet,.source-line,.card,.qtext{font-size:18px!important;line-height:1.45!important}
+  input,textarea,.miniinput,.inlineinput,.stackinput,.cellinput,.transform-input,#roundAnswer{font-size:17px!important;min-height:46px!important;width:100%!important;min-width:0!important}
+  .coverart,.reading-layout,.reading-task-split,.reading-question-split,.image-question-layout,.evidence-layout.with-image,
+  .video-round-shell,.predict-panel,.source-sections,.groups,.cardgrid,.media-grid,.compact-grid,.grammar-card-grid,
+  .structure-question-grid,.vocab-q-grid,.rewrite-grid,.qrows,.word-grid,.mcq-options{grid-template-columns:1fr!important}
+  .media-card video,.video-round-main video,.sourceimg,.coverart img{height:auto!important;max-height:none!important}
+  .option,.submit,.round-submit,.item-tab,.round-dot{min-height:44px}
+  .option{font-size:17px;padding:10px 12px}
+  .inline-q,.transform-row,.stacked-q,.grammar-line,.spelling-line,.compact-q,.qrow{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:8px!important}
+  .answerline,.transform-answer{display:flex!important;flex-wrap:wrap!important;gap:6px!important;align-items:center!important}
+  .tf-row{grid-template-columns:1fr!important;gap:8px}.tf-buttons{justify-content:flex-start}
+  .tr{min-width:620px}.formtable{overflow-x:auto;-webkit-overflow-scrolling:touch}.tr>div{font-size:17px!important;padding:9px 10px}
+  .sourceimg.jeans{max-height:none}
+  .modalbox{width:94vw;max-height:88dvh;padding:18px}
+  footer{padding:7px 0 6px}footer button{font-size:13px;padding:8px 9px}#progress{font-size:11px}
+  .action{bottom:54px;padding:14px 0 4px}.action button{flex:1 1 auto;min-width:120px}
+}
+
+@media (max-width:390px){
+  .brand em{display:none}
+  #progress{display:none}
+  footer{justify-content:space-between}
+}

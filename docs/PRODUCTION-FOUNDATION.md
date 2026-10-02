@@ -6,7 +6,7 @@
 ## Locked production rules
 1. Shells are generic nodes. Depth is not hard-coded.
 2. Stable IDs do not change when a shell is renamed or moved.
-3. Resources (furniture) have their own identity and are attached by placements/references.
+3. Resources (resource) have their own identity and are attached by placements/references.
 4. The same resource may be reused in multiple shells without copying the canonical source.
 5. Content and learning data are separate. Moving/replacing content must not erase historical learner evidence.
 6. Course/Unit/Lesson/Skills structures are data, not hard-coded page layouts.
