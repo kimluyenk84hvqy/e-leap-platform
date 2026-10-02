@@ -1,16 +1,10 @@
-import { get } from '@vercel/blob';
+import { issueSignedToken, presignUrl } from '@vercel/blob';
 
 export default async function handler(request) {
   const pathname = request.query?.pathname;
 
   if (!pathname || typeof pathname !== 'string') {
-    return new Response(
-      JSON.stringify({ error: 'Missing pathname' }),
-      {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
+    return new Response('Missing pathname', { status: 400 });
   }
 
   // Only allow E-LEAP Objective First B2 lesson media.
@@ -18,17 +12,22 @@ export default async function handler(request) {
     return new Response('Forbidden', { status: 403 });
   }
 
-  const result = await get(pathname, { access: 'private' });
+  try {
+    const token = await issueSignedToken({
+      pathname,
+      operations: ['get'],
+      validUntil: Date.now() + 10 * 60 * 1000
+    });
 
-  if (!result || result.statusCode !== 200) {
-    return new Response('Not found', { status: 404 });
+    const { presignedUrl } = await presignUrl(token, {
+      pathname,
+      operation: 'get',
+      validUntil: Date.now() + 5 * 60 * 1000
+    });
+
+    return Response.redirect(presignedUrl, 302);
+  } catch (error) {
+    console.error('Private media signing failed:', error);
+    return new Response('Media unavailable', { status: 500 });
   }
-
-  return new Response(result.stream, {
-    headers: {
-      'Content-Type': result.blob.contentType || 'application/octet-stream',
-      'X-Content-Type-Options': 'nosniff',
-      'Cache-Control': 'private, no-cache',
-    },
-  });
 }
