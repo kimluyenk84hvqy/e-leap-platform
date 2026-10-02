@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0",
+  "schemaVersion": "1.1",
   "platformId": "e-leap",
   "platformName": "E-LEAP",
   "formalName": "English Learning, Engagement and Assessment Platform",
@@ -190,204 +190,972 @@
       "status": "planned"
     },
     {
-      "id": "skills-general",
-      "parentId": "skills-lab",
-      "name": "General English",
-      "type": "domain",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical",
-      "parentId": "skills-lab",
-      "name": "Medical English",
-      "type": "domain",
-      "order": 2,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical",
-      "parentId": "skills-lab",
-      "name": "Pharmaceutical English",
-      "type": "domain",
+      "id": "classes",
+      "parentId": "courses",
+      "name": "Classes",
+      "type": "class-workspace",
       "order": 3,
-      "status": "planned"
+      "status": "planned",
+      "description": "Create a class, generate QR/Class Code, start live sessions and view learners."
     },
     {
-      "id": "mock-general",
-      "parentId": "mock-tests",
-      "name": "General English",
-      "type": "domain",
+      "id": "classes-active",
+      "parentId": "classes",
+      "name": "Active Classes",
+      "type": "workflow-shell",
       "order": 1,
-      "status": "planned"
+      "status": "planned",
+      "description": "Open a class, show QR/Class Code and start a live lesson or activity."
     },
     {
-      "id": "mock-medical",
-      "parentId": "mock-tests",
-      "name": "Medical English",
-      "type": "domain",
+      "id": "classes-archive",
+      "parentId": "classes",
+      "name": "Archived Classes",
+      "type": "workflow-shell",
       "order": 2,
-      "status": "planned"
+      "status": "planned",
+      "description": "Keep historical memberships and learning evidence without cluttering active teaching."
     },
     {
-      "id": "mock-pharmaceutical",
-      "parentId": "mock-tests",
-      "name": "Pharmaceutical English",
-      "type": "domain",
-      "order": 3,
-      "status": "planned"
-    },
-    {
-      "id": "mock-vstep",
-      "parentId": "mock-general",
-      "name": "VSTEP",
-      "type": "test-track",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-listening",
-      "parentId": "skills-general",
+      "id": "lab-listening",
+      "parentId": "skills-lab",
       "name": "Listening",
       "type": "skill",
       "order": 1,
+      "status": "published",
+      "description": "Always-open self-study and practice area."
+    },
+    {
+      "id": "lab-listening-general-english",
+      "parentId": "lab-listening",
+      "name": "General English",
+      "type": "track",
+      "order": 1,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-listening-general-english-a1",
+      "parentId": "lab-listening-general-english",
+      "name": "A1",
+      "type": "level",
+      "order": 1,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-listening-general-english-a1-question-types",
+      "parentId": "lab-listening-general-english-a1",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-listening-general-english-a2",
+      "parentId": "lab-listening-general-english",
+      "name": "A2",
+      "type": "level",
+      "order": 2,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-listening-general-english-a2-question-types",
+      "parentId": "lab-listening-general-english-a2",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-listening-general-english-b1",
+      "parentId": "lab-listening-general-english",
+      "name": "B1",
+      "type": "level",
+      "order": 3,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-listening-general-english-b1-question-types",
+      "parentId": "lab-listening-general-english-b1",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-listening-general-english-b2",
+      "parentId": "lab-listening-general-english",
+      "name": "B2",
+      "type": "level",
+      "order": 4,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-listening-general-english-b2-question-types",
+      "parentId": "lab-listening-general-english-b2",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-listening-general-english-c1",
+      "parentId": "lab-listening-general-english",
+      "name": "C1",
+      "type": "level",
+      "order": 5,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-listening-general-english-c1-question-types",
+      "parentId": "lab-listening-general-english-c1",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-listening-vstep",
+      "parentId": "lab-listening",
+      "name": "VSTEP",
+      "type": "track",
+      "order": 2,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-listening-vstep-p1",
+      "parentId": "lab-listening-vstep",
+      "name": "Part 1",
+      "type": "exam-part",
+      "order": 1,
       "status": "planned"
     },
     {
-      "id": "skills-general-speaking",
-      "parentId": "skills-general",
-      "name": "Speaking",
-      "type": "skill",
+      "id": "lab-listening-vstep-p2",
+      "parentId": "lab-listening-vstep",
+      "name": "Part 2",
+      "type": "exam-part",
       "order": 2,
       "status": "planned"
     },
     {
-      "id": "skills-general-reading",
-      "parentId": "skills-general",
-      "name": "Reading",
-      "type": "skill",
+      "id": "lab-listening-vstep-p3",
+      "parentId": "lab-listening-vstep",
+      "name": "Part 3",
+      "type": "exam-part",
       "order": 3,
       "status": "planned"
     },
     {
-      "id": "skills-general-writing",
-      "parentId": "skills-general",
+      "id": "lab-listening-ielts",
+      "parentId": "lab-listening",
+      "name": "IELTS",
+      "type": "track",
+      "order": 3,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-listening-ielts-question-types",
+      "parentId": "lab-listening-ielts",
+      "name": "Question Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Question types can recur across IELTS test parts, so they are not locked to Part shells."
+    },
+    {
+      "id": "lab-listening-medical-english",
+      "parentId": "lab-listening",
+      "name": "Medical English",
+      "type": "domain",
+      "order": 4,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-listening-medical-english-topics",
+      "parentId": "lab-listening-medical-english",
+      "name": "Topics",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin adds curriculum-aligned specialist topics here."
+    },
+    {
+      "id": "lab-listening-pharmaceutical-english",
+      "parentId": "lab-listening",
+      "name": "Pharmaceutical English",
+      "type": "domain",
+      "order": 5,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-listening-pharmaceutical-english-topics",
+      "parentId": "lab-listening-pharmaceutical-english",
+      "name": "Topics",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin adds curriculum-aligned specialist topics here."
+    },
+    {
+      "id": "lab-speaking",
+      "parentId": "skills-lab",
+      "name": "Speaking",
+      "type": "skill",
+      "order": 2,
+      "status": "published",
+      "description": "Always-open self-study and practice area."
+    },
+    {
+      "id": "lab-speaking-general-english",
+      "parentId": "lab-speaking",
+      "name": "General English",
+      "type": "track",
+      "order": 1,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-speaking-general-english-a1",
+      "parentId": "lab-speaking-general-english",
+      "name": "A1",
+      "type": "level",
+      "order": 1,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-speaking-general-english-a1-question-types",
+      "parentId": "lab-speaking-general-english-a1",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-speaking-general-english-a2",
+      "parentId": "lab-speaking-general-english",
+      "name": "A2",
+      "type": "level",
+      "order": 2,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-speaking-general-english-a2-question-types",
+      "parentId": "lab-speaking-general-english-a2",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-speaking-general-english-b1",
+      "parentId": "lab-speaking-general-english",
+      "name": "B1",
+      "type": "level",
+      "order": 3,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-speaking-general-english-b1-question-types",
+      "parentId": "lab-speaking-general-english-b1",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-speaking-general-english-b2",
+      "parentId": "lab-speaking-general-english",
+      "name": "B2",
+      "type": "level",
+      "order": 4,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-speaking-general-english-b2-question-types",
+      "parentId": "lab-speaking-general-english-b2",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-speaking-general-english-c1",
+      "parentId": "lab-speaking-general-english",
+      "name": "C1",
+      "type": "level",
+      "order": 5,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-speaking-general-english-c1-question-types",
+      "parentId": "lab-speaking-general-english-c1",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-speaking-vstep",
+      "parentId": "lab-speaking",
+      "name": "VSTEP",
+      "type": "track",
+      "order": 2,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-speaking-vstep-p1",
+      "parentId": "lab-speaking-vstep",
+      "name": "Part 1",
+      "type": "exam-part",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "lab-speaking-vstep-p2",
+      "parentId": "lab-speaking-vstep",
+      "name": "Part 2",
+      "type": "exam-part",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "lab-speaking-vstep-p3",
+      "parentId": "lab-speaking-vstep",
+      "name": "Part 3",
+      "type": "exam-part",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "lab-speaking-ielts",
+      "parentId": "lab-speaking",
+      "name": "IELTS",
+      "type": "track",
+      "order": 3,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-speaking-ielts-p1",
+      "parentId": "lab-speaking-ielts",
+      "name": "Part 1",
+      "type": "exam-part",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "lab-speaking-ielts-p2",
+      "parentId": "lab-speaking-ielts",
+      "name": "Part 2",
+      "type": "exam-part",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "lab-speaking-ielts-p3",
+      "parentId": "lab-speaking-ielts",
+      "name": "Part 3",
+      "type": "exam-part",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "lab-speaking-medical-english",
+      "parentId": "lab-speaking",
+      "name": "Medical English",
+      "type": "domain",
+      "order": 4,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-speaking-medical-english-topics",
+      "parentId": "lab-speaking-medical-english",
+      "name": "Topics",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin adds curriculum-aligned specialist topics here."
+    },
+    {
+      "id": "lab-speaking-pharmaceutical-english",
+      "parentId": "lab-speaking",
+      "name": "Pharmaceutical English",
+      "type": "domain",
+      "order": 5,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-speaking-pharmaceutical-english-topics",
+      "parentId": "lab-speaking-pharmaceutical-english",
+      "name": "Topics",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin adds curriculum-aligned specialist topics here."
+    },
+    {
+      "id": "lab-reading",
+      "parentId": "skills-lab",
+      "name": "Reading",
+      "type": "skill",
+      "order": 3,
+      "status": "published",
+      "description": "Always-open self-study and practice area."
+    },
+    {
+      "id": "lab-reading-general-english",
+      "parentId": "lab-reading",
+      "name": "General English",
+      "type": "track",
+      "order": 1,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-reading-general-english-a1",
+      "parentId": "lab-reading-general-english",
+      "name": "A1",
+      "type": "level",
+      "order": 1,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-reading-general-english-a1-question-types",
+      "parentId": "lab-reading-general-english-a1",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-reading-general-english-a2",
+      "parentId": "lab-reading-general-english",
+      "name": "A2",
+      "type": "level",
+      "order": 2,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-reading-general-english-a2-question-types",
+      "parentId": "lab-reading-general-english-a2",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-reading-general-english-b1",
+      "parentId": "lab-reading-general-english",
+      "name": "B1",
+      "type": "level",
+      "order": 3,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-reading-general-english-b1-question-types",
+      "parentId": "lab-reading-general-english-b1",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-reading-general-english-b2",
+      "parentId": "lab-reading-general-english",
+      "name": "B2",
+      "type": "level",
+      "order": 4,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-reading-general-english-b2-question-types",
+      "parentId": "lab-reading-general-english-b2",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-reading-general-english-c1",
+      "parentId": "lab-reading-general-english",
+      "name": "C1",
+      "type": "level",
+      "order": 5,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-reading-general-english-c1-question-types",
+      "parentId": "lab-reading-general-english-c1",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-reading-vstep",
+      "parentId": "lab-reading",
+      "name": "VSTEP",
+      "type": "track",
+      "order": 2,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-reading-vstep-question-types",
+      "parentId": "lab-reading-vstep",
+      "name": "Question Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Question-type organisation for VSTEP Reading."
+    },
+    {
+      "id": "lab-reading-ielts",
+      "parentId": "lab-reading",
+      "name": "IELTS",
+      "type": "track",
+      "order": 3,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-reading-ielts-question-types",
+      "parentId": "lab-reading-ielts",
+      "name": "Question Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Question types can recur across IELTS test parts, so they are not locked to Part shells."
+    },
+    {
+      "id": "lab-reading-medical-english",
+      "parentId": "lab-reading",
+      "name": "Medical English",
+      "type": "domain",
+      "order": 4,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-reading-medical-english-topics",
+      "parentId": "lab-reading-medical-english",
+      "name": "Topics",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin adds curriculum-aligned specialist topics here."
+    },
+    {
+      "id": "lab-reading-pharmaceutical-english",
+      "parentId": "lab-reading",
+      "name": "Pharmaceutical English",
+      "type": "domain",
+      "order": 5,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-reading-pharmaceutical-english-topics",
+      "parentId": "lab-reading-pharmaceutical-english",
+      "name": "Topics",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin adds curriculum-aligned specialist topics here."
+    },
+    {
+      "id": "lab-writing",
+      "parentId": "skills-lab",
       "name": "Writing",
       "type": "skill",
       "order": 4,
+      "status": "published",
+      "description": "Always-open self-study and practice area."
+    },
+    {
+      "id": "lab-writing-general-english",
+      "parentId": "lab-writing",
+      "name": "General English",
+      "type": "track",
+      "order": 1,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-writing-general-english-a1",
+      "parentId": "lab-writing-general-english",
+      "name": "A1",
+      "type": "level",
+      "order": 1,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-writing-general-english-a1-question-types",
+      "parentId": "lab-writing-general-english-a1",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-writing-general-english-a2",
+      "parentId": "lab-writing-general-english",
+      "name": "A2",
+      "type": "level",
+      "order": 2,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-writing-general-english-a2-question-types",
+      "parentId": "lab-writing-general-english-a2",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-writing-general-english-b1",
+      "parentId": "lab-writing-general-english",
+      "name": "B1",
+      "type": "level",
+      "order": 3,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-writing-general-english-b1-question-types",
+      "parentId": "lab-writing-general-english-b1",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-writing-general-english-b2",
+      "parentId": "lab-writing-general-english",
+      "name": "B2",
+      "type": "level",
+      "order": 4,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-writing-general-english-b2-question-types",
+      "parentId": "lab-writing-general-english-b2",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-writing-general-english-c1",
+      "parentId": "lab-writing-general-english",
+      "name": "C1",
+      "type": "level",
+      "order": 5,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-writing-general-english-c1-question-types",
+      "parentId": "lab-writing-general-english-c1",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-writing-vstep",
+      "parentId": "lab-writing",
+      "name": "VSTEP",
+      "type": "track",
+      "order": 2,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-writing-vstep-p1",
+      "parentId": "lab-writing-vstep",
+      "name": "Part 1",
+      "type": "exam-part",
+      "order": 1,
       "status": "planned"
     },
     {
-      "id": "skills-general-vocabulary",
-      "parentId": "skills-general",
+      "id": "lab-writing-vstep-p2",
+      "parentId": "lab-writing-vstep",
+      "name": "Part 2",
+      "type": "exam-part",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "lab-writing-ielts",
+      "parentId": "lab-writing",
+      "name": "IELTS",
+      "type": "track",
+      "order": 3,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-writing-ielts-task1",
+      "parentId": "lab-writing-ielts",
+      "name": "Task 1",
+      "type": "exam-part",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "lab-writing-ielts-task2",
+      "parentId": "lab-writing-ielts",
+      "name": "Task 2",
+      "type": "exam-part",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "lab-writing-medical-english",
+      "parentId": "lab-writing",
+      "name": "Medical English",
+      "type": "domain",
+      "order": 4,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-writing-medical-english-topics",
+      "parentId": "lab-writing-medical-english",
+      "name": "Topics",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin adds curriculum-aligned specialist topics here."
+    },
+    {
+      "id": "lab-writing-pharmaceutical-english",
+      "parentId": "lab-writing",
+      "name": "Pharmaceutical English",
+      "type": "domain",
+      "order": 5,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-writing-pharmaceutical-english-topics",
+      "parentId": "lab-writing-pharmaceutical-english",
+      "name": "Topics",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin adds curriculum-aligned specialist topics here."
+    },
+    {
+      "id": "lab-vocabulary",
+      "parentId": "skills-lab",
       "name": "Vocabulary",
       "type": "skill",
       "order": 5,
-      "status": "planned"
+      "status": "published",
+      "description": "Always-open self-study and practice area."
     },
     {
-      "id": "skills-general-grammar",
-      "parentId": "skills-general",
+      "id": "lab-vocabulary-general",
+      "parentId": "lab-vocabulary",
+      "name": "General English",
+      "type": "track",
+      "order": 1,
+      "status": "planned",
+      "description": "CEFR-organised language competence practice."
+    },
+    {
+      "id": "lab-vocabulary-medical",
+      "parentId": "lab-vocabulary",
+      "name": "Medical English",
+      "type": "domain",
+      "order": 2,
+      "status": "planned",
+      "description": "Topic-based specialist practice."
+    },
+    {
+      "id": "lab-vocabulary-pharma",
+      "parentId": "lab-vocabulary",
+      "name": "Pharmaceutical English",
+      "type": "domain",
+      "order": 3,
+      "status": "planned",
+      "description": "Topic-based specialist practice."
+    },
+    {
+      "id": "lab-vocabulary-general-a1",
+      "parentId": "lab-vocabulary-general",
+      "name": "A1",
+      "type": "level",
+      "order": 1,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-vocabulary-general-a2",
+      "parentId": "lab-vocabulary-general",
+      "name": "A2",
+      "type": "level",
+      "order": 2,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-vocabulary-general-b1",
+      "parentId": "lab-vocabulary-general",
+      "name": "B1",
+      "type": "level",
+      "order": 3,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-vocabulary-general-b2",
+      "parentId": "lab-vocabulary-general",
+      "name": "B2",
+      "type": "level",
+      "order": 4,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-vocabulary-general-c1",
+      "parentId": "lab-vocabulary-general",
+      "name": "C1",
+      "type": "level",
+      "order": 5,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-grammar",
+      "parentId": "skills-lab",
       "name": "Grammar",
       "type": "skill",
       "order": 6,
-      "status": "planned"
+      "status": "published",
+      "description": "Always-open self-study and practice area."
     },
     {
-      "id": "skills-medical-listening",
-      "parentId": "skills-medical",
-      "name": "Listening",
-      "type": "skill",
+      "id": "lab-grammar-general",
+      "parentId": "lab-grammar",
+      "name": "General English",
+      "type": "track",
       "order": 1,
-      "status": "planned"
+      "status": "planned",
+      "description": "CEFR-organised language competence practice."
     },
     {
-      "id": "skills-medical-speaking",
-      "parentId": "skills-medical",
-      "name": "Speaking",
-      "type": "skill",
+      "id": "lab-grammar-medical",
+      "parentId": "lab-grammar",
+      "name": "Medical English",
+      "type": "domain",
       "order": 2,
-      "status": "planned"
+      "status": "planned",
+      "description": "Topic-based specialist practice."
     },
     {
-      "id": "skills-medical-reading",
-      "parentId": "skills-medical",
-      "name": "Reading",
-      "type": "skill",
+      "id": "lab-grammar-pharma",
+      "parentId": "lab-grammar",
+      "name": "Pharmaceutical English",
+      "type": "domain",
       "order": 3,
-      "status": "planned"
+      "status": "planned",
+      "description": "Topic-based specialist practice."
     },
     {
-      "id": "skills-medical-writing",
-      "parentId": "skills-medical",
-      "name": "Writing",
-      "type": "skill",
-      "order": 4,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-vocabulary",
-      "parentId": "skills-medical",
-      "name": "Vocabulary",
-      "type": "skill",
-      "order": 5,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-professional-communication",
-      "parentId": "skills-medical",
-      "name": "Professional Communication",
-      "type": "skill",
-      "order": 6,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-listening",
-      "parentId": "skills-pharmaceutical",
-      "name": "Listening",
-      "type": "skill",
+      "id": "lab-grammar-general-a1",
+      "parentId": "lab-grammar-general",
+      "name": "A1",
+      "type": "level",
       "order": 1,
-      "status": "planned"
+      "status": "planned",
+      "framework": "CEFR"
     },
     {
-      "id": "skills-pharmaceutical-speaking",
-      "parentId": "skills-pharmaceutical",
-      "name": "Speaking",
-      "type": "skill",
+      "id": "lab-grammar-general-a2",
+      "parentId": "lab-grammar-general",
+      "name": "A2",
+      "type": "level",
       "order": 2,
-      "status": "planned"
+      "status": "planned",
+      "framework": "CEFR"
     },
     {
-      "id": "skills-pharmaceutical-reading",
-      "parentId": "skills-pharmaceutical",
-      "name": "Reading",
-      "type": "skill",
+      "id": "lab-grammar-general-b1",
+      "parentId": "lab-grammar-general",
+      "name": "B1",
+      "type": "level",
       "order": 3,
-      "status": "planned"
+      "status": "planned",
+      "framework": "CEFR"
     },
     {
-      "id": "skills-pharmaceutical-writing",
-      "parentId": "skills-pharmaceutical",
-      "name": "Writing",
-      "type": "skill",
+      "id": "lab-grammar-general-b2",
+      "parentId": "lab-grammar-general",
+      "name": "B2",
+      "type": "level",
       "order": 4,
-      "status": "planned"
+      "status": "planned",
+      "framework": "CEFR"
     },
     {
-      "id": "skills-pharmaceutical-vocabulary",
-      "parentId": "skills-pharmaceutical",
-      "name": "Vocabulary",
-      "type": "skill",
+      "id": "lab-grammar-general-c1",
+      "parentId": "lab-grammar-general",
+      "name": "C1",
+      "type": "level",
       "order": 5,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-professional-communication",
-      "parentId": "skills-pharmaceutical",
-      "name": "Professional Communication",
-      "type": "skill",
-      "order": 6,
-      "status": "planned"
+      "status": "planned",
+      "framework": "CEFR"
     },
     {
       "id": "assign-library",
@@ -395,7 +1163,8 @@
       "name": "Assignment Library",
       "type": "workflow-shell",
       "order": 1,
-      "status": "planned"
+      "status": "published",
+      "description": "Select an existing Resource/Interactive Activity or create a new task."
     },
     {
       "id": "assign-active",
@@ -403,7 +1172,8 @@
       "name": "Active Assignments",
       "type": "workflow-shell",
       "order": 2,
-      "status": "planned"
+      "status": "published",
+      "description": "Assign to a class or learner with Available From, Deadline, attempts and late policy."
     },
     {
       "id": "assign-submissions",
@@ -411,7 +1181,8 @@
       "name": "Submissions",
       "type": "workflow-shell",
       "order": 3,
-      "status": "planned"
+      "status": "published",
+      "description": "Student submissions with timestamps, attempt history and status."
     },
     {
       "id": "assign-review",
@@ -419,1721 +1190,230 @@
       "name": "Review & Grading",
       "type": "workflow-shell",
       "order": 4,
-      "status": "planned"
+      "status": "published",
+      "description": "Auto-check, AI-assisted feedback, teacher review/override and final grade."
+    },
+    {
+      "id": "assign-completed",
+      "parentId": "assignments",
+      "name": "Completed",
+      "type": "workflow-shell",
+      "order": 5,
+      "status": "published",
+      "description": "Released feedback and completed work linked to Progress."
     },
     {
       "id": "assign-archive",
       "parentId": "assignments",
       "name": "Archive",
       "type": "workflow-shell",
-      "order": 5,
-      "status": "planned"
+      "order": 6,
+      "status": "published",
+      "description": "Closed assignments retained with learning evidence and research history."
     },
     {
-      "id": "mock-vstep-full-mock",
-      "parentId": "mock-vstep",
-      "name": "Full Mock",
-      "type": "test-type",
+      "id": "mock-general",
+      "parentId": "mock-tests",
+      "name": "General English",
+      "type": "domain",
       "order": 1,
-      "status": "planned"
+      "status": "published"
     },
     {
-      "id": "mock-vstep-listening",
-      "parentId": "mock-vstep",
-      "name": "Listening",
-      "type": "test-type",
+      "id": "mock-medical",
+      "parentId": "mock-tests",
+      "name": "Medical English",
+      "type": "domain",
       "order": 2,
-      "status": "planned"
+      "status": "published"
     },
     {
-      "id": "mock-vstep-speaking",
-      "parentId": "mock-vstep",
-      "name": "Speaking",
-      "type": "test-type",
+      "id": "mock-pharma",
+      "parentId": "mock-tests",
+      "name": "Pharmaceutical English",
+      "type": "domain",
       "order": 3,
-      "status": "planned"
+      "status": "published"
     },
     {
-      "id": "mock-vstep-reading",
+      "id": "mock-vstep",
+      "parentId": "mock-general",
+      "name": "VSTEP",
+      "type": "test-track",
+      "order": 1,
+      "status": "published",
+      "description": "One assessment engine; Practice Mode can stay always open, Test Mode can be scheduled/timed."
+    },
+    {
+      "id": "mock-vstep-practice",
       "parentId": "mock-vstep",
-      "name": "Reading",
-      "type": "test-type",
-      "order": 4,
-      "status": "planned"
+      "name": "Practice Mode",
+      "type": "assessment-mode",
+      "order": 1,
+      "status": "planned",
+      "description": "Always open; configurable attempts and feedback."
     },
     {
-      "id": "mock-vstep-writing",
+      "id": "mock-vstep-scheduled",
       "parentId": "mock-vstep",
-      "name": "Writing",
-      "type": "test-type",
-      "order": 5,
-      "status": "planned"
+      "name": "Scheduled Test Mode",
+      "type": "assessment-mode",
+      "order": 2,
+      "status": "planned",
+      "description": "Open/close window, time limit, attempt limit and controlled feedback release."
     },
     {
-      "id": "mock-medical-progress-tests",
+      "id": "mock-ielts",
+      "parentId": "mock-general",
+      "name": "IELTS",
+      "type": "test-track",
+      "order": 2,
+      "status": "published",
+      "description": "One assessment engine; Practice Mode can stay always open, Test Mode can be scheduled/timed."
+    },
+    {
+      "id": "mock-ielts-practice",
+      "parentId": "mock-ielts",
+      "name": "Practice Mode",
+      "type": "assessment-mode",
+      "order": 1,
+      "status": "planned",
+      "description": "Always open; configurable attempts and feedback."
+    },
+    {
+      "id": "mock-ielts-scheduled",
+      "parentId": "mock-ielts",
+      "name": "Scheduled Test Mode",
+      "type": "assessment-mode",
+      "order": 2,
+      "status": "planned",
+      "description": "Open/close window, time limit, attempt limit and controlled feedback release."
+    },
+    {
+      "id": "mock-medical-1",
       "parentId": "mock-medical",
       "name": "Progress Tests",
-      "type": "test-type",
+      "type": "test-collection",
       "order": 1,
-      "status": "planned"
+      "status": "planned",
+      "description": "Sections are configurable; not hard-coded to four skills."
     },
     {
-      "id": "mock-medical-module-tests",
+      "id": "mock-medical-2",
       "parentId": "mock-medical",
       "name": "Module Tests",
-      "type": "test-type",
+      "type": "test-collection",
       "order": 2,
-      "status": "planned"
+      "status": "planned",
+      "description": "Sections are configurable; not hard-coded to four skills."
     },
     {
-      "id": "mock-medical-final-mock",
+      "id": "mock-medical-3",
       "parentId": "mock-medical",
-      "name": "Final / Mock",
-      "type": "test-type",
+      "name": "Final / Mock Tests",
+      "type": "test-collection",
       "order": 3,
-      "status": "planned"
+      "status": "planned",
+      "description": "Sections are configurable; not hard-coded to four skills."
     },
     {
-      "id": "mock-pharmaceutical-progress-tests",
-      "parentId": "mock-pharmaceutical",
+      "id": "mock-pharma-1",
+      "parentId": "mock-pharma",
       "name": "Progress Tests",
-      "type": "test-type",
+      "type": "test-collection",
       "order": 1,
-      "status": "planned"
+      "status": "planned",
+      "description": "Sections are configurable; not hard-coded to four skills."
     },
     {
-      "id": "mock-pharmaceutical-module-tests",
-      "parentId": "mock-pharmaceutical",
+      "id": "mock-pharma-2",
+      "parentId": "mock-pharma",
       "name": "Module Tests",
-      "type": "test-type",
+      "type": "test-collection",
       "order": 2,
-      "status": "planned"
+      "status": "planned",
+      "description": "Sections are configurable; not hard-coded to four skills."
     },
     {
-      "id": "mock-pharmaceutical-final-mock",
-      "parentId": "mock-pharmaceutical",
-      "name": "Final / Mock",
-      "type": "test-type",
+      "id": "mock-pharma-3",
+      "parentId": "mock-pharma",
+      "name": "Final / Mock Tests",
+      "type": "test-collection",
       "order": 3,
-      "status": "planned"
+      "status": "planned",
+      "description": "Sections are configurable; not hard-coded to four skills."
     },
     {
       "id": "progress-student",
       "parentId": "progress",
       "name": "Student Overview",
-      "type": "progress-view",
+      "type": "analytics-shell",
       "order": 1,
-      "status": "planned"
+      "status": "published",
+      "description": "Personal learning evidence across courses, practice, assignments and mock tests."
     },
     {
       "id": "progress-class",
       "parentId": "progress",
       "name": "Class Overview",
-      "type": "progress-view",
+      "type": "analytics-shell",
       "order": 2,
-      "status": "planned"
+      "status": "published",
+      "description": "Teacher view of assigned class participation and outcomes."
     },
     {
       "id": "progress-course",
       "parentId": "progress",
       "name": "Course Progress",
-      "type": "progress-view",
+      "type": "analytics-shell",
       "order": 3,
-      "status": "planned"
+      "status": "published",
+      "description": "Course and lesson completion evidence."
     },
     {
       "id": "progress-skill",
       "parentId": "progress",
       "name": "Skill Progress",
-      "type": "progress-view",
+      "type": "analytics-shell",
       "order": 4,
-      "status": "planned"
+      "status": "published",
+      "description": "Practice history by skill, track, level/question type and topic."
     },
     {
-      "id": "progress-self-study",
-      "parentId": "progress",
-      "name": "Self-study Progress",
-      "type": "progress-view",
-      "order": 5,
-      "status": "planned"
-    },
-    {
-      "id": "progress-assignments",
+      "id": "progress-assign",
       "parentId": "progress",
       "name": "Assignment Results",
-      "type": "progress-view",
-      "order": 6,
-      "status": "planned"
+      "type": "analytics-shell",
+      "order": 5,
+      "status": "published",
+      "description": "Submission, feedback and final grade history."
     },
     {
-      "id": "progress-mocks",
+      "id": "progress-mock",
       "parentId": "progress",
       "name": "Mock Test Results",
-      "type": "progress-view",
+      "type": "analytics-shell",
+      "order": 6,
+      "status": "published",
+      "description": "Attempts, sections, scores, timing and feedback."
+    },
+    {
+      "id": "progress-feedback",
+      "parentId": "progress",
+      "name": "Feedback History",
+      "type": "analytics-shell",
       "order": 7,
-      "status": "planned"
-    },
-    {
-      "id": "progress-ai",
-      "parentId": "progress",
-      "name": "AI Feedback History",
-      "type": "progress-view",
-      "order": 8,
-      "status": "planned"
-    },
-    {
-      "id": "progress-teacher",
-      "parentId": "progress",
-      "name": "Teacher Feedback",
-      "type": "progress-view",
-      "order": 9,
-      "status": "planned"
-    },
-    {
-      "id": "progress-history",
-      "parentId": "progress",
-      "name": "Learning History",
-      "type": "progress-view",
-      "order": 10,
-      "status": "planned"
+      "status": "published",
+      "description": "AI suggestions, teacher feedback, revisions and final feedback."
     },
     {
       "id": "progress-analytics",
       "parentId": "progress",
       "name": "Analytics & Export",
-      "type": "progress-view",
-      "order": 11,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-grammar-a1",
-      "parentId": "skills-general-grammar",
-      "name": "A1",
-      "type": "level",
-      "order": 1,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-grammar-a1-practice-sets",
-      "parentId": "skills-general-grammar-a1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-grammar-a2",
-      "parentId": "skills-general-grammar",
-      "name": "A2",
-      "type": "level",
-      "order": 2,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-grammar-a2-practice-sets",
-      "parentId": "skills-general-grammar-a2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-grammar-b1",
-      "parentId": "skills-general-grammar",
-      "name": "B1",
-      "type": "level",
-      "order": 3,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-grammar-b1-practice-sets",
-      "parentId": "skills-general-grammar-b1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-grammar-b2",
-      "parentId": "skills-general-grammar",
-      "name": "B2",
-      "type": "level",
-      "order": 4,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-grammar-b2-practice-sets",
-      "parentId": "skills-general-grammar-b2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-grammar-c1",
-      "parentId": "skills-general-grammar",
-      "name": "C1",
-      "type": "level",
-      "order": 5,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-grammar-c1-practice-sets",
-      "parentId": "skills-general-grammar-c1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-listening-a1",
-      "parentId": "skills-general-listening",
-      "name": "A1",
-      "type": "level",
-      "order": 1,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-listening-a1-practice-sets",
-      "parentId": "skills-general-listening-a1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-listening-a2",
-      "parentId": "skills-general-listening",
-      "name": "A2",
-      "type": "level",
-      "order": 2,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-listening-a2-practice-sets",
-      "parentId": "skills-general-listening-a2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-listening-b1",
-      "parentId": "skills-general-listening",
-      "name": "B1",
-      "type": "level",
-      "order": 3,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-listening-b1-practice-sets",
-      "parentId": "skills-general-listening-b1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-listening-b2",
-      "parentId": "skills-general-listening",
-      "name": "B2",
-      "type": "level",
-      "order": 4,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-listening-b2-practice-sets",
-      "parentId": "skills-general-listening-b2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-listening-c1",
-      "parentId": "skills-general-listening",
-      "name": "C1",
-      "type": "level",
-      "order": 5,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-listening-c1-practice-sets",
-      "parentId": "skills-general-listening-c1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-reading-a1",
-      "parentId": "skills-general-reading",
-      "name": "A1",
-      "type": "level",
-      "order": 1,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-reading-a1-practice-sets",
-      "parentId": "skills-general-reading-a1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-reading-a2",
-      "parentId": "skills-general-reading",
-      "name": "A2",
-      "type": "level",
-      "order": 2,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-reading-a2-practice-sets",
-      "parentId": "skills-general-reading-a2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-reading-b1",
-      "parentId": "skills-general-reading",
-      "name": "B1",
-      "type": "level",
-      "order": 3,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-reading-b1-practice-sets",
-      "parentId": "skills-general-reading-b1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-reading-b2",
-      "parentId": "skills-general-reading",
-      "name": "B2",
-      "type": "level",
-      "order": 4,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-reading-b2-practice-sets",
-      "parentId": "skills-general-reading-b2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-reading-c1",
-      "parentId": "skills-general-reading",
-      "name": "C1",
-      "type": "level",
-      "order": 5,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-reading-c1-practice-sets",
-      "parentId": "skills-general-reading-c1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-speaking-a1",
-      "parentId": "skills-general-speaking",
-      "name": "A1",
-      "type": "level",
-      "order": 1,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-speaking-a1-practice-sets",
-      "parentId": "skills-general-speaking-a1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-speaking-a2",
-      "parentId": "skills-general-speaking",
-      "name": "A2",
-      "type": "level",
-      "order": 2,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-speaking-a2-practice-sets",
-      "parentId": "skills-general-speaking-a2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-speaking-b1",
-      "parentId": "skills-general-speaking",
-      "name": "B1",
-      "type": "level",
-      "order": 3,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-speaking-b1-practice-sets",
-      "parentId": "skills-general-speaking-b1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-speaking-b2",
-      "parentId": "skills-general-speaking",
-      "name": "B2",
-      "type": "level",
-      "order": 4,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-speaking-b2-practice-sets",
-      "parentId": "skills-general-speaking-b2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-speaking-c1",
-      "parentId": "skills-general-speaking",
-      "name": "C1",
-      "type": "level",
-      "order": 5,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-speaking-c1-practice-sets",
-      "parentId": "skills-general-speaking-c1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-vocabulary-a1",
-      "parentId": "skills-general-vocabulary",
-      "name": "A1",
-      "type": "level",
-      "order": 1,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-vocabulary-a1-practice-sets",
-      "parentId": "skills-general-vocabulary-a1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-vocabulary-a2",
-      "parentId": "skills-general-vocabulary",
-      "name": "A2",
-      "type": "level",
-      "order": 2,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-vocabulary-a2-practice-sets",
-      "parentId": "skills-general-vocabulary-a2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-vocabulary-b1",
-      "parentId": "skills-general-vocabulary",
-      "name": "B1",
-      "type": "level",
-      "order": 3,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-vocabulary-b1-practice-sets",
-      "parentId": "skills-general-vocabulary-b1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-vocabulary-b2",
-      "parentId": "skills-general-vocabulary",
-      "name": "B2",
-      "type": "level",
-      "order": 4,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-vocabulary-b2-practice-sets",
-      "parentId": "skills-general-vocabulary-b2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-vocabulary-c1",
-      "parentId": "skills-general-vocabulary",
-      "name": "C1",
-      "type": "level",
-      "order": 5,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-vocabulary-c1-practice-sets",
-      "parentId": "skills-general-vocabulary-c1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-writing-a1",
-      "parentId": "skills-general-writing",
-      "name": "A1",
-      "type": "level",
-      "order": 1,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-writing-a1-practice-sets",
-      "parentId": "skills-general-writing-a1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-writing-a2",
-      "parentId": "skills-general-writing",
-      "name": "A2",
-      "type": "level",
-      "order": 2,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-writing-a2-practice-sets",
-      "parentId": "skills-general-writing-a2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-writing-b1",
-      "parentId": "skills-general-writing",
-      "name": "B1",
-      "type": "level",
-      "order": 3,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-writing-b1-practice-sets",
-      "parentId": "skills-general-writing-b1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-writing-b2",
-      "parentId": "skills-general-writing",
-      "name": "B2",
-      "type": "level",
-      "order": 4,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-writing-b2-practice-sets",
-      "parentId": "skills-general-writing-b2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-general-writing-c1",
-      "parentId": "skills-general-writing",
-      "name": "C1",
-      "type": "level",
-      "order": 5,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-general-writing-c1-practice-sets",
-      "parentId": "skills-general-writing-c1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-listening-a1",
-      "parentId": "skills-medical-listening",
-      "name": "A1",
-      "type": "level",
-      "order": 1,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-listening-a1-practice-sets",
-      "parentId": "skills-medical-listening-a1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-listening-a2",
-      "parentId": "skills-medical-listening",
-      "name": "A2",
-      "type": "level",
-      "order": 2,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-listening-a2-practice-sets",
-      "parentId": "skills-medical-listening-a2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-listening-b1",
-      "parentId": "skills-medical-listening",
-      "name": "B1",
-      "type": "level",
-      "order": 3,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-listening-b1-practice-sets",
-      "parentId": "skills-medical-listening-b1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-listening-b2",
-      "parentId": "skills-medical-listening",
-      "name": "B2",
-      "type": "level",
-      "order": 4,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-listening-b2-practice-sets",
-      "parentId": "skills-medical-listening-b2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-listening-c1",
-      "parentId": "skills-medical-listening",
-      "name": "C1",
-      "type": "level",
-      "order": 5,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-listening-c1-practice-sets",
-      "parentId": "skills-medical-listening-c1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-professional-communication-a1",
-      "parentId": "skills-medical-professional-communication",
-      "name": "A1",
-      "type": "level",
-      "order": 1,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-professional-communication-a1-practice-sets",
-      "parentId": "skills-medical-professional-communication-a1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-professional-communication-a2",
-      "parentId": "skills-medical-professional-communication",
-      "name": "A2",
-      "type": "level",
-      "order": 2,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-professional-communication-a2-practice-sets",
-      "parentId": "skills-medical-professional-communication-a2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-professional-communication-b1",
-      "parentId": "skills-medical-professional-communication",
-      "name": "B1",
-      "type": "level",
-      "order": 3,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-professional-communication-b1-practice-sets",
-      "parentId": "skills-medical-professional-communication-b1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-professional-communication-b2",
-      "parentId": "skills-medical-professional-communication",
-      "name": "B2",
-      "type": "level",
-      "order": 4,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-professional-communication-b2-practice-sets",
-      "parentId": "skills-medical-professional-communication-b2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-professional-communication-c1",
-      "parentId": "skills-medical-professional-communication",
-      "name": "C1",
-      "type": "level",
-      "order": 5,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-professional-communication-c1-practice-sets",
-      "parentId": "skills-medical-professional-communication-c1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-reading-a1",
-      "parentId": "skills-medical-reading",
-      "name": "A1",
-      "type": "level",
-      "order": 1,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-reading-a1-practice-sets",
-      "parentId": "skills-medical-reading-a1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-reading-a2",
-      "parentId": "skills-medical-reading",
-      "name": "A2",
-      "type": "level",
-      "order": 2,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-reading-a2-practice-sets",
-      "parentId": "skills-medical-reading-a2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-reading-b1",
-      "parentId": "skills-medical-reading",
-      "name": "B1",
-      "type": "level",
-      "order": 3,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-reading-b1-practice-sets",
-      "parentId": "skills-medical-reading-b1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-reading-b2",
-      "parentId": "skills-medical-reading",
-      "name": "B2",
-      "type": "level",
-      "order": 4,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-reading-b2-practice-sets",
-      "parentId": "skills-medical-reading-b2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-reading-c1",
-      "parentId": "skills-medical-reading",
-      "name": "C1",
-      "type": "level",
-      "order": 5,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-reading-c1-practice-sets",
-      "parentId": "skills-medical-reading-c1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-speaking-a1",
-      "parentId": "skills-medical-speaking",
-      "name": "A1",
-      "type": "level",
-      "order": 1,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-speaking-a1-practice-sets",
-      "parentId": "skills-medical-speaking-a1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-speaking-a2",
-      "parentId": "skills-medical-speaking",
-      "name": "A2",
-      "type": "level",
-      "order": 2,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-speaking-a2-practice-sets",
-      "parentId": "skills-medical-speaking-a2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-speaking-b1",
-      "parentId": "skills-medical-speaking",
-      "name": "B1",
-      "type": "level",
-      "order": 3,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-speaking-b1-practice-sets",
-      "parentId": "skills-medical-speaking-b1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-speaking-b2",
-      "parentId": "skills-medical-speaking",
-      "name": "B2",
-      "type": "level",
-      "order": 4,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-speaking-b2-practice-sets",
-      "parentId": "skills-medical-speaking-b2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-speaking-c1",
-      "parentId": "skills-medical-speaking",
-      "name": "C1",
-      "type": "level",
-      "order": 5,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-speaking-c1-practice-sets",
-      "parentId": "skills-medical-speaking-c1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-vocabulary-a1",
-      "parentId": "skills-medical-vocabulary",
-      "name": "A1",
-      "type": "level",
-      "order": 1,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-vocabulary-a1-practice-sets",
-      "parentId": "skills-medical-vocabulary-a1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-vocabulary-a2",
-      "parentId": "skills-medical-vocabulary",
-      "name": "A2",
-      "type": "level",
-      "order": 2,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-vocabulary-a2-practice-sets",
-      "parentId": "skills-medical-vocabulary-a2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-vocabulary-b1",
-      "parentId": "skills-medical-vocabulary",
-      "name": "B1",
-      "type": "level",
-      "order": 3,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-vocabulary-b1-practice-sets",
-      "parentId": "skills-medical-vocabulary-b1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-vocabulary-b2",
-      "parentId": "skills-medical-vocabulary",
-      "name": "B2",
-      "type": "level",
-      "order": 4,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-vocabulary-b2-practice-sets",
-      "parentId": "skills-medical-vocabulary-b2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-vocabulary-c1",
-      "parentId": "skills-medical-vocabulary",
-      "name": "C1",
-      "type": "level",
-      "order": 5,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-vocabulary-c1-practice-sets",
-      "parentId": "skills-medical-vocabulary-c1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-writing-a1",
-      "parentId": "skills-medical-writing",
-      "name": "A1",
-      "type": "level",
-      "order": 1,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-writing-a1-practice-sets",
-      "parentId": "skills-medical-writing-a1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-writing-a2",
-      "parentId": "skills-medical-writing",
-      "name": "A2",
-      "type": "level",
-      "order": 2,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-writing-a2-practice-sets",
-      "parentId": "skills-medical-writing-a2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-writing-b1",
-      "parentId": "skills-medical-writing",
-      "name": "B1",
-      "type": "level",
-      "order": 3,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-writing-b1-practice-sets",
-      "parentId": "skills-medical-writing-b1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-writing-b2",
-      "parentId": "skills-medical-writing",
-      "name": "B2",
-      "type": "level",
-      "order": 4,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-writing-b2-practice-sets",
-      "parentId": "skills-medical-writing-b2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-medical-writing-c1",
-      "parentId": "skills-medical-writing",
-      "name": "C1",
-      "type": "level",
-      "order": 5,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-medical-writing-c1-practice-sets",
-      "parentId": "skills-medical-writing-c1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-listening-a1",
-      "parentId": "skills-pharmaceutical-listening",
-      "name": "A1",
-      "type": "level",
-      "order": 1,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-listening-a1-practice-sets",
-      "parentId": "skills-pharmaceutical-listening-a1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-listening-a2",
-      "parentId": "skills-pharmaceutical-listening",
-      "name": "A2",
-      "type": "level",
-      "order": 2,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-listening-a2-practice-sets",
-      "parentId": "skills-pharmaceutical-listening-a2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-listening-b1",
-      "parentId": "skills-pharmaceutical-listening",
-      "name": "B1",
-      "type": "level",
-      "order": 3,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-listening-b1-practice-sets",
-      "parentId": "skills-pharmaceutical-listening-b1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-listening-b2",
-      "parentId": "skills-pharmaceutical-listening",
-      "name": "B2",
-      "type": "level",
-      "order": 4,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-listening-b2-practice-sets",
-      "parentId": "skills-pharmaceutical-listening-b2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-listening-c1",
-      "parentId": "skills-pharmaceutical-listening",
-      "name": "C1",
-      "type": "level",
-      "order": 5,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-listening-c1-practice-sets",
-      "parentId": "skills-pharmaceutical-listening-c1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-professional-communication-a1",
-      "parentId": "skills-pharmaceutical-professional-communication",
-      "name": "A1",
-      "type": "level",
-      "order": 1,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-professional-communication-a1-practice-sets",
-      "parentId": "skills-pharmaceutical-professional-communication-a1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-professional-communication-a2",
-      "parentId": "skills-pharmaceutical-professional-communication",
-      "name": "A2",
-      "type": "level",
-      "order": 2,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-professional-communication-a2-practice-sets",
-      "parentId": "skills-pharmaceutical-professional-communication-a2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-professional-communication-b1",
-      "parentId": "skills-pharmaceutical-professional-communication",
-      "name": "B1",
-      "type": "level",
-      "order": 3,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-professional-communication-b1-practice-sets",
-      "parentId": "skills-pharmaceutical-professional-communication-b1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-professional-communication-b2",
-      "parentId": "skills-pharmaceutical-professional-communication",
-      "name": "B2",
-      "type": "level",
-      "order": 4,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-professional-communication-b2-practice-sets",
-      "parentId": "skills-pharmaceutical-professional-communication-b2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-professional-communication-c1",
-      "parentId": "skills-pharmaceutical-professional-communication",
-      "name": "C1",
-      "type": "level",
-      "order": 5,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-professional-communication-c1-practice-sets",
-      "parentId": "skills-pharmaceutical-professional-communication-c1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-reading-a1",
-      "parentId": "skills-pharmaceutical-reading",
-      "name": "A1",
-      "type": "level",
-      "order": 1,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-reading-a1-practice-sets",
-      "parentId": "skills-pharmaceutical-reading-a1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-reading-a2",
-      "parentId": "skills-pharmaceutical-reading",
-      "name": "A2",
-      "type": "level",
-      "order": 2,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-reading-a2-practice-sets",
-      "parentId": "skills-pharmaceutical-reading-a2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-reading-b1",
-      "parentId": "skills-pharmaceutical-reading",
-      "name": "B1",
-      "type": "level",
-      "order": 3,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-reading-b1-practice-sets",
-      "parentId": "skills-pharmaceutical-reading-b1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-reading-b2",
-      "parentId": "skills-pharmaceutical-reading",
-      "name": "B2",
-      "type": "level",
-      "order": 4,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-reading-b2-practice-sets",
-      "parentId": "skills-pharmaceutical-reading-b2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-reading-c1",
-      "parentId": "skills-pharmaceutical-reading",
-      "name": "C1",
-      "type": "level",
-      "order": 5,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-reading-c1-practice-sets",
-      "parentId": "skills-pharmaceutical-reading-c1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-speaking-a1",
-      "parentId": "skills-pharmaceutical-speaking",
-      "name": "A1",
-      "type": "level",
-      "order": 1,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-speaking-a1-practice-sets",
-      "parentId": "skills-pharmaceutical-speaking-a1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-speaking-a2",
-      "parentId": "skills-pharmaceutical-speaking",
-      "name": "A2",
-      "type": "level",
-      "order": 2,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-speaking-a2-practice-sets",
-      "parentId": "skills-pharmaceutical-speaking-a2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-speaking-b1",
-      "parentId": "skills-pharmaceutical-speaking",
-      "name": "B1",
-      "type": "level",
-      "order": 3,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-speaking-b1-practice-sets",
-      "parentId": "skills-pharmaceutical-speaking-b1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-speaking-b2",
-      "parentId": "skills-pharmaceutical-speaking",
-      "name": "B2",
-      "type": "level",
-      "order": 4,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-speaking-b2-practice-sets",
-      "parentId": "skills-pharmaceutical-speaking-b2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-speaking-c1",
-      "parentId": "skills-pharmaceutical-speaking",
-      "name": "C1",
-      "type": "level",
-      "order": 5,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-speaking-c1-practice-sets",
-      "parentId": "skills-pharmaceutical-speaking-c1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-vocabulary-a1",
-      "parentId": "skills-pharmaceutical-vocabulary",
-      "name": "A1",
-      "type": "level",
-      "order": 1,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-vocabulary-a1-practice-sets",
-      "parentId": "skills-pharmaceutical-vocabulary-a1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-vocabulary-a2",
-      "parentId": "skills-pharmaceutical-vocabulary",
-      "name": "A2",
-      "type": "level",
-      "order": 2,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-vocabulary-a2-practice-sets",
-      "parentId": "skills-pharmaceutical-vocabulary-a2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-vocabulary-b1",
-      "parentId": "skills-pharmaceutical-vocabulary",
-      "name": "B1",
-      "type": "level",
-      "order": 3,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-vocabulary-b1-practice-sets",
-      "parentId": "skills-pharmaceutical-vocabulary-b1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-vocabulary-b2",
-      "parentId": "skills-pharmaceutical-vocabulary",
-      "name": "B2",
-      "type": "level",
-      "order": 4,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-vocabulary-b2-practice-sets",
-      "parentId": "skills-pharmaceutical-vocabulary-b2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-vocabulary-c1",
-      "parentId": "skills-pharmaceutical-vocabulary",
-      "name": "C1",
-      "type": "level",
-      "order": 5,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-vocabulary-c1-practice-sets",
-      "parentId": "skills-pharmaceutical-vocabulary-c1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-writing-a1",
-      "parentId": "skills-pharmaceutical-writing",
-      "name": "A1",
-      "type": "level",
-      "order": 1,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-writing-a1-practice-sets",
-      "parentId": "skills-pharmaceutical-writing-a1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-writing-a2",
-      "parentId": "skills-pharmaceutical-writing",
-      "name": "A2",
-      "type": "level",
-      "order": 2,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-writing-a2-practice-sets",
-      "parentId": "skills-pharmaceutical-writing-a2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-writing-b1",
-      "parentId": "skills-pharmaceutical-writing",
-      "name": "B1",
-      "type": "level",
-      "order": 3,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-writing-b1-practice-sets",
-      "parentId": "skills-pharmaceutical-writing-b1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-writing-b2",
-      "parentId": "skills-pharmaceutical-writing",
-      "name": "B2",
-      "type": "level",
-      "order": 4,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-writing-b2-practice-sets",
-      "parentId": "skills-pharmaceutical-writing-b2",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "skills-pharmaceutical-writing-c1",
-      "parentId": "skills-pharmaceutical-writing",
-      "name": "C1",
-      "type": "level",
-      "order": 5,
-      "status": "planned",
-      "framework": "CEFR"
-    },
-    {
-      "id": "skills-pharmaceutical-writing-c1-practice-sets",
-      "parentId": "skills-pharmaceutical-writing-c1",
-      "name": "Practice Sets",
-      "type": "collection",
-      "order": 1,
-      "status": "planned"
+      "type": "analytics-shell",
+      "order": 8,
+      "status": "published",
+      "description": "Filter and export pseudonymised research-ready learning events."
     }
   ]
 }
