@@ -4,7 +4,7 @@
     "brand": "E-LEAP",
     "formalName": "English Learning, Engagement and Assessment Platform"
   },
-  "release": "E-LEAP Production Foundation v1.0 \u2014 Architecture & Operations Locked",
+  "release": "E-LEAP Production Foundation v1.0 MASTER PASS CANDIDATE",
   "replacementMode": "clean-root-replacement",
   "sourceOfTruth": true,
   "largeShells": [
@@ -32,5 +32,6 @@
   "productionBackendRequired": true,
   "lockedAt": "2026-10-02",
   "targetBranch": "production-full-v1",
-  "operationsLocked": true
+  "operationsLocked": true,
+  "status": "acceptance-test-required"
 }

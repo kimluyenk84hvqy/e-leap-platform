@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.2",
+  "schemaVersion": "1.3-master-pass-candidate",
   "platformId": "e-leap",
   "platformName": "E-LEAP",
   "formalName": "English Learning, Engagement and Assessment Platform",
@@ -262,10 +262,10 @@
     },
     {
       "id": "lab-listening-vstep",
-      "parentId": "lab-listening",
+      "parentId": "lab-listening-exam-practice",
       "name": "VSTEP",
       "type": "track",
-      "order": 2,
+      "order": 1,
       "status": "planned",
       "description": "Practice structure follows this track, not a forced universal hierarchy."
     },
@@ -295,10 +295,10 @@
     },
     {
       "id": "lab-listening-ielts",
-      "parentId": "lab-listening",
+      "parentId": "lab-listening-exam-practice",
       "name": "IELTS",
       "type": "track",
-      "order": 3,
+      "order": 2,
       "status": "planned",
       "description": "Practice structure follows this track, not a forced universal hierarchy."
     },
@@ -457,10 +457,10 @@
     },
     {
       "id": "lab-speaking-vstep",
-      "parentId": "lab-speaking",
+      "parentId": "lab-speaking-exam-practice",
       "name": "VSTEP",
       "type": "track",
-      "order": 2,
+      "order": 1,
       "status": "planned",
       "description": "Practice structure follows this track, not a forced universal hierarchy."
     },
@@ -490,10 +490,10 @@
     },
     {
       "id": "lab-speaking-ielts",
-      "parentId": "lab-speaking",
+      "parentId": "lab-speaking-exam-practice",
       "name": "IELTS",
       "type": "track",
-      "order": 3,
+      "order": 2,
       "status": "planned",
       "description": "Practice structure follows this track, not a forced universal hierarchy."
     },
@@ -667,10 +667,10 @@
     },
     {
       "id": "lab-reading-vstep",
-      "parentId": "lab-reading",
+      "parentId": "lab-reading-exam-practice",
       "name": "VSTEP",
       "type": "track",
-      "order": 2,
+      "order": 1,
       "status": "planned",
       "description": "Practice structure follows this track, not a forced universal hierarchy."
     },
@@ -685,10 +685,10 @@
     },
     {
       "id": "lab-reading-ielts",
-      "parentId": "lab-reading",
+      "parentId": "lab-reading-exam-practice",
       "name": "IELTS",
       "type": "track",
-      "order": 3,
+      "order": 2,
       "status": "planned",
       "description": "Practice structure follows this track, not a forced universal hierarchy."
     },
@@ -752,7 +752,7 @@
       "name": "General English",
       "type": "track",
       "order": 1,
-      "status": "planned",
+      "status": "archived",
       "description": "Practice structure follows this track, not a forced universal hierarchy."
     },
     {
@@ -847,10 +847,10 @@
     },
     {
       "id": "lab-writing-vstep",
-      "parentId": "lab-writing",
+      "parentId": "lab-writing-exam-practice",
       "name": "VSTEP",
       "type": "track",
-      "order": 2,
+      "order": 1,
       "status": "planned",
       "description": "Practice structure follows this track, not a forced universal hierarchy."
     },
@@ -872,10 +872,10 @@
     },
     {
       "id": "lab-writing-ielts",
-      "parentId": "lab-writing",
+      "parentId": "lab-writing-exam-practice",
       "name": "IELTS",
       "type": "track",
-      "order": 3,
+      "order": 2,
       "status": "planned",
       "description": "Practice structure follows this track, not a forced universal hierarchy."
     },
@@ -901,7 +901,7 @@
       "name": "Medical English",
       "type": "domain",
       "order": 4,
-      "status": "planned",
+      "status": "archived",
       "description": "Practice structure follows this track, not a forced universal hierarchy."
     },
     {
@@ -919,7 +919,7 @@
       "name": "Pharmaceutical English",
       "type": "domain",
       "order": 5,
-      "status": "planned",
+      "status": "archived",
       "description": "Practice structure follows this track, not a forced universal hierarchy."
     },
     {
@@ -2382,6 +2382,494 @@
       "order": 4,
       "status": "published",
       "description": "Lightweight QR/code join; optional guest access for live sessions."
+    },
+    {
+      "id": "lab-writing-paragraph",
+      "parentId": "lab-writing",
+      "name": "Paragraph Writing",
+      "type": "practice-module",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-letter-email",
+      "parentId": "lab-writing",
+      "name": "Letter & Email Writing",
+      "type": "practice-module",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-essay",
+      "parentId": "lab-writing",
+      "name": "Essay Writing",
+      "type": "practice-module",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-visual-data",
+      "parentId": "lab-writing",
+      "name": "Visual Data Writing",
+      "type": "practice-module",
+      "order": 4,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-exam-practice",
+      "parentId": "lab-writing",
+      "name": "Exam Practice",
+      "type": "pathway-hub",
+      "order": 5,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-medical",
+      "parentId": "lab-writing",
+      "name": "Medical English",
+      "type": "domain",
+      "order": 6,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-pharma",
+      "parentId": "lab-writing",
+      "name": "Pharmaceutical English",
+      "type": "domain",
+      "order": 7,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-paragraph-structure",
+      "parentId": "lab-writing-paragraph",
+      "name": "Paragraph Structure",
+      "type": "practice-topic",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-topic-sentence",
+      "parentId": "lab-writing-paragraph",
+      "name": "Topic Sentence",
+      "type": "practice-topic",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-supporting-sentences",
+      "parentId": "lab-writing-paragraph",
+      "name": "Supporting Sentences",
+      "type": "practice-topic",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-examples-evidence",
+      "parentId": "lab-writing-paragraph",
+      "name": "Examples & Evidence",
+      "type": "practice-topic",
+      "order": 4,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-concluding-sentence",
+      "parentId": "lab-writing-paragraph",
+      "name": "Concluding Sentence",
+      "type": "practice-topic",
+      "order": 5,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-unity-coherence",
+      "parentId": "lab-writing-paragraph",
+      "name": "Unity & Coherence",
+      "type": "practice-topic",
+      "order": 6,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-cohesive-devices",
+      "parentId": "lab-writing-paragraph",
+      "name": "Cohesive Devices",
+      "type": "practice-topic",
+      "order": 7,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-descriptive-paragraph",
+      "parentId": "lab-writing-paragraph",
+      "name": "Descriptive Paragraph",
+      "type": "practice-topic",
+      "order": 8,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-narrative-paragraph",
+      "parentId": "lab-writing-paragraph",
+      "name": "Narrative Paragraph",
+      "type": "practice-topic",
+      "order": 9,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-opinion-paragraph",
+      "parentId": "lab-writing-paragraph",
+      "name": "Opinion Paragraph",
+      "type": "practice-topic",
+      "order": 10,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-compare-contrast-paragraph",
+      "parentId": "lab-writing-paragraph",
+      "name": "Compare–Contrast Paragraph",
+      "type": "practice-topic",
+      "order": 11,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-cause-effect-paragraph",
+      "parentId": "lab-writing-paragraph",
+      "name": "Cause–Effect Paragraph",
+      "type": "practice-topic",
+      "order": 12,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-problem-solution-paragraph",
+      "parentId": "lab-writing-paragraph",
+      "name": "Problem–Solution Paragraph",
+      "type": "practice-topic",
+      "order": 13,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-process-paragraph",
+      "parentId": "lab-writing-paragraph",
+      "name": "Process Paragraph",
+      "type": "practice-topic",
+      "order": 14,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-letter-email-formal",
+      "parentId": "lab-writing-letter-email",
+      "name": "Formal",
+      "type": "practice-topic",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-letter-email-semi-formal",
+      "parentId": "lab-writing-letter-email",
+      "name": "Semi-formal",
+      "type": "practice-topic",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-letter-email-informal",
+      "parentId": "lab-writing-letter-email",
+      "name": "Informal",
+      "type": "practice-topic",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-letter-email-request",
+      "parentId": "lab-writing-letter-email",
+      "name": "Request",
+      "type": "practice-topic",
+      "order": 4,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-letter-email-complaint",
+      "parentId": "lab-writing-letter-email",
+      "name": "Complaint",
+      "type": "practice-topic",
+      "order": 5,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-letter-email-application",
+      "parentId": "lab-writing-letter-email",
+      "name": "Application",
+      "type": "practice-topic",
+      "order": 6,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-essay-opinion",
+      "parentId": "lab-writing-essay",
+      "name": "Opinion",
+      "type": "practice-topic",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-essay-discussion",
+      "parentId": "lab-writing-essay",
+      "name": "Discussion",
+      "type": "practice-topic",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-essay-advantages-disadvantages",
+      "parentId": "lab-writing-essay",
+      "name": "Advantages–Disadvantages",
+      "type": "practice-topic",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-essay-problem-solution",
+      "parentId": "lab-writing-essay",
+      "name": "Problem–Solution",
+      "type": "practice-topic",
+      "order": 4,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-essay-cause-effect",
+      "parentId": "lab-writing-essay",
+      "name": "Cause–Effect",
+      "type": "practice-topic",
+      "order": 5,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-essay-two-part-question",
+      "parentId": "lab-writing-essay",
+      "name": "Two-part Question",
+      "type": "practice-topic",
+      "order": 6,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-visual-data-line-graph",
+      "parentId": "lab-writing-visual-data",
+      "name": "Line Graph",
+      "type": "practice-topic",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-visual-data-bar-chart",
+      "parentId": "lab-writing-visual-data",
+      "name": "Bar Chart",
+      "type": "practice-topic",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-visual-data-pie-chart",
+      "parentId": "lab-writing-visual-data",
+      "name": "Pie Chart",
+      "type": "practice-topic",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-visual-data-table",
+      "parentId": "lab-writing-visual-data",
+      "name": "Table",
+      "type": "practice-topic",
+      "order": 4,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-visual-data-process",
+      "parentId": "lab-writing-visual-data",
+      "name": "Process",
+      "type": "practice-topic",
+      "order": 5,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-visual-data-map",
+      "parentId": "lab-writing-visual-data",
+      "name": "Map",
+      "type": "practice-topic",
+      "order": 6,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-visual-data-mixed-charts",
+      "parentId": "lab-writing-visual-data",
+      "name": "Mixed Charts",
+      "type": "practice-topic",
+      "order": 7,
+      "status": "published"
+    },
+    {
+      "id": "lab-listening-core",
+      "parentId": "lab-listening",
+      "name": "Core Practice",
+      "type": "practice-module",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "lab-listening-core-gist-main-idea",
+      "parentId": "lab-listening-core",
+      "name": "Gist & Main Idea",
+      "type": "practice-topic",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "lab-listening-core-specific-information-detail",
+      "parentId": "lab-listening-core",
+      "name": "Specific Information & Detail",
+      "type": "practice-topic",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "lab-listening-core-purpose-attitude",
+      "parentId": "lab-listening-core",
+      "name": "Purpose & Attitude",
+      "type": "practice-topic",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "lab-listening-core-inference",
+      "parentId": "lab-listening-core",
+      "name": "Inference",
+      "type": "practice-topic",
+      "order": 4,
+      "status": "published"
+    },
+    {
+      "id": "lab-listening-core-note-taking",
+      "parentId": "lab-listening-core",
+      "name": "Note-taking",
+      "type": "practice-topic",
+      "order": 5,
+      "status": "published"
+    },
+    {
+      "id": "lab-listening-exam-practice",
+      "parentId": "lab-listening",
+      "name": "Exam Practice",
+      "type": "pathway-hub",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "lab-reading-core",
+      "parentId": "lab-reading",
+      "name": "Core Practice",
+      "type": "practice-module",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "lab-reading-core-skimming-scanning",
+      "parentId": "lab-reading-core",
+      "name": "Skimming & Scanning",
+      "type": "practice-topic",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "lab-reading-core-main-idea-detail",
+      "parentId": "lab-reading-core",
+      "name": "Main Idea & Detail",
+      "type": "practice-topic",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "lab-reading-core-vocabulary-in-context",
+      "parentId": "lab-reading-core",
+      "name": "Vocabulary in Context",
+      "type": "practice-topic",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "lab-reading-core-inference-attitude",
+      "parentId": "lab-reading-core",
+      "name": "Inference & Attitude",
+      "type": "practice-topic",
+      "order": 4,
+      "status": "published"
+    },
+    {
+      "id": "lab-reading-core-text-organisation",
+      "parentId": "lab-reading-core",
+      "name": "Text Organisation",
+      "type": "practice-topic",
+      "order": 5,
+      "status": "published"
+    },
+    {
+      "id": "lab-reading-exam-practice",
+      "parentId": "lab-reading",
+      "name": "Exam Practice",
+      "type": "pathway-hub",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "lab-speaking-core",
+      "parentId": "lab-speaking",
+      "name": "Core Practice",
+      "type": "practice-module",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "lab-speaking-core-fluency-pronunciation",
+      "parentId": "lab-speaking-core",
+      "name": "Fluency & Pronunciation",
+      "type": "practice-topic",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "lab-speaking-core-social-interaction",
+      "parentId": "lab-speaking-core",
+      "name": "Social Interaction",
+      "type": "practice-topic",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "lab-speaking-core-describing-narrating",
+      "parentId": "lab-speaking-core",
+      "name": "Describing & Narrating",
+      "type": "practice-topic",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "lab-speaking-core-opinions-discussion",
+      "parentId": "lab-speaking-core",
+      "name": "Opinions & Discussion",
+      "type": "practice-topic",
+      "order": 4,
+      "status": "published"
+    },
+    {
+      "id": "lab-speaking-core-extended-speaking",
+      "parentId": "lab-speaking-core",
+      "name": "Extended Speaking",
+      "type": "practice-topic",
+      "order": 5,
+      "status": "published"
+    },
+    {
+      "id": "lab-speaking-exam-practice",
+      "parentId": "lab-speaking",
+      "name": "Exam Practice",
+      "type": "pathway-hub",
+      "order": 2,
+      "status": "published"
     }
   ]
 }

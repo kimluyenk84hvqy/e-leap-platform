@@ -1,10 +1,7 @@
-# E-LEAP Production Foundation v1.0 — Architecture & Operations Locked
-Locked: 2026-10-02
+# E-LEAP Production Foundation v1.0 — MASTER PASS CANDIDATE
 
-Core product loop: Advanced Skills/BG (LEARN) → Skills Lab (PRACTISE) → Mock Tests (ASSESS) → Progress (DIAGNOSE) → targeted relearning.
+Architecture is locked for acceptance testing; MASTER PASS is not declared until the five end-to-end UI flows and cross-cutting gates in `docs/MASTER-PASS-ACCEPTANCE-CHECKLIST.md` pass on Vercel Preview.
 
-Locked foundations: modular Shell Engine; Resource Manager; Advanced Skills reusable Core Modules; CEFR as level/competency metadata; VSTEP/IELTS as exam pathways; lightweight learner identity; Classes/Membership/Live Session; Guest-ready practice contract; Attempts/Submissions; objective auto-grading contract; AI-assisted but teacher-controlled Writing/Speaking feedback; unified Progress; pseudonymous Research ID and learning-event contract; responsive UI; externalized private media.
+Core flow: Learn → Practise → Assess → Feedback → Progress → targeted relearning.
 
-Admin/Teacher shell operations exposed in UI: Add Sub-shell, Rename, Move, Reorder, Duplicate, Hide/Show, Archive. Resource operations exposed: Add Resource/Interactive Lesson/Interactive Activity/approved link/reuse metadata.
-
-Important production boundary: this package is a static Production Foundation. Preview mutations persist in browser localStorage. Real multi-user persistence, authentication, file uploads, QR rendering, concurrency, server-side grading and durable research exports require the authenticated backend/storage layer. Do not represent local preview persistence as a deployed multi-user backend.
+Locked areas: Courses, Advanced Skills, Skills Lab, Assignments, Mock Tests, Progress, Classes/Learners, Submissions/Feedback, Shell Manager, Resource Manager, responsive role-aware UI, research-ready data contracts.
