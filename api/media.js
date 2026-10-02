@@ -1,10 +1,9 @@
 import { get } from '@vercel/blob';
 
 export default async function handler(request) {
-  const { searchParams } = new URL(request.url);
-  const pathname = searchParams.get('pathname');
+  const pathname = request.query?.pathname;
 
-  if (!pathname) {
+  if (!pathname || typeof pathname !== 'string') {
     return new Response(
       JSON.stringify({ error: 'Missing pathname' }),
       {
@@ -21,13 +20,13 @@ export default async function handler(request) {
 
   const result = await get(pathname, { access: 'private' });
 
-  if (result?.statusCode !== 200) {
+  if (!result || result.statusCode !== 200) {
     return new Response('Not found', { status: 404 });
   }
 
   return new Response(result.stream, {
     headers: {
-      'Content-Type': result.blob.contentType,
+      'Content-Type': result.blob.contentType || 'application/octet-stream',
       'X-Content-Type-Options': 'nosniff',
       'Cache-Control': 'private, no-cache',
     },
