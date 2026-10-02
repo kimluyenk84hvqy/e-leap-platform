@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.1",
+  "schemaVersion": "1.2",
   "platformId": "e-leap",
   "platformName": "E-LEAP",
   "formalName": "English Learning, Engagement and Assessment Platform",
@@ -126,95 +126,31 @@
       "status": "approved"
     },
     {
-      "id": "general-english-skills",
-      "parentId": "advanced-skills",
-      "name": "General English",
-      "type": "domain",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "medical-english-skills",
-      "parentId": "advanced-skills",
-      "name": "Medical English",
-      "type": "domain",
-      "order": 2,
-      "status": "planned"
-    },
-    {
-      "id": "pharmaceutical-english-skills",
-      "parentId": "advanced-skills",
-      "name": "Pharmaceutical English",
-      "type": "domain",
-      "order": 3,
-      "status": "planned"
-    },
-    {
-      "id": "vstep",
-      "parentId": "general-english-skills",
-      "name": "VSTEP",
-      "type": "skills-track",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "vstep-listening",
-      "parentId": "vstep",
-      "name": "Listening",
-      "type": "skill",
-      "order": 1,
-      "status": "planned"
-    },
-    {
-      "id": "vstep-speaking",
-      "parentId": "vstep",
-      "name": "Speaking",
-      "type": "skill",
-      "order": 2,
-      "status": "planned"
-    },
-    {
-      "id": "vstep-reading",
-      "parentId": "vstep",
-      "name": "Reading",
-      "type": "skill",
-      "order": 3,
-      "status": "planned"
-    },
-    {
-      "id": "vstep-writing",
-      "parentId": "vstep",
-      "name": "Writing",
-      "type": "skill",
-      "order": 4,
-      "status": "planned"
-    },
-    {
       "id": "classes",
       "parentId": "courses",
       "name": "Classes",
       "type": "class-workspace",
       "order": 3,
-      "status": "planned",
-      "description": "Create a class, generate QR/Class Code, start live sessions and view learners."
+      "status": "published",
+      "description": "Lightweight learner, enrollment, QR/Class Code and live-session workspace."
     },
     {
       "id": "classes-active",
       "parentId": "classes",
       "name": "Active Classes",
       "type": "workflow-shell",
-      "order": 1,
-      "status": "planned",
-      "description": "Open a class, show QR/Class Code and start a live lesson or activity."
+      "order": 3,
+      "status": "published",
+      "description": "Create/open a class, generate QR/Class Code and start a live session."
     },
     {
       "id": "classes-archive",
       "parentId": "classes",
       "name": "Archived Classes",
       "type": "workflow-shell",
-      "order": 2,
-      "status": "planned",
-      "description": "Keep historical memberships and learning evidence without cluttering active teaching."
+      "order": 5,
+      "status": "published",
+      "description": "Archive memberships while retaining learning evidence."
     },
     {
       "id": "lab-listening",
@@ -1414,6 +1350,1038 @@
       "order": 8,
       "status": "published",
       "description": "Filter and export pseudonymised research-ready learning events."
+    },
+    {
+      "id": "adv-listening",
+      "parentId": "advanced-skills",
+      "name": "Listening",
+      "type": "skill",
+      "order": 1,
+      "status": "published",
+      "description": "Reusable teaching modules. CEFR is metadata; VSTEP/IELTS are pathways."
+    },
+    {
+      "id": "adv-speaking",
+      "parentId": "advanced-skills",
+      "name": "Speaking",
+      "type": "skill",
+      "order": 2,
+      "status": "published",
+      "description": "Reusable teaching modules. CEFR is metadata; VSTEP/IELTS are pathways."
+    },
+    {
+      "id": "adv-reading",
+      "parentId": "advanced-skills",
+      "name": "Reading",
+      "type": "skill",
+      "order": 3,
+      "status": "published",
+      "description": "Reusable teaching modules. CEFR is metadata; VSTEP/IELTS are pathways."
+    },
+    {
+      "id": "adv-writing",
+      "parentId": "advanced-skills",
+      "name": "Writing",
+      "type": "skill",
+      "order": 4,
+      "status": "published",
+      "description": "Reusable teaching modules. CEFR is metadata; VSTEP/IELTS are pathways."
+    },
+    {
+      "id": "adv-listening-listening-foundations",
+      "parentId": "adv-listening",
+      "name": "Listening Foundations",
+      "type": "core-module",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "adv-listening-conversations-dialogues",
+      "parentId": "adv-listening",
+      "name": "Conversations & Dialogues",
+      "type": "core-module",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "adv-listening-monologues-talks",
+      "parentId": "adv-listening",
+      "name": "Monologues & Talks",
+      "type": "core-module",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "adv-listening-exam-strategies",
+      "parentId": "adv-listening",
+      "name": "Exam Strategies",
+      "type": "pathway-hub",
+      "order": 4,
+      "status": "published"
+    },
+    {
+      "id": "adv-speaking-speaking-foundations",
+      "parentId": "adv-speaking",
+      "name": "Speaking Foundations",
+      "type": "core-module",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "adv-speaking-social-interaction",
+      "parentId": "adv-speaking",
+      "name": "Social Interaction",
+      "type": "core-module",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "adv-speaking-describing-narrating",
+      "parentId": "adv-speaking",
+      "name": "Describing & Narrating",
+      "type": "core-module",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "adv-speaking-opinions-discussion",
+      "parentId": "adv-speaking",
+      "name": "Opinions & Discussion",
+      "type": "core-module",
+      "order": 4,
+      "status": "published"
+    },
+    {
+      "id": "adv-speaking-extended-speaking",
+      "parentId": "adv-speaking",
+      "name": "Extended Speaking",
+      "type": "core-module",
+      "order": 5,
+      "status": "published"
+    },
+    {
+      "id": "adv-speaking-exam-strategies",
+      "parentId": "adv-speaking",
+      "name": "Exam Strategies",
+      "type": "pathway-hub",
+      "order": 6,
+      "status": "published"
+    },
+    {
+      "id": "adv-reading-reading-foundations",
+      "parentId": "adv-reading",
+      "name": "Reading Foundations",
+      "type": "core-module",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "adv-reading-meaning-vocabulary",
+      "parentId": "adv-reading",
+      "name": "Meaning & Vocabulary",
+      "type": "core-module",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "adv-reading-critical-reading",
+      "parentId": "adv-reading",
+      "name": "Critical Reading",
+      "type": "core-module",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "adv-reading-text-organisation",
+      "parentId": "adv-reading",
+      "name": "Text Organisation",
+      "type": "core-module",
+      "order": 4,
+      "status": "published"
+    },
+    {
+      "id": "adv-reading-exam-strategies",
+      "parentId": "adv-reading",
+      "name": "Exam Strategies",
+      "type": "pathway-hub",
+      "order": 5,
+      "status": "published"
+    },
+    {
+      "id": "adv-writing-writing-foundations",
+      "parentId": "adv-writing",
+      "name": "Writing Foundations",
+      "type": "core-module",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "adv-writing-paragraph-writing",
+      "parentId": "adv-writing",
+      "name": "Paragraph Writing",
+      "type": "core-module",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "adv-writing-letter-email-writing",
+      "parentId": "adv-writing",
+      "name": "Letter & Email Writing",
+      "type": "core-module",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "adv-writing-essay-writing",
+      "parentId": "adv-writing",
+      "name": "Essay Writing",
+      "type": "core-module",
+      "order": 4,
+      "status": "published"
+    },
+    {
+      "id": "adv-writing-visual-data-writing",
+      "parentId": "adv-writing",
+      "name": "Visual Data Writing",
+      "type": "core-module",
+      "order": 5,
+      "status": "published"
+    },
+    {
+      "id": "adv-writing-exam-strategies",
+      "parentId": "adv-writing",
+      "name": "Exam Strategies",
+      "type": "pathway-hub",
+      "order": 6,
+      "status": "published"
+    },
+    {
+      "id": "adv-writing-paragraph-writing-paragraph-structure",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Paragraph Structure",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-paragraph-writing-topic-sentence",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Topic Sentence",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-paragraph-writing-supporting-sentences",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Supporting Sentences",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-paragraph-writing-examples-evidence",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Examples & Evidence",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-paragraph-writing-concluding-sentence",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Concluding Sentence",
+      "type": "teaching-topic",
+      "order": 5,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-paragraph-writing-unity-coherence",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Unity & Coherence",
+      "type": "teaching-topic",
+      "order": 6,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-paragraph-writing-cohesive-devices",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Cohesive Devices",
+      "type": "teaching-topic",
+      "order": 7,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-paragraph-writing-descriptive-paragraph",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Descriptive Paragraph",
+      "type": "teaching-topic",
+      "order": 8,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-paragraph-writing-narrative-paragraph",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Narrative Paragraph",
+      "type": "teaching-topic",
+      "order": 9,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-paragraph-writing-opinion-paragraph",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Opinion Paragraph",
+      "type": "teaching-topic",
+      "order": 10,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-paragraph-writing-compare-contrast-paragraph",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Compare–Contrast Paragraph",
+      "type": "teaching-topic",
+      "order": 11,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-paragraph-writing-cause-effect-paragraph",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Cause–Effect Paragraph",
+      "type": "teaching-topic",
+      "order": 12,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-paragraph-writing-problem-solution-paragraph",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Problem–Solution Paragraph",
+      "type": "teaching-topic",
+      "order": 13,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-paragraph-writing-process-paragraph",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Process Paragraph",
+      "type": "teaching-topic",
+      "order": 14,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-letter-email-writing-formal",
+      "parentId": "adv-writing-letter-email-writing",
+      "name": "Formal",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-letter-email-writing-semi-formal",
+      "parentId": "adv-writing-letter-email-writing",
+      "name": "Semi-formal",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-letter-email-writing-informal",
+      "parentId": "adv-writing-letter-email-writing",
+      "name": "Informal",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-letter-email-writing-request",
+      "parentId": "adv-writing-letter-email-writing",
+      "name": "Request",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-letter-email-writing-complaint",
+      "parentId": "adv-writing-letter-email-writing",
+      "name": "Complaint",
+      "type": "teaching-topic",
+      "order": 5,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-letter-email-writing-application",
+      "parentId": "adv-writing-letter-email-writing",
+      "name": "Application",
+      "type": "teaching-topic",
+      "order": 6,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-essay-writing-opinion",
+      "parentId": "adv-writing-essay-writing",
+      "name": "Opinion",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-essay-writing-discussion",
+      "parentId": "adv-writing-essay-writing",
+      "name": "Discussion",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-essay-writing-advantages-disadvantages",
+      "parentId": "adv-writing-essay-writing",
+      "name": "Advantages–Disadvantages",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-essay-writing-problem-solution",
+      "parentId": "adv-writing-essay-writing",
+      "name": "Problem–Solution",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-essay-writing-cause-effect",
+      "parentId": "adv-writing-essay-writing",
+      "name": "Cause–Effect",
+      "type": "teaching-topic",
+      "order": 5,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-essay-writing-two-part-question",
+      "parentId": "adv-writing-essay-writing",
+      "name": "Two-part Question",
+      "type": "teaching-topic",
+      "order": 6,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-visual-data-writing-line-graph",
+      "parentId": "adv-writing-visual-data-writing",
+      "name": "Line Graph",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-visual-data-writing-bar-chart",
+      "parentId": "adv-writing-visual-data-writing",
+      "name": "Bar Chart",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-visual-data-writing-pie-chart",
+      "parentId": "adv-writing-visual-data-writing",
+      "name": "Pie Chart",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-visual-data-writing-table",
+      "parentId": "adv-writing-visual-data-writing",
+      "name": "Table",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-visual-data-writing-process",
+      "parentId": "adv-writing-visual-data-writing",
+      "name": "Process",
+      "type": "teaching-topic",
+      "order": 5,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-visual-data-writing-map",
+      "parentId": "adv-writing-visual-data-writing",
+      "name": "Map",
+      "type": "teaching-topic",
+      "order": 6,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-visual-data-writing-mixed-charts",
+      "parentId": "adv-writing-visual-data-writing",
+      "name": "Mixed Charts",
+      "type": "teaching-topic",
+      "order": 7,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-listening-listening-foundations-listening-for-gist",
+      "parentId": "adv-listening-listening-foundations",
+      "name": "Listening for Gist",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-listening-listening-foundations-listening-for-specific-information",
+      "parentId": "adv-listening-listening-foundations",
+      "name": "Listening for Specific Information",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-listening-listening-foundations-listening-for-detail",
+      "parentId": "adv-listening-listening-foundations",
+      "name": "Listening for Detail",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-listening-listening-foundations-speaker-purpose-attitude",
+      "parentId": "adv-listening-listening-foundations",
+      "name": "Speaker Purpose & Attitude",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-listening-listening-foundations-inference-implied-meaning",
+      "parentId": "adv-listening-listening-foundations",
+      "name": "Inference & Implied Meaning",
+      "type": "teaching-topic",
+      "order": 5,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-listening-listening-foundations-predicting-content",
+      "parentId": "adv-listening-listening-foundations",
+      "name": "Predicting Content",
+      "type": "teaching-topic",
+      "order": 6,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-listening-listening-foundations-note-taking",
+      "parentId": "adv-listening-listening-foundations",
+      "name": "Note-taking",
+      "type": "teaching-topic",
+      "order": 7,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-reading-foundations-skimming",
+      "parentId": "adv-reading-reading-foundations",
+      "name": "Skimming",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-reading-foundations-scanning",
+      "parentId": "adv-reading-reading-foundations",
+      "name": "Scanning",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-reading-foundations-reading-for-gist-main-idea",
+      "parentId": "adv-reading-reading-foundations",
+      "name": "Reading for Gist / Main Idea",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-reading-foundations-reading-for-detail",
+      "parentId": "adv-reading-reading-foundations",
+      "name": "Reading for Detail",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-meaning-vocabulary-vocabulary-in-context",
+      "parentId": "adv-reading-meaning-vocabulary",
+      "name": "Vocabulary in Context",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-meaning-vocabulary-reference",
+      "parentId": "adv-reading-meaning-vocabulary",
+      "name": "Reference",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-meaning-vocabulary-paraphrase-synonyms",
+      "parentId": "adv-reading-meaning-vocabulary",
+      "name": "Paraphrase & Synonyms",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-meaning-vocabulary-guessing-meaning-from-context",
+      "parentId": "adv-reading-meaning-vocabulary",
+      "name": "Guessing Meaning from Context",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-critical-reading-inference-implied-meaning",
+      "parentId": "adv-reading-critical-reading",
+      "name": "Inference & Implied Meaning",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-critical-reading-writer-s-opinion",
+      "parentId": "adv-reading-critical-reading",
+      "name": "Writer’s Opinion",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-critical-reading-writer-s-attitude",
+      "parentId": "adv-reading-critical-reading",
+      "name": "Writer’s Attitude",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-critical-reading-writer-s-purpose",
+      "parentId": "adv-reading-critical-reading",
+      "name": "Writer’s Purpose",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-critical-reading-fact-vs-opinion",
+      "parentId": "adv-reading-critical-reading",
+      "name": "Fact vs Opinion",
+      "type": "teaching-topic",
+      "order": 5,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-text-organisation-paragraph-main-ideas",
+      "parentId": "adv-reading-text-organisation",
+      "name": "Paragraph Main Ideas",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-text-organisation-cohesion-reference",
+      "parentId": "adv-reading-text-organisation",
+      "name": "Cohesion & Reference",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-text-organisation-logical-relationships",
+      "parentId": "adv-reading-text-organisation",
+      "name": "Logical Relationships",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-text-organisation-argument-structure",
+      "parentId": "adv-reading-text-organisation",
+      "name": "Argument Structure",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-speaking-foundations-fluency",
+      "parentId": "adv-speaking-speaking-foundations",
+      "name": "Fluency",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-speaking-foundations-pronunciation",
+      "parentId": "adv-speaking-speaking-foundations",
+      "name": "Pronunciation",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-speaking-foundations-vocabulary-for-speaking",
+      "parentId": "adv-speaking-speaking-foundations",
+      "name": "Vocabulary for Speaking",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-speaking-foundations-grammar-for-speaking",
+      "parentId": "adv-speaking-speaking-foundations",
+      "name": "Grammar for Speaking",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-speaking-foundations-developing-an-answer",
+      "parentId": "adv-speaking-speaking-foundations",
+      "name": "Developing an Answer",
+      "type": "teaching-topic",
+      "order": 5,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-social-interaction-personal-information",
+      "parentId": "adv-speaking-social-interaction",
+      "name": "Personal Information",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-social-interaction-familiar-topics",
+      "parentId": "adv-speaking-social-interaction",
+      "name": "Familiar Topics",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-social-interaction-asking-answering-questions",
+      "parentId": "adv-speaking-social-interaction",
+      "name": "Asking & Answering Questions",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-social-interaction-everyday-interaction",
+      "parentId": "adv-speaking-social-interaction",
+      "name": "Everyday Interaction",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-describing-narrating-people",
+      "parentId": "adv-speaking-describing-narrating",
+      "name": "People",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-describing-narrating-places",
+      "parentId": "adv-speaking-describing-narrating",
+      "name": "Places",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-describing-narrating-objects",
+      "parentId": "adv-speaking-describing-narrating",
+      "name": "Objects",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-describing-narrating-experiences-events",
+      "parentId": "adv-speaking-describing-narrating",
+      "name": "Experiences & Events",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-describing-narrating-storytelling",
+      "parentId": "adv-speaking-describing-narrating",
+      "name": "Storytelling",
+      "type": "teaching-topic",
+      "order": 5,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-opinions-discussion-giving-opinions",
+      "parentId": "adv-speaking-opinions-discussion",
+      "name": "Giving Opinions",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-opinions-discussion-giving-reasons",
+      "parentId": "adv-speaking-opinions-discussion",
+      "name": "Giving Reasons",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-opinions-discussion-examples-evidence",
+      "parentId": "adv-speaking-opinions-discussion",
+      "name": "Examples & Evidence",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-opinions-discussion-agreeing-disagreeing",
+      "parentId": "adv-speaking-opinions-discussion",
+      "name": "Agreeing / Disagreeing",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-opinions-discussion-comparing-alternatives",
+      "parentId": "adv-speaking-opinions-discussion",
+      "name": "Comparing Alternatives",
+      "type": "teaching-topic",
+      "order": 5,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-opinions-discussion-developing-discussion",
+      "parentId": "adv-speaking-opinions-discussion",
+      "name": "Developing Discussion",
+      "type": "teaching-topic",
+      "order": 6,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-extended-speaking-planning-a-talk",
+      "parentId": "adv-speaking-extended-speaking",
+      "name": "Planning a Talk",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-extended-speaking-organising-ideas",
+      "parentId": "adv-speaking-extended-speaking",
+      "name": "Organising Ideas",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-extended-speaking-topic-development",
+      "parentId": "adv-speaking-extended-speaking",
+      "name": "Topic Development",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-extended-speaking-presentation-long-turn",
+      "parentId": "adv-speaking-extended-speaking",
+      "name": "Presentation / Long Turn",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-listening-exam-strategies-vstep",
+      "parentId": "adv-listening-exam-strategies",
+      "name": "VSTEP",
+      "type": "exam-pathway",
+      "order": 1,
+      "status": "published",
+      "description": "Links shared core modules to VSTEP-specific strategy and format."
+    },
+    {
+      "id": "adv-listening-exam-strategies-ielts",
+      "parentId": "adv-listening-exam-strategies",
+      "name": "IELTS",
+      "type": "exam-pathway",
+      "order": 2,
+      "status": "published",
+      "description": "Links shared core modules to IELTS-specific strategy and format."
+    },
+    {
+      "id": "adv-speaking-exam-strategies-vstep",
+      "parentId": "adv-speaking-exam-strategies",
+      "name": "VSTEP",
+      "type": "exam-pathway",
+      "order": 1,
+      "status": "published",
+      "description": "Links shared core modules to VSTEP-specific strategy and format."
+    },
+    {
+      "id": "adv-speaking-exam-strategies-ielts",
+      "parentId": "adv-speaking-exam-strategies",
+      "name": "IELTS",
+      "type": "exam-pathway",
+      "order": 2,
+      "status": "published",
+      "description": "Links shared core modules to IELTS-specific strategy and format."
+    },
+    {
+      "id": "adv-reading-exam-strategies-vstep",
+      "parentId": "adv-reading-exam-strategies",
+      "name": "VSTEP",
+      "type": "exam-pathway",
+      "order": 1,
+      "status": "published",
+      "description": "Links shared core modules to VSTEP-specific strategy and format."
+    },
+    {
+      "id": "adv-reading-exam-strategies-ielts",
+      "parentId": "adv-reading-exam-strategies",
+      "name": "IELTS",
+      "type": "exam-pathway",
+      "order": 2,
+      "status": "published",
+      "description": "Links shared core modules to IELTS-specific strategy and format."
+    },
+    {
+      "id": "adv-writing-exam-strategies-vstep",
+      "parentId": "adv-writing-exam-strategies",
+      "name": "VSTEP",
+      "type": "exam-pathway",
+      "order": 1,
+      "status": "published",
+      "description": "Links shared core modules to VSTEP-specific strategy and format."
+    },
+    {
+      "id": "adv-writing-exam-strategies-ielts",
+      "parentId": "adv-writing-exam-strategies",
+      "name": "IELTS",
+      "type": "exam-pathway",
+      "order": 2,
+      "status": "published",
+      "description": "Links shared core modules to IELTS-specific strategy and format."
+    },
+    {
+      "id": "students",
+      "parentId": "classes",
+      "name": "Learners",
+      "type": "workflow-shell",
+      "order": 1,
+      "status": "published",
+      "description": "Student ID + Full Name with hidden immutable learner key and pseudonymous Research ID."
+    },
+    {
+      "id": "enrollment",
+      "parentId": "classes",
+      "name": "Enrollment & Membership",
+      "type": "workflow-shell",
+      "order": 2,
+      "status": "published",
+      "description": "Enroll learners in one or more classes without creating a heavy SIS."
+    },
+    {
+      "id": "live-join",
+      "parentId": "classes",
+      "name": "Live Join & Guests",
+      "type": "workflow-shell",
+      "order": 4,
+      "status": "published",
+      "description": "Lightweight QR/code join; optional guest access for live sessions."
     }
   ]
 }

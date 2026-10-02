@@ -4,7 +4,7 @@
     "brand": "E-LEAP",
     "formalName": "English Learning, Engagement and Assessment Platform"
   },
-  "release": "Production FULL v1.1",
+  "release": "E-LEAP Production Foundation v1.0 \u2014 Architecture & Operations Locked",
   "replacementMode": "clean-root-replacement",
   "sourceOfTruth": true,
   "largeShells": [
@@ -27,6 +27,10 @@
     "license-aware"
   ],
   "mediaPolicy": "Heavy image/audio/video files are externalized; repository contains references and audit metadata only.",
-  "upgrade": "Modular Shell Engine + CEFR Levels + Resource terminology",
-  "branchTarget": "production-full-v1"
+  "upgrade": "Advanced Skills Core Modules + Skills Lab/Mock/Progress linkage + Visual Shell Manager + Learner/Class/Grading Data Core",
+  "branchTarget": "production-full-v1",
+  "productionBackendRequired": true,
+  "lockedAt": "2026-10-02",
+  "targetBranch": "production-full-v1",
+  "operationsLocked": true
 }
