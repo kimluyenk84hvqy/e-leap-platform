@@ -1,0 +1,7 @@
+{
+  "package": "E-LEAP-U1.1-U1.2-PRODUCTION-GITHUB-LIGHT",
+  "targetBranch": "production-full-v1",
+  "binaryMediaExcluded": true,
+  "excludedFileCount": 32,
+  "purpose": "GitHub web upload: code/data/integration only"
+}

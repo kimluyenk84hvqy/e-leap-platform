@@ -222,14 +222,14 @@
     {
       "path": "resources/objective-first-b2/u01/l02/standalone/media/old_jeans_photo.png",
       "mediaType": "png",
-      "sha256": "5ef9a059d53583a03aefd94735625521a0f0f00f4714992d98fd12162f557083",
+      "sha256": "ba1530b2ca32701786823fccde3acc3b6d21ecbab59d2cb71afb13c08e297fb2",
       "trafficLight": "amber",
-      "reviewStatus": "source-and-license-not-yet-verified",
+      "reviewStatus": "derived-from-course-source-image16-license-not-yet-verified",
       "owner": null,
       "license": null,
       "attributionRequired": null,
       "usageScope": "private-until-cleared",
-      "evidence": null
+      "evidence": "Derived crop from UNIT 1.2 source PPT image16.png; no new external media introduced."
     },
     {
       "path": "resources/objective-first-b2/u01/l02/standalone/media/audio/source_audio.wav",
