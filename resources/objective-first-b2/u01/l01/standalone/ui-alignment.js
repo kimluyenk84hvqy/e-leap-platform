@@ -1,142 +1,206 @@
 /* =========================================================
-   E-LEAP U1.1 CONTROL ALIGNMENT v2.0
-   Objective First B2 — Unit 1.1
+   E-LEAP U1.1 — FINAL CONTROL & INTERACTION LAYER v3.0
+   Objective First B2 · Unit 1.1 Fashion Matters
 
-   Aligns U1.1 with U1.2 Golden Reference:
-   - Student / Teacher / Presentation
-   - Timer
-   - Responses
-   - Lucky No.
-   - Reveal next
-   - Check / Reset where meaningful
-   - Screen 9 Step 1 / Step 2
-   - Homework response + suggested answer
+   Goals
+   - Student / Teacher / Presentation role-aware controls
+   - Teacher tools aligned with U1.2: Timer / Responses / Lucky No. / Reveal next
+   - Check / Reset works consistently
+   - Teacher Check => cumulative click-to-reveal mode
+   - Student answers never auto-reveal open-ended suggested answers
+   - Screen 9 Step 1 / Step 2 tabs
+   - Homework response + Suggested answer
+   - Student recording on speaking tasks
    ========================================================= */
 
-(function () {
+(function(){
   'use strict';
 
-  const $ = (selector, root = document) =>
-    root.querySelector(selector);
+  const $=(s,r=document)=>r.querySelector(s);
+  const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 
-  const $$ = (selector, root = document) =>
-    [...root.querySelectorAll(selector)];
+  let mode='teacher';
+  let timerInt=null;
+  let revealMode=false;
+  let recorder=null;
+  let recordingStream=null;
+  let recordingChunks=[];
+  let recordingUrl=null;
 
-  let mode = 'teacher';
-  let timerInt = null;
+  const state={
+    vocabExtra:{},
+    vocabMini:'',
+    screen1:'',
+    screen2:{},
+    screen5:'',
+    screen6:{},
+    screen7:{},
+    screen12:'',
+    screen13:{},
+    screen14:{},
+    submitted:{}
+  };
 
-  /* =======================================================
-     HELPERS
-     ======================================================= */
+  const suggested={
+    1:[
+      'Clothes can communicate personality, identity, mood, social role or occasion.',
+      'Example: Someone wearing a suit may want to look formal or professional.'
+    ],
+    2:[
+      'Fashion is important to me because it helps me express my personality.',
+      'I prefer comfortable, casual clothes such as jeans, T-shirts and trainers.',
+      'Sometimes I have to wear clothes I do not really like for formal events or school/work requirements.'
+    ],
+    3:[
+      '<b>Give a reason</b><br>Because… / The main reason is that…',
+      '<b>Give an example</b><br>For example… / For instance…',
+      '<b>Add a contrast</b><br>However… / Unlike… / In the past…, but now…',
+      '<b>Give an opinion</b><br>Personally, I think… / To me,…'
+    ],
+    4:{
+      clothes:'Example: cardigan / coat / blouse',
+      footwear:'Example: loafers / slippers',
+      jewellery:'Example: brooch / pendant',
+      headgear:'Example: beret / visor',
+      materials:'Example: velvet / nylon',
+      appearance:'Example: stylish / scruffy / well-dressed',
+      mini:'Example: My classmate is wearing a smart jacket, dark jeans and trainers. He looks casual but fashionable.'
+    },
+    5:[
+      '1a: striped top, jeans, sneakers',
+      '1b: leather outfit, boots, helmet',
+      '2a: bright colourful clothes and many accessories; creative/unusual style',
+      '2b: jeans, T-shirt and flip-flops; simple/natural/relaxed style',
+      '3a: suit and tie; smart/formal style',
+      '3b: red sweater and jeans; casual style',
+      '4a: black dress and white hat; fashionable/confident style',
+      '4b: coat and scarf; warm/simple/calm style'
+    ],
+    6:{
+      'Speaker 2':'2a',
+      'Speaker 3':'1a',
+      'Speaker 4':'4b',
+      'Speaker 5':'3a'
+    },
+    7:{},
+    8:[
+      '<b>A phrasal verb</b> is a verb together with an adverb or preposition that changes its meaning.',
+      '<b>Two-part:</b> verb + adverb/preposition.<br><b>Three-part:</b> verb + adverb + preposition.',
+      '<b>Word order:</b> some two-part phrasal verbs can be separated; three-part phrasal verbs are not separated in the patterns taught here.'
+    ],
+    13:[
+      'Example: suit · scarf · fashionable',
+      'Example: save up · stand out',
+      'Example: dress up',
+      'Example: You could wear what makes you feel confident.'
+    ],
+    14:[
+      'Example: stand out = be easy to see or notice.',
+      'Example: I can now identify and use several phrasal verbs in context.',
+      'Example: I still need to practise phrasal-verb word order and natural use.'
+    ],
+    15:`<b>Suggested answer</b>
+      <p>Dear Emma,</p>
+      <p>I think you should wear clothes that make you feel comfortable and confident. You do not need to <b>keep up with</b> every new fashion. If you are going somewhere special, you could <b>dress up</b>, but you can still choose an outfit that suits your own style.</p>
+      <p>You could also <b>put together</b> an outfit with one unusual item if you want to <b>stand out</b>. The most important thing is to feel like yourself.</p>
+      <p>Best wishes</p>`
+  };
 
-  function activeScreen() {
-    return $('.screen.active');
-  }
+  function activeScreen(){return $('.screen.active');}
+  function screenNo(){return Number(activeScreen()?.dataset.screen||0);}
 
-  function activeScreenNumber() {
-    return activeScreen()?.dataset.screen || '';
-  }
-
-  function stopAllMedia() {
-    $$('audio,video').forEach(m => {
-      try {
-        m.pause();
-      } catch (_) {}
+  function stopAllMedia(){
+    $$('audio,video').forEach(m=>{
+      try{m.pause();}catch(_){}
     });
   }
 
-  function escapeHtml(value) {
-    return String(value ?? '')
-      .replaceAll('&', '&amp;')
-      .replaceAll('<', '&lt;')
-      .replaceAll('>', '&gt;')
-      .replaceAll('"', '&quot;');
+  function esc(v){
+    return String(v??'').replace(
+      /[&<>\"]/g,
+      m=>({
+        '&':'&amp;',
+        '<':'&lt;',
+        '>':'&gt;',
+        '\"':'&quot;'
+      }[m]||m)
+    );
   }
 
-  function feedbackTone(ok) {
-    try {
-      const C =
-        window.AudioContext ||
-        window.webkitAudioContext;
+  function feedbackTone(ok){
+    try{
+      const C=window.AudioContext||window.webkitAudioContext;
+      if(!C)return;
 
-      if (!C) return;
-
-      const c = new C();
-      const g = c.createGain();
+      const c=new C();
+      const g=c.createGain();
 
       g.connect(c.destination);
 
-      g.gain.setValueAtTime(
-        .0001,
-        c.currentTime
-      );
-
-      g.gain.exponentialRampToValueAtTime(
-        .14,
-        c.currentTime + .015
-      );
-
+      g.gain.setValueAtTime(.0001,c.currentTime);
+      g.gain.exponentialRampToValueAtTime(.13,c.currentTime+.015);
       g.gain.exponentialRampToValueAtTime(
         .0001,
-        c.currentTime + (ok ? .34 : .28)
+        c.currentTime+(ok?.34:.28)
       );
 
-      const notes = ok
-        ? [659.25, 783.99]
-        : [220, 174.61];
+      (ok?[659.25,783.99]:[220,174.61]).forEach((f,n)=>{
+        const o=c.createOscillator();
 
-      notes.forEach((f, n) => {
-        const o = c.createOscillator();
-
-        o.type =
-          ok ? 'sine' : 'triangle';
+        o.type=ok?'sine':'triangle';
 
         o.frequency.setValueAtTime(
           f,
-          c.currentTime + n * .11
+          c.currentTime+n*.11
         );
 
         o.connect(g);
 
-        o.start(
-          c.currentTime + n * .11
-        );
-
-        o.stop(
-          c.currentTime +
-          n * .11 +
-          .18
-        );
+        o.start(c.currentTime+n*.11);
+        o.stop(c.currentTime+n*.11+.18);
       });
 
-      setTimeout(
-        () => c.close(),
-        650
-      );
+      setTimeout(()=>c.close(),650);
 
-    } catch (_) {}
+    }catch(_){}
+  }
+
+  function showToast(text,kind='good'){
+    const s=activeScreen();
+
+    if(!s)return;
+
+    $('.u11-toast',s)?.remove();
+
+    const d=document.createElement('div');
+
+    d.className=`u11-toast ${kind}`;
+    d.textContent=text;
+
+    s.appendChild(d);
+
+    setTimeout(()=>d.remove(),2500);
   }
 
 
-  /* =======================================================
-     HEADER MODES + TEACHER TOOLS
-     ======================================================= */
+  /* =========================================================
+     HEADER
+     ========================================================= */
 
-  const topbar = $('.topbar');
+  function buildHeader(){
+    const topbar=$('.topbar');
 
-  if (topbar) {
-    const oldBadge =
-      $('.review-badge');
+    if(!topbar)return;
 
-    const right =
-      document.createElement('div');
+    $('.u11-header-right')?.remove();
+    $('.review-badge')?.remove();
 
-    right.className =
-      'u11-header-right';
+    const right=document.createElement('div');
 
-    right.innerHTML = `
+    right.className='u11-header-right';
+
+    right.innerHTML=`
       <div class="u11-modes">
-
         <button
           type="button"
           data-u11-mode="student">
@@ -155,7 +219,6 @@
           data-u11-mode="presentation">
           Presentation
         </button>
-
       </div>
 
       <div class="u11-teacher-tools">
@@ -187,404 +250,1344 @@
       </div>
     `;
 
-    if (oldBadge) {
-      oldBadge.remove();
-    }
-
     topbar.appendChild(right);
+
+    $$('[data-u11-mode]',right)
+      .forEach(
+        b=>b.onclick=
+          ()=>setMode(
+            b.dataset.u11Mode
+          )
+      );
   }
 
 
-  /* =======================================================
-     SHARED MODAL — SAME LOGIC AS U1.2
-     ======================================================= */
+  /* =========================================================
+     MODAL
+     ========================================================= */
 
-  const modal =
-    document.createElement('div');
+  function buildModal(){
+    $('.u11-modal')?.remove();
 
-  modal.className =
-    'u11-modal';
+    const m=
+      document.createElement('div');
 
-  modal.innerHTML = `
-    <div class="u11-modalbox">
+    m.className='u11-modal';
 
-      <button
-        class="u11-close"
-        id="u11CloseModal">
-        ×
-      </button>
+    m.innerHTML=`
+      <div class="u11-modalbox">
 
-      <div id="u11ModalBody"></div>
+        <button
+          class="u11-close"
+          id="u11CloseModal">
+          ×
+        </button>
 
-    </div>
-  `;
+        <div id="u11ModalBody"></div>
 
-  document.body.appendChild(modal);
+      </div>
+    `;
 
-  function openModal(html) {
-    $('#u11ModalBody').innerHTML =
-      html;
+    document.body.appendChild(m);
 
-    modal.classList.add('show');
-  }
+    $('#u11CloseModal').onclick=
+      ()=>m.classList.remove('show');
 
-  function closeModal() {
-    modal.classList.remove('show');
-  }
-
-  $('#u11CloseModal')
-    ?.addEventListener(
-      'click',
-      closeModal
-    );
-
-  modal.addEventListener(
-    'click',
-    e => {
-      if (e.target === modal) {
-        closeModal();
+    m.onclick=e=>{
+      if(e.target===m){
+        m.classList.remove('show');
       }
+    };
+  }
+
+  function modal(html){
+    $('#u11ModalBody').innerHTML=html;
+    $('.u11-modal').classList.add('show');
+  }
+
+
+  /* =========================================================
+     TIMER
+     ========================================================= */
+
+  function openTimer(){
+
+    modal(`
+      <h2>Classroom Timer</h2>
+
+      <p class="u11-timer-note">
+        Choose a duration first.
+      </p>
+
+      <div
+        class="u11-timerbig"
+        id="u11Clock">
+        --:--
+      </div>
+
+      <div class="u11-timer-presets">
+
+        <button data-sec="30">
+          30 sec
+        </button>
+
+        <button data-sec="60">
+          1 min
+        </button>
+
+        <button data-sec="90">
+          90 sec
+        </button>
+
+        <button data-sec="120">
+          2 min
+        </button>
+
+        <button data-sec="180">
+          3 min
+        </button>
+
+      </div>
+
+      <div class="u11-custom-time">
+
+        <label>
+          Custom seconds
+        </label>
+
+        <input
+          id="u11CustomSeconds"
+          type="number"
+          min="5"
+          max="1800"
+          step="5"
+          placeholder="e.g. 45">
+
+        <button id="u11SetCustom">
+          Set
+        </button>
+
+      </div>
+
+      <div class="u11-timercontrols">
+
+        <button
+          id="u11TStart"
+          disabled>
+          Start / Pause
+        </button>
+
+        <button
+          id="u11TReset"
+          disabled>
+          Reset
+        </button>
+
+      </div>
+    `);
+
+    let selected=null;
+    let left=0;
+    let running=false;
+
+    const draw=()=>{
+      $('#u11Clock').textContent=
+        selected===null
+          ?'--:--'
+          :`${String(
+              Math.floor(left/60)
+            ).padStart(2,'0')}:${String(
+              left%60
+            ).padStart(2,'0')}`;
+    };
+
+    const choose=n=>{
+      selected=n;
+      left=n;
+      running=false;
+
+      if(timerInt){
+        clearInterval(timerInt);
+      }
+
+      $('#u11TStart').disabled=false;
+      $('#u11TReset').disabled=false;
+
+      draw();
+    };
+
+    $$('[data-sec]')
+      .forEach(
+        b=>b.onclick=
+          ()=>choose(
+            Number(b.dataset.sec)
+          )
+      );
+
+    $('#u11SetCustom').onclick=()=>{
+
+      const n=
+        Number(
+          $('#u11CustomSeconds').value
+        );
+
+      if(
+        Number.isFinite(n) &&
+        n>=5
+      ){
+        choose(
+          Math.min(n,1800)
+        );
+      }
+    };
+
+    $('#u11TStart').onclick=()=>{
+
+      if(selected===null)return;
+
+      running=!running;
+
+      if(timerInt){
+        clearInterval(timerInt);
+      }
+
+      if(running){
+
+        timerInt=setInterval(
+          ()=>{
+
+            if(left>0){
+
+              left--;
+              draw();
+
+            }else{
+
+              clearInterval(timerInt);
+              running=false;
+
+              feedbackTone(true);
+            }
+
+          },
+          1000
+        );
+      }
+    };
+
+    $('#u11TReset').onclick=()=>{
+
+      if(selected===null)return;
+
+      if(timerInt){
+        clearInterval(timerInt);
+      }
+
+      running=false;
+      left=selected;
+
+      draw();
+    };
+  }
+
+
+  /* =========================================================
+     RESPONSES
+     ========================================================= */
+
+  function collectResponses(){
+
+    const s=activeScreen();
+
+    if(!s)return[];
+
+    const out=[];
+
+    const poll=
+      $('.poll-btn.selected',s);
+
+    if(poll){
+      out.push(
+        `Quick choice: ${poll.textContent.trim()}`
+      );
     }
-  );
+
+    $$(
+      'textarea,input.u11-student-input',
+      s
+    ).forEach((x,n)=>{
+
+      if(x.value.trim()){
+
+        out.push(
+          `Response ${n+1}: ${x.value.trim()}`
+        );
+      }
+    });
+
+    const matched=
+      $$('.match-item.matched',s).length;
+
+    if(matched){
+      out.push(
+        `Correct matches: ${matched}/9`
+      );
+    }
+
+    return out;
+  }
+
+  function openResponses(){
+
+    const rs=
+      collectResponses();
+
+    modal(`
+      <h2>Responses</h2>
+
+      <div class="u11-tabs">
+
+        <button class="active">
+          By option
+        </button>
+
+        <button>
+          All
+        </button>
+
+        <button>
+          Spotlight
+        </button>
+
+      </div>
+
+      <p>
+        <b>
+          Names hidden by default
+          in classroom display.
+        </b>
+      </p>
+
+      ${
+        (
+          rs.length
+            ?rs
+            :['No response yet.']
+        )
+        .map(
+          (r,n)=>`
+            <div class="u11-response-card">
+              Response ${n+1}:
+              ${esc(r)}
+            </div>
+          `
+        )
+        .join('')
+      }
+    `);
+  }
 
 
-  /* =======================================================
-     MODES
-     ======================================================= */
+  /* =========================================================
+     ROLE MODE
+     ========================================================= */
 
-  function setMode(nextMode) {
-    mode = nextMode;
+  function setMode(m){
+
+    mode=m;
+    revealMode=false;
 
     document.body.classList.remove(
       'u11-student',
       'u11-teacher',
-      'presentation'
+      'presentation',
+      'u11-reveal-mode'
     );
 
-    if (mode === 'student') {
+    if(m==='student'){
       document.body.classList.add(
         'u11-student'
       );
     }
 
-    if (mode === 'teacher') {
+    if(m==='teacher'){
       document.body.classList.add(
         'u11-teacher'
       );
     }
 
-    if (mode === 'presentation') {
+    if(m==='presentation'){
       document.body.classList.add(
         'presentation'
       );
     }
 
     $$('[data-u11-mode]')
-      .forEach(btn => {
-        btn.classList.toggle(
+      .forEach(
+        b=>b.classList.toggle(
           'active',
-          btn.dataset.u11Mode === mode
-        );
-      });
+          b.dataset.u11Mode===m
+        )
+      );
 
     stopAllMedia();
 
-    refreshActionBar();
+    decorateCurrentScreen();
   }
 
-  $$('[data-u11-mode]')
-    .forEach(btn => {
-      btn.addEventListener(
-        'click',
-        () => {
-          setMode(
-            btn.dataset.u11Mode
-          );
+
+  /* =========================================================
+     RECORDING
+     ========================================================= */
+
+  function stopRecorderCleanup(){
+
+    if(
+      recorder &&
+      recorder.state!=='inactive'
+    ){
+      try{
+        recorder.stop();
+      }catch(_){}
+    }
+
+    if(recordingStream){
+
+      recordingStream
+        .getTracks()
+        .forEach(
+          t=>t.stop()
+        );
+
+      recordingStream=null;
+    }
+
+    recorder=null;
+    recordingChunks=[];
+  }
+
+  function recordingWidget(key){
+
+    return `
+      <div
+        class="u11-record"
+        data-record-key="${key}">
+
+        <button
+          type="button"
+          class="u11-record-start">
+          ● Record
+        </button>
+
+        <button
+          type="button"
+          class="u11-record-stop"
+          disabled>
+          ■ Stop
+        </button>
+
+        <span class="u11-record-status">
+          Ready
+        </span>
+
+        <audio
+          class="u11-record-playback"
+          controls
+          hidden>
+        </audio>
+
+      </div>
+    `;
+  }
+
+  function wireRecording(root){
+
+    $$('.u11-record',root)
+      .forEach(box=>{
+
+        if(
+          box.dataset.wired==='1'
+        ){
+          return;
         }
+
+        box.dataset.wired='1';
+
+        const start=
+          $('.u11-record-start',box);
+
+        const stop=
+          $('.u11-record-stop',box);
+
+        const status=
+          $('.u11-record-status',box);
+
+        const audio=
+          $('.u11-record-playback',box);
+
+        start.onclick=async()=>{
+
+          if(
+            !navigator.mediaDevices?.getUserMedia ||
+            !window.MediaRecorder
+          ){
+            status.textContent=
+              'Recording is not supported in this browser.';
+
+            return;
+          }
+
+          stopRecorderCleanup();
+
+          try{
+
+            recordingStream=
+              await navigator
+                .mediaDevices
+                .getUserMedia(
+                  {audio:true}
+                );
+
+            recordingChunks=[];
+
+            recorder=
+              new MediaRecorder(
+                recordingStream
+              );
+
+            recorder.ondataavailable=e=>{
+
+              if(e.data.size){
+                recordingChunks.push(
+                  e.data
+                );
+              }
+            };
+
+            recorder.onstop=()=>{
+
+              const blob=
+                new Blob(
+                  recordingChunks,
+                  {
+                    type:
+                      recordingChunks[0]
+                        ?.type ||
+                      'audio/webm'
+                  }
+                );
+
+              if(recordingUrl){
+                URL.revokeObjectURL(
+                  recordingUrl
+                );
+              }
+
+              recordingUrl=
+                URL.createObjectURL(blob);
+
+              audio.src=recordingUrl;
+              audio.hidden=false;
+
+              status.textContent=
+                'Recorded';
+
+              if(recordingStream){
+
+                recordingStream
+                  .getTracks()
+                  .forEach(
+                    t=>t.stop()
+                  );
+
+                recordingStream=null;
+              }
+            };
+
+            recorder.start();
+
+            start.disabled=true;
+            stop.disabled=false;
+
+            status.textContent=
+              'Recording…';
+
+          }catch(e){
+
+            status.textContent=
+              'Microphone permission was not granted.';
+          }
+        };
+
+        stop.onclick=()=>{
+
+          if(
+            recorder &&
+            recorder.state!=='inactive'
+          ){
+            recorder.stop();
+          }
+
+          start.disabled=false;
+          stop.disabled=true;
+        };
+      });
+  }
+
+
+  /* =========================================================
+     REVEAL MODE
+     ========================================================= */
+
+  function enterRevealMode(){
+
+    if(mode==='student'){
+
+      showToast(
+        'Teacher reveal is available in Teacher or Presentation mode.',
+        'try'
       );
-    });
 
+      return;
+    }
 
-  /* =======================================================
-     RESPONSES — U1.2 STYLE
-     ======================================================= */
+    revealMode=true;
 
-  function collectResponses() {
-    const screen =
-      activeScreen();
+    document.body.classList.add(
+      'u11-reveal-mode'
+    );
 
-    if (!screen) return [];
+    const b=
+      $('.u11-actionbar .u11-check');
 
-    const result = [];
+    if(b){
 
-    const poll =
-      $('.poll-btn.selected', screen);
+      b.textContent=
+        '✓ Reveal mode ON';
 
-    if (poll) {
-      result.push(
-        poll.textContent.trim()
+      b.classList.add(
+        'reveal-on'
       );
     }
 
-    $$('.confidence button.selected', screen)
-      .forEach(btn => {
-        result.push(
-          `Confidence: ${btn.textContent.trim()}`
+    showToast(
+      'Reveal mode is ON. Click answer boxes one by one.',
+      'good'
+    );
+  }
+
+  function revealTarget(el){
+
+    if(
+      !revealMode ||
+      mode==='student'
+    ){
+      return false;
+    }
+
+    if(
+      el.classList.contains(
+        'u11-revealed'
+      )
+    ){
+      return true;
+    }
+
+    const answer=
+      el.dataset.u11Answer;
+
+    if(!answer){
+      return false;
+    }
+
+    let box=
+      $('.u11-revealed-answer',el);
+
+    if(!box){
+
+      box=
+        document.createElement('div');
+
+      box.className=
+        'u11-revealed-answer';
+
+      el.appendChild(box);
+    }
+
+    box.innerHTML=answer;
+
+    el.classList.add(
+      'u11-revealed'
+    );
+
+    feedbackTone(true);
+
+    return true;
+  }
+
+  document.addEventListener(
+    'click',
+    e=>{
+
+      const target=
+        e.target.closest(
+          '[data-u11-answer]'
+        );
+
+      if(!target)return;
+
+      if(
+        mode==='student' ||
+        !revealMode
+      ){
+
+        if(
+          target.matches(
+            '.discovery-card,'+
+            '.challenge-card,'+
+            '.layer-card'
+          )
+        ){
+          e.preventDefault();
+          e.stopImmediatePropagation();
+        }
+
+        return;
+      }
+
+      e.preventDefault();
+      e.stopImmediatePropagation();
+
+      revealTarget(target);
+
+    },
+    true
+  );
+
+
+  /* =========================================================
+     RESET
+     ========================================================= */
+
+  function resetScreen(){
+
+    const s=activeScreen();
+
+    if(!s)return;
+
+    revealMode=false;
+
+    document.body.classList.remove(
+      'u11-reveal-mode'
+    );
+
+    $$('.u11-revealed',s)
+      .forEach(x=>{
+
+        x.classList.remove(
+          'u11-revealed',
+          'u11-answer-correct',
+          'u11-answer-wrong'
+        );
+
+        $('.u11-revealed-answer',x)
+          ?.remove();
+      });
+
+    $$(
+      '.u11-student-input,textarea',
+      s
+    ).forEach(
+      x=>x.value=''
+    );
+
+    $$(
+      '.poll-btn.selected,'+
+      '.confidence button.selected',
+      s
+    ).forEach(
+      x=>x.classList.remove(
+        'selected'
+      )
+    );
+
+    const pr=
+      $('#pollResult',s);
+
+    if(pr){
+      pr.textContent=
+        'Choose one option, then explain your choice.';
+    }
+
+    $$('.support',s)
+      .forEach(
+        x=>x.classList.add(
+          'hidden'
+        )
+      );
+
+    $$(
+      '.inline-blank.revealed,'+
+      '.blank-reveal.revealed',
+      s
+    ).forEach(x=>{
+
+      x.classList.remove(
+        'revealed'
+      );
+
+      x.textContent=
+        '__________';
+    });
+
+    $$('.item-check',s)
+      .forEach(x=>{
+
+        x.textContent='check';
+
+        x.classList.remove(
+          'heard',
+          'not-heard'
         );
       });
 
-    $$('textarea', screen)
-      .forEach(box => {
-        const value =
-          box.value.trim();
+    $$(
+      '.candidate-grid input[type="checkbox"]',
+      s
+    ).forEach(
+      x=>x.checked=false
+    );
 
-        if (value) {
-          result.push(value);
+    $$('.candidate-item',s)
+      .forEach(
+        x=>x.classList.remove(
+          'u11-answer-correct',
+          'u11-answer-wrong'
+        )
+      );
+
+    $$(
+      '.match-item,'+
+      '.definition-item',
+      s
+    ).forEach(x=>{
+
+      x.disabled=false;
+
+      x.classList.remove(
+        'selected',
+        'matched',
+        'wrong'
+      );
+    });
+
+    const ms=
+      $('#matchStatus',s);
+
+    if(ms){
+      ms.textContent=
+        'Select a phrasal verb, then select its definition.';
+    }
+
+    $$('.challenge-card',s)
+      .forEach(c=>{
+
+        if(c.dataset.front){
+          c.textContent=
+            c.dataset.front;
         }
+
+        c.classList.remove(
+          'flipped'
+        );
       });
 
-    const selected =
-      $$(
-        '.candidate-grid input[type="checkbox"]:checked',
-        screen
+    $$('.discovery-card',s)
+      .forEach(c=>{
+
+        if(
+          c.dataset.u11OriginalHtml
+        ){
+          c.innerHTML=
+            c.dataset.u11OriginalHtml;
+        }
+
+        c.classList.remove(
+          'revealed'
+        );
+      });
+
+    $$('.layer-card',s)
+      .forEach(c=>{
+
+        if(
+          c.dataset.u11OriginalHtml
+        ){
+          c.innerHTML=
+            c.dataset.u11OriginalHtml;
+        }
+
+        c.classList.remove(
+          'revealed'
+        );
+
+        delete c.dataset.step;
+      });
+
+    $('.u11-suggested-answer',s)
+      ?.classList.remove(
+        'show'
       );
 
-    if (selected.length) {
-      result.push(
-        selected
-          .map(x =>
-            x.closest('label')
-              ?.textContent.trim()
-          )
-          .filter(Boolean)
-          .join(', ')
-      );
-    }
+    $('.u11-toast',s)
+      ?.remove();
 
-    const matched =
-      $$('.match-item.matched', screen);
+    stopRecorderCleanup();
 
-    if (matched.length) {
-      result.push(
-        `${matched.length} correct matches`
-      );
-    }
-
-    return result;
+    decorateCurrentScreen();
   }
 
-  $('#u11Responses')
-    ?.addEventListener(
-      'click',
-      () => {
-        const responses =
-          collectResponses();
 
-        const displayResponses =
-          responses.length
-            ? responses
-            : [
-                'No response yet.',
-                'Responses will appear here during classroom use.'
-              ];
+  /* =========================================================
+     INPUT HELPERS
+     ========================================================= */
 
-        openModal(`
-          <h2>Responses</h2>
+  function addInput(
+    container,
+    key,
+    placeholder='Type your answer here…',
+    record=false
+  ){
 
-          <div class="u11-tabs">
-            <button class="active">
-              By option
-            </button>
+    if(
+      $('.u11-open-response',container)
+    ){
+      return;
+    }
 
-            <button>
-              All
-            </button>
+    const d=
+      document.createElement('div');
 
-            <button>
-              Spotlight
-            </button>
-          </div>
+    d.className=
+      'u11-open-response';
 
-          <p>
-            <b>
-              Names hidden by default
-              in classroom display.
-            </b>
-          </p>
+    d.innerHTML=`
+      <textarea
+        class="u11-student-input"
+        data-state-key="${key}"
+        placeholder="${placeholder}">
+      </textarea>
 
-          ${displayResponses
-            .map((r, n) => `
-              <div class="u11-response-card">
-                Response ${n + 1}:
-                ${escapeHtml(r)}
-              </div>
-            `)
-            .join('')}
-
-          <p class="u11-media-status">
-            Current-screen response view.
-          </p>
-        `);
+      ${
+        record
+          ?recordingWidget(key)
+          :''
       }
+    `;
+
+    container.appendChild(d);
+
+    wireRecording(d);
+  }
+
+
+  /* =========================================================
+     SCREEN 1
+     ========================================================= */
+
+  function augment1(s){
+
+    const poll=
+      $('.poll-card',s);
+
+    if(poll){
+
+      addInput(
+        poll,
+        'screen1',
+        'Explain your choice in 1–2 sentences…',
+        true
+      );
+
+      poll.dataset.u11Answer=
+        suggested[1].join('<br>');
+
+      poll.classList.add(
+        'u11-reveal-target'
+      );
+    }
+  }
+
+
+  /* =========================================================
+     SCREEN 2
+     ========================================================= */
+
+  function augment2(s){
+
+    $$('.question-card',s)
+      .forEach((q,n)=>{
+
+        addInput(
+          q,
+          `s2-${n}`,
+          'Type your answer…',
+          true
+        );
+
+        q.dataset.u11Answer=
+          suggested[2][n];
+
+        q.classList.add(
+          'u11-reveal-target'
+        );
+      });
+  }
+
+
+  /* =========================================================
+     SCREEN 3
+     ========================================================= */
+
+  function augment3(s){
+
+    $$('.layer-card',s)
+      .forEach((c,n)=>{
+
+        if(
+          !c.dataset.u11OriginalHtml
+        ){
+          c.dataset.u11OriginalHtml=
+            c.innerHTML;
+        }
+
+        c.dataset.u11Answer=
+          suggested[3][n];
+
+        c.classList.add(
+          'u11-reveal-target'
+        );
+      });
+  }
+
+
+  /* =========================================================
+     SCREEN 4
+     ========================================================= */
+
+  function currentVocabKey(){
+
+    return (
+      $('#vocabTabs .tab.active')
+        ?.dataset.tab ||
+      'clothes'
     );
+  }
 
+  function refreshVocabExtras(s){
 
-  /* =======================================================
-     TIMER — SAME BEHAVIOUR AS U1.2
-     ======================================================= */
+    $('.u11-vocab-extra',s)
+      ?.remove();
 
-  $('#u11Timer')
-    ?.addEventListener(
-      'click',
-      () => {
+    const key=
+      currentVocabKey();
 
-        openModal(`
-          <h2>Classroom Timer</h2>
+    const panel=
+      $('#vocabPanel',s);
 
-          <div
-            class="u11-timerbig"
-            id="u11Clock">
-            01:00
-          </div>
+    if(!panel)return;
 
-          <div class="u11-timercontrols">
+    const d=
+      document.createElement('div');
 
-            <button id="u11T30">
-              30 sec
-            </button>
+    d.className=
+      'u11-vocab-extra u11-reveal-target';
 
-            <button id="u11T60">
-              60 sec
-            </button>
+    d.dataset.u11Answer=
+      suggested[4][key] ||
+      'Teacher accepts an appropriate additional example.';
 
-            <button id="u11T120">
-              2 min
-            </button>
+    d.innerHTML=`
+      <label>
+        Add one more example of your own
+      </label>
 
-            <button id="u11TStart">
-              Start / Pause
-            </button>
+      <input
+        class="u11-student-input"
+        data-vocab-key="${key}"
+        placeholder="Type one more word…">
+    `;
 
-          </div>
-        `);
+    panel.after(d);
 
-        let left = 60;
-        let running = false;
+    const inp=
+      $('input',d);
 
-        const draw = () => {
-          const clock =
-            $('#u11Clock');
+    inp.value=
+      state.vocabExtra[key]||'';
 
-          if (!clock) return;
+    inp.oninput=
+      ()=>state.vocabExtra[key]=
+        inp.value;
+  }
 
-          clock.textContent =
-            String(
-              Math.floor(left / 60)
-            ).padStart(2, '0')
-            +
-            ':'
-            +
-            String(
-              left % 60
-            ).padStart(2, '0');
-        };
+  function augment4(s){
 
-        const set = n => {
-          left = n;
-          draw();
-        };
+    refreshVocabExtras(s);
 
-        $('#u11T30').onclick =
-          () => set(30);
+    const mini=
+      $('.mini-task',s);
 
-        $('#u11T60').onclick =
-          () => set(60);
+    if(
+      mini &&
+      !$('.u11-mini-response',s)
+    ){
 
-        $('#u11T120').onclick =
-          () => set(120);
-
-        $('#u11TStart').onclick =
-          () => {
-
-            running = !running;
-
-            if (timerInt) {
-              clearInterval(timerInt);
-            }
-
-            if (running) {
-              timerInt =
-                setInterval(
-                  () => {
-                    if (left > 0) {
-                      left--;
-                      draw();
-                    } else {
-                      clearInterval(
-                        timerInt
-                      );
-
-                      running = false;
-                    }
-                  },
-                  1000
-                );
-            }
-          };
-      }
-    );
-
-
-  /* =======================================================
-     LUCKY NUMBER — SAME RANGE AS U1.2
-     ======================================================= */
-
-  $('#u11Lucky')
-    ?.addEventListener(
-      'click',
-      () => {
-
-        openModal(`
-          <h2>Lucky Number</h2>
-
-          <div class="u11-lucky">
-            ${
-              Math.floor(
-                Math.random() * 24
-              ) + 1
-            }
-          </div>
-
-          <p style="text-align:center">
-            Use for random participation.
-          </p>
-        `);
-      }
-    );
-
-
-  /* =======================================================
-     SCREEN 9 — STEP TABS
-     ======================================================= */
-
-  const screen9 =
-    $('.screen[data-screen="9"]');
-
-  if (screen9) {
-    const steps =
-      $$('.ex7-step', screen9);
-
-    if (
-      steps.length >= 2 &&
-      !$('.ex7-step-tabs', screen9)
-    ) {
-      const tabs =
+      const d=
         document.createElement('div');
 
-      tabs.className =
+      d.className=
+        'u11-mini-response u11-reveal-target';
+
+      d.dataset.u11Answer=
+        suggested[4].mini;
+
+      d.innerHTML=`
+        <textarea
+          class="u11-student-input"
+          placeholder="Describe one classmate…">
+        </textarea>
+
+        ${recordingWidget('s4-mini')}
+      `;
+
+      mini.after(d);
+
+      wireRecording(d);
+    }
+
+    $$('#vocabTabs .tab',s)
+      .forEach(
+        btn=>btn.addEventListener(
+          'click',
+          ()=>setTimeout(
+            ()=>refreshVocabExtras(s),
+            0
+          )
+        )
+      );
+  }
+
+
+  /* =========================================================
+     SCREEN 5
+     ========================================================= */
+
+  function augment5(s){
+
+    $$('.hotspot',s)
+      .forEach((h,n)=>{
+
+        h.dataset.u11Answer=
+          esc(
+            h.dataset.hotspot ||
+            suggested[5][n]
+          );
+
+        h.classList.add(
+          'u11-reveal-target'
+        );
+      });
+
+    const support=
+      $('.support-box',s);
+
+    if(support){
+
+      addInput(
+        support,
+        'screen5',
+        'Describe and compare one pair of photos…',
+        true
+      );
+    }
+  }
+
+
+  /* =========================================================
+     SCREEN 6
+     ========================================================= */
+
+  function augment6(s){
+
+    $$('.speaker-match>div',s)
+      .forEach(row=>{
+
+        if(
+          $('.u11-speaker-input',row)
+        ){
+          return;
+        }
+
+        const txt=
+          row.childNodes[0]
+            ?.textContent
+            .trim() ||
+          row.textContent
+            .trim()
+            .split('?')[0]
+            .trim();
+
+        const old=
+          $('.blank-reveal',row);
+
+        const ans=
+          old?.dataset.answer ||
+          suggested[6][txt] ||
+          '';
+
+        if(old){
+          old.style.display='none';
+        }
+
+        const inp=
+          document.createElement(
+            'input'
+          );
+
+        inp.className=
+          'u11-student-input u11-speaker-input';
+
+        inp.placeholder=
+          'Type photo label';
+
+        row.appendChild(inp);
+
+        row.dataset.u11Answer=
+          esc(ans);
+
+        row.classList.add(
+          'u11-reveal-target'
+        );
+      });
+  }
+
+
+  /* =========================================================
+     SCREEN 7
+     ========================================================= */
+
+  function buildPhrasalMeaningGrid(s){
+
+    $('.u11-phrasal-grid',s)
+      ?.remove();
+
+    const spans=
+      $$('.phrasal-click',s);
+
+    if(!spans.length)return;
+
+    const grid=
+      document.createElement('div');
+
+    grid.className=
+      'u11-phrasal-grid';
+
+    spans.forEach(sp=>{
+
+      const row=
+        document.createElement('div');
+
+      row.className=
+        'u11-phrasal-row u11-reveal-target';
+
+      row.dataset.u11Answer=
+        esc(
+          sp.dataset.meaning ||
+          ''
+        );
+
+      row.innerHTML=`
+        <b>
+          ${esc(sp.textContent)}
+        </b>
+
+        <input
+          class="u11-student-input"
+          placeholder="Type an equivalent meaning…">
+      `;
+
+      grid.appendChild(row);
+    });
+
+    $('#meaningBox',s)
+      ?.after(grid);
+  }
+
+  function augment7(s){
+
+    buildPhrasalMeaningGrid(s);
+
+    $$('#speakerTabs .tab',s)
+      .forEach(
+        btn=>btn.addEventListener(
+          'click',
+          ()=>setTimeout(
+            ()=>buildPhrasalMeaningGrid(s),
+            0
+          )
+        )
+      );
+  }
+
+
+  /* =========================================================
+     SCREEN 8
+     ========================================================= */
+
+  function augment8(s){
+
+    $$('.discovery-card',s)
+      .forEach((c,n)=>{
+
+        if(
+          !c.dataset.u11OriginalHtml
+        ){
+          c.dataset.u11OriginalHtml=
+            c.innerHTML;
+        }
+
+        c.dataset.u11Answer=
+          suggested[8][n];
+
+        c.classList.add(
+          'u11-reveal-target'
+        );
+      });
+  }
+
+
+  /* =========================================================
+     SCREEN 9
+     ========================================================= */
+
+  function augment9(s){
+
+    const steps=
+      $$('.ex7-step',s);
+
+    if(
+      steps.length>=2 &&
+      !$('.ex7-step-tabs',s)
+    ){
+
+      const tabs=
+        document.createElement('div');
+
+      tabs.className=
         'ex7-step-tabs';
 
-      tabs.innerHTML = `
+      tabs.innerHTML=`
         <button
           class="ex7-step-tab active"
           data-step="0">
@@ -605,645 +1608,677 @@
           steps[0]
         );
 
-      const originalInstruction =
-        $('.instruction', screen9);
+      const inst=
+        $('.instruction',s);
 
-      const instructions = [
+      const texts=[
         'Listen again to Speakers 2–5 and identify the phrasal verbs you hear. Check the items one by one.',
         'Match the nine target phrasal verbs to definitions a–i.'
       ];
 
-      function activate(index) {
+      const activate=n=>{
+
         steps.forEach(
-          (step, n) => {
-            step.classList.toggle(
-              'ex7-active',
-              n === index
-            );
-          }
+          (x,k)=>x.classList.toggle(
+            'ex7-active',
+            k===n
+          )
         );
 
-        $$('.ex7-step-tab', tabs)
+        $$('.ex7-step-tab',tabs)
           .forEach(
-            (btn, n) => {
-              btn.classList.toggle(
-                'active',
-                n === index
-              );
-            }
+            (b,k)=>b.classList.toggle(
+              'active',
+              k===n
+            )
           );
 
-        if (originalInstruction) {
-          originalInstruction.textContent =
-            instructions[index];
+        s.dataset.ex7Step=
+          String(n+1);
+
+        if(inst){
+          inst.textContent=
+            texts[n];
         }
+      };
 
-        screen9.dataset.ex7Step =
-          String(index + 1);
-
-        refreshActionBar();
-      }
-
-      $$('.ex7-step-tab', tabs)
-        .forEach(btn => {
-          btn.addEventListener(
-            'click',
-            () => {
-              activate(
-                Number(btn.dataset.step)
-              );
-            }
-          );
-        });
+      $$('.ex7-step-tab',tabs)
+        .forEach(
+          b=>b.onclick=
+            ()=>activate(
+              Number(
+                b.dataset.step
+              )
+            )
+        );
 
       activate(0);
     }
   }
 
 
-  /* =======================================================
-     HOMEWORK — STUDENT RESPONSE + SUGGESTED ANSWER
-     ======================================================= */
+  /* =========================================================
+     SCREEN 12
+     ========================================================= */
 
-  const homework =
-    $('.screen[data-screen="15"]');
+  function augment12(s){
 
-  if (
-    homework &&
-    !$('.u11-homework-response', homework)
-  ) {
-    const card =
-      $('.homework-card', homework);
+    const p=
+      $('.big-prompt',s);
 
-    if (card) {
-      const response =
+    if(
+      p &&
+      !$('.u11-speaking-response',s)
+    ){
+
+      const d=
         document.createElement('div');
 
-      response.className =
-        'u11-homework-response';
+      d.className=
+        'u11-speaking-response';
 
-      response.innerHTML = `
-        <label
-          class="u11-homework-label"
-          for="u11HomeworkText">
-          Your response
-        </label>
-
+      d.innerHTML=`
         <textarea
-          id="u11HomeworkText"
-          class="u11-homework-textarea"
-          placeholder="Type your response here…">
+          class="u11-student-input"
+          placeholder="Optional notes before speaking…">
         </textarea>
 
-        <div class="u11-homework-actions">
-
-          <button
-            type="button"
-            class="u11-homework-submit"
-            id="u11HomeworkSubmit">
-            Submit
-          </button>
-
-          <button
-            type="button"
-            id="u11SuggestedAnswer">
-            Suggested answer
-          </button>
-
-        </div>
-
-        <div
-          class="u11-suggested-answer"
-          id="u11SuggestedPanel">
-
-          <b>Suggested answer</b>
-
-          <p>
-            Dear Emma,
-          </p>
-
-          <p>
-            I think you should wear clothes
-            that make you feel comfortable
-            and confident. You do not need
-            to <b>keep up with</b> every new
-            fashion. If you are going somewhere
-            special, you could <b>dress up</b>,
-            but you can still choose an outfit
-            that suits your own style.
-          </p>
-
-          <p>
-            You could also <b>put together</b>
-            an outfit with one unusual item
-            if you want to <b>stand out</b>.
-            The most important thing is to
-            feel like yourself.
-          </p>
-
-          <p>
-            Best wishes
-          </p>
-
-        </div>
+        ${recordingWidget('screen12')}
       `;
 
-      card.appendChild(response);
+      p.after(d);
 
-      $('#u11HomeworkSubmit')
-        ?.addEventListener(
-          'click',
-          e => {
-            e.currentTarget.textContent =
-              'Submitted ✓';
+      wireRecording(d);
+    }
+  }
 
-            e.currentTarget.disabled =
-              true;
 
-            e.currentTarget.classList.add(
-              'submitted'
+  /* =========================================================
+     SCREEN 13
+     ========================================================= */
+
+  function augment13(s){
+
+    $$('.challenge-card',s)
+      .forEach((c,n)=>{
+
+        if(
+          !c.dataset.u11OriginalHtml
+        ){
+          c.dataset.u11OriginalHtml=
+            c.innerHTML;
+        }
+
+        c.dataset.u11Answer=
+          esc(
+            c.dataset.back ||
+            suggested[13][n]
+          );
+
+        c.classList.add(
+          'u11-reveal-target'
+        );
+
+        if(
+          !c.nextElementSibling
+            ?.classList
+            .contains(
+              'u11-challenge-input'
+            )
+        ){
+
+          const i=
+            document.createElement(
+              'input'
             );
-          }
-        );
 
-      $('#u11SuggestedAnswer')
-        ?.addEventListener(
-          'click',
-          () => {
-            $('#u11SuggestedPanel')
-              ?.classList.toggle('show');
-          }
-        );
-    }
-  }
+          i.className=
+            'u11-student-input u11-challenge-input';
 
+          i.placeholder=
+            'Type your answer…';
 
-  /* =======================================================
-     GENERIC ACTION BAR
-     Check / Reset
-     ======================================================= */
-
-  function removeActionBar() {
-    $('.u11-actionbar')
-      ?.remove();
-  }
-
-  function isCheckableScreen(number) {
-    return [
-      '9',
-      '10',
-      '11'
-    ].includes(number);
-  }
-
-  function resetActiveScreen() {
-    const screen =
-      activeScreen();
-
-    if (!screen) return;
-
-    screen
-      .querySelectorAll(
-        '.revealed'
-      )
-      .forEach(el => {
-        el.classList.remove(
-          'revealed'
-        );
-
-        if (
-          el.matches(
-            '.blank-reveal,.inline-blank'
-          )
-        ) {
-          el.textContent =
-            el.dataset.originalText ||
-            '__________';
+          c.after(i);
         }
       });
-
-    screen
-      .querySelectorAll(
-        '.item-check'
-      )
-      .forEach(btn => {
-        btn.textContent =
-          'check';
-
-        btn.classList.remove(
-          'heard',
-          'not-heard'
-        );
-      });
-
-    screen
-      .querySelectorAll(
-        '.candidate-grid input[type="checkbox"]'
-      )
-      .forEach(box => {
-        box.checked = false;
-      });
-
-    screen
-      .querySelectorAll(
-        '.match-item,.definition-item'
-      )
-      .forEach(el => {
-        el.disabled = false;
-
-        el.classList.remove(
-          'selected',
-          'matched',
-          'wrong'
-        );
-      });
-
-    const matchStatus =
-      $('#matchStatus', screen);
-
-    if (matchStatus) {
-      matchStatus.textContent =
-        'Select a phrasal verb, then select its definition.';
-    }
-
-    screen
-      .querySelectorAll('textarea')
-      .forEach(box => {
-        if (
-          box.id !==
-          'u11HomeworkText'
-        ) {
-          box.value = '';
-        }
-      });
-
-    screen
-      .querySelectorAll(
-        '.u11-check-feedback'
-      )
-      .forEach(x => x.remove());
-
-    feedbackTone(true);
   }
 
-  function checkScreen9() {
-    const screen =
-      activeScreen();
 
-    if (!screen) return;
+  /* =========================================================
+     SCREEN 14
+     ========================================================= */
 
-    const step =
-      screen.dataset.ex7Step || '1';
+  function augment14(s){
 
-    let ok = true;
+    $$('.exit-grid>div',s)
+      .forEach((box,n)=>{
 
-    if (step === '1') {
-      const items =
-        $$('.candidate-item', screen);
+        box.dataset.u11Answer=
+          suggested[14][n];
 
-      items.forEach(item => {
-        const box =
-          $('input[type="checkbox"]', item);
-
-        const check =
-          $('.item-check', item);
-
-        if (!box || !check) return;
-
-        const expected =
-          check.dataset.heard === 'yes';
-
-        const correct =
-          box.checked === expected;
-
-        ok = ok && correct;
-
-        item.classList.toggle(
-          'u11-answer-correct',
-          correct
-        );
-
-        item.classList.toggle(
-          'u11-answer-wrong',
-          !correct
+        box.classList.add(
+          'u11-reveal-target'
         );
       });
-    }
-
-    if (step === '2') {
-      ok =
-        $$('.match-item.matched', screen)
-          .length === 9;
-    }
-
-    showCheckFeedback(ok);
   }
 
-  function showCheckFeedback(ok) {
-    const screen =
-      activeScreen();
 
-    if (!screen) return;
+  /* =========================================================
+     SCREEN 15
+     ========================================================= */
 
-    $('.u11-check-feedback', screen)
-      ?.remove();
+  function augment15(s){
 
-    const msg =
-      document.createElement('div');
+    const card=
+      $('.homework-card',s);
 
-    msg.className =
-      'u11-check-feedback ' +
-      (ok ? 'good' : 'try');
-
-    msg.textContent =
-      ok
-        ? '✓ Correct!'
-        : 'Try again — check the highlighted answer(s).';
-
-    screen.appendChild(msg);
-
-    feedbackTone(ok);
-
-    window.ELEAP_LAST_RESULT = {
-      activityId:
-        activeScreenNumber(),
-      isCorrect: ok,
-      score: ok ? 1 : 0,
-      checkedAt:
-        new Date().toISOString()
-    };
-  }
-
-  function refreshActionBar() {
-    removeActionBar();
-
-    const number =
-      activeScreenNumber();
-
-    if (
-      !number ||
-      number === '16' ||
-      number === '15'
-    ) {
+    if(
+      !card ||
+      $('.u11-homework-response',card)
+    ){
       return;
     }
 
-    const screen =
-      activeScreen();
-
-    if (!screen) return;
-
-    const bar =
+    const d=
       document.createElement('div');
 
-    bar.className =
+    d.className=
+      'u11-homework-response';
+
+    d.innerHTML=`
+      <label class="u11-homework-label">
+        Your response
+      </label>
+
+      <textarea
+        id="u11HomeworkText"
+        class="u11-homework-textarea"
+        placeholder="Type your response here…">
+      </textarea>
+
+      <div class="u11-homework-actions">
+
+        <button
+          type="button"
+          class="u11-homework-submit"
+          id="u11HomeworkSubmit">
+          Submit
+        </button>
+
+        <button
+          type="button"
+          id="u11SuggestedAnswer">
+          Suggested answer
+        </button>
+
+      </div>
+
+      <div
+        class="u11-suggested-answer"
+        id="u11SuggestedPanel">
+
+        ${suggested[15]}
+
+      </div>
+    `;
+
+    card.appendChild(d);
+
+    $('#u11HomeworkSubmit').onclick=
+      e=>{
+
+        if(
+          !$('#u11HomeworkText')
+            .value
+            .trim()
+        ){
+
+          showToast(
+            'Type your response before submitting.',
+            'try'
+          );
+
+          return;
+        }
+
+        e.currentTarget.textContent=
+          'Submitted ✓';
+
+        e.currentTarget.classList.add(
+          'submitted'
+        );
+
+        state.submitted[15]=true;
+      };
+
+    $('#u11SuggestedAnswer').onclick=
+      ()=>{
+
+        $('#u11SuggestedPanel')
+          .classList.toggle(
+            'show'
+          );
+      };
+  }
+
+
+  /* =========================================================
+     CHECK
+     ========================================================= */
+
+  function checkFixedStudent(n){
+
+    const s=activeScreen();
+
+    if(!s)return;
+
+    let ok=true;
+    let any=false;
+
+    if(n===6){
+
+      $$('.speaker-match>div',s)
+        .forEach(row=>{
+
+          const input=
+            $('.u11-speaker-input',row);
+
+          if(!input)return;
+
+          any=true;
+
+          const exp=
+            (
+              row.dataset.u11Answer ||
+              ''
+            ).toLowerCase();
+
+          const got=
+            input.value
+              .trim()
+              .toLowerCase();
+
+          const good=
+            got===exp;
+
+          ok=ok&&good;
+
+          input.classList.toggle(
+            'answer-correct',
+            good
+          );
+
+          input.classList.toggle(
+            'answer-wrong',
+            !good
+          );
+        });
+
+    }else if(n===9){
+
+      const step=
+        s.dataset.ex7Step ||
+        '1';
+
+      if(step==='1'){
+
+        $$('.candidate-item',s)
+          .forEach(item=>{
+
+            const box=
+              $('input[type="checkbox"]',item);
+
+            const btn=
+              $('.item-check',item);
+
+            if(
+              !box ||
+              !btn
+            ){
+              return;
+            }
+
+            any=true;
+
+            const exp=
+              btn.dataset.heard==='yes';
+
+            const good=
+              box.checked===exp;
+
+            ok=ok&&good;
+
+            item.classList.toggle(
+              'u11-answer-correct',
+              good
+            );
+
+            item.classList.toggle(
+              'u11-answer-wrong',
+              !good
+            );
+          });
+
+      }else{
+
+        any=true;
+
+        ok=
+          $$('.match-item.matched',s)
+            .length===9;
+      }
+
+    }else{
+
+      showToast(
+        'Submitted for teacher review.',
+        'good'
+      );
+
+      state.submitted[n]=true;
+
+      return;
+    }
+
+    if(any){
+
+      showToast(
+        ok
+          ?'✓ Correct!'
+          :'Try again — check the highlighted answer(s).',
+        ok
+          ?'good'
+          :'try'
+      );
+
+      feedbackTone(ok);
+
+      window.ELEAP_LAST_RESULT={
+        activityId:String(n),
+        isCorrect:ok,
+        score:ok?1:0,
+        checkedAt:
+          new Date().toISOString()
+      };
+    }
+  }
+
+  function handleCheck(){
+
+    const n=
+      screenNo();
+
+    if(mode==='student'){
+
+      checkFixedStudent(n);
+
+    }else{
+
+      enterRevealMode();
+    }
+  }
+
+
+  /* =========================================================
+     REVEAL NEXT
+     ========================================================= */
+
+  function revealNext(){
+
+    if(mode==='student'){
+
+      showToast(
+        'Teacher reveal is available in Teacher or Presentation mode.',
+        'try'
+      );
+
+      return;
+    }
+
+    if(!revealMode){
+      enterRevealMode();
+    }
+
+    const s=
+      activeScreen();
+
+    const next=
+      $(
+        '[data-u11-answer]:not(.u11-revealed)',
+        s
+      );
+
+    if(next){
+
+      revealTarget(next);
+
+      next.scrollIntoView({
+        block:'nearest',
+        behavior:'smooth'
+      });
+
+    }else{
+
+      showToast(
+        'No more teacher answers to reveal on this screen.',
+        'good'
+      );
+    }
+  }
+
+
+  /* =========================================================
+     ACTION BAR
+     ========================================================= */
+
+  function decorateActionBar(){
+
+    const s=
+      activeScreen();
+
+    if(!s)return;
+
+    $('.u11-actionbar',s)
+      ?.remove();
+
+    const n=
+      screenNo();
+
+    if(n===16){
+      return;
+    }
+
+    const bar=
+      document.createElement('div');
+
+    bar.className=
       'u11-actionbar';
 
-    if (
-      isCheckableScreen(number)
-    ) {
-      bar.innerHTML += `
+    if(n===15){
+
+      bar.innerHTML=`
+        <button
+          type="button"
+          id="u11Reset">
+          Reset
+        </button>
+      `;
+
+    }else{
+
+      bar.innerHTML=`
         <button
           type="button"
           class="u11-check"
           id="u11Check">
           Check
         </button>
+
+        <button
+          type="button"
+          id="u11Reset">
+          Reset
+        </button>
       `;
     }
 
-    bar.innerHTML += `
-      <button
-        type="button"
-        id="u11Reset">
-        Reset
-      </button>
-    `;
+    s.appendChild(bar);
 
-    screen.appendChild(bar);
-
-    $('#u11Check')
+    $('#u11Check',bar)
       ?.addEventListener(
         'click',
-        () => {
-          if (number === '9') {
-            checkScreen9();
-            return;
-          }
-
-          /*
-            Screens 10 and 11 are teacher-led
-            click-to-reveal activities.
-            Check here reveals the teacher answer
-            state rather than fabricating student input.
-          */
-
-          revealNext(true);
-        }
+        handleCheck
       );
 
-    $('#u11Reset')
+    $('#u11Reset',bar)
       ?.addEventListener(
         'click',
-        resetActiveScreen
+        resetScreen
       );
   }
 
 
-  /* =======================================================
-     REVEAL NEXT
-     Same teacher purpose as U1.2.
-     ======================================================= */
+  /* =========================================================
+     DECORATE CURRENT SCREEN
+     ========================================================= */
 
-  function revealNext(fromCheck = false) {
-    const screen =
+  function decorateCurrentScreen(){
+
+    const s=
       activeScreen();
 
-    if (!screen) return;
+    if(!s)return;
 
-    /*
-      1. Hidden language support
-    */
+    const n=
+      screenNo();
 
-    const hiddenSupport =
-      $('.support.hidden', screen);
+    if(n===1)augment1(s);
+    if(n===2)augment2(s);
+    if(n===3)augment3(s);
+    if(n===4)augment4(s);
+    if(n===5)augment5(s);
+    if(n===6)augment6(s);
+    if(n===7)augment7(s);
+    if(n===8)augment8(s);
+    if(n===9)augment9(s);
+    if(n===12)augment12(s);
+    if(n===13)augment13(s);
+    if(n===14)augment14(s);
+    if(n===15)augment15(s);
 
-    if (hiddenSupport) {
-      hiddenSupport.classList.remove(
-        'hidden'
-      );
-
-      feedbackTone(true);
-      return;
-    }
-
-    /*
-      2. Blank answers
-    */
-
-    const blank =
-      $(
-        '.blank-reveal:not(.revealed),' +
-        '.inline-blank:not(.revealed)',
-        screen
-      );
-
-    if (blank) {
-      blank.click();
-      feedbackTone(true);
-      return;
-    }
-
-    /*
-      3. Guided discovery
-    */
-
-    const discovery =
-      $('.discovery-card:not(.revealed)', screen);
-
-    if (discovery) {
-      discovery.click();
-      feedbackTone(true);
-      return;
-    }
-
-    /*
-      4. Speaking strategy cards
-    */
-
-    const layer =
-      $('.layer-card:not(.revealed)', screen);
-
-    if (layer) {
-      layer.click();
-      feedbackTone(true);
-      return;
-    }
-
-    /*
-      5. Exercise 7 item check
-    */
-
-    const item =
-      $('.item-check:not(.heard):not(.not-heard)', screen);
-
-    if (item) {
-      item.click();
-      feedbackTone(true);
-      return;
-    }
-
-    /*
-      6. Challenge cards
-    */
-
-    const challenge =
-      $('.challenge-card:not(.flipped)', screen);
-
-    if (challenge) {
-      challenge.click();
-      feedbackTone(true);
-      return;
-    }
-
-    /*
-      7. Homework suggested answer
-    */
-
-    if (
-      activeScreenNumber() === '15'
-    ) {
-      $('#u11SuggestedPanel')
-        ?.classList.add('show');
-
-      feedbackTone(true);
-      return;
-    }
-
-    if (!fromCheck) {
-      openModal(`
-        <h2>Reveal next</h2>
-        <p>
-          No more teacher answers
-          to reveal on this screen.
-        </p>
-      `);
-    }
+    decorateActionBar();
   }
 
-  $('#u11Reveal')
-    ?.addEventListener(
-      'click',
-      () => revealNext(false)
-    );
 
+  /* =========================================================
+     OBSERVE SCREEN CHANGES
+     ========================================================= */
 
-  /* =======================================================
-     TRACK SCREEN CHANGES
-     Existing U1.1 engine changes .active itself.
-     Observe that instead of rewriting navigation.
-     ======================================================= */
+  function installObserver(){
 
-  const observer =
-    new MutationObserver(
-      mutations => {
-        const changed =
-          mutations.some(
-            mutation =>
-              mutation.type ===
-                'attributes' &&
-              mutation.attributeName ===
-                'class' &&
-              mutation.target.classList
-                .contains('screen')
-          );
+    const ob=
+      new MutationObserver(
+        ms=>{
 
-        if (changed) {
-          stopAllMedia();
-          refreshActionBar();
-        }
-      }
-    );
+          if(
+            ms.some(
+              m=>
+                m.type==='attributes' &&
+                m.attributeName==='class' &&
+                m.target
+                  .classList
+                  .contains('screen')
+            )
+          ){
 
-  $$('.screen')
-    .forEach(screen => {
-      observer.observe(
-        screen,
-        {
-          attributes:true,
-          attributeFilter:['class']
+            revealMode=false;
+
+            document.body
+              .classList
+              .remove(
+                'u11-reveal-mode'
+              );
+
+            stopAllMedia();
+
+            setTimeout(
+              decorateCurrentScreen,
+              0
+            );
+          }
         }
       );
-    });
+
+    $$('.screen')
+      .forEach(
+        s=>ob.observe(
+          s,
+          {
+            attributes:true,
+            attributeFilter:['class']
+          }
+        )
+      );
+  }
 
 
-  /* =======================================================
-     KEYBOARD ESC
-     ======================================================= */
+  /* =========================================================
+     INIT
+     ========================================================= */
+
+  buildHeader();
+  buildModal();
+
+  $('#u11Timer').onclick=
+    openTimer;
+
+  $('#u11Responses').onclick=
+    openResponses;
+
+  $('#u11Lucky').onclick=
+    ()=>modal(`
+      <h2>Lucky Number</h2>
+
+      <div class="u11-lucky">
+        ${
+          Math.floor(
+            Math.random()*24
+          )+1
+        }
+      </div>
+
+      <p style="text-align:center">
+        Use for random participation.
+      </p>
+    `);
+
+  $('#u11Reveal').onclick=
+    revealNext;
+
+  installObserver();
+
+  setMode('teacher');
 
   document.addEventListener(
     'keydown',
-    e => {
-      if (e.key === 'Escape') {
-        closeModal();
+    e=>{
+
+      if(e.key==='Escape'){
+
+        $('.u11-modal')
+          ?.classList
+          .remove('show');
       }
     }
   );
 
-
-  /* =======================================================
-     INITIAL STATE
-     ======================================================= */
-
-  setMode('teacher');
-  refreshActionBar();
-
-  window.ELEAP_U11_UI = {
+  window.ELEAP_U11_UI={
     setMode,
-    openModal,
-    closeModal,
+    openTimer,
+    openResponses,
     revealNext,
-    refreshActionBar
+    resetScreen,
+    decorateCurrentScreen
   };
 
 })();
