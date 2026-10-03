@@ -2084,7 +2084,7 @@
     const n=
       screenNo();
 
-    if(n===16){
+    if(n===9 || n===16){
       return;
     }
 
@@ -2160,7 +2160,6 @@
     if(n===6)augment6(s);
     if(n===7)augment7(s);
     if(n===8)augment8(s);
-    if(n===9)augment9(s);
     if(n===12)augment12(s);
     if(n===13)augment13(s);
     if(n===14)augment14(s);
@@ -3144,7 +3143,6 @@
     fixSlide3();
     fixSlide8();
 
-    fixSlide9Step1();
 
     convertInlineAnswers(10);
     convertInlineAnswers(11);

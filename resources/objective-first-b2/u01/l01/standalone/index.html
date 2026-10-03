@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Objective First B2 · U1.1 Fashion Matters · FINAL</title>
 <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="slide9.css">
 </head>
 <body>
 <div class="app">
@@ -190,57 +191,82 @@
     <section class="screen accent-vocab" data-screen="9">
       <div class="stage-label">EXERCISE 7 · LISTENING + MATCHING</div>
       <h2>Listen, identify, then match</h2>
-      <p class="instruction"><b>Step 1:</b> Listen again to Speakers 2–5 and tick the phrasal verbs you hear. The list includes distractors. Check the items one by one. <b>Step 2:</b> Match the nine target phrasal verbs to definitions a–i.</p>
+      <p class="instruction" id="s9Instruction">Listen again to Speakers 2–5 and identify the phrasal verbs you hear.</p>
 
-      <div class="ex7-step">
+      <div class="s9-tabs" role="tablist" aria-label="Exercise 7 steps">
+        <button type="button" class="s9-tab active" data-s9-step="1" role="tab" aria-selected="true">Step 1</button>
+        <button type="button" class="s9-tab" data-s9-step="2" role="tab" aria-selected="false">Step 2</button>
+      </div>
+
+      <div class="s9-panel" data-s9-panel="1">
         <div class="step-title"><span>STEP 1</span> Which phrasal verbs do you hear?</div>
-        <audio controls preload="metadata" data-media-key="u01/l01/speakers-2-5.mp3"></audio>
-        <div class="candidate-grid">
-          <div class="candidate-item"><label><input type="checkbox"> add to</label><button class="item-check" data-heard="no">check</button></div>
-          <div class="candidate-item"><label><input type="checkbox"> cut down (on)</label><button class="item-check" data-heard="yes">check</button></div>
-          <div class="candidate-item"><label><input type="checkbox"> dress up</label><button class="item-check" data-heard="yes">check</button></div>
-          <div class="candidate-item"><label><input type="checkbox"> fit in with</label><button class="item-check" data-heard="no">check</button></div>
-          <div class="candidate-item"><label><input type="checkbox"> go out</label><button class="item-check" data-heard="yes">check</button></div>
-          <div class="candidate-item"><label><input type="checkbox"> keep up with</label><button class="item-check" data-heard="yes">check</button></div>
-          <div class="candidate-item"><label><input type="checkbox"> pull on</label><button class="item-check" data-heard="no">check</button></div>
-          <div class="candidate-item"><label><input type="checkbox"> put together</label><button class="item-check" data-heard="yes">check</button></div>
-          <div class="candidate-item"><label><input type="checkbox"> save up</label><button class="item-check" data-heard="yes">check</button></div>
-          <div class="candidate-item"><label><input type="checkbox"> slip on</label><button class="item-check" data-heard="yes">check</button></div>
-          <div class="candidate-item"><label><input type="checkbox"> stand out</label><button class="item-check" data-heard="yes">check</button></div>
-          <div class="candidate-item"><label><input type="checkbox"> take back</label><button class="item-check" data-heard="yes">check</button></div>
+        <audio class="s9-audio" controls preload="metadata" data-media-key="u01/l01/speakers-2-5.mp3"></audio>
+
+        <div class="s9-heard-grid">
+          <div class="s9-heard-item" data-heard="no"><label><input type="checkbox" class="s9-student-check"> <span>add to</span></label><div class="s9-teacher-answer" aria-live="polite"></div></div>
+          <div class="s9-heard-item" data-heard="yes"><label><input type="checkbox" class="s9-student-check"> <span>cut down (on)</span></label><div class="s9-teacher-answer" aria-live="polite"></div></div>
+          <div class="s9-heard-item" data-heard="yes"><label><input type="checkbox" class="s9-student-check"> <span>dress up</span></label><div class="s9-teacher-answer" aria-live="polite"></div></div>
+          <div class="s9-heard-item" data-heard="no"><label><input type="checkbox" class="s9-student-check"> <span>fit in with</span></label><div class="s9-teacher-answer" aria-live="polite"></div></div>
+          <div class="s9-heard-item" data-heard="yes"><label><input type="checkbox" class="s9-student-check"> <span>go out</span></label><div class="s9-teacher-answer" aria-live="polite"></div></div>
+          <div class="s9-heard-item" data-heard="yes"><label><input type="checkbox" class="s9-student-check"> <span>keep up with</span></label><div class="s9-teacher-answer" aria-live="polite"></div></div>
+          <div class="s9-heard-item" data-heard="no"><label><input type="checkbox" class="s9-student-check"> <span>pull on</span></label><div class="s9-teacher-answer" aria-live="polite"></div></div>
+          <div class="s9-heard-item" data-heard="yes"><label><input type="checkbox" class="s9-student-check"> <span>put together</span></label><div class="s9-teacher-answer" aria-live="polite"></div></div>
+          <div class="s9-heard-item" data-heard="yes"><label><input type="checkbox" class="s9-student-check"> <span>save up</span></label><div class="s9-teacher-answer" aria-live="polite"></div></div>
+          <div class="s9-heard-item" data-heard="yes"><label><input type="checkbox" class="s9-student-check"> <span>slip on</span></label><div class="s9-teacher-answer" aria-live="polite"></div></div>
+          <div class="s9-heard-item" data-heard="yes"><label><input type="checkbox" class="s9-student-check"> <span>stand out</span></label><div class="s9-teacher-answer" aria-live="polite"></div></div>
+          <div class="s9-heard-item" data-heard="yes"><label><input type="checkbox" class="s9-student-check"> <span>take back</span></label><div class="s9-teacher-answer" aria-live="polite"></div></div>
         </div>
       </div>
 
-      <div class="ex7-step">
-        <div class="step-title"><span>STEP 2</span> Match the phrasal verbs to definitions a–i</div>
-        <div class="matching-board">
-          <div class="match-col">
+      <div class="s9-panel" data-s9-panel="2" hidden>
+        <div class="step-title"><span>STEP 2</span> Match phrasal verbs a–i with definitions 1–9</div>
+
+        <div class="s9-match-layout">
+          <div class="s9-column s9-verbs-column">
             <div class="match-heading">Phrasal verbs</div>
-            <button class="match-item" data-match="f">1. cut down</button>
-            <button class="match-item" data-match="d">2. dress up</button>
-            <button class="match-item" data-match="h">3. go out</button>
-            <button class="match-item" data-match="i">4. keep up with</button>
-            <button class="match-item" data-match="b">5. put together</button>
-            <button class="match-item" data-match="e">6. save up</button>
-            <button class="match-item" data-match="g">7. slip on</button>
-            <button class="match-item" data-match="a">8. stand out</button>
-            <button class="match-item" data-match="c">9. take back</button>
+            <button type="button" class="s9-verb" data-letter="a" data-answer="6"><b>a.</b><span>cut down</span></button>
+            <button type="button" class="s9-verb" data-letter="b" data-answer="4"><b>b.</b><span>dress up</span></button>
+            <button type="button" class="s9-verb" data-letter="c" data-answer="8"><b>c.</b><span>go out</span></button>
+            <button type="button" class="s9-verb" data-letter="d" data-answer="9"><b>d.</b><span>keep up with</span></button>
+            <button type="button" class="s9-verb" data-letter="e" data-answer="2"><b>e.</b><span>put together</span></button>
+            <button type="button" class="s9-verb" data-letter="f" data-answer="5"><b>f.</b><span>save up</span></button>
+            <button type="button" class="s9-verb" data-letter="g" data-answer="7"><b>g.</b><span>slip on</span></button>
+            <button type="button" class="s9-verb" data-letter="h" data-answer="1"><b>h.</b><span>stand out</span></button>
+            <button type="button" class="s9-verb" data-letter="i" data-answer="3"><b>i.</b><span>take back</span></button>
           </div>
-          <div class="match-col definitions">
+
+          <div class="s9-column s9-definitions-column">
             <div class="match-heading">Definitions</div>
-            <button class="definition-item" data-letter="a">a. be easy to see or notice</button>
-            <button class="definition-item" data-letter="b">b. create something by joining or combining different things</button>
-            <button class="definition-item" data-letter="c">c. return something</button>
-            <button class="definition-item" data-letter="d">d. wear smarter clothes than usual</button>
-            <button class="definition-item" data-letter="e">e. keep money for something in the future</button>
-            <button class="definition-item" data-letter="f">f. reduce</button>
-            <button class="definition-item" data-letter="g">g. put something on quickly</button>
-            <button class="definition-item" data-letter="h">h. go somewhere for entertainment</button>
-            <button class="definition-item" data-letter="i">i. understand something that is changing fast</button>
+            <div class="s9-definition" data-number="1"><b>1.</b><span>be easy to see or notice</span></div>
+            <div class="s9-definition" data-number="2"><b>2.</b><span>create something by joining or combining different things</span></div>
+            <div class="s9-definition" data-number="3"><b>3.</b><span>return something</span></div>
+            <div class="s9-definition" data-number="4"><b>4.</b><span>wear smarter clothes than usual</span></div>
+            <div class="s9-definition" data-number="5"><b>5.</b><span>keep money for something in the future</span></div>
+            <div class="s9-definition" data-number="6"><b>6.</b><span>reduce</span></div>
+            <div class="s9-definition" data-number="7"><b>7.</b><span>put something on quickly</span></div>
+            <div class="s9-definition" data-number="8"><b>8.</b><span>go somewhere for entertainment</span></div>
+            <div class="s9-definition" data-number="9"><b>9.</b><span>understand something that is changing fast</span></div>
+          </div>
+
+          <div class="s9-column s9-answer-column">
+            <div class="match-heading">Your answer</div>
+            <div class="s9-answer-row" data-letter="a"><b>a.</b><input type="number" min="1" max="9" inputmode="numeric" class="s9-answer-input" data-answer="6" aria-label="Answer for a" placeholder="No."><span class="s9-teacher-pair">—</span></div>
+            <div class="s9-answer-row" data-letter="b"><b>b.</b><input type="number" min="1" max="9" inputmode="numeric" class="s9-answer-input" data-answer="4" aria-label="Answer for b" placeholder="No."><span class="s9-teacher-pair">—</span></div>
+            <div class="s9-answer-row" data-letter="c"><b>c.</b><input type="number" min="1" max="9" inputmode="numeric" class="s9-answer-input" data-answer="8" aria-label="Answer for c" placeholder="No."><span class="s9-teacher-pair">—</span></div>
+            <div class="s9-answer-row" data-letter="d"><b>d.</b><input type="number" min="1" max="9" inputmode="numeric" class="s9-answer-input" data-answer="9" aria-label="Answer for d" placeholder="No."><span class="s9-teacher-pair">—</span></div>
+            <div class="s9-answer-row" data-letter="e"><b>e.</b><input type="number" min="1" max="9" inputmode="numeric" class="s9-answer-input" data-answer="2" aria-label="Answer for e" placeholder="No."><span class="s9-teacher-pair">—</span></div>
+            <div class="s9-answer-row" data-letter="f"><b>f.</b><input type="number" min="1" max="9" inputmode="numeric" class="s9-answer-input" data-answer="5" aria-label="Answer for f" placeholder="No."><span class="s9-teacher-pair">—</span></div>
+            <div class="s9-answer-row" data-letter="g"><b>g.</b><input type="number" min="1" max="9" inputmode="numeric" class="s9-answer-input" data-answer="7" aria-label="Answer for g" placeholder="No."><span class="s9-teacher-pair">—</span></div>
+            <div class="s9-answer-row" data-letter="h"><b>h.</b><input type="number" min="1" max="9" inputmode="numeric" class="s9-answer-input" data-answer="1" aria-label="Answer for h" placeholder="No."><span class="s9-teacher-pair">—</span></div>
+            <div class="s9-answer-row" data-letter="i"><b>i.</b><input type="number" min="1" max="9" inputmode="numeric" class="s9-answer-input" data-answer="3" aria-label="Answer for i" placeholder="No."><span class="s9-teacher-pair">—</span></div>
           </div>
         </div>
-        <div class="match-status" id="matchStatus">Select a phrasal verb, then select its definition.</div>
-        <button class="reset-match" id="resetMatch">Reset matching</button>
+      </div>
+
+      <div class="s9-feedback" id="s9Feedback" aria-live="polite"></div>
+      <div class="s9-actions">
+        <button type="button" id="s9Check">Check</button>
+        <button type="button" id="s9Reset">Reset</button>
       </div>
     </section>
 
@@ -363,7 +389,7 @@
 
 <script src="app.js"></script>
 <script src="ui-alignment.js"></script>
-<script src="u11-final-controller.js"></script>
+<script src="slide9.js"></script>
 <script src="e-leap-bridge.js"></script>
 
 </body>

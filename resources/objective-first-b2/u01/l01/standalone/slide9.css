@@ -1,0 +1,64 @@
+/* =========================================================
+   E-LEAP U1.1 — SLIDE 9 CLEAN STYLE v1.0
+   ========================================================= */
+
+.screen[data-screen="9"] .u11-actionbar{display:none!important}
+.screen[data-screen="9"]{padding-bottom:92px!important}
+
+.s9-tabs{display:flex;gap:8px;margin:6px 0 12px}
+.s9-tab{min-width:145px;min-height:44px;padding:8px 18px;border:1px solid #b9cec7;border-radius:999px;background:#fff;color:#123f3a;font-size:17px;font-weight:900}
+.s9-tab.active{background:#123f3a;border-color:#123f3a;color:#fff}
+
+.s9-panel[hidden]{display:none!important}
+.s9-audio{display:block;width:min(680px,100%);margin:8px 0 12px}
+
+.s9-heard-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.s9-heard-item{min-width:0;padding:10px 12px;border:1px solid #c7d1cd;border-radius:9px;background:#fff}
+.s9-heard-item label{display:flex;align-items:center;gap:9px;color:#17352d;font-size:19px;line-height:1.25;font-weight:800}
+.s9-student-check{width:20px;height:20px;min-height:20px}
+.s9-teacher-answer{display:none;margin-top:8px;padding:8px 10px;border:2px solid #43a568;border-radius:8px;background:#e5f5ec;color:#174f31;font-size:18px;font-weight:950;text-align:center}
+.s9-heard-item.revealed .s9-teacher-answer{display:block}
+.s9-heard-item.revealed{border:2px solid #8dbda7;background:#f8fcfa}
+.s9-teacher-mode .s9-student-check{display:none}
+
+.s9-match-layout{display:grid;grid-template-columns:minmax(210px,.82fr) minmax(0,1.48fr) minmax(135px,.52fr);gap:12px;align-items:start}
+.s9-column{min-width:0;display:grid;gap:7px;padding:10px;border:1px solid #d0ddd8;border-radius:10px;background:#fff}
+.s9-column .match-heading{margin-bottom:4px;color:#6f315c;font-size:20px;font-weight:950}
+
+.s9-verb{min-height:46px;padding:9px 11px;border:1px solid #c6d1cd;border-radius:8px;background:#fff;color:#17352d;font-size:18px;line-height:1.25;font-weight:750;text-align:left}
+.s9-verb b{margin-right:5px;color:#6f315c;font-weight:950}
+.s9-definition{min-height:46px;padding:9px 11px;border:1px solid #c6d1cd;border-radius:8px;background:#fff;color:#17352d;font-size:17px;line-height:1.28;font-weight:700}
+.s9-definition>b{margin-right:5px;color:#173a63;font-weight:950}
+
+.s9-answer-row{min-height:46px;display:grid;grid-template-columns:28px minmax(0,1fr);align-items:center;gap:6px}
+.s9-answer-row>b{color:#6f315c;font-size:18px;font-weight:950;text-align:center}
+.s9-answer-input{width:100%;min-width:0;min-height:38px;padding:5px 7px;border:2px solid #bcd0c8;border-radius:7px;background:#fff;color:#173f38;font-size:18px;font-weight:850;text-align:center}
+.s9-teacher-pair{display:none;min-height:38px;align-items:center;justify-content:center;padding:5px 7px;border:2px solid #cad9d3;border-radius:7px;background:#f7faf9;color:#60706a;font-size:16px;font-weight:850;text-align:center}
+
+.s9-teacher-mode .s9-answer-input{display:none}
+.s9-teacher-mode .s9-teacher-pair{display:flex}
+.s9-verb.paired{border:3px solid #d3a33b;background:#fff3d6;color:#654807;font-weight:950;box-shadow:0 0 0 4px rgba(211,163,59,.12)}
+.s9-definition.paired{border:3px solid #43a568;background:#dff5e7;color:#174f31;font-weight:950;box-shadow:0 0 0 5px rgba(67,165,104,.12)}
+.s9-answer-row.paired .s9-teacher-pair{border-color:#43a568;background:#174f31;color:#fff}
+
+.s9-feedback{min-height:0;margin-top:10px}
+.s9-feedback:not(:empty){width:max-content;max-width:94%;margin:10px auto 0;padding:9px 16px;border-radius:10px;font-size:18px;font-weight:900;text-align:center}
+.s9-feedback.student-score{border:1px solid #8bc9a1;background:#e6f7ec;color:#185d32}
+.s9-feedback.teacher-note{border:1px solid #80ad9d;background:#e8f3ee;color:#075c49}
+
+.s9-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:9px;padding:4px 0;background:transparent}
+.s9-actions button{min-height:43px;padding:8px 16px;border:1px solid #c3d3cd;border-radius:10px;background:#fff;color:#123f3a;font-size:16px;font-weight:900}
+#s9Check{border:2px solid #1e6a5c;color:#1e6a5c}
+#s9Check.active{background:#1e6a5c;color:#fff}
+
+@media(max-width:1050px){
+  .s9-heard-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .s9-match-layout{grid-template-columns:1fr 1fr}
+  .s9-answer-column{grid-column:1/-1;grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+
+@media(max-width:700px){
+  .s9-heard-grid{grid-template-columns:1fr}
+  .s9-match-layout{grid-template-columns:1fr}
+  .s9-answer-column{grid-template-columns:1fr}
+}

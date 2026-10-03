@@ -1,0 +1,23 @@
+E-LEAP U1.1 Slide 9 clean rebuild
+
+- Slide 9 is now static HTML in index.html, so the original audio element is preserved.
+- slide9.js is the only file that owns Slide 9 interaction logic.
+- slide9.css is the only dedicated Slide 9 styling layer.
+- u11-final-controller.js is removed from this clean package.
+- ui-alignment.js no longer creates the generic Check/Reset action bar for Slide 9 and no longer calls augment9/fixSlide9Step1.
+- app.js legacy Slide 9 listeners remain harmless because the clean Slide 9 uses unique s9-* class names instead of candidate-grid/match-item/definition-item/item-check.
+
+Step 1 answer key (from original U1.1 HTML):
+NOT HEARD: add to; fit in with; pull on
+HEARD: cut down (on); dress up; go out; keep up with; put together; save up; slip on; stand out; take back
+
+Step 2 mapping:
+a cut down -> 6 reduce
+b dress up -> 4 wear smarter clothes than usual
+c go out -> 8 go somewhere for entertainment
+d keep up with -> 9 understand something that is changing fast
+e put together -> 2 create something by joining or combining different things
+f save up -> 5 keep money for something in the future
+g slip on -> 7 put something on quickly
+h stand out -> 1 be easy to see or notice
+i take back -> 3 return something
