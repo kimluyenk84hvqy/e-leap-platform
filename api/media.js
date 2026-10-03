@@ -16,9 +16,7 @@ export default async function handler(req, res) {
 
   try {
     const token = await issueSignedToken({
-      pathname,
-      operations: ['get'],
-      validUntil: Date.now() + 10 * 60 * 1000
+      operations: ['get']
     });
 
     const { presignedUrl } = await presignUrl(token, {
@@ -28,7 +26,6 @@ export default async function handler(req, res) {
     });
 
     res.redirect(302, presignedUrl);
-    return;
   } catch (error) {
     console.error('Private media signing failed:', error);
     res.status(500).send('Media unavailable');
