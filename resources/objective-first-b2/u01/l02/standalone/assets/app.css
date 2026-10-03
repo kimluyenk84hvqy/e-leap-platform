@@ -1521,106 +1521,172 @@ footer{
   }
 }
 
+
+/* ===== v4 ROLE FIX — Teacher reveal for Screens 16–17 ===== */
+.teacher #check.reveal-mode-on,
+.presentation #check.reveal-mode-on{
+  background:#245f53!important;
+  color:#fff!important;
+  box-shadow:0 0 0 4px rgba(47,120,104,.14)!important;
+}
+.teacher.presentation-reveal-active .presentation-answer-target,
+.presentation.presentation-reveal-active .presentation-answer-target{
+  cursor:pointer!important;
+  outline:2px dashed rgba(47,120,104,.24);
+  outline-offset:3px;
+}
+.teacher .teacher-revealed-option,
+.presentation .teacher-revealed-option{
+  background:#dff5e7!important;
+  border:3px solid #43a568!important;
+  color:#174f31!important;
+  font-weight:950!important;
+  box-shadow:0 0 0 5px rgba(67,165,104,.12)!important;
+}
+.teacher-answer-badge{
+  margin-top:10px;
+  padding:10px 14px;
+  border-radius:12px;
+  background:#e5f5ec;
+  border:2px solid #43a568;
+  color:#174f31;
+  font-size:22px;
+  line-height:1.35;
+  font-weight:900;
+}
+body[data-screen="16"] .mcq .teacher-answer-badge{
+  margin-left:0;
+}
+body[data-screen="17"] .tf-row .teacher-answer-badge{
+  grid-column:1 / -1;
+}
+
 /* =========================================================
-   U1.2 – SCREEN 4 VIDEO CROP / PRESENTATION SPACE FIX
-   Checking the previous lesson
+   U1.2 INTEGRATED FINAL PASS v5
+   Screen 4: safe crop + preserve all 6 rounds + native video controls
+   Screens 16–17: keep v4 Teacher reveal behavior unchanged.
    ========================================================= */
-
-/* Mở rộng phần video, thu gọn vừa phải cột bên phải */
-body[data-screen="4"] .video-round-shell{
-  display:grid !important;
-  grid-template-columns: minmax(0, 1.75fr) minmax(230px, 0.72fr) !important;
-  gap:18px !important;
-  align-items:start !important;
-}
-
-/* Giữ cột phải gọn hơn để không bị mất phần nội dung */
-body[data-screen="4"] .video-round-side{
-  min-width:0 !important;
-}
-
-/* Khung video */
-body[data-screen="4"] .video-round-main{
-  min-width:0 !important;
-}
-
-body[data-screen="4"] .video-round-main video,
-body[data-screen="4"] #roundVideo{
-  width:100% !important;
-  max-width:100% !important;
-  aspect-ratio:16 / 9 !important;
-  height:auto !important;
-  display:block !important;
-  border-radius:22px !important;
-  background:#000 !important;
-  object-fit:cover !important;
-  object-position:center center !important;
-}
-
-/* Crop bớt 2 viền đen hai bên theo kiểu hiển thị */
-body[data-screen="4"] .video-round-main{
-  overflow:hidden !important;
-  border-radius:22px !important;
-  background:#000 !important;
-}
-
-/* Zoom nhẹ để "ăn" vào 2 viền đen bên trái/phải */
-body[data-screen="4"] .video-round-main video,
-body[data-screen="4"] #roundVideo{
-  transform:scale(1.12) !important;
-  transform-origin:center center !important;
-}
-
-/* Giảm bớt khoảng đen phía trên nếu có */
-body[data-screen="4"] .video-round-main{
-  padding-top:0 !important;
-}
-
-/* Panel bên phải gọn hơn một chút ở presentation */
-body.presentation[data-screen="4"] .video-round-shell{
-  grid-template-columns: minmax(0, 1.9fr) 248px !important;
-  gap:16px !important;
-}
-
-/* Các nút điều hướng video nhỏ gọn hơn để không chiếm chỗ */
-body[data-screen="4"] .round-controls{
-  display:grid !important;
-  grid-template-columns:1fr 1fr !important;
-  gap:10px !important;
-}
-
-body[data-screen="4"] .round-controls button{
-  min-height:52px !important;
-  padding:10px 12px !important;
-  font-size:15px !important;
-  line-height:1.2 !important;
-}
-
-/* Box answer gọn hơn nhưng vẫn rõ */
-body[data-screen="4"] .video-round-answer input{
-  min-height:56px !important;
-  font-size:18px !important;
-}
-
-/* Dots gọn hơn */
-body[data-screen="4"] .round-dots{
-  gap:8px !important;
-}
-
-body[data-screen="4"] .round-dot{
-  width:54px !important;
-  height:54px !important;
-  font-size:26px !important;
-}
-
-/* Nếu màn hình thấp thì cho video ăn thêm diện tích */
-@media (max-height: 900px){
+@media (min-width:981px){
   body[data-screen="4"] .video-round-shell{
-    grid-template-columns: minmax(0, 1.95fr) 235px !important;
+    grid-template-columns:minmax(0,1fr) 270px!important;
+    gap:16px!important;
+    width:100%!important;
+    align-items:start!important;
   }
 
-  body[data-screen="4"] .video-round-main video,
-  body[data-screen="4"] #roundVideo{
-    transform:scale(1.14) !important;
+  body[data-screen="4"] .video-round-main{
+    width:100%!important;
+    min-width:0!important;
+    padding:6px!important;
+    border-radius:18px!important;
+    overflow:hidden!important;
+  }
+
+  /* Crop through object-fit only. Do NOT transform/scale the video element:
+     native Play/volume/fullscreen controls remain fully visible and clickable. */
+  body[data-screen="4"] .video-round-main video{
+    display:block!important;
+    width:100%!important;
+    height:min(64dvh,680px)!important;
+    max-height:none!important;
+    aspect-ratio:16 / 9!important;
+    object-fit:cover!important;
+    object-position:center 58%!important;
+    transform:none!important;
+    border-radius:12px!important;
+    background:#000!important;
+  }
+
+  body[data-screen="4"] .video-round-side{
+    width:270px!important;
+    min-width:0!important;
+    max-width:270px!important;
+    gap:10px!important;
+    overflow:visible!important;
+  }
+
+  /* All six round buttons must always fit in the right panel. */
+  body[data-screen="4"] .round-dots{
+    display:grid!important;
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+    gap:5px!important;
+    width:100%!important;
+    min-width:0!important;
+    overflow:visible!important;
+  }
+  body[data-screen="4"] .round-dot{
+    width:auto!important;
+    min-width:0!important;
+    height:auto!important;
+    min-height:44px!important;
+    padding:7px 0!important;
+    font-size:21px!important;
+    line-height:1!important;
+  }
+
+  body[data-screen="4"] .video-round-answer{
+    padding:12px!important;
+  }
+  body[data-screen="4"] .video-round-answer input{
+    width:100%!important;
+    min-width:0!important;
+  }
+
+  body[data-screen="4"] .round-controls{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:8px!important;
+    width:100%!important;
+  }
+  body[data-screen="4"] .round-controls button{
+    width:100%!important;
+    min-width:0!important;
+    padding:9px 8px!important;
+    font-size:15px!important;
+    line-height:1.2!important;
+    white-space:normal!important;
+  }
+
+  /* Presentation: reserve enough width for the complete right-hand panel. */
+  body.presentation[data-screen="4"] .video-round-shell{
+    grid-template-columns:minmax(0,1fr) 285px!important;
+    gap:16px!important;
+  }
+  body.presentation[data-screen="4"] .video-round-side{
+    width:285px!important;
+    max-width:285px!important;
+  }
+  body.presentation[data-screen="4"] .video-round-main video{
+    height:min(67dvh,720px)!important;
+    object-fit:cover!important;
+    object-position:center 58%!important;
+    transform:none!important;
+  }
+}
+
+@media (max-width:1180px) and (min-width:981px){
+  body[data-screen="4"] .video-round-shell,
+  body.presentation[data-screen="4"] .video-round-shell{
+    grid-template-columns:minmax(0,1fr) 250px!important;
+  }
+  body[data-screen="4"] .video-round-side,
+  body.presentation[data-screen="4"] .video-round-side{
+    width:250px!important;
+    max-width:250px!important;
+  }
+  body[data-screen="4"] .round-dot{
+    font-size:18px!important;
+    min-height:40px!important;
+  }
+}
+
+@media (max-width:980px){
+  body[data-screen="4"] .video-round-main video{
+    width:100%!important;
+    height:auto!important;
+    aspect-ratio:auto!important;
+    object-fit:contain!important;
+    object-position:center center!important;
+    transform:none!important;
   }
 }

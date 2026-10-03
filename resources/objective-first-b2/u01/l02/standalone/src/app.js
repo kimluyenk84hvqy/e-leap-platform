@@ -1252,23 +1252,21 @@ function restorePresentationReveals(a){
   Object.entries(st.options)
     .forEach(([qi,val])=>{
 
-      document
-        .querySelectorAll(
-          `.option[data-q="${qi}"]`
-        )
-        .forEach(o=>{
+      const opts=[...document.querySelectorAll(`.option[data-q="${qi}"]`)];
 
-          if(
-            matchesExpected(
-              o.textContent,
-              val
-            )
-          ){
-            o.classList.add(
-              'teacher-revealed-option'
-            );
-          }
-        });
+      opts.forEach(o=>{
+        if(matchesExpected(o.textContent,val)){
+          o.classList.add('teacher-revealed-option');
+        }
+      });
+
+      const row=opts[0]?.closest('.mcq,.tf-row');
+      if(row && !row.querySelector('.teacher-answer-badge')){
+        const badge=document.createElement('div');
+        badge.className='teacher-answer-badge';
+        badge.textContent=`Answer: ${displayExpected(val)}`;
+        row.appendChild(badge);
+      }
     });
 
   if(
@@ -1404,6 +1402,14 @@ function setupPresentationReveal(a){
               )
             )
           );
+
+          let badge=row.querySelector('.teacher-answer-badge');
+          if(!badge){
+            badge=document.createElement('div');
+            badge.className='teacher-answer-badge';
+            row.appendChild(badge);
+          }
+          badge.textContent=`Answer: ${displayExpected(exp)}`;
 
           feedbackTone(true);
 
