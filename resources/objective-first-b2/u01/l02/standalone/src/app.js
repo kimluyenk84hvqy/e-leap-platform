@@ -1150,11 +1150,36 @@ function checkActivity(a){
   }
 
   if(any){
-    showFeedback(all,last);
-    return true;
-  }
+  showFeedback(all,last);
 
-  return false;
+  window.ELEAP_LAST_RESULT = {
+    activityId:
+      document.body.dataset.screen || null,
+
+    isCorrect: all,
+
+    score: all ? 1 : 0,
+
+    checkedAt:
+      new Date().toISOString()
+  };
+
+  return true;
+}
+
+window.ELEAP_LAST_RESULT = {
+  activityId:
+    document.body.dataset.screen || null,
+
+  isCorrect: null,
+
+  score: null,
+
+  checkedAt:
+    new Date().toISOString()
+};
+
+return false;
 }
 
 function isAutoCheckable(a){
