@@ -3214,3 +3214,599 @@
   );
 
 })();
+
+/* =========================================================
+   E-LEAP U1.1 — TEACHER REVEAL HOTFIX v5.0
+   Fix S09 + S13
+   ========================================================= */
+
+(function(){
+  'use strict';
+
+  const $=(s,r=document)=>r.querySelector(s);
+  const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+
+  function activeScreen(){
+    return $('.screen.active');
+  }
+
+  function screenNo(){
+    return Number(
+      activeScreen()?.dataset.screen || 0
+    );
+  }
+
+  function teacherMode(){
+    return (
+      document.body.classList.contains('u11-teacher') ||
+      document.body.classList.contains('presentation')
+    );
+  }
+
+  function studentMode(){
+    return document.body.classList.contains('u11-student');
+  }
+
+
+  /* =======================================================
+     ENSURE CHECK / RESET EXISTS ON S09 + S13
+     ======================================================= */
+
+  function ensureTeacherActionBar(){
+
+    const s=activeScreen();
+
+    if(!s)return;
+
+    const n=screenNo();
+
+    if(
+      n!==9 &&
+      n!==13
+    ){
+      return;
+    }
+
+    let bar=
+      $('.u11-actionbar',s);
+
+    if(!bar){
+
+      bar=
+        document.createElement('div');
+
+      bar.className=
+        'u11-actionbar';
+
+      s.appendChild(bar);
+    }
+
+    let check=
+      $('#u11Check',bar);
+
+    if(!check){
+
+      check=
+        document.createElement('button');
+
+      check.type='button';
+      check.id='u11Check';
+      check.className='u11-check';
+      check.textContent='Check';
+
+      bar.prepend(check);
+    }
+
+    let reset=
+      $('#u11Reset',bar);
+
+    if(!reset){
+
+      reset=
+        document.createElement('button');
+
+      reset.type='button';
+      reset.id='u11Reset';
+      reset.textContent='Reset';
+
+      bar.appendChild(reset);
+    }
+  }
+
+
+  /* =======================================================
+     TEACHER CHECK
+     IMPORTANT:
+     Clicking Check ONLY activates reveal mode.
+     It does NOT reveal any answer automatically.
+     ======================================================= */
+
+  document.addEventListener(
+    'click',
+    e=>{
+
+      const btn=
+        e.target.closest('#u11Check');
+
+      if(!btn)return;
+
+      const n=screenNo();
+
+      if(
+        !teacherMode() ||
+        (
+          n!==9 &&
+          n!==13
+        )
+      ){
+        return;
+      }
+
+      e.preventDefault();
+      e.stopImmediatePropagation();
+
+      const s=activeScreen();
+
+      s.dataset.teacherReveal='on';
+
+      document.body.classList.add(
+        'u11-reveal-mode'
+      );
+
+      btn.textContent=
+        '✓ Reveal mode ON';
+
+      btn.classList.add(
+        'reveal-on'
+      );
+
+    },
+    true
+  );
+
+
+  /* =======================================================
+     SLIDE 9 — STEP 1
+     Teacher clicks an item AFTER Check.
+     ======================================================= */
+
+  document.addEventListener(
+    'click',
+    e=>{
+
+      if(
+        screenNo()!==9 ||
+        !teacherMode()
+      ){
+        return;
+      }
+
+      const s=activeScreen();
+
+      if(
+        s.dataset.teacherReveal!=='on'
+      ){
+        return;
+      }
+
+      const item=
+        e.target.closest(
+          '.candidate-item'
+        );
+
+      if(!item)return;
+
+      /*
+        Do not treat Step 2 items
+        as Step 1 items.
+      */
+
+      if(
+        !item.closest(
+          '.candidate-grid'
+        )
+      ){
+        return;
+      }
+
+      e.preventDefault();
+      e.stopImmediatePropagation();
+
+      if(
+        item.classList.contains(
+          'v5-revealed'
+        )
+      ){
+        return;
+      }
+
+      const legacy=
+        $('.item-check',item);
+
+      const heard=
+        legacy?.dataset.heard === 'yes';
+
+      const answer=
+        document.createElement('div');
+
+      answer.className=
+        'v5-teacher-answer';
+
+      answer.innerHTML=
+        heard
+          ?'<b>HEARD ✓</b>'
+          :'<b>NOT HEARD</b>';
+
+      item.appendChild(answer);
+
+      item.classList.add(
+        'v5-revealed'
+      );
+
+    },
+    true
+  );
+
+
+  /* =======================================================
+     SLIDE 9 — STEP 2
+     Teacher clicks verb on LEFT.
+     Correct definition on RIGHT lights up.
+     Previous answers stay visible.
+     ======================================================= */
+
+  document.addEventListener(
+    'click',
+    e=>{
+
+      if(
+        screenNo()!==9 ||
+        !teacherMode()
+      ){
+        return;
+      }
+
+      const s=activeScreen();
+
+      if(
+        s.dataset.teacherReveal!=='on'
+      ){
+        return;
+      }
+
+      const verb=
+        e.target.closest(
+          '.match-item'
+        );
+
+      if(!verb)return;
+
+      e.preventDefault();
+      e.stopImmediatePropagation();
+
+      const key=
+        verb.dataset.match;
+
+      if(!key)return;
+
+      const definition=
+        $(
+          `.definition-item[data-letter="${key}"]`,
+          s
+        );
+
+      if(!definition)return;
+
+      verb.classList.add(
+        'v5-match-question'
+      );
+
+      definition.classList.add(
+        'v5-match-answer'
+      );
+
+      if(
+        !$('.v5-answer-tag',definition)
+      ){
+
+        const tag=
+          document.createElement('span');
+
+        tag.className=
+          'v5-answer-tag';
+
+        tag.textContent=
+          '✓ ANSWER';
+
+        definition.appendChild(tag);
+      }
+
+    },
+    true
+  );
+
+
+  /* =======================================================
+     SLIDE 13
+     Check only activates reveal mode.
+     Teacher then clicks EACH challenge card.
+     Answers remain visible cumulatively.
+     ======================================================= */
+
+  document.addEventListener(
+    'click',
+    e=>{
+
+      if(
+        screenNo()!==13 ||
+        !teacherMode()
+      ){
+        return;
+      }
+
+      const s=activeScreen();
+
+      if(
+        s.dataset.teacherReveal!=='on'
+      ){
+        return;
+      }
+
+      const card=
+        e.target.closest(
+          '.challenge-card'
+        );
+
+      if(!card)return;
+
+      e.preventDefault();
+      e.stopImmediatePropagation();
+
+      if(
+        card.classList.contains(
+          'v5-revealed'
+        )
+      ){
+        return;
+      }
+
+      const answerText=
+        card.dataset.back;
+
+      if(!answerText)return;
+
+      const answer=
+        document.createElement('div');
+
+      answer.className=
+        'v5-teacher-answer';
+
+      answer.textContent=
+        answerText;
+
+      card.appendChild(answer);
+
+      card.classList.add(
+        'v5-revealed'
+      );
+
+    },
+    true
+  );
+
+
+  /* =======================================================
+     RESET — S09 + S13
+     ======================================================= */
+
+  document.addEventListener(
+    'click',
+    e=>{
+
+      const btn=
+        e.target.closest('#u11Reset');
+
+      if(!btn)return;
+
+      const n=
+        screenNo();
+
+      if(
+        n!==9 &&
+        n!==13
+      ){
+        return;
+      }
+
+      const s=
+        activeScreen();
+
+      delete s.dataset.teacherReveal;
+
+      document.body.classList.remove(
+        'u11-reveal-mode'
+      );
+
+      $('#u11Check',s)
+        ?.classList.remove(
+          'reveal-on'
+        );
+
+      const check=
+        $('#u11Check',s);
+
+      if(check){
+        check.textContent='Check';
+      }
+
+      if(n===9){
+
+        /*
+          Clear Step 1 teacher answers
+        */
+
+        $$('.candidate-item',s)
+          .forEach(item=>{
+
+            item.classList.remove(
+              'v5-revealed',
+              'u11-answer-correct',
+              'u11-answer-wrong'
+            );
+
+            $('.v5-teacher-answer',item)
+              ?.remove();
+
+            const cb=
+              $('input[type="checkbox"]',item);
+
+            if(cb){
+              cb.checked=false;
+            }
+          });
+
+        /*
+          Clear Step 2 highlighting
+        */
+
+        $$(
+          '.match-item,'+
+          '.definition-item',
+          s
+        ).forEach(x=>{
+
+          x.classList.remove(
+            'v5-match-question',
+            'v5-match-answer',
+            'selected',
+            'matched',
+            'wrong'
+          );
+
+          x.disabled=false;
+
+          $('.v5-answer-tag',x)
+            ?.remove();
+        });
+
+        /*
+          Also reset original matching engine.
+        */
+
+        $('#resetMatch',s)
+          ?.click();
+      }
+
+      if(n===13){
+
+        $$('.challenge-card',s)
+          .forEach(card=>{
+
+            card.classList.remove(
+              'v5-revealed',
+              'flipped'
+            );
+
+            $('.v5-teacher-answer',card)
+              ?.remove();
+
+            if(
+              card.dataset.front
+            ){
+              /*
+                Preserve input / answer children
+                if the new interaction layer added them.
+              */
+
+              const firstText=
+                [...card.childNodes]
+                  .find(
+                    x=>
+                      x.nodeType===
+                      Node.TEXT_NODE
+                  );
+
+              if(firstText){
+                firstText.textContent=
+                  card.dataset.front;
+              }
+            }
+          });
+      }
+
+    },
+    true
+  );
+
+
+  /* =======================================================
+     STUDENT SAFETY
+     ======================================================= */
+
+  document.addEventListener(
+    'click',
+    e=>{
+
+      if(!studentMode()){
+        return;
+      }
+
+      /*
+        Student must never use teacher reveal controls.
+      */
+
+      if(
+        e.target.closest(
+          '.item-check'
+        )
+      ){
+        e.preventDefault();
+        e.stopImmediatePropagation();
+      }
+
+    },
+    true
+  );
+
+
+  /* =======================================================
+     RECHECK AFTER SCREEN / MODE CHANGE
+     ======================================================= */
+
+  function refresh(){
+    ensureTeacherActionBar();
+  }
+
+  const observer=
+    new MutationObserver(
+      ()=>setTimeout(
+        refresh,
+        0
+      )
+    );
+
+  observer.observe(
+    document.body,
+    {
+      attributes:true,
+      attributeFilter:['class']
+    }
+  );
+
+  $$('.screen')
+    .forEach(
+      s=>observer.observe(
+        s,
+        {
+          attributes:true,
+          attributeFilter:['class']
+        }
+      )
+    );
+
+  setTimeout(
+    refresh,
+    30
+  );
+
+})();
