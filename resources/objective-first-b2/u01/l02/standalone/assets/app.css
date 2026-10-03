@@ -1729,3 +1729,185 @@ body.presentation .exit-presentation:hover{
   }
 }
 \n\n/* =========================================================\n   U1.2 ACADEMIC VISUAL PASS v7\n   Postgraduate-facing typography + discreet Teacher answer reveal.\n   ========================================================= */\n\n/* Answer-key / teacher-note text: restrained, academic scale. */\n.answer{\n  font-size:18px!important;\n  line-height:1.45!important;\n  font-weight:500!important;\n  padding:12px 15px!important;\n}\n.answer b{\n  font-size:16px!important;\n  font-weight:700!important;\n  letter-spacing:.01em!important;\n}\n\n/* Teacher/Presentation reveal: the correct option itself is the key.\n   No oversized badge, no child-oriented heavy treatment. */\n.teacher .teacher-revealed-option,\n.presentation .teacher-revealed-option{\n  background:#e8f3ef!important;\n  border:2px solid #6aa694!important;\n  color:inherit!important;\n  font-weight:700!important;\n  box-shadow:none!important;\n}\n\n/* Screens 16–17: preserve the normal option typography when revealed. */\nbody[data-screen="16"] .teacher-revealed-option,\nbody[data-screen="17"] .teacher-revealed-option{\n  font-size:inherit!important;\n  line-height:inherit!important;\n}\n\n/* Retire the old large auxiliary answer badge if any stale DOM survives. */\n.teacher-answer-badge{display:none!important}\n\n/* Keep Teacher check state professional and compact. */\n.teacher #check.reveal-mode-on,\n.presentation #check.reveal-mode-on{\n  box-shadow:none!important;\n  border-width:2px!important;\n  font-weight:700!important;\n}\n
+/* =========================================================
+   U1.2 ACADEMIC TYPOGRAPHY PASS v8
+   Reference: Unit 1 – Hospital Departments PPT
+   Design language: Poppins, restrained hierarchy, postgraduate tone.
+   Typography/layout only — no activity logic or media behavior changed.
+   ========================================================= */
+:root{
+  --eleap-font:"Poppins","Avenir Next","Helvetica Neue",Arial,sans-serif;
+  --eleap-title:36px;
+  --eleap-subtitle:22px;
+  --eleap-body:21px;
+  --eleap-small:16px;
+}
+
+html,body,button,input,textarea,select{
+  font-family:var(--eleap-font)!important;
+}
+body{font-weight:400!important}
+
+/* Clear but restrained hierarchy, closer to the supplied PPT. */
+.activity-title,h1{
+  font-size:var(--eleap-title)!important;
+  line-height:1.12!important;
+  font-weight:700!important;
+  letter-spacing:-.025em!important;
+  margin-bottom:10px!important;
+}
+.subtitle{
+  font-size:var(--eleap-subtitle)!important;
+  line-height:1.3!important;
+  font-weight:600!important;
+  letter-spacing:-.01em!important;
+}
+.instruction{
+  font-size:20px!important;
+  line-height:1.42!important;
+  font-weight:500!important;
+  padding:9px 13px!important;
+  margin-bottom:12px!important;
+  border-left-width:4px!important;
+}
+.eyebrow,.stage,.stage-label{
+  font-size:12px!important;
+  line-height:1.2!important;
+  font-weight:700!important;
+  letter-spacing:.055em!important;
+}
+
+/* Main learning text. */
+.activity p,.activity li,.question,.reading-question,.structure-q,.inline-q,.degree-q,.vocab-q,
+.transform-source,.transform-answer,.word-item,.tf-row,.mcq-row,.article-text,.reading-text,.qtext,
+.example-list li,.group .bullet,.source-line,.compact-q,.rewrite-q,.grammar-card{
+  font-size:var(--eleap-body)!important;
+  line-height:1.46!important;
+  font-weight:400!important;
+  letter-spacing:0!important;
+}
+
+/* Input and answer typography: same academic scale as the question, never oversized. */
+input,textarea,.miniinput,.inlineinput,.stackinput,.cellinput,.transform-input,.rewrite-input,.homework-input,#roundAnswer{
+  font-size:20px!important;
+  line-height:1.38!important;
+  font-weight:400!important;
+}
+.teacher-revealed,.teacher-revealed-option,.teacher-revealed-article,
+.presentation input.teacher-revealed,.presentation #roundAnswer.teacher-revealed{
+  font-size:inherit!important;
+  line-height:inherit!important;
+  font-weight:600!important;
+}
+
+/* Buttons and teacher tools should read as controls, not headlines. */
+button,.option,.submit,.round-submit,.item-tab,.tab,.teacher-tools button{
+  font-size:15px!important;
+  font-weight:600!important;
+  letter-spacing:0!important;
+}
+.teacher-tools{gap:7px!important}
+.teacher .teacher-tools,.presentation .teacher-tools{
+  padding:6px!important;
+  border-radius:12px!important;
+  box-shadow:0 5px 16px rgba(18,63,58,.08)!important;
+}
+
+/* More disciplined card language: flatter, cleaner and less playful. */
+.content{
+  border-radius:18px!important;
+  box-shadow:0 10px 28px rgba(18,63,58,.075)!important;
+  padding:22px 24px!important;
+}
+.card,.group,.question-card,.support-box,.source-section,.grammar-card,.rewrite-q,.inline-q,.degree-q,
+.vocab-q,.compact-q,.qrow,.tf-row,.mcq,.video-round-answer{
+  border-radius:11px!important;
+  box-shadow:none!important;
+}
+
+/* Screen-specific normalization where older passes used oversized text. */
+body[data-screen="2"] .group li,
+body[data-screen="3"] .source-sections,
+body[data-screen="3"] .source-sections li,
+body[data-screen="3"] .source-line{
+  font-size:18px!important;
+  line-height:1.42!important;
+}
+body[data-screen="6"] .structure-q,
+body[data-screen="6"] .structure-q .miniinput{
+  font-size:20px!important;
+}
+body[data-screen="7"] .formtable .tr:not(.head)>div:first-child,
+body[data-screen="7"] .formtable .tr.head>div,
+body[data-screen="7"] .formtable .cellinput{
+  font-family:var(--eleap-font)!important;
+  font-size:20px!important;
+  line-height:1.35!important;
+}
+body[data-screen="10"] .inline-q,
+body[data-screen="10"] .inlineinput{
+  font-size:21px!important;
+  line-height:1.42!important;
+}
+body[data-screen="11"] .article-presentation-answer,
+body[data-screen="11"] .article-answer-label,
+body[data-screen="11"] .article-answer-explain{
+  font-family:var(--eleap-font)!important;
+  font-size:20px!important;
+  line-height:1.5!important;
+  font-weight:500!important;
+}
+body[data-screen="12"] .transform-input,
+body[data-screen="12"] .transform-source,
+body[data-screen="12"] .transform-answer span{
+  font-size:20px!important;
+  line-height:1.42!important;
+}
+body[data-screen="20"] .subtitle,
+body[data-screen="20"] .rewrite-grid.full .rewrite-q,
+body[data-screen="20"] .rewrite-grid.full .rewrite-q>div:first-child,
+body[data-screen="20"] .rewrite-grid.full .rewrite-line,
+body[data-screen="20"] .rewrite-grid.full .rewrite-input{
+  font-size:21px!important;
+  line-height:1.45!important;
+}
+
+/* Video round controls: compact and balanced beside the enlarged media. */
+body[data-screen="4"] .round-dot{font-size:17px!important;font-weight:600!important}
+body[data-screen="4"] .video-round-answer label{font-size:16px!important;font-weight:600!important}
+body[data-screen="4"] .round-controls button{font-size:14px!important;font-weight:600!important}
+
+/* Presentation: only a modest projector lift. */
+.presentation .activity-title,.presentation h1{font-size:38px!important}
+.presentation .subtitle{font-size:23px!important}
+.presentation .instruction{font-size:21px!important}
+.presentation .activity p,.presentation .activity li,.presentation .question,.presentation .reading-question,
+.presentation .structure-q,.presentation .inline-q,.presentation .degree-q,.presentation .vocab-q,
+.presentation .transform-source,.presentation .transform-answer,.presentation .article-text,.presentation .reading-text,
+.presentation .qtext,.presentation .example-list li{
+  font-size:22px!important;
+  line-height:1.46!important;
+}
+.presentation input,.presentation textarea,.presentation .miniinput,.presentation .inlineinput,
+.presentation .stackinput,.presentation .cellinput,.presentation .transform-input,.presentation .rewrite-input{
+  font-size:21px!important;
+}
+
+/* Thank-you remains a closing statement, but without oversized display type. */
+.thankyou.modern .thanks-card>div{font-size:56px!important;font-weight:700!important;letter-spacing:.025em!important}
+
+/* Tablet/mobile keep readability without reverting to oversized text. */
+@media(max-width:980px){
+  :root{--eleap-title:32px;--eleap-subtitle:21px;--eleap-body:19px}
+  .content{padding:18px 17px!important}
+  .instruction{font-size:19px!important}
+  .activity p,.activity li,.question,.reading-question,.structure-q,.inline-q,.degree-q,.vocab-q,
+  .transform-source,.transform-answer,.word-item,.tf-row,.mcq-row,.article-text,.reading-text,.qtext{font-size:19px!important}
+  input,textarea,.miniinput,.inlineinput,.stackinput,.cellinput,.transform-input,.rewrite-input{font-size:18px!important}
+}
+@media(max-width:640px){
+  :root{--eleap-title:29px;--eleap-subtitle:20px;--eleap-body:18px}
+  .content{padding:15px 13px!important;border-radius:15px!important}
+  .instruction{font-size:18px!important}
+  button,.option,.submit,.round-submit,.item-tab,.tab,.teacher-tools button{font-size:14px!important}
+}
