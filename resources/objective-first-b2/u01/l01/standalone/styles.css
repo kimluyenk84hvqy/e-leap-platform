@@ -5619,3 +5619,822 @@ body.presentation
     min-height:150px!important;
   }
 }
+
+/* =========================================================
+   E-LEAP U1.1 — FINAL CORRECTION STYLE v4.0
+   ========================================================= */
+
+
+/* =========================================================
+   A. REMOVE THE PALE-GREEN BAR THAT COVERS THE SLIDE
+   ========================================================= */
+
+.u11-actionbar{
+  position:static!important;
+
+  width:auto!important;
+
+  margin:
+    8px
+    0
+    0!important;
+
+  padding:
+    4px
+    0!important;
+
+  background:
+    transparent!important;
+
+  justify-content:flex-end!important;
+
+  box-shadow:none!important;
+}
+
+.u11-toast,
+.u11-v4-toast{
+  position:relative!important;
+  bottom:auto!important;
+}
+
+
+/* =========================================================
+   B. STUDENT / TEACHER ROLE STANDARD
+   ========================================================= */
+
+body.u11-student
+.u11-teacher-tools{
+  display:none!important;
+}
+
+body.u11-teacher
+.u11-teacher-tools,
+body.presentation
+.u11-teacher-tools{
+  display:flex!important;
+}
+
+
+/* Student never sees legacy teacher-check buttons */
+
+body.u11-student
+.item-check,
+
+body.u11-student
+.hide-local,
+
+body.u11-student
+.reset-local{
+  display:none!important;
+}
+
+
+/* =========================================================
+   C. STANDARD INTERACTION INPUT
+   ========================================================= */
+
+.u11-v4-card-response{
+  grid-column:
+    1 / -1!important;
+
+  width:100%!important;
+
+  margin-top:
+    10px!important;
+}
+
+.u11-v4-input{
+  display:block!important;
+
+  width:100%!important;
+  min-width:0!important;
+
+  min-height:68px!important;
+
+  padding:
+    10px
+    12px!important;
+
+  border:
+    2px solid
+    #bfd3cc!important;
+
+  border-radius:
+    10px!important;
+
+  background:
+    #fff!important;
+
+  color:
+    #173f38!important;
+
+  font-family:
+    "Avenir Next",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif!important;
+
+  font-size:
+    19px!important;
+
+  line-height:
+    1.4!important;
+
+  resize:
+    vertical!important;
+}
+
+.u11-v4-input:focus{
+  outline:
+    3px solid
+    rgba(242,196,94,.34)!important;
+
+  border-color:
+    #aa8531!important;
+}
+
+
+/* =========================================================
+   D. SLIDE 3
+   ========================================================= */
+
+.screen[data-screen="3"]
+.layer-card{
+  overflow:
+    visible!important;
+
+  align-content:
+    start!important;
+}
+
+.screen[data-screen="3"]
+.u11-v4-card-response{
+  margin-top:
+    12px!important;
+}
+
+
+/* =========================================================
+   E. SLIDE 8
+   FIX THE NARROW VERTICAL ANSWER IN THE SCREENSHOT
+   ========================================================= */
+
+.screen[data-screen="8"]
+.discovery-stack{
+  min-width:0!important;
+}
+
+.screen[data-screen="8"]
+.discovery-card,
+
+.screen[data-screen="8"]
+.discovery-card.u11-revealed{
+
+  display:grid!important;
+
+  grid-template-columns:
+    38px
+    minmax(0,1fr)
+    auto!important;
+
+  width:100%!important;
+
+  min-width:0!important;
+
+  overflow:
+    visible!important;
+}
+
+.screen[data-screen="8"]
+.discovery-card
+.u11-revealed-answer,
+
+.screen[data-screen="8"]
+.discovery-card
+.u11-v4-answer{
+
+  grid-column:
+    1 / -1!important;
+
+  width:100%!important;
+
+  min-width:0!important;
+
+  white-space:
+    normal!important;
+
+  word-break:
+    normal!important;
+
+  overflow-wrap:
+    normal!important;
+
+  font-size:
+    21px!important;
+
+  line-height:
+    1.42!important;
+}
+
+
+/* Student typing area */
+
+.screen[data-screen="8"]
+.u11-v4-card-response{
+  grid-column:
+    1 / -1!important;
+}
+
+
+/* =========================================================
+   F. SLIDE 9 STEP 1
+   ========================================================= */
+
+.screen[data-screen="9"]
+.item-check{
+  display:none!important;
+}
+
+.screen[data-screen="9"]
+.candidate-item{
+
+  grid-template-columns:
+    minmax(0,1fr)!important;
+
+  overflow:
+    visible!important;
+}
+
+.screen[data-screen="9"]
+.candidate-item
+.u11-v4-answer{
+
+  margin-top:
+    8px!important;
+
+  padding:
+    8px
+    11px!important;
+
+  border-radius:
+    9px!important;
+
+  background:
+    #e5f5ec!important;
+
+  border:
+    2px solid
+    #76ae92!important;
+
+  color:
+    #174f31!important;
+
+  font-size:
+    18px!important;
+
+  font-weight:
+    900!important;
+}
+
+
+/* =========================================================
+   G. SLIDE 9 STEP 2
+   TEACHER ANSWER HIGHLIGHT
+   ========================================================= */
+
+.screen[data-screen="9"]
+.match-item.u11-v4-match-source{
+
+  background:
+    #fff4d9!important;
+
+  border:
+    3px solid
+    #d4a83d!important;
+
+  color:
+    #57400b!important;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(212,168,61,.12)!important;
+
+  font-weight:
+    900!important;
+}
+
+.screen[data-screen="9"]
+.definition-item.u11-v4-match-answer{
+
+  position:
+    relative!important;
+
+  background:
+    #dff5e7!important;
+
+  border:
+    3px solid
+    #43a568!important;
+
+  color:
+    #174f31!important;
+
+  font-size:
+    22px!important;
+
+  line-height:
+    1.32!important;
+
+  font-weight:
+    950!important;
+
+  box-shadow:
+    0 0 0 5px
+    rgba(67,165,104,.13)!important;
+
+  padding:
+    12px
+    90px
+    12px
+    14px!important;
+}
+
+.u11-v4-answer-label{
+
+  position:
+    absolute!important;
+
+  top:
+    50%!important;
+
+  right:
+    10px!important;
+
+  transform:
+    translateY(-50%)!important;
+
+  display:
+    inline-flex!important;
+
+  align-items:
+    center!important;
+
+  min-height:
+    28px!important;
+
+  padding:
+    4px
+    7px!important;
+
+  border-radius:
+    7px!important;
+
+  background:
+    #174f31!important;
+
+  color:
+    #fff!important;
+
+  font-size:
+    11px!important;
+
+  letter-spacing:
+    .04em!important;
+
+  font-weight:
+    950!important;
+}
+
+
+/* =========================================================
+   H. SLIDE 10–11
+   REAL STUDENT INPUTS INSTEAD OF CLICK-TO-REVEAL BUTTONS
+   ========================================================= */
+
+.u11-v4-inline-shell{
+
+  display:inline-flex!important;
+
+  flex-direction:
+    column!important;
+
+  vertical-align:
+    middle!important;
+
+  min-width:
+    185px!important;
+
+  margin:
+    2px
+    5px!important;
+}
+
+.u11-v4-inline-input{
+
+  width:
+    100%!important;
+
+  min-width:
+    175px!important;
+
+  min-height:
+    43px!important;
+
+  padding:
+    6px
+    9px!important;
+
+  border:
+    2px solid
+    #bfd3cc!important;
+
+  border-radius:
+    9px!important;
+
+  background:
+    #fff!important;
+
+  color:
+    #173f38!important;
+
+  font-family:
+    "Avenir Next",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif!important;
+
+  font-size:
+    19px!important;
+
+  font-weight:
+    700!important;
+}
+
+.u11-v4-inline-input:focus{
+
+  outline:
+    3px solid
+    rgba(242,196,94,.32)!important;
+
+  border-color:
+    #a98536!important;
+}
+
+
+/* Student feedback */
+
+.u11-v4-inline-input.u11-v4-correct{
+
+  background:
+    #e6f7ec!important;
+
+  border:
+    3px solid
+    #43a568!important;
+
+  color:
+    #185d32!important;
+}
+
+.u11-v4-inline-input.u11-v4-wrong{
+
+  background:
+    #fff0ef!important;
+
+  border:
+    3px solid
+    #d8665f!important;
+
+  color:
+    #8b302b!important;
+}
+
+
+/* Teacher cumulative reveal */
+
+.u11-v4-inline-shell
+.u11-revealed-answer,
+
+.u11-v4-inline-shell
+.u11-v4-answer{
+
+  width:
+    100%!important;
+
+  margin-top:
+    6px!important;
+
+  padding:
+    8px
+    10px!important;
+
+  border:
+    2px solid
+    #43a568!important;
+
+  border-radius:
+    8px!important;
+
+  background:
+    #e5f5ec!important;
+
+  color:
+    #174f31!important;
+
+  font-size:
+    20px!important;
+
+  line-height:
+    1.35!important;
+
+  font-weight:
+    900!important;
+}
+
+
+/* S10 layout remains readable */
+
+.screen[data-screen="10"]
+.gap-grid>div{
+
+  overflow:
+    visible!important;
+
+  align-content:
+    start!important;
+}
+
+
+/* S11 letter can expand naturally */
+
+.screen[data-screen="11"]
+.letter{
+
+  max-height:
+    calc(100dvh - 285px)!important;
+
+  overflow-y:
+    auto!important;
+
+  overflow-x:
+    visible!important;
+}
+
+
+/* =========================================================
+   I. SLIDE 12 TEACHER ANSWER
+   ========================================================= */
+
+.u11-v4-s12-answer{
+
+  display:none!important;
+
+  width:100%!important;
+
+  margin-top:
+    12px!important;
+
+  padding:
+    17px
+    20px!important;
+
+  border:
+    3px solid
+    #43a568!important;
+
+  border-radius:
+    14px!important;
+
+  background:
+    #e5f5ec!important;
+
+  color:
+    #174f31!important;
+
+  font-family:
+    "Avenir Next",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif!important;
+
+  font-size:
+    21px!important;
+
+  line-height:
+    1.48!important;
+
+  font-weight:
+    700!important;
+}
+
+.u11-v4-s12-answer.show{
+
+  display:block!important;
+}
+
+.u11-v4-s12-answer b{
+
+  color:
+    #0f5832!important;
+
+  font-weight:
+    950!important;
+}
+
+
+/* =========================================================
+   J. SLIDE 15
+   MODEL ANSWER IS TEACHER/PRESENTATION ONLY
+   ========================================================= */
+
+body.u11-student
+.screen[data-screen="15"]
+#u11SuggestedAnswer{
+
+  display:none!important;
+}
+
+body.u11-student
+.screen[data-screen="15"]
+#u11SuggestedPanel{
+
+  display:none!important;
+}
+
+
+/* Teacher and Presentation */
+
+body.u11-teacher
+.screen[data-screen="15"]
+#u11SuggestedAnswer,
+
+body.presentation
+.screen[data-screen="15"]
+#u11SuggestedAnswer{
+
+  display:inline-flex!important;
+}
+
+
+/* =========================================================
+   K. TOAST
+   ========================================================= */
+
+.u11-v4-toast{
+
+  width:
+    max-content!important;
+
+  max-width:
+    90%!important;
+
+  margin:
+    9px
+    auto
+    0!important;
+
+  padding:
+    9px
+    15px!important;
+
+  border-radius:
+    11px!important;
+
+  text-align:
+    center!important;
+
+  font-size:
+    17px!important;
+
+  font-weight:
+    850!important;
+}
+
+.u11-v4-toast.good{
+
+  background:
+    #e6f7ec!important;
+
+  border:
+    1px solid
+    #8bc9a1!important;
+
+  color:
+    #185d32!important;
+}
+
+.u11-v4-toast.try{
+
+  background:
+    #fff3ef!important;
+
+  border:
+    1px solid
+    #e2a19a!important;
+
+  color:
+    #8b3b32!important;
+}
+
+
+/* =========================================================
+   L. TEACHER REVEAL — GLOBAL VISUAL STANDARD
+   ========================================================= */
+
+.u11-v4-answer{
+
+  width:100%!important;
+
+  margin-top:
+    8px!important;
+
+  padding:
+    10px
+    13px!important;
+
+  border:
+    2px solid
+    #78b797!important;
+
+  border-radius:
+    10px!important;
+
+  background:
+    #e5f5ec!important;
+
+  color:
+    #174f31!important;
+
+  font-family:
+    "Avenir Next",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif!important;
+
+  font-size:
+    20px!important;
+
+  line-height:
+    1.42!important;
+
+  font-weight:
+    850!important;
+}
+
+
+/* =========================================================
+   M. MOBILE / TABLET
+   ========================================================= */
+
+@media(max-width:900px){
+
+  .u11-v4-inline-shell{
+    width:100%!important;
+
+    min-width:0!important;
+
+    margin:
+      6px
+      0!important;
+  }
+
+  .u11-v4-inline-input{
+    width:100%!important;
+
+    min-width:0!important;
+  }
+
+  .screen[data-screen="9"]
+  .matching-board{
+
+    grid-template-columns:
+      1fr!important;
+  }
+
+  .u11-v4-answer-label{
+
+    position:
+      static!important;
+
+    transform:
+      none!important;
+
+    width:
+      max-content!important;
+
+    margin-top:
+      8px!important;
+  }
+
+  .screen[data-screen="9"]
+  .definition-item.u11-v4-match-answer{
+
+    padding:
+      11px
+      13px!important;
+  }
+}
