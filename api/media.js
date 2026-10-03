@@ -1,4 +1,4 @@
-import { issueSignedToken, presignUrl } from '@vercel/blob';
+import { get } from '@vercel/blob';
 
 export default async function handler(req, res) {
   const pathname = req.query?.pathname;
@@ -15,19 +15,34 @@ export default async function handler(req, res) {
   }
 
   try {
-    const token = await issueSignedToken({
-      operations: ['get']
+    const result = await get(pathname, {
+      access: 'private'
     });
 
-    const { presignedUrl } = await presignUrl(token, {
-      pathname,
-      operation: 'get',
-      validUntil: Date.now() + 5 * 60 * 1000
-    });
+    if (!result) {
+      res.status(404).send('Media not found');
+      return;
+    }
 
-    res.redirect(302, presignedUrl);
+    if (result.blob?.contentType) {
+      res.setHeader('Content-Type', result.blob.contentType);
+    }
+
+    res.setHeader('Cache-Control', 'private, max-age=300');
+
+    const reader = result.stream.getReader();
+
+    while (true) {
+      const { done, value } = await reader.read();
+
+      if (done) break;
+
+      res.write(Buffer.from(value));
+    }
+
+    res.end();
   } catch (error) {
-    console.error('Private media signing failed:', error);
+    console.error('Private Blob read failed:', error);
     res.status(500).send('Media unavailable');
   }
 }
