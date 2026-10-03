@@ -1,8 +1,8 @@
 {
-  "u01/l01/fashion-hero.jpeg": "PRIVATE_STORAGE_URL/u01/l01/fashion-hero.jpeg",
-  "u01/l01/people-photo-set.png": "PRIVATE_STORAGE_URL/u01/l01/people-photo-set.png",
-  "u01/l01/speaking-strategy.mp4": "PRIVATE_STORAGE_URL/u01/l01/speaking-strategy.mp4",
-  "u01/l01/speaker-1.mp3": "PRIVATE_STORAGE_URL/u01/l01/speaker-1.mp3",
-  "u01/l01/speakers-2-5.mp3": "PRIVATE_STORAGE_URL/u01/l01/speakers-2-5.mp3",
-  "u01/l01/phrasal-verbs.mp4": "PRIVATE_STORAGE_URL/u01/l01/phrasal-verbs.mp4"
+  "u01/l01/fashion-hero.jpeg": "/api/media?pathname=objective-first-b2/u01/l01/assets/images/fashion-hero.jpeg",
+  "u01/l01/people-photo-set.png": "/api/media?pathname=objective-first-b2/u01/l01/assets/images/people-photo-set.png",
+  "u01/l01/speaking-strategy.mp4": "/api/media?pathname=objective-first-b2/u01/l01/assets/media/speaking-strategy.mp4",
+  "u01/l01/speaker-1.mp3": "/api/media?pathname=objective-first-b2/u01/l01/assets/media/speaker-1.mp3",
+  "u01/l01/speakers-2-5.mp3": "/api/media?pathname=objective-first-b2/u01/l01/assets/media/speakers-2-5.mp3",
+  "u01/l01/phrasal-verbs.mp4": "/api/media?pathname=objective-first-b2/u01/l01/assets/media/phrasal-verbs.mp4"
 }
