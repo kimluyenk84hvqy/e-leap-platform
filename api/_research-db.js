@@ -2,11 +2,20 @@ import { neon } from '@neondatabase/serverless';
 
 let sqlClient = null;
 
+function getConnectionString() {
+  return (
+    process.env.RESEARCH_DB_URL ||
+    process.env.DATABASE_URL ||
+    process.env.RESEARCH_DB_DATABASE_URL ||
+    null
+  );
+}
+
 export function getResearchDb() {
-  const connectionString = process.env.RESEARCH_DB_URL;
+  const connectionString = getConnectionString();
 
   if (!connectionString) {
-    throw new Error('Missing RESEARCH_DB_URL');
+    throw new Error('Missing research database connection URL');
   }
 
   if (!sqlClient) {
@@ -17,5 +26,5 @@ export function getResearchDb() {
 }
 
 export function researchDbAvailable() {
-  return Boolean(process.env.RESEARCH_DB_URL);
+  return Boolean(getConnectionString());
 }
