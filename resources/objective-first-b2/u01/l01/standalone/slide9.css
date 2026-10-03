@@ -62,3 +62,168 @@
   .s9-match-layout{grid-template-columns:1fr}
   .s9-answer-column{grid-template-columns:1fr}
 }
+
+/* =========================================================
+   E-LEAP U1.1 — SLIDE 9 VIEWPORT + ROLE FIX v1.1
+   Final viewport behavior:
+   - Slide 9 scrolls inside the lesson stage like Slide 11.
+   - Feedback stays in content flow before Check / Reset.
+   - Teacher Step 2 keeps the third Answer column.
+   ========================================================= */
+
+/* Make the lesson stage own the viewport; Slide 9 itself scrolls. */
+main#stage{
+  min-height:0!important;
+  overflow:hidden!important;
+}
+
+.screen[data-screen="9"].active{
+  display:block!important;
+  box-sizing:border-box!important;
+  height:100%!important;
+  min-height:0!important;
+  max-height:100%!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain!important;
+  scrollbar-gutter:stable!important;
+  padding-bottom:150px!important;
+  -webkit-overflow-scrolling:touch!important;
+}
+
+/* Visible scrollbar cue for a long classroom activity. */
+.screen[data-screen="9"].active::-webkit-scrollbar{
+  width:11px!important;
+}
+.screen[data-screen="9"].active::-webkit-scrollbar-track{
+  background:#eef4f1!important;
+  border-radius:999px!important;
+}
+.screen[data-screen="9"].active::-webkit-scrollbar-thumb{
+  background:#9bbcb0!important;
+  border-radius:999px!important;
+  border:2px solid #eef4f1!important;
+}
+
+/* Keep score / teacher note fully visible and in normal document flow. */
+.screen[data-screen="9"] .s9-feedback{
+  position:static!important;
+  display:block!important;
+  clear:both!important;
+  margin-top:14px!important;
+  margin-bottom:8px!important;
+  z-index:auto!important;
+}
+
+.screen[data-screen="9"] .s9-actions{
+  position:static!important;
+  display:flex!important;
+  visibility:visible!important;
+  opacity:1!important;
+  justify-content:flex-end!important;
+  margin-top:8px!important;
+  margin-bottom:24px!important;
+  padding:6px 0 12px!important;
+  background:transparent!important;
+  z-index:auto!important;
+}
+
+.screen[data-screen="9"] #s9Check,
+.screen[data-screen="9"] #s9Reset{
+  display:inline-flex!important;
+  visibility:visible!important;
+  opacity:1!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+
+/* STEP 2: Student always has 3 columns on desktop. */
+body.u11-student .screen[data-screen="9"] .s9-match-layout{
+  grid-template-columns:
+    minmax(210px,.82fr)
+    minmax(0,1.48fr)
+    minmax(135px,.52fr)!important;
+}
+
+body.u11-student .screen[data-screen="9"] .s9-answer-column{
+  display:grid!important;
+}
+
+body.u11-student .screen[data-screen="9"] .s9-answer-input{
+  display:block!important;
+}
+
+body.u11-student .screen[data-screen="9"] .s9-teacher-pair{
+  display:none!important;
+}
+
+/* STEP 2: Teacher ALSO keeps the third column.
+   Inputs are replaced visually by cumulative pair results. */
+body.u11-teacher .screen[data-screen="9"] .s9-match-layout,
+body.presentation .screen[data-screen="9"] .s9-match-layout{
+  grid-template-columns:
+    minmax(210px,.82fr)
+    minmax(0,1.48fr)
+    minmax(135px,.52fr)!important;
+}
+
+body.u11-teacher .screen[data-screen="9"] .s9-answer-column,
+body.presentation .screen[data-screen="9"] .s9-answer-column{
+  display:grid!important;
+}
+
+body.u11-teacher .screen[data-screen="9"] .s9-answer-input,
+body.presentation .screen[data-screen="9"] .s9-answer-input{
+  display:none!important;
+}
+
+body.u11-teacher .screen[data-screen="9"] .s9-teacher-pair,
+body.presentation .screen[data-screen="9"] .s9-teacher-pair{
+  display:flex!important;
+  min-height:38px!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+
+/* Step 1 Teacher: no individual answer is shown before correction mode + click. */
+body.u11-teacher .screen[data-screen="9"] .s9-teacher-answer,
+body.presentation .screen[data-screen="9"] .s9-teacher-answer{
+  display:none!important;
+}
+
+body.u11-teacher .screen[data-screen="9"] .s9-heard-item.revealed .s9-teacher-answer,
+body.presentation .screen[data-screen="9"] .s9-heard-item.revealed .s9-teacher-answer{
+  display:block!important;
+}
+
+/* Role-specific controls remain usable while content is long. */
+body.u11-teacher .screen[data-screen="9"] .s9-student-check,
+body.presentation .screen[data-screen="9"] .s9-student-check{
+  display:none!important;
+}
+
+/* Tablet: preserve scrolling; let Step 2 stack to two columns + answer row. */
+@media(max-width:1050px){
+  body.u11-student .screen[data-screen="9"] .s9-match-layout,
+  body.u11-teacher .screen[data-screen="9"] .s9-match-layout,
+  body.presentation .screen[data-screen="9"] .s9-match-layout{
+    grid-template-columns:1fr 1fr!important;
+  }
+
+  .screen[data-screen="9"] .s9-answer-column{
+    grid-column:1/-1!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+}
+
+@media(max-width:700px){
+  body.u11-student .screen[data-screen="9"] .s9-match-layout,
+  body.u11-teacher .screen[data-screen="9"] .s9-match-layout,
+  body.presentation .screen[data-screen="9"] .s9-match-layout{
+    grid-template-columns:1fr!important;
+  }
+
+  .screen[data-screen="9"] .s9-answer-column{
+    grid-template-columns:1fr!important;
+  }
+}

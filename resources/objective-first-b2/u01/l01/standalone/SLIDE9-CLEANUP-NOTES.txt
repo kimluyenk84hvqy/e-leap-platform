@@ -1,23 +1,11 @@
-E-LEAP U1.1 Slide 9 clean rebuild
+U1.1 Slide 9 CLEAN FINAL v2
 
-- Slide 9 is now static HTML in index.html, so the original audio element is preserved.
-- slide9.js is the only file that owns Slide 9 interaction logic.
-- slide9.css is the only dedicated Slide 9 styling layer.
-- u11-final-controller.js is removed from this clean package.
-- ui-alignment.js no longer creates the generic Check/Reset action bar for Slide 9 and no longer calls augment9/fixSlide9Step1.
-- app.js legacy Slide 9 listeners remain harmless because the clean Slide 9 uses unique s9-* class names instead of candidate-grid/match-item/definition-item/item-check.
-
-Step 1 answer key (from original U1.1 HTML):
-NOT HEARD: add to; fit in with; pull on
-HEARD: cut down (on); dress up; go out; keep up with; put together; save up; slip on; stand out; take back
-
-Step 2 mapping:
-a cut down -> 6 reduce
-b dress up -> 4 wear smarter clothes than usual
-c go out -> 8 go somewhere for entertainment
-d keep up with -> 9 understand something that is changing fast
-e put together -> 2 create something by joining or combining different things
-f save up -> 5 keep money for something in the future
-g slip on -> 7 put something on quickly
-h stand out -> 1 be easy to see or notice
-i take back -> 3 return something
+Fixed after live screenshot review:
+1. Preserves original Step 1 audio media key u01/l01/speakers-2-5.mp3.
+2. Step 1 contains all 12 original options including add to.
+3. Student Step 1: Check reports X/12 only; no answer key is revealed.
+4. Teacher Step 1: Check and Reset remain in the scrollable content; Check arms correction mode; clicking each phrasal verb reveals only its HEARD / NOT HEARD answer cumulatively.
+5. Step 2 contains 9 phrasal verbs, 9 definitions, 9 answer rows.
+6. Student Step 2: 3 columns; Check reports X/9 only.
+7. Teacher Step 2: 3 columns retained. Third column begins with — and changes to a = 6, b = 4, etc., as each phrasal verb is corrected. Previous matches remain.
+8. Slide 9 content now scrolls vertically inside the lesson stage like Slide 11, so feedback and Check / Reset are not hidden behind the footer.
