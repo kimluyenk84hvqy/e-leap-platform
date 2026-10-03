@@ -1318,76 +1318,87 @@ footer{
 }
 
 /* =========================================================
-   U1.2 MEDIA PASS v2 — targeted large-media restoration
-   Screens: 1 cover, 4 six-video review, 10 image task, 16 jeans reading
-   Preserve lesson logic; enlarge media first, allow vertical scroll if needed.
+   U1.2 MEDIA + ROLE PASS v3
+   Goal: preserve approved lesson logic and typography.
+   Only refine media sizing/cropping and keep Teacher controls functional.
    ========================================================= */
 
 @media (min-width:981px){
-  /* Let the four media-heavy screens use the available canvas instead of shrinking media. */
+  /* Media-heavy screens may scroll instead of shrinking content. */
   body[data-screen="1"] .content,
   body[data-screen="4"] .content,
   body[data-screen="10"] .content,
   body[data-screen="16"] .content{
     max-height:calc(100dvh - 190px)!important;
     overflow:auto!important;
-    padding:18px 20px!important;
   }
 
-  /* Slide 1 — make the coursebook cover visually dominant. */
+  /* Slide 1: KEEP the approved outer cover card size/composition.
+     Enlarge only the book image inside it. */
   body[data-screen="1"] .hero-cover{
-    grid-template-columns:minmax(300px,.72fr) minmax(440px,1.28fr)!important;
-    min-height:610px!important;
-    height:auto!important;
-    padding:28px 34px!important;
+    min-height:430px!important;
+    height:430px!important;
+    grid-template-columns:1.08fr .92fr!important;
     gap:28px!important;
-    overflow:visible!important;
+    padding:32px 42px!important;
+    overflow:hidden!important;
   }
   body[data-screen="1"] .hero-visual{
-    min-height:560px!important;
-    height:auto!important;
+    min-height:0!important;
+    height:100%!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    overflow:visible!important;
   }
   body[data-screen="1"] .hero-visual img{
     width:auto!important;
-    max-width:100%!important;
     height:auto!important;
-    max-height:62dvh!important;
+    max-width:100%!important;
+    max-height:365px!important;
     object-fit:contain!important;
-    transform:rotate(1deg)!important;
+    transform:rotate(2deg)!important;
   }
 
-  /* Slide 4 — one large video + compact control column. */
+  /* Slide 4: larger video area, slimmer side controls.
+     Small zoom is anchored to the BOTTOM so the encoded top black band is cropped
+     while bottom question text stays visible. */
   body[data-screen="4"] .video-round-shell{
-    grid-template-columns:minmax(0,1fr) 235px!important;
+    grid-template-columns:minmax(0,1fr) 245px!important;
     gap:16px!important;
     width:100%!important;
     align-items:start!important;
   }
   body[data-screen="4"] .video-round-main{
     width:100%!important;
-    padding:8px!important;
+    padding:6px!important;
     border-radius:18px!important;
+    overflow:hidden!important;
   }
   body[data-screen="4"] .video-round-main video{
+    display:block!important;
     width:100%!important;
-    height:min(70dvh,760px)!important;
+    height:min(67dvh,720px)!important;
     max-height:none!important;
     object-fit:contain!important;
+    object-position:center bottom!important;
     border-radius:12px!important;
+    transform:scale(1.055)!important;
+    transform-origin:center bottom!important;
   }
   body[data-screen="4"] .video-round-side{
-    width:235px!important;
-    gap:10px!important;
+    width:245px!important;
+    gap:9px!important;
   }
   body[data-screen="4"] .video-round-answer,
   body[data-screen="4"] .round-controls{
     padding:10px!important;
   }
 
-  /* Slide 10 — enlarge the footwear image and give it nearly half the activity width. */
+  /* Slide 10: keep the enlarged image, but restore readable question text. */
   body[data-screen="10"] .image-question-layout{
-    grid-template-columns:minmax(420px,46%) minmax(0,54%)!important;
-    gap:22px!important;
+    grid-template-columns:minmax(390px,42%) minmax(0,58%)!important;
+    gap:24px!important;
     align-items:center!important;
     height:auto!important;
   }
@@ -1395,15 +1406,26 @@ footer{
     width:100%!important;
     max-width:100%!important;
     height:auto!important;
-    max-height:58dvh!important;
+    max-height:55dvh!important;
     object-fit:contain!important;
     margin:0 auto!important;
   }
+  body[data-screen="10"] .image-question-layout .inline-q{
+    font-size:22px!important;
+    line-height:1.48!important;
+    padding:11px 13px!important;
+  }
+  body[data-screen="10"] .image-question-layout .inlineinput{
+    width:190px!important;
+    max-width:42vw!important;
+    font-size:20px!important;
+    min-height:44px!important;
+  }
 
-  /* Slide 16 — enlarge jeans image while retaining question + reading text. */
+  /* Slide 16: keep the larger jeans photo and preserve reading readability. */
   body[data-screen="16"] .reading-predict-split{
-    grid-template-columns:minmax(430px,47%) minmax(0,53%)!important;
-    gap:22px!important;
+    grid-template-columns:minmax(410px,45%) minmax(0,55%)!important;
+    gap:24px!important;
     height:auto!important;
     align-items:start!important;
   }
@@ -1417,28 +1439,61 @@ footer{
     width:100%!important;
     max-width:100%!important;
     height:auto!important;
-    max-height:48dvh!important;
+    max-height:49dvh!important;
     object-fit:contain!important;
     margin:0 auto!important;
   }
   body[data-screen="16"] .evidence-text{
+    font-size:20px!important;
+    line-height:1.5!important;
     max-height:62dvh!important;
     overflow:auto!important;
   }
 }
 
-/* Presentation should use even more of the projector canvas. */
+/* Presentation gets more media area but does not shrink the text. */
 @media (min-width:981px){
-  body.presentation[data-screen="1"] .hero-visual img{max-height:68dvh!important}
-  body.presentation[data-screen="4"] .video-round-shell{grid-template-columns:minmax(0,1fr) 220px!important}
-  body.presentation[data-screen="4"] .video-round-side{width:220px!important}
-  body.presentation[data-screen="4"] .video-round-main video{height:min(76dvh,860px)!important}
-  body.presentation[data-screen="10"] .image-question-layout .sourceimg{max-height:64dvh!important}
-  body.presentation[data-screen="16"] .predict-panel .jeans-photo{max-height:54dvh!important}
+  body.presentation[data-screen="1"] .hero-cover{
+    height:450px!important;
+    min-height:450px!important;
+  }
+  body.presentation[data-screen="1"] .hero-visual img{
+    max-height:390px!important;
+  }
+  body.presentation[data-screen="4"] .video-round-shell{
+    grid-template-columns:minmax(0,1fr) 225px!important;
+  }
+  body.presentation[data-screen="4"] .video-round-side{
+    width:225px!important;
+  }
+  body.presentation[data-screen="4"] .video-round-main video{
+    height:min(72dvh,800px)!important;
+    transform:scale(1.055)!important;
+    transform-origin:center bottom!important;
+  }
+  body.presentation[data-screen="10"] .image-question-layout .sourceimg{
+    max-height:61dvh!important;
+  }
+  body.presentation[data-screen="10"] .image-question-layout .inline-q{
+    font-size:25px!important;
+  }
+  body.presentation[data-screen="10"] .image-question-layout .inlineinput{
+    font-size:23px!important;
+  }
+  body.presentation[data-screen="16"] .predict-panel .jeans-photo{
+    max-height:54dvh!important;
+  }
+  body.presentation[data-screen="16"] .evidence-text{
+    font-size:23px!important;
+  }
 }
 
-/* Tablet/mobile — keep media full width and avoid fixed-height shrinkage. */
+/* Tablet/mobile: full-width media, no fixed-height squeeze or video zoom crop. */
 @media (max-width:980px){
+  body[data-screen="1"] .hero-cover{
+    height:auto!important;
+    min-height:0!important;
+  }
   body[data-screen="1"] .hero-visual img,
   body[data-screen="10"] .image-question-layout .sourceimg,
   body[data-screen="16"] .predict-panel .jeans-photo{
@@ -1447,9 +1502,21 @@ footer{
     height:auto!important;
     max-height:none!important;
   }
+  body[data-screen="4"] .video-round-main{
+    overflow:visible!important;
+  }
   body[data-screen="4"] .video-round-main video{
     width:100%!important;
     height:auto!important;
     max-height:none!important;
+    transform:none!important;
+  }
+  body[data-screen="10"] .image-question-layout .inline-q{
+    font-size:18px!important;
+  }
+  body[data-screen="10"] .image-question-layout .inlineinput{
+    width:100%!important;
+    max-width:100%!important;
+    font-size:17px!important;
   }
 }

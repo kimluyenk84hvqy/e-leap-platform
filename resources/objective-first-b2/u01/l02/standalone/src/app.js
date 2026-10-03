@@ -223,12 +223,14 @@ function videoRounds(a){
             value="${esc(videoRoundState.answers[n])}"
             placeholder="Type the clothing word">
 
+          ${mode==='student' ? `
           <button
             class="submit round-submit"
             id="roundSubmit"
             style="margin-top:10px;width:100%">
             ${videoRoundState.submitted[n]?'Submitted ✓':'Submit answer'}
           </button>
+          ` : ''}
         </div>
 
         <div class="round-controls">
@@ -1214,7 +1216,7 @@ function displayExpected(exp){
 }
 
 function restorePresentationReveals(a){
-  if(mode!=='presentation')return;
+  if(mode!=='teacher'&&mode!=='presentation')return;
 
   const st=revealState();
 
@@ -1291,7 +1293,7 @@ function restorePresentationReveals(a){
 }
 
 function setupPresentationReveal(a){
-  if(mode!=='presentation')return;
+  if(mode!=='teacher'&&mode!=='presentation')return;
 
   const st=revealState();
   const check=$('#check');
@@ -1551,15 +1553,15 @@ function render(){
     (
       needsActions(a)||
       (
-        mode==='presentation'&&
+        (mode==='teacher'||mode==='presentation')&&
         isAutoCheckable(a)
       )
     )
       ?`
         ${
-          mode==='presentation'
-            ?''
-            :'<button class="submit" id="submit">Submit</button>'
+          mode==='student'
+            ?'<button class="submit" id="submit">Submit</button>'
+            :''
         }
 
         ${
@@ -1592,7 +1594,7 @@ function render(){
     $('#ans')?.classList.add('show');
   };
 
-  if(mode!=='presentation'){
+  if(mode==='student'){
     $('#check')
       ?.addEventListener(
         'click',
@@ -1619,7 +1621,7 @@ function render(){
     ?.addEventListener(
       'click',
       ()=>{
-        if(mode==='presentation'){
+        if(mode==='teacher'||mode==='presentation'){
           delete presentationRevealState[i];
         }
 
