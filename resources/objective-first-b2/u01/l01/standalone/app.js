@@ -193,3 +193,32 @@ document.querySelectorAll('.item-check').forEach(btn=>{
     btn.classList.add(heard ? 'heard' : 'not-heard');
   });
 });
+
+// E-LEAP Private Media Resolver
+(async function resolvePrivateMedia() {
+  try {
+    const response = await fetch('/media-map.json', { cache: 'no-store' });
+    if (!response.ok) throw new Error(`media-map.json: ${response.status}`);
+
+    const mediaMap = await response.json();
+
+    document.querySelectorAll('[data-media-key]').forEach((element) => {
+      const key = element.dataset.mediaKey;
+      const url = mediaMap[key];
+
+      if (!url) {
+        console.warn('E-LEAP media key not found:', key);
+        return;
+      }
+
+      if (element.tagName === 'IMG' ||
+          element.tagName === 'AUDIO' ||
+          element.tagName === 'VIDEO' ||
+          element.tagName === 'SOURCE') {
+        element.src = url;
+      }
+    });
+  } catch (error) {
+    console.error('E-LEAP private media resolver failed:', error);
+  }
+})();
