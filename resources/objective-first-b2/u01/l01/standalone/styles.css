@@ -490,3 +490,1165 @@ input,textarea,select{max-width:100%}
   .progress{display:none}
   .footer{justify-content:space-between}
 }
+
+/* =========================================================
+   E-LEAP U1.1 RESPONSIVE FIT PASS v2.1
+   Golden Reference — Objective First B2 U1.1
+   MEDIA-FIRST / Device-aware / Projector-safe / Embedded-safe
+
+   Principle:
+   - Preserve readable image/video size.
+   - Reduce chrome and spacing before shrinking media.
+   - Allow controlled screen scrolling when needed.
+   ========================================================= */
+
+
+/* =========================================================
+   1. GLOBAL SAFETY
+   ========================================================= */
+
+html,
+body{
+  width:100%;
+  max-width:100%;
+  min-height:100%;
+  overflow-x:hidden;
+}
+
+html{
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+
+body{
+  min-height:100dvh;
+}
+
+.app{
+  width:100%;
+  min-height:100dvh;
+}
+
+img,
+video,
+audio,
+svg{
+  max-width:100%;
+}
+
+.screen,
+.screen-grid,
+.hero-grid,
+.media-layout,
+.photo-layout,
+.listening-layout,
+.advice-layout,
+.exercise7,
+.matching-board{
+  min-width:0;
+}
+
+.screen-grid>*,
+.hero-grid>*,
+.media-layout>*,
+.photo-layout>*,
+.listening-layout>*,
+.advice-layout>*,
+.exercise7>*,
+.matching-board>*{
+  min-width:0;
+}
+
+button,
+input,
+textarea,
+select{
+  max-width:100%;
+  min-height:44px;
+}
+
+button{
+  touch-action:manipulation;
+}
+
+
+/* =========================================================
+   2. STANDARD DESKTOP / LAPTOP
+   ========================================================= */
+
+@media (min-width:1100px){
+
+  .app{
+    height:100dvh!important;
+    min-height:0!important;
+
+    grid-template-rows:
+      64px
+      minmax(0,1fr)
+      56px!important;
+  }
+
+  .topbar{
+    min-height:64px!important;
+    height:64px!important;
+    padding:0 clamp(18px,2vw,28px)!important;
+  }
+
+  .course-title{
+    font-size:clamp(20px,1.7vw,24px)!important;
+  }
+
+  .eyebrow,
+  .stage-label{
+    font-size:clamp(11px,1vw,13px)!important;
+  }
+
+  .review-badge{
+    font-size:11px!important;
+    padding:6px 9px!important;
+  }
+
+  main{
+    height:100%!important;
+    min-height:0!important;
+    overflow:hidden!important;
+  }
+
+  .screen,
+  .screen.active{
+    width:100%!important;
+    max-width:1500px!important;
+    height:100%!important;
+    min-height:0!important;
+
+    padding:
+      clamp(16px,2vh,26px)
+      clamp(24px,3vw,42px)
+      clamp(12px,1.8vh,20px)!important;
+
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+  }
+
+  .screen::before{
+    top:clamp(16px,2vh,26px)!important;
+  }
+
+  h1{
+    font-size:clamp(42px,4vw,58px)!important;
+    line-height:1.02!important;
+    margin:4px 0 8px!important;
+  }
+
+  h2{
+    font-size:clamp(32px,3vw,42px)!important;
+    line-height:1.06!important;
+    margin:4px 0 8px!important;
+  }
+
+  h3{
+    font-size:clamp(22px,2vw,28px)!important;
+  }
+
+  .instruction{
+    font-size:clamp(20px,1.8vw,25px)!important;
+    line-height:1.34!important;
+    margin-bottom:clamp(9px,1.3vh,15px)!important;
+  }
+
+  .footer{
+    height:56px!important;
+    min-height:56px!important;
+    padding:0 clamp(16px,2vw,28px)!important;
+  }
+
+  .footer button{
+    min-height:38px!important;
+    padding:7px 12px!important;
+    font-size:15px!important;
+  }
+
+  .progress{
+    width:clamp(150px,16vw,225px)!important;
+  }
+
+
+  /* =======================================================
+     3. TYPOGRAPHY / CARDS
+     ======================================================= */
+
+  .question-line{
+    font-size:clamp(20px,1.8vw,25px)!important;
+    line-height:1.32!important;
+  }
+
+  .support-box p,
+  .speaker-match>div,
+  .vocab-panel span,
+  .rule-card,
+  .gap-grid>div,
+  .letter p,
+  .transcript{
+    font-size:clamp(18px,1.55vw,22px)!important;
+    line-height:1.4!important;
+  }
+
+  .question-card{
+    padding:12px 14px!important;
+  }
+
+  .poll-card,
+  .support-box,
+  .audio-block,
+  .mini-task,
+  .meaning-box,
+  .hint-box{
+    padding:13px!important;
+  }
+
+  .tabs{
+    margin:8px 0 11px!important;
+  }
+
+  .tab{
+    font-size:16px!important;
+    padding:8px 12px!important;
+  }
+
+
+  /* =======================================================
+     4. HERO / COVER
+     MEDIA-FIRST
+     ======================================================= */
+
+  .hero-grid{
+    grid-template-columns:
+      minmax(0,1.02fr)
+      minmax(0,.98fr)!important;
+
+    gap:clamp(18px,2vw,28px)!important;
+    align-items:center!important;
+  }
+
+  .hero-img{
+    width:100%!important;
+
+    height:
+      clamp(350px,55dvh,560px)!important;
+
+    max-height:none!important;
+
+    object-fit:cover!important;
+  }
+
+
+  /* =======================================================
+     5. VIDEO / MEDIA
+     MEDIA-FIRST
+     ======================================================= */
+
+  .media-layout{
+    grid-template-columns:
+      minmax(0,1.12fr)
+      minmax(270px,.88fr)!important;
+
+    gap:20px!important;
+    align-items:start!important;
+  }
+
+  .media-layout video,
+  video{
+    width:100%!important;
+
+    height:
+      clamp(350px,52dvh,520px)!important;
+
+    max-height:none!important;
+
+    object-fit:contain!important;
+
+    background:#000!important;
+  }
+
+  .layer-grid{
+    gap:8px!important;
+  }
+
+  .layer-card{
+    min-height:96px!important;
+    padding:13px!important;
+
+    font-size:
+      clamp(20px,1.8vw,25px)!important;
+  }
+
+
+  /* =======================================================
+     6. PHOTO / HOTSPOT / LISTENING
+     MEDIA-FIRST
+     ======================================================= */
+
+  .photo-layout,
+  .listening-layout,
+  .advice-layout{
+    grid-template-columns:
+      minmax(0,1.2fr)
+      minmax(280px,.8fr)!important;
+
+    gap:20px!important;
+    align-items:start!important;
+  }
+
+  .image-wrap>img,
+  .listening-layout>img{
+    width:100%!important;
+
+    height:
+      clamp(330px,52dvh,540px)!important;
+
+    max-height:none!important;
+
+    object-fit:contain!important;
+  }
+
+  .hotspot{
+    font-size:14px!important;
+    padding:5px 7px!important;
+  }
+
+  .hotspot-info{
+    font-size:16px!important;
+  }
+
+
+  /* =======================================================
+     7. AUDIO / LISTENING SUPPORT
+     ======================================================= */
+
+  .audio-block{
+    margin-bottom:8px!important;
+
+    font-size:
+      clamp(17px,1.4vw,19px)!important;
+  }
+
+  .speaker-match{
+    gap:7px!important;
+    margin:9px 0!important;
+  }
+
+  .speaker-match>div{
+    padding:9px 10px!important;
+  }
+
+  .confidence{
+    margin-top:8px!important;
+  }
+
+
+  /* =======================================================
+     8. TRANSCRIPT / LANGUAGE
+     ======================================================= */
+
+  .transcript{
+    max-height:
+      calc(100dvh - 245px)!important;
+
+    overflow:auto!important;
+    padding:16px!important;
+  }
+
+  .meaning-box{
+    margin-top:8px!important;
+  }
+
+  .rule-grid{
+    gap:7px!important;
+  }
+
+
+  /* =======================================================
+     9. EXERCISE 7 / SCREEN 9
+     ======================================================= */
+
+  .screen[data-screen="9"]{
+    padding-top:14px!important;
+  }
+
+  .screen[data-screen="9"] h2{
+    font-size:
+      clamp(30px,2.8vw,39px)!important;
+
+    margin-bottom:5px!important;
+  }
+
+  .screen[data-screen="9"] .instruction{
+    font-size:
+      clamp(19px,1.65vw,23px)!important;
+
+    line-height:1.31!important;
+
+    margin-bottom:7px!important;
+  }
+
+  .screen[data-screen="9"] .ex7-step{
+    padding:10px 12px!important;
+    margin-bottom:7px!important;
+  }
+
+  .screen[data-screen="9"] .step-title{
+    font-size:
+      clamp(20px,1.65vw,23px)!important;
+
+    margin-bottom:7px!important;
+  }
+
+  .screen[data-screen="9"] .candidate-grid{
+    grid-template-columns:
+      repeat(3,minmax(0,1fr))!important;
+
+    gap:7px!important;
+  }
+
+  .screen[data-screen="9"] .candidate-item{
+    padding:7px 9px!important;
+  }
+
+  .screen[data-screen="9"] .candidate-item label{
+    font-size:
+      clamp(17px,1.35vw,20px)!important;
+
+    line-height:1.22!important;
+  }
+
+  .screen[data-screen="9"] .item-check{
+    min-height:34px!important;
+    font-size:12px!important;
+    padding:5px 7px!important;
+  }
+
+  .screen[data-screen="9"] .matching-board{
+    grid-template-columns:
+      minmax(230px,.9fr)
+      minmax(0,1.4fr)!important;
+
+    gap:12px!important;
+  }
+
+  .screen[data-screen="9"] .match-item,
+  .screen[data-screen="9"] .definition-item{
+    font-size:
+      clamp(17px,1.35vw,20px)!important;
+
+    line-height:1.24!important;
+
+    padding:8px 10px!important;
+  }
+
+  .screen[data-screen="9"] .match-heading{
+    font-size:
+      clamp(19px,1.5vw,22px)!important;
+  }
+
+  .screen[data-screen="9"] .match-status{
+    font-size:
+      clamp(16px,1.25vw,19px)!important;
+
+    padding:8px 10px!important;
+  }
+
+
+  /* =======================================================
+     10. GAP / MATCH / LETTER
+     ======================================================= */
+
+  .gap-grid{
+    gap:8px!important;
+  }
+
+  .gap-grid>div{
+    padding:9px 11px!important;
+  }
+
+  .match-table{
+    gap:6px!important;
+  }
+
+  .match-table>div{
+    grid-template-columns:
+      minmax(130px,160px)
+      minmax(0,1fr)!important;
+
+    padding:7px 9px!important;
+
+    font-size:
+      clamp(16px,1.3vw,18px)!important;
+  }
+
+  .letter{
+    max-height:
+      calc(100dvh - 245px)!important;
+
+    overflow:auto!important;
+
+    padding:14px 18px!important;
+  }
+
+  .big-prompt{
+    font-size:
+      clamp(26px,2.5vw,33px)!important;
+
+    padding:17px!important;
+  }
+
+
+  /* =======================================================
+     11. CHALLENGE / EXIT / HOMEWORK
+     ======================================================= */
+
+  .challenge-grid{
+    gap:10px!important;
+  }
+
+  .challenge-card{
+    min-height:120px!important;
+    padding:15px!important;
+
+    font-size:
+      clamp(20px,1.7vw,23px)!important;
+  }
+
+  .exit-grid{
+    gap:10px!important;
+  }
+
+  .exit-grid>div{
+    padding:11px!important;
+  }
+
+  .exit-grid textarea{
+    min-height:80px!important;
+  }
+
+  .homework-card{
+    padding:18px!important;
+    max-width:min(100%,1000px)!important;
+  }
+
+  .homework-checks{
+    gap:9px!important;
+  }
+
+  .homework-checks span{
+    padding:9px!important;
+
+    font-size:
+      clamp(17px,1.45vw,20px)!important;
+  }
+
+
+  /* =======================================================
+     12. THANK YOU
+     ======================================================= */
+
+  .thankyou-screen{
+    min-height:100%!important;
+    height:100%!important;
+  }
+
+  .thankyou-screen h1{
+    font-size:
+      clamp(58px,6vw,82px)!important;
+
+    margin:8px 0 13px!important;
+  }
+
+  .thankyou-sub{
+    font-size:
+      clamp(23px,2.5vw,31px)!important;
+  }
+
+  .thankyou-note{
+    font-size:
+      clamp(20px,2vw,27px)!important;
+  }
+}
+
+
+/* =========================================================
+   13. LARGE DESKTOP / PROJECTOR
+   ========================================================= */
+
+@media (min-width:1400px){
+
+  .app{
+    grid-template-rows:
+      68px
+      minmax(0,1fr)
+      60px!important;
+  }
+
+  .screen{
+    padding:
+      22px
+      42px
+      18px!important;
+  }
+
+  .instruction{
+    font-size:24px!important;
+  }
+
+  .hero-img{
+    height:
+      clamp(420px,58dvh,620px)!important;
+  }
+
+  .media-layout video,
+  video{
+    height:
+      clamp(430px,58dvh,640px)!important;
+  }
+
+  .image-wrap>img,
+  .listening-layout>img{
+    height:
+      clamp(410px,58dvh,620px)!important;
+  }
+}
+
+
+/* =========================================================
+   14. SMALL LAPTOP / TABLET LANDSCAPE
+   ========================================================= */
+
+@media (min-width:768px) and (max-width:1099px){
+
+  .app{
+    grid-template-rows:
+      auto
+      minmax(0,1fr)
+      auto!important;
+
+    min-height:100dvh!important;
+  }
+
+  .topbar{
+    min-height:60px!important;
+    padding:8px 13px!important;
+  }
+
+  .course-title{
+    font-size:19px!important;
+  }
+
+  main{
+    overflow:visible!important;
+  }
+
+  .screen,
+  .screen.active{
+    min-height:
+      calc(100dvh - 124px)!important;
+
+    height:auto!important;
+
+    padding:
+      18px
+      16px
+      78px!important;
+
+    overflow:visible!important;
+  }
+
+  h1{
+    font-size:40px!important;
+  }
+
+  h2{
+    font-size:32px!important;
+  }
+
+  .instruction{
+    font-size:20px!important;
+  }
+
+  .hero-grid,
+  .media-layout,
+  .photo-layout,
+  .listening-layout,
+  .advice-layout{
+    grid-template-columns:
+      minmax(0,1fr)
+      minmax(250px,.9fr)!important;
+
+    gap:16px!important;
+  }
+
+  .hero-img,
+  .image-wrap>img,
+  .listening-layout>img{
+    width:100%!important;
+    height:auto!important;
+    max-height:none!important;
+  }
+
+  video{
+    width:100%!important;
+    height:auto!important;
+    max-height:none!important;
+  }
+
+  .exercise7{
+    grid-template-columns:1fr!important;
+  }
+
+  .screen[data-screen="9"] .matching-board{
+    grid-template-columns:
+      1fr
+      1.3fr!important;
+  }
+
+  .screen[data-screen="9"] .candidate-grid{
+    grid-template-columns:
+      repeat(2,minmax(0,1fr))!important;
+  }
+
+  .footer{
+    position:sticky!important;
+    bottom:0!important;
+    z-index:30!important;
+
+    min-height:60px!important;
+
+    padding:7px 12px!important;
+
+    box-shadow:
+      0
+      -8px
+      24px
+      rgba(18,63,52,.08)!important;
+  }
+}
+
+
+/* =========================================================
+   15. TABLET PORTRAIT / PHONE
+   ========================================================= */
+
+@media (max-width:767px){
+
+  .app{
+    display:grid!important;
+
+    grid-template-rows:
+      auto
+      1fr
+      auto!important;
+
+    min-height:100dvh!important;
+  }
+
+  .topbar{
+    min-height:54px!important;
+
+    padding:
+      7px
+      10px!important;
+
+    gap:7px!important;
+  }
+
+  .topbar>div:first-child{
+    min-width:0!important;
+    flex:1!important;
+  }
+
+  .course-title{
+    font-size:17px!important;
+
+    white-space:nowrap!important;
+
+    overflow:hidden!important;
+
+    text-overflow:ellipsis!important;
+  }
+
+  .eyebrow{
+    font-size:10px!important;
+  }
+
+  .review-badge{
+    font-size:9px!important;
+    padding:5px 6px!important;
+  }
+
+  main{
+    overflow:visible!important;
+  }
+
+  .screen,
+  .screen.active{
+    min-height:
+      calc(100dvh - 112px)!important;
+
+    height:auto!important;
+
+    padding:
+      14px
+      11px
+      80px!important;
+
+    overflow:visible!important;
+  }
+
+  .screen::before{
+    width:4px!important;
+    height:44px!important;
+    left:4px!important;
+    top:15px!important;
+  }
+
+  h1{
+    font-size:33px!important;
+    line-height:1.05!important;
+  }
+
+  h2{
+    font-size:27px!important;
+    line-height:1.1!important;
+  }
+
+  h3{
+    font-size:21px!important;
+  }
+
+  .instruction{
+    font-size:18px!important;
+    line-height:1.4!important;
+    margin-bottom:12px!important;
+  }
+
+  .hero-grid,
+  .media-layout,
+  .photo-layout,
+  .listening-layout,
+  .advice-layout,
+  .exercise7,
+  .layer-grid,
+  .speaker-match,
+  .rule-grid,
+  .check-grid,
+  .gap-grid,
+  .challenge-grid,
+  .exit-grid,
+  .homework-checks,
+  .matching-board,
+  .candidate-grid{
+    grid-template-columns:1fr!important;
+  }
+
+  .hero-img,
+  .image-wrap>img,
+  .listening-layout>img,
+  video{
+    width:100%!important;
+    height:auto!important;
+    max-height:none!important;
+    object-fit:contain!important;
+  }
+
+  .question-line,
+  .transcript,
+  .big-prompt,
+  .support-box p,
+  .speaker-match>div,
+  .vocab-panel span,
+  .rule-card,
+  .gap-grid>div,
+  .letter p{
+    font-size:18px!important;
+    line-height:1.43!important;
+  }
+
+  .question-card,
+  .poll-card,
+  .support-box,
+  .audio-block,
+  .mini-task,
+  .meaning-box,
+  .hint-box,
+  .homework-card{
+    padding:11px!important;
+  }
+
+  .poll-options,
+  .tabs,
+  .hint-row,
+  .confidence{
+    gap:7px!important;
+  }
+
+  .poll-btn,
+  .timer-btn,
+  .support-toggle,
+  .hint-btn,
+  .tab,
+  .confidence button{
+    min-height:44px!important;
+    padding:9px 11px!important;
+  }
+
+  .screen[data-screen="9"] .candidate-grid{
+    grid-template-columns:1fr!important;
+  }
+
+  .screen[data-screen="9"] .matching-board{
+    grid-template-columns:1fr!important;
+  }
+
+  .match-table>div{
+    grid-template-columns:1fr!important;
+  }
+
+  .letter{
+    max-height:none!important;
+  }
+
+  .footer{
+    position:sticky!important;
+    bottom:0!important;
+    z-index:30!important;
+
+    min-height:58px!important;
+    height:auto!important;
+
+    padding:6px 8px!important;
+  }
+
+  .footer button{
+    font-size:13px!important;
+    padding:7px 9px!important;
+  }
+
+  .progress-wrap{
+    gap:6px!important;
+  }
+
+  .progress{
+    width:80px!important;
+  }
+
+  #counter{
+    font-size:11px!important;
+  }
+
+  .thankyou-screen h1{
+    font-size:52px!important;
+  }
+
+  .thankyou-sub{
+    font-size:22px!important;
+  }
+
+  .thankyou-note{
+    font-size:19px!important;
+  }
+}
+
+
+/* =========================================================
+   16. SHORT LAPTOP / EMBEDDED HOST
+   MEDIA-FIRST:
+   shrink chrome and spacing before shrinking media.
+   ========================================================= */
+
+@media (min-width:1100px) and (max-height:820px){
+
+  .app{
+    grid-template-rows:
+      54px
+      minmax(0,1fr)
+      48px!important;
+  }
+
+  .topbar{
+    min-height:54px!important;
+    height:54px!important;
+  }
+
+  .course-title{
+    font-size:19px!important;
+  }
+
+  .review-badge{
+    padding:4px 7px!important;
+  }
+
+  .screen{
+    padding:
+      10px
+      26px
+      8px!important;
+
+    overflow-y:auto!important;
+  }
+
+  .screen::before{
+    top:11px!important;
+    height:42px!important;
+  }
+
+  h1{
+    font-size:40px!important;
+    margin:2px 0 5px!important;
+  }
+
+  h2{
+    font-size:30px!important;
+    margin:2px 0 5px!important;
+  }
+
+  h3{
+    font-size:21px!important;
+  }
+
+  .instruction{
+    font-size:18px!important;
+    line-height:1.28!important;
+    margin-bottom:6px!important;
+  }
+
+  .question-line{
+    font-size:19px!important;
+  }
+
+  .question-card{
+    padding:8px 10px!important;
+  }
+
+  .support-box p,
+  .speaker-match>div,
+  .vocab-panel span,
+  .rule-card,
+  .gap-grid>div,
+  .letter p,
+  .transcript{
+    font-size:17px!important;
+  }
+
+
+  /* IMPORTANT:
+     Media remains visibly large on short laptop screens.
+     Controlled scrolling is preferred over tiny media.
+  */
+
+  .hero-img{
+    height:
+      clamp(320px,50dvh,440px)!important;
+
+    max-height:none!important;
+  }
+
+  .media-layout video,
+  video{
+    height:
+      clamp(330px,50dvh,450px)!important;
+
+    max-height:none!important;
+  }
+
+  .image-wrap>img,
+  .listening-layout>img{
+    height:
+      clamp(310px,48dvh,440px)!important;
+
+    max-height:none!important;
+  }
+
+  .layer-card{
+    min-height:78px!important;
+    font-size:19px!important;
+    padding:9px 11px!important;
+  }
+
+  .transcript{
+    max-height:
+      calc(100dvh - 205px)!important;
+
+    padding:12px!important;
+  }
+
+  .letter{
+    max-height:
+      calc(100dvh - 205px)!important;
+  }
+
+  .screen[data-screen="9"]{
+    padding-top:7px!important;
+  }
+
+  .screen[data-screen="9"] h2{
+    font-size:28px!important;
+  }
+
+  .screen[data-screen="9"] .instruction{
+    font-size:18px!important;
+    margin-bottom:4px!important;
+  }
+
+  .screen[data-screen="9"] .ex7-step{
+    padding:7px 9px!important;
+    margin-bottom:5px!important;
+  }
+
+  .screen[data-screen="9"] .step-title{
+    font-size:18px!important;
+    margin-bottom:4px!important;
+  }
+
+  .screen[data-screen="9"] .candidate-item label,
+  .screen[data-screen="9"] .match-item,
+  .screen[data-screen="9"] .definition-item{
+    font-size:16px!important;
+  }
+
+  .footer{
+    height:48px!important;
+    min-height:48px!important;
+  }
+
+  .footer button{
+    min-height:34px!important;
+    padding:5px 9px!important;
+    font-size:14px!important;
+  }
+
+  .thankyou-screen h1{
+    font-size:56px!important;
+  }
+}
+
+
+/* =========================================================
+   17. VERY SMALL PHONE
+   ========================================================= */
+
+@media (max-width:390px){
+
+  .review-badge{
+    display:none!important;
+  }
+
+  .progress{
+    display:none!important;
+  }
+
+  .footer{
+    justify-content:space-between!important;
+  }
+
+  .course-title{
+    font-size:15px!important;
+  }
+}
