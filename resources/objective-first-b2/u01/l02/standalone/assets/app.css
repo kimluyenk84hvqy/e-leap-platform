@@ -1520,3 +1520,107 @@ footer{
     font-size:17px!important;
   }
 }
+
+/* =========================================================
+   U1.2 – SCREEN 4 VIDEO CROP / PRESENTATION SPACE FIX
+   Checking the previous lesson
+   ========================================================= */
+
+/* Mở rộng phần video, thu gọn vừa phải cột bên phải */
+body[data-screen="4"] .video-round-shell{
+  display:grid !important;
+  grid-template-columns: minmax(0, 1.75fr) minmax(230px, 0.72fr) !important;
+  gap:18px !important;
+  align-items:start !important;
+}
+
+/* Giữ cột phải gọn hơn để không bị mất phần nội dung */
+body[data-screen="4"] .video-round-side{
+  min-width:0 !important;
+}
+
+/* Khung video */
+body[data-screen="4"] .video-round-main{
+  min-width:0 !important;
+}
+
+body[data-screen="4"] .video-round-main video,
+body[data-screen="4"] #roundVideo{
+  width:100% !important;
+  max-width:100% !important;
+  aspect-ratio:16 / 9 !important;
+  height:auto !important;
+  display:block !important;
+  border-radius:22px !important;
+  background:#000 !important;
+  object-fit:cover !important;
+  object-position:center center !important;
+}
+
+/* Crop bớt 2 viền đen hai bên theo kiểu hiển thị */
+body[data-screen="4"] .video-round-main{
+  overflow:hidden !important;
+  border-radius:22px !important;
+  background:#000 !important;
+}
+
+/* Zoom nhẹ để "ăn" vào 2 viền đen bên trái/phải */
+body[data-screen="4"] .video-round-main video,
+body[data-screen="4"] #roundVideo{
+  transform:scale(1.12) !important;
+  transform-origin:center center !important;
+}
+
+/* Giảm bớt khoảng đen phía trên nếu có */
+body[data-screen="4"] .video-round-main{
+  padding-top:0 !important;
+}
+
+/* Panel bên phải gọn hơn một chút ở presentation */
+body.presentation[data-screen="4"] .video-round-shell{
+  grid-template-columns: minmax(0, 1.9fr) 248px !important;
+  gap:16px !important;
+}
+
+/* Các nút điều hướng video nhỏ gọn hơn để không chiếm chỗ */
+body[data-screen="4"] .round-controls{
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:10px !important;
+}
+
+body[data-screen="4"] .round-controls button{
+  min-height:52px !important;
+  padding:10px 12px !important;
+  font-size:15px !important;
+  line-height:1.2 !important;
+}
+
+/* Box answer gọn hơn nhưng vẫn rõ */
+body[data-screen="4"] .video-round-answer input{
+  min-height:56px !important;
+  font-size:18px !important;
+}
+
+/* Dots gọn hơn */
+body[data-screen="4"] .round-dots{
+  gap:8px !important;
+}
+
+body[data-screen="4"] .round-dot{
+  width:54px !important;
+  height:54px !important;
+  font-size:26px !important;
+}
+
+/* Nếu màn hình thấp thì cho video ăn thêm diện tích */
+@media (max-height: 900px){
+  body[data-screen="4"] .video-round-shell{
+    grid-template-columns: minmax(0, 1.95fr) 235px !important;
+  }
+
+  body[data-screen="4"] .video-round-main video,
+  body[data-screen="4"] #roundVideo{
+    transform:scale(1.14) !important;
+  }
+}
