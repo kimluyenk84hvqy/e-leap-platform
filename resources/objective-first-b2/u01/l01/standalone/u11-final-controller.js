@@ -1,20 +1,36 @@
 /* =========================================================
-   E-LEAP U1.1 — CLEAN FINAL CONTROLLER v7.0
+   E-LEAP U1.1 — SLIDE 9 FINAL CLEAN CONTROLLER v8.0
 
-   ONLY owns:
-   - Slide 9 Step 1
-   - Slide 9 Step 2
-   - Slide 12 role actions
-   - Slide 13 teacher correction
+   This file now owns ONLY Slide 9.
 
-   This controller is loaded:
-   app.js
-   -> u11-final-controller.js
-   -> ui-alignment.js
-   -> e-leap-bridge.js
+   STEP 1
+   STUDENT:
+   - Tick phrasal verbs
+   - Check -> score only
+   - NO answer key
+   - Reset clears all
 
-   Its capture handlers intentionally block conflicting
-   legacy listeners on these specific screens.
+   TEACHER:
+   - Check -> correction mode
+   - Click one phrasal verb -> HEARD / NOT HEARD
+   - Previous answers remain
+   - Reset clears all
+
+   STEP 2
+   STUDENT:
+   - a–i Phrasal verbs
+   - 1–9 Definitions
+   - Type definition number for each a–i
+   - Check -> score only
+   - NO answer key
+   - Reset clears all
+
+   TEACHER:
+   - Check -> correction mode
+   - Click one phrasal verb a–i
+   - Correct numbered definition highlights
+   - Previous pairs remain
+   - Reset clears all
    ========================================================= */
 
 (function () {
@@ -26,23 +42,74 @@
   const $$ = (s, r = document) =>
     [...r.querySelectorAll(s)];
 
-  function activeScreen() {
-    return $('.screen.active');
-  }
 
-  function screenNo() {
-    return Number(
-      activeScreen()?.dataset.screen || 0
-    );
-  }
+  /* =======================================================
+     DATA — FROM ORIGINAL U1.1
+     ======================================================= */
 
-  function studentMode() {
+  const STEP1 = [
+    { text:'cut down',     heard:true  },
+    { text:'dress up',     heard:true  },
+    { text:'fit in with',  heard:false },
+    { text:'go out',       heard:true  },
+    { text:'keep up with', heard:true  },
+    { text:'pull on',      heard:false },
+    { text:'put together', heard:true  },
+    { text:'save up',      heard:true  },
+    { text:'slip on',      heard:true  },
+    { text:'stand out',    heard:true  },
+    { text:'take back',    heard:true  }
+  ];
+
+
+  /*
+    FINAL FORMAT:
+
+    a–i = Phrasal verbs
+
+    1–9 = Definitions
+
+    Student types NUMBER
+    corresponding to each letter.
+  */
+
+  const VERBS = [
+    { letter:'a', text:'cut down',     answer:6 },
+    { letter:'b', text:'dress up',     answer:4 },
+    { letter:'c', text:'go out',       answer:8 },
+    { letter:'d', text:'keep up with', answer:9 },
+    { letter:'e', text:'put together', answer:2 },
+    { letter:'f', text:'save up',      answer:5 },
+    { letter:'g', text:'slip on',      answer:7 },
+    { letter:'h', text:'stand out',    answer:1 },
+    { letter:'i', text:'take back',    answer:3 }
+  ];
+
+
+  const DEFINITIONS = [
+    { no:1, text:'be easy to see or notice' },
+    { no:2, text:'create something by joining or combining different things' },
+    { no:3, text:'return something' },
+    { no:4, text:'wear smarter clothes than usual' },
+    { no:5, text:'keep money for something in the future' },
+    { no:6, text:'reduce' },
+    { no:7, text:'put something on quickly' },
+    { no:8, text:'go somewhere for entertainment' },
+    { no:9, text:'understand something that is changing fast' }
+  ];
+
+
+  /* =======================================================
+     ROLE
+     ======================================================= */
+
+  function isStudent() {
     return document.body.classList.contains(
       'u11-student'
     );
   }
 
-  function teacherMode() {
+  function isTeacher() {
     return (
       document.body.classList.contains(
         'u11-teacher'
@@ -55,308 +122,131 @@
 
 
   /* =======================================================
-     COMMON MESSAGE
+     SCREEN
      ======================================================= */
 
-  function removeMessage(screen) {
-    $('.u11-clean-message', screen)
-      ?.remove();
-  }
-
-  function message(
-    screen,
-    text,
-    type = 'info'
-  ) {
-    if (!screen) return;
-
-    removeMessage(screen);
-
-    const box =
-      document.createElement('div');
-
-    box.className =
-      `u11-clean-message ${type}`;
-
-    box.textContent = text;
-
-    screen.appendChild(box);
+  function screen9() {
+    return $('.screen[data-screen="9"]');
   }
 
 
   /* =======================================================
-     ACTION BAR
+     BUILD SLIDE 9 COMPLETELY
      ======================================================= */
 
-  function ensureActions(screen) {
+  function buildSlide9() {
+    const screen = screen9();
+
     if (!screen) return;
 
-    let bar =
-      $('.u11-actionbar', screen);
 
-    if (!bar) {
-      bar =
-        document.createElement('div');
+    /*
+      Do not depend on old Slide 9 DOM.
+      Rebuild only this screen.
+    */
 
-      bar.className =
-        'u11-actionbar';
+    screen.innerHTML = `
+      <div class="stage-label">
+        EXERCISE 7 · LISTENING + MATCHING
+      </div>
 
-      screen.appendChild(bar);
-    }
+      <h2>
+        Listen, identify, then match
+      </h2>
 
-    if (!$('#u11Check', bar)) {
-      const check =
-        document.createElement('button');
-
-      check.type = 'button';
-      check.id = 'u11Check';
-      check.className = 'u11-check';
-      check.textContent = 'Check';
-
-      bar.appendChild(check);
-    }
-
-    if (!$('#u11Reset', bar)) {
-      const reset =
-        document.createElement('button');
-
-      reset.type = 'button';
-      reset.id = 'u11Reset';
-      reset.textContent = 'Reset';
-
-      bar.appendChild(reset);
-    }
-  }
-
-
-  /* =======================================================
-     SLIDE 9 — CLEAN REBUILD
-     ======================================================= */
-
-  const STEP1_ITEMS = [
-    ['cut down', true],
-    ['dress up', true],
-    ['fit in with', false],
-    ['go out', true],
-    ['keep up with', true],
-    ['pull on', false],
-    ['put together', true],
-    ['save up', true],
-    ['slip on', true],
-    ['stand out', true],
-    ['take back', true]
-  ];
-
-
-  /*
-    FINAL STEP 2 FORMAT LOCKED BY USER:
-
-    LEFT:
-    a–i = Phrasal verbs
-
-    MIDDLE:
-    1–9 = Definitions
-
-    RIGHT:
-    a. [student types definition number]
-    ...
-    i. [student types definition number]
-  */
-
-  const VERBS = [
-    {
-      letter: 'a',
-      text: 'cut down',
-      answer: 6
-    },
-    {
-      letter: 'b',
-      text: 'dress up',
-      answer: 4
-    },
-    {
-      letter: 'c',
-      text: 'go out',
-      answer: 8
-    },
-    {
-      letter: 'd',
-      text: 'keep up with',
-      answer: 9
-    },
-    {
-      letter: 'e',
-      text: 'put together',
-      answer: 2
-    },
-    {
-      letter: 'f',
-      text: 'save up',
-      answer: 5
-    },
-    {
-      letter: 'g',
-      text: 'slip on',
-      answer: 7
-    },
-    {
-      letter: 'h',
-      text: 'stand out',
-      answer: 1
-    },
-    {
-      letter: 'i',
-      text: 'take back',
-      answer: 3
-    }
-  ];
-
-
-  const DEFINITIONS = [
-    {
-      number: 1,
-      text: 'be easy to see or notice'
-    },
-    {
-      number: 2,
-      text: 'create something by joining or combining different things'
-    },
-    {
-      number: 3,
-      text: 'return something'
-    },
-    {
-      number: 4,
-      text: 'wear smarter clothes than usual'
-    },
-    {
-      number: 5,
-      text: 'keep money for something in the future'
-    },
-    {
-      number: 6,
-      text: 'reduce'
-    },
-    {
-      number: 7,
-      text: 'put something on quickly'
-    },
-    {
-      number: 8,
-      text: 'go somewhere for entertainment'
-    },
-    {
-      number: 9,
-      text: 'understand something that is changing fast'
-    }
-  ];
-
-
-  function rebuildSlide9() {
-    const screen =
-      $('.screen[data-screen="9"]');
-
-    if (
-      !screen ||
-      screen.dataset.cleanV7 === '1'
-    ) {
-      return;
-    }
-
-    screen.dataset.cleanV7 = '1';
-    screen.dataset.cleanStep = '1';
-
-    const heading =
-      $('h2', screen)
-        ?.outerHTML ||
-      '<h2>Exercise 7</h2>';
-
-    const label =
-      $('.stage-label', screen)
-        ?.outerHTML ||
-      '<div class="stage-label">EXERCISE 7</div>';
-
-    const instruction = `
-      <p class="instruction"
-         id="u11S9Instruction">
+      <p
+        class="instruction"
+        id="s9Instruction">
         Listen again to Speakers 2–5 and identify
         the phrasal verbs you hear.
       </p>
-    `;
 
-    screen.innerHTML = `
-      ${label}
-      ${heading}
-      ${instruction}
 
-      <div class="u11-clean-tabs">
+      <div class="s9-tabs">
+
         <button
           type="button"
-          class="u11-clean-tab active"
-          data-clean-step="1">
+          class="s9-tab active"
+          data-step="1">
           Step 1
         </button>
 
         <button
           type="button"
-          class="u11-clean-tab"
-          data-clean-step="2">
+          class="s9-tab"
+          data-step="2">
           Step 2
         </button>
+
       </div>
 
-      <div
-        class="u11-clean-step"
-        data-clean-panel="1">
+
+      <!-- ================================================
+           STEP 1
+           ================================================ -->
+
+      <section
+        class="s9-panel"
+        data-panel="1">
 
         <div class="step-title">
           <span>STEP 1</span>
           Which phrasal verbs do you hear?
         </div>
 
-        <div class="u11-s9-listen-grid">
-          ${STEP1_ITEMS.map(
-            ([text, heard], index) => `
+        <div class="s9-heard-grid">
+
+          ${STEP1.map((item, index) => `
+            <div
+              class="s9-heard-item"
+              data-heard="${item.heard ? 'yes' : 'no'}"
+              data-index="${index}">
+
+              <label>
+
+                <input
+                  type="checkbox"
+                  class="s9-student-check">
+
+                <span>
+                  ${item.text}
+                </span>
+
+              </label>
+
               <div
-                class="u11-s9-listen-item"
-                data-heard="${heard ? 'yes' : 'no'}"
-                data-item="${index + 1}">
-
-                <label>
-                  <input
-                    type="checkbox"
-                    class="u11-s9-listen-check">
-
-                  <span>
-                    ${text}
-                  </span>
-                </label>
-
-                <div
-                  class="u11-s9-teacher-key"
-                  hidden>
-                </div>
-
+                class="s9-teacher-answer">
               </div>
-            `
-          ).join('')}
+
+            </div>
+          `).join('')}
+
         </div>
 
-      </div>
+      </section>
 
-      <div
-        class="u11-clean-step"
-        data-clean-panel="2"
+
+      <!-- ================================================
+           STEP 2
+           ================================================ -->
+
+      <section
+        class="s9-panel"
+        data-panel="2"
         hidden>
 
         <div class="step-title">
           <span>STEP 2</span>
-          Match the phrasal verbs to definitions 1–9.
+          Match phrasal verbs a–i with definitions 1–9.
         </div>
 
-        <div class="u11-s9-match-board">
 
-          <div class="u11-s9-col">
+        <div class="s9-match-layout">
+
+
+          <!-- LEFT -->
+          <div class="s9-column">
+
             <div class="match-heading">
               Phrasal verbs
             </div>
@@ -364,53 +254,68 @@
             ${VERBS.map(v => `
               <button
                 type="button"
-                class="u11-s9-verb"
+                class="s9-verb"
                 data-letter="${v.letter}"
                 data-answer="${v.answer}">
+
                 <b>${v.letter}.</b>
-                ${v.text}
+                <span>${v.text}</span>
+
               </button>
             `).join('')}
+
           </div>
 
 
-          <div class="u11-s9-col">
+          <!-- MIDDLE -->
+          <div class="s9-column">
+
             <div class="match-heading">
               Definitions
             </div>
 
             ${DEFINITIONS.map(d => `
               <div
-                class="u11-s9-definition"
-                data-number="${d.number}">
-                <b>${d.number}.</b>
-                <span>${d.text}</span>
+                class="s9-definition"
+                data-number="${d.no}">
+
+                <b>${d.no}.</b>
+
+                <span>
+                  ${d.text}
+                </span>
+
               </div>
             `).join('')}
+
           </div>
 
 
+          <!-- RIGHT — STUDENT ONLY -->
           <div
-            class="u11-s9-col
-                   u11-s9-student-answer-col">
+            class="s9-column
+                   s9-answer-column">
 
             <div class="match-heading">
               Your answer
             </div>
 
             ${VERBS.map(v => `
-              <div class="u11-s9-answer-row">
+              <div class="s9-answer-row">
 
                 <b>${v.letter}.</b>
 
                 <input
                   type="number"
-                  inputmode="numeric"
                   min="1"
                   max="9"
-                  class="u11-s9-answer-input"
+                  inputmode="numeric"
+
+                  class="s9-answer-input"
+
                   data-letter="${v.letter}"
                   data-answer="${v.answer}"
+
                   placeholder="No.">
 
               </div>
@@ -420,143 +325,237 @@
 
         </div>
 
-      </div>
+      </section>
 
-      <div class="u11-actionbar">
+
+      <!-- ================================================
+           SLIDE 9 OWN ACTIONS
+           ================================================ -->
+
+      <div class="s9-actions">
 
         <button
           type="button"
-          class="u11-check"
-          id="u11Check">
+          id="s9Check">
           Check
         </button>
 
         <button
           type="button"
-          id="u11Reset">
+          id="s9Reset">
           Reset
         </button>
 
       </div>
+
+
+      <div
+        class="s9-feedback"
+        id="s9Feedback">
+      </div>
     `;
-  }
 
+    screen.dataset.s9Step = '1';
 
-  function s9Step() {
-    const screen =
-      $('.screen[data-screen="9"]');
+    applyRole();
 
-    return Number(
-      screen?.dataset.cleanStep || 1
-    );
-  }
-
-
-  function changeS9Step(step) {
-    const screen =
-      $('.screen[data-screen="9"]');
-
-    if (!screen) return;
-
-    screen.dataset.cleanStep =
-      String(step);
-
-    $$('.u11-clean-tab', screen)
-      .forEach(btn => {
-        btn.classList.toggle(
-          'active',
-          Number(
-            btn.dataset.cleanStep
-          ) === step
-        );
-      });
-
-    $$(
-      '[data-clean-panel]',
-      screen
-    ).forEach(panel => {
-      panel.hidden =
-        Number(
-          panel.dataset.cleanPanel
-        ) !== step;
-    });
-
-    const instruction =
-      $('#u11S9Instruction', screen);
-
-    if (instruction) {
-      instruction.textContent =
-        step === 1
-          ? 'Listen again to Speakers 2–5 and identify the phrasal verbs you hear.'
-          : 'Match phrasal verbs a–i with definitions 1–9. Students type the correct definition number for each phrasal verb.';
-    }
-
-    removeMessage(screen);
-
-    delete screen.dataset.teacherCheck;
-
-    const check =
-      $('#u11Check', screen);
-
-    if (check) {
-      check.textContent = 'Check';
-      check.classList.remove(
-        'clean-check-on'
-      );
-    }
+    bindSlide9();
   }
 
 
   /* =======================================================
-     S9 STUDENT STEP 1
-     SCORE ONLY — NO ANSWER KEY
+     ROLE UI
+     ======================================================= */
+
+  function applyRole() {
+    const screen = screen9();
+
+    if (!screen) return;
+
+
+    /*
+      TEACHER:
+      no checkboxes
+    */
+
+    $$('.s9-student-check', screen)
+      .forEach(input => {
+        input.disabled =
+          isTeacher();
+      });
+
+
+    /*
+      Student answer column only
+    */
+
+    const answerColumn =
+      $('.s9-answer-column', screen);
+
+    if (answerColumn) {
+      answerColumn.style.display =
+        isStudent()
+          ? ''
+          : 'none';
+    }
+
+
+    /*
+      Teacher display uses 2 columns.
+      Student display uses 3.
+    */
+
+    screen.classList.toggle(
+      's9-role-student',
+      isStudent()
+    );
+
+    screen.classList.toggle(
+      's9-role-teacher',
+      isTeacher()
+    );
+  }
+
+
+  /* =======================================================
+     CHANGE STEP
+     ======================================================= */
+
+  function setStep(step) {
+    const screen = screen9();
+
+    if (!screen) return;
+
+    screen.dataset.s9Step =
+      String(step);
+
+
+    $$('.s9-tab', screen)
+      .forEach(btn => {
+
+        btn.classList.toggle(
+          'active',
+          Number(btn.dataset.step) === step
+        );
+      });
+
+
+    $$('.s9-panel', screen)
+      .forEach(panel => {
+
+        panel.hidden =
+          Number(panel.dataset.panel) !== step;
+      });
+
+
+    const instruction =
+      $('#s9Instruction', screen);
+
+    if (instruction) {
+
+      instruction.textContent =
+        step === 1
+
+          ? 'Listen again to Speakers 2–5 and identify the phrasal verbs you hear.'
+
+          : 'Match phrasal verbs a–i with definitions 1–9. Type the correct definition number for each phrasal verb.';
+    }
+
+
+    clearFeedback();
+
+    disarmTeacher();
+  }
+
+
+  /* =======================================================
+     FEEDBACK
+     ======================================================= */
+
+  function clearFeedback() {
+    const box =
+      $('#s9Feedback', screen9());
+
+    if (!box) return;
+
+    box.textContent = '';
+    box.className =
+      's9-feedback';
+  }
+
+
+  function showFeedback(
+    text,
+    type
+  ) {
+    const box =
+      $('#s9Feedback', screen9());
+
+    if (!box) return;
+
+    box.textContent = text;
+
+    box.className =
+      `s9-feedback ${type}`;
+  }
+
+
+  /* =======================================================
+     STUDENT STEP 1 CHECK
+     SCORE ONLY
      ======================================================= */
 
   function studentCheckStep1() {
-    const screen =
-      $('.screen[data-screen="9"]');
-
-    const items =
-      $$('.u11-s9-listen-item', screen);
+    const screen = screen9();
 
     let correct = 0;
 
+    const items =
+      $$('.s9-heard-item', screen);
+
     items.forEach(item => {
+
       const selected =
-        $('.u11-s9-listen-check', item)
-          ?.checked || false;
+        $('.s9-student-check', item)
+          .checked;
 
       const expected =
         item.dataset.heard === 'yes';
 
-      if (selected === expected) {
+      if (
+        selected === expected
+      ) {
         correct++;
       }
     });
 
-    message(
-      screen,
+
+    /*
+      NEVER reveal individual answer.
+    */
+
+    showFeedback(
       `You got ${correct}/${items.length} correct.`,
-      'score'
+      'student-score'
     );
   }
 
 
   /* =======================================================
-     S9 STUDENT STEP 2
-     SCORE ONLY — NO ANSWER KEY
+     STUDENT STEP 2 CHECK
+     SCORE ONLY
      ======================================================= */
 
   function studentCheckStep2() {
-    const screen =
-      $('.screen[data-screen="9"]');
-
-    const inputs =
-      $$('.u11-s9-answer-input', screen);
+    const screen = screen9();
 
     let correct = 0;
 
+    const inputs =
+      $$('.s9-answer-input', screen);
+
     inputs.forEach(input => {
+
       if (
         String(input.value).trim() ===
         String(input.dataset.answer)
@@ -565,60 +564,100 @@
       }
     });
 
-    message(
-      screen,
+
+    /*
+      NEVER show which answers are correct.
+    */
+
+    showFeedback(
       `You got ${correct}/${inputs.length} correct.`,
-      'score'
+      'student-score'
     );
   }
 
 
   /* =======================================================
-     S9 TEACHER CHECK
+     TEACHER CHECK MODE
      ======================================================= */
 
-  function armTeacherS9() {
-    const screen =
-      $('.screen[data-screen="9"]');
-
-    if (!screen) return;
+  function armTeacher() {
+    const screen = screen9();
 
     screen.dataset.teacherCheck =
       'on';
 
     const check =
-      $('#u11Check', screen);
+      $('#s9Check', screen);
 
     if (check) {
+
       check.textContent =
         '✓ Check mode ON';
 
       check.classList.add(
-        'clean-check-on'
+        'active'
       );
     }
 
-    message(
-      screen,
-      s9Step() === 1
-        ? 'Click each phrasal verb to show HEARD or NOT HEARD.'
-        : 'Click each phrasal verb a–i to highlight its correct numbered definition.',
-      'teacher'
-    );
+
+    if (
+      Number(
+        screen.dataset.s9Step
+      ) === 1
+    ) {
+
+      showFeedback(
+        'Click each phrasal verb to reveal HEARD or NOT HEARD.',
+        'teacher-note'
+      );
+
+    } else {
+
+      showFeedback(
+        'Click each phrasal verb a–i to reveal its matching definition.',
+        'teacher-note'
+      );
+    }
+  }
+
+
+  function disarmTeacher() {
+    const screen = screen9();
+
+    if (!screen) return;
+
+    delete screen.dataset.teacherCheck;
+
+    const check =
+      $('#s9Check', screen);
+
+    if (check) {
+
+      check.textContent =
+        'Check';
+
+      check.classList.remove(
+        'active'
+      );
+    }
   }
 
 
   /* =======================================================
-     S9 TEACHER STEP 1
+     TEACHER STEP 1
      ======================================================= */
 
-  function teacherRevealS9Step1(item) {
+  function revealHeard(item) {
     const answer =
-      $('.u11-s9-teacher-key', item);
+      $('.s9-teacher-answer', item);
 
     if (!answer) return;
 
-    answer.hidden = false;
+
+    /*
+      THIS is the only point where
+      HEARD / NOT HEARD becomes visible.
+    */
 
     answer.textContent =
       item.dataset.heard === 'yes'
@@ -626,20 +665,17 @@
         : 'NOT HEARD';
 
     item.classList.add(
-      'teacher-revealed'
+      'revealed'
     );
   }
 
 
   /* =======================================================
-     S9 TEACHER STEP 2
+     TEACHER STEP 2
      ======================================================= */
 
-  function teacherRevealS9Step2(verb) {
-    const screen =
-      $('.screen[data-screen="9"]');
-
-    if (!screen) return;
+  function revealPair(verb) {
+    const screen = screen9();
 
     const number =
       Number(
@@ -648,780 +684,356 @@
 
     const definition =
       $(
-        `.u11-s9-definition[data-number="${number}"]`,
+        `.s9-definition[data-number="${number}"]`,
         screen
       );
 
     if (!definition) return;
 
+
+    /*
+      Preserve previous pairs.
+    */
+
     verb.classList.add(
-      'teacher-paired'
+      'paired'
     );
 
     definition.classList.add(
-      'teacher-paired'
+      'paired'
     );
 
+
     if (
-      !$('.u11-s9-pair-label', definition)
+      !$('.s9-pair-badge', definition)
     ) {
-      const answer =
+
+      const badge =
         document.createElement('div');
 
-      answer.className =
-        'u11-s9-pair-label';
+      badge.className =
+        's9-pair-badge';
 
-      answer.textContent =
+      badge.textContent =
         `${verb.dataset.letter} = ${number}`;
 
-      definition.appendChild(answer);
+      definition.appendChild(
+        badge
+      );
     }
   }
 
 
   /* =======================================================
-     S9 RESET
+     RESET
      ======================================================= */
 
   function resetSlide9() {
-    const screen =
-      $('.screen[data-screen="9"]');
+    const screen = screen9();
 
     if (!screen) return;
 
-    delete screen.dataset.teacherCheck;
+    disarmTeacher();
+    clearFeedback();
 
-    removeMessage(screen);
 
-    const check =
-      $('#u11Check', screen);
+    /*
+      Step 1 Student
+    */
 
-    if (check) {
-      check.textContent = 'Check';
-
-      check.classList.remove(
-        'clean-check-on'
-      );
-    }
-
-    $$('.u11-s9-listen-check', screen)
+    $$('.s9-student-check', screen)
       .forEach(input => {
         input.checked = false;
       });
 
-    $$('.u11-s9-listen-item', screen)
+
+    /*
+      Step 1 Teacher
+    */
+
+    $$('.s9-heard-item', screen)
       .forEach(item => {
+
         item.classList.remove(
-          'teacher-revealed'
+          'revealed'
         );
 
         const answer =
-          $('.u11-s9-teacher-key', item);
+          $('.s9-teacher-answer', item);
 
         if (answer) {
-          answer.hidden = true;
           answer.textContent = '';
         }
       });
 
-    $$('.u11-s9-answer-input', screen)
+
+    /*
+      Step 2 Student
+    */
+
+    $$('.s9-answer-input', screen)
       .forEach(input => {
         input.value = '';
       });
 
-    $$('.u11-s9-verb', screen)
-      .forEach(v => {
-        v.classList.remove(
-          'teacher-paired'
+
+    /*
+      Step 2 Teacher
+    */
+
+    $$('.s9-verb', screen)
+      .forEach(verb => {
+        verb.classList.remove(
+          'paired'
         );
       });
 
-    $$('.u11-s9-definition', screen)
-      .forEach(d => {
-        d.classList.remove(
-          'teacher-paired'
+    $$('.s9-definition', screen)
+      .forEach(definition => {
+
+        definition.classList.remove(
+          'paired'
         );
 
-        $('.u11-s9-pair-label', d)
+        $('.s9-pair-badge', definition)
           ?.remove();
       });
   }
 
 
   /* =======================================================
-     SLIDE 12
+     BIND
      ======================================================= */
 
-  const S12_ANSWER = `
-    <b>Suggested answer</b>
-
-    <p>
-      If I were Emma, I would wear clothes that make
-      me feel comfortable and confident.
-    </p>
-
-    <p>
-      She could <b>dress up</b> for special occasions,
-      but she does not need to <b>keep up with</b>
-      every new fashion.
-    </p>
-
-    <p>
-      She could also <b>put together</b> an outfit
-      which suits her personality.
-    </p>
-  `;
-
-
-  function setupSlide12() {
-    const screen =
-      $('.screen[data-screen="12"]');
+  function bindSlide9() {
+    const screen = screen9();
 
     if (!screen) return;
 
-    ensureActions(screen);
 
-    let bar =
-      $('.u11-actionbar', screen);
+    /* TABS */
 
-    if (
-      bar &&
-      !$('#u11Submit12', bar)
-    ) {
-      const submit =
-        document.createElement('button');
+    $$('.s9-tab', screen)
+      .forEach(btn => {
 
-      submit.type = 'button';
-      submit.id = 'u11Submit12';
-      submit.textContent = 'Submit';
+        btn.addEventListener(
+          'click',
+          event => {
 
-      $('#u11Reset', bar)
-        ?.before(submit);
-    }
-  }
+            event.preventDefault();
+            event.stopPropagation();
 
-
-  function showTeacherS12Answer() {
-    const screen =
-      $('.screen[data-screen="12"]');
-
-    if (!screen) return;
-
-    let answer =
-      $('.u11-clean-s12-answer', screen);
-
-    if (!answer) {
-      answer =
-        document.createElement('div');
-
-      answer.className =
-        'u11-clean-s12-answer';
-
-      answer.innerHTML =
-        S12_ANSWER;
-
-      $('.advice-layout', screen)
-        ?.after(answer);
-    }
-
-    answer.classList.add('show');
-  }
-
-
-  function resetSlide12() {
-    const screen =
-      $('.screen[data-screen="12"]');
-
-    if (!screen) return;
-
-    $$('textarea', screen)
-      .forEach(x => {
-        x.value = '';
+            setStep(
+              Number(btn.dataset.step)
+            );
+          }
+        );
       });
 
-    const stop =
-      $('.u11-record-stop', screen);
 
-    if (
-      stop &&
-      !stop.disabled
-    ) {
-      stop.click();
-    }
+    /* CHECK */
 
-    const start =
-      $('.u11-record-start', screen);
+    $('#s9Check', screen)
+      ?.addEventListener(
+        'click',
+        event => {
 
-    const status =
-      $('.u11-record-status', screen);
+          event.preventDefault();
+          event.stopPropagation();
 
-    const audio =
-      $('.u11-record-playback', screen);
-
-    if (start) start.disabled = false;
-    if (stop) stop.disabled = true;
-
-    if (status) {
-      status.textContent = 'Ready';
-    }
-
-    if (audio) {
-      try {
-        audio.pause();
-      } catch (_) {}
-
-      audio.removeAttribute('src');
-      audio.hidden = true;
-    }
-
-    const submit =
-      $('#u11Submit12', screen);
-
-    if (submit) {
-      submit.textContent = 'Submit';
-      submit.classList.remove(
-        'submitted'
-      );
-    }
-
-    $('.u11-clean-s12-answer', screen)
-      ?.classList.remove('show');
-
-    removeMessage(screen);
-  }
+          const step =
+            Number(
+              screen.dataset.s9Step
+            );
 
 
-  /* =======================================================
-     SLIDE 13
-     CLEAN TEACHER CORRECTION
-     ======================================================= */
+          if (isStudent()) {
 
-  function setupSlide13() {
-    const screen =
-      $('.screen[data-screen="13"]');
+            if (step === 1) {
+              studentCheckStep1();
+            } else {
+              studentCheckStep2();
+            }
 
-    if (!screen) return;
-
-    ensureActions(screen);
-  }
+            return;
+          }
 
 
-  function armTeacherS13() {
-    const screen =
-      $('.screen[data-screen="13"]');
-
-    if (!screen) return;
-
-    screen.dataset.teacherCheck =
-      'on';
-
-    const check =
-      $('#u11Check', screen);
-
-    if (check) {
-      check.textContent =
-        '✓ Check mode ON';
-
-      check.classList.add(
-        'clean-check-on'
-      );
-    }
-
-    message(
-      screen,
-      'Click each box to reveal its answer. Previous answers will remain visible.',
-      'teacher'
-    );
-  }
-
-
-  function revealS13(card) {
-    if (
-      $('.u11-clean-s13-answer', card)
-    ) {
-      return;
-    }
-
-    const answerText =
-      card.dataset.back;
-
-    if (!answerText) return;
-
-    const answer =
-      document.createElement('div');
-
-    answer.className =
-      'u11-clean-s13-answer';
-
-    answer.textContent =
-      answerText;
-
-    card.appendChild(answer);
-
-    card.classList.add(
-      'clean-revealed'
-    );
-  }
-
-
-  function resetSlide13() {
-    const screen =
-      $('.screen[data-screen="13"]');
-
-    if (!screen) return;
-
-    delete screen.dataset.teacherCheck;
-
-    removeMessage(screen);
-
-    const check =
-      $('#u11Check', screen);
-
-    if (check) {
-      check.textContent = 'Check';
-
-      check.classList.remove(
-        'clean-check-on'
-      );
-    }
-
-    $$('.challenge-card', screen)
-      .forEach(card => {
-        $('.u11-clean-s13-answer', card)
-          ?.remove();
-
-        card.classList.remove(
-          'clean-revealed',
-          'flipped'
-        );
-
-        /*
-          If legacy code had changed the
-          button text, restore question.
-        */
-
-        if (
-          card.dataset.front &&
-          !card.querySelector(
-            '.u11-clean-s13-answer'
-          )
-        ) {
-          const responseInput =
-            card.nextElementSibling;
-
-          card.textContent =
-            card.dataset.front;
-
-          if (
-            responseInput &&
-            responseInput.classList.contains(
-              'u11-challenge-input'
-            )
-          ) {
-            responseInput.value = '';
+          if (isTeacher()) {
+            armTeacher();
           }
         }
+      );
+
+
+    /* RESET */
+
+    $('#s9Reset', screen)
+      ?.addEventListener(
+        'click',
+        event => {
+
+          event.preventDefault();
+          event.stopPropagation();
+
+          resetSlide9();
+        }
+      );
+
+
+    /* TEACHER STEP 1 */
+
+    $$('.s9-heard-item', screen)
+      .forEach(item => {
+
+        item.addEventListener(
+          'click',
+          event => {
+
+            if (
+              !isTeacher()
+            ) {
+              return;
+            }
+
+            event.preventDefault();
+            event.stopPropagation();
+
+
+            if (
+              screen.dataset.teacherCheck !==
+              'on'
+            ) {
+              return;
+            }
+
+
+            if (
+              Number(
+                screen.dataset.s9Step
+              ) !== 1
+            ) {
+              return;
+            }
+
+
+            revealHeard(item);
+          }
+        );
+      });
+
+
+    /* TEACHER STEP 2 */
+
+    $$('.s9-verb', screen)
+      .forEach(verb => {
+
+        verb.addEventListener(
+          'click',
+          event => {
+
+            if (
+              !isTeacher()
+            ) {
+              return;
+            }
+
+            event.preventDefault();
+            event.stopPropagation();
+
+
+            if (
+              screen.dataset.teacherCheck !==
+              'on'
+            ) {
+              return;
+            }
+
+
+            if (
+              Number(
+                screen.dataset.s9Step
+              ) !== 2
+            ) {
+              return;
+            }
+
+
+            revealPair(verb);
+          }
+        );
       });
   }
 
 
   /* =======================================================
-     ROLE UI
+     WATCH ROLE CHANGE ONLY
+     Do NOT rebuild again.
      ======================================================= */
 
-  function applyRoleUI() {
-    const s9 =
-      $('.screen[data-screen="9"]');
+  const roleObserver =
+    new MutationObserver(() => {
 
-    if (s9) {
-      const studentAnswers =
-        $('.u11-s9-student-answer-col', s9);
-
-      if (studentAnswers) {
-        studentAnswers.hidden =
-          !studentMode();
-      }
+      applyRole();
 
       /*
-        Student can tick Step 1.
-        Teacher cannot accidentally tick.
+        Changing Teacher / Student
+        should clear answer-key state.
       */
 
-      $$('.u11-s9-listen-check', s9)
-        .forEach(input => {
-          input.disabled =
-            teacherMode();
-        });
-    }
-
-
-    const s12 =
-      $('.screen[data-screen="12"]');
-
-    if (s12) {
-      const check =
-        $('#u11Check', s12);
-
-      const submit =
-        $('#u11Submit12', s12);
-
-      if (check) {
-        check.hidden =
-          studentMode();
-      }
-
-      if (submit) {
-        submit.hidden =
-          !studentMode();
-      }
-    }
-  }
-
-
-  /* =======================================================
-     MASTER CAPTURE CONTROLLER
-     ======================================================= */
-
-  document.addEventListener(
-    'click',
-    event => {
-      const target =
-        event.target;
-
-      const n =
-        screenNo();
-
-
-      /* ===================================================
-         S9 TABS
-         =================================================== */
-
-      if (
-        n === 9 &&
-        target.closest(
-          '.u11-clean-tab'
-        )
-      ) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-
-        changeS9Step(
-          Number(
-            target
-              .closest('.u11-clean-tab')
-              .dataset.cleanStep
-          )
-        );
-
-        return;
-      }
-
-
-      /* ===================================================
-         S9 CHECK
-         =================================================== */
-
-      if (
-        n === 9 &&
-        target.closest('#u11Check')
-      ) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-
-        if (studentMode()) {
-          if (s9Step() === 1) {
-            studentCheckStep1();
-          } else {
-            studentCheckStep2();
-          }
-        } else if (teacherMode()) {
-          armTeacherS9();
-        }
-
-        return;
-      }
-
-
-      /* ===================================================
-         S9 RESET
-         =================================================== */
-
-      if (
-        n === 9 &&
-        target.closest('#u11Reset')
-      ) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-
-        resetSlide9();
-        return;
-      }
-
-
-      /* ===================================================
-         S9 TEACHER STEP 1 CLICK
-         =================================================== */
-
-      if (
-        n === 9 &&
-        teacherMode() &&
-        s9Step() === 1
-      ) {
-        const item =
-          target.closest(
-            '.u11-s9-listen-item'
-          );
-
-        if (item) {
-          event.preventDefault();
-          event.stopImmediatePropagation();
-
-          if (
-            activeScreen()
-              .dataset.teacherCheck ===
-            'on'
-          ) {
-            teacherRevealS9Step1(
-              item
-            );
-          }
-
-          return;
-        }
-      }
-
-
-      /* ===================================================
-         S9 TEACHER STEP 2 CLICK
-         =================================================== */
-
-      if (
-        n === 9 &&
-        teacherMode() &&
-        s9Step() === 2
-      ) {
-        const verb =
-          target.closest(
-            '.u11-s9-verb'
-          );
-
-        if (verb) {
-          event.preventDefault();
-          event.stopImmediatePropagation();
-
-          if (
-            activeScreen()
-              .dataset.teacherCheck ===
-            'on'
-          ) {
-            teacherRevealS9Step2(
-              verb
-            );
-          }
-
-          return;
-        }
-
-        /*
-          Definitions themselves are not
-          Teacher control buttons.
-        */
-
-        if (
-          target.closest(
-            '.u11-s9-definition'
-          )
-        ) {
-          event.preventDefault();
-          event.stopImmediatePropagation();
-          return;
-        }
-      }
-
-
-      /* ===================================================
-         S12
-         =================================================== */
-
-      if (
-        n === 12 &&
-        target.closest('#u11Check')
-      ) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-
-        if (teacherMode()) {
-          showTeacherS12Answer();
-        }
-
-        return;
-      }
-
-      if (
-        n === 12 &&
-        target.closest('#u11Submit12')
-      ) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-
-        if (studentMode()) {
-          const button =
-            $('#u11Submit12', activeScreen());
-
-          if (button) {
-            button.textContent =
-              'Submitted ✓';
-
-            button.classList.add(
-              'submitted'
-            );
-          }
-
-          message(
-            activeScreen(),
-            'Response submitted.',
-            'score'
-          );
-        }
-
-        return;
-      }
-
-      if (
-        n === 12 &&
-        target.closest('#u11Reset')
-      ) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-
-        resetSlide12();
-        return;
-      }
-
-
-      /* ===================================================
-         S13 CHECK
-         =================================================== */
-
-      if (
-        n === 13 &&
-        target.closest('#u11Check')
-      ) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-
-        if (teacherMode()) {
-          armTeacherS13();
-        }
-
-        return;
-      }
-
-
-      /* ===================================================
-         S13 TEACHER CARD
-         =================================================== */
-
-      if (
-        n === 13 &&
-        teacherMode()
-      ) {
-        const card =
-          target.closest(
-            '.challenge-card'
-          );
-
-        if (card) {
-          event.preventDefault();
-          event.stopImmediatePropagation();
-
-          if (
-            activeScreen()
-              .dataset.teacherCheck ===
-            'on'
-          ) {
-            revealS13(card);
-          }
-
-          return;
-        }
-      }
-
-
-      /* ===================================================
-         S13 RESET
-         =================================================== */
-
-      if (
-        n === 13 &&
-        target.closest('#u11Reset')
-      ) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-
-        resetSlide13();
-        return;
-      }
-
-    },
-    true
-  );
-
-
-  /* =======================================================
-     INIT / REFRESH
-     ======================================================= */
-
-  function refresh() {
-    rebuildSlide9();
-    setupSlide12();
-    setupSlide13();
-    applyRoleUI();
-  }
-
-
-  const observer =
-    new MutationObserver(() => {
-      clearTimeout(
-        window.__u11CleanRefresh
-      );
-
-      window.__u11CleanRefresh =
-        setTimeout(
-          refresh,
-          15
-        );
+      resetSlide9();
     });
 
 
-  observer.observe(
+  roleObserver.observe(
     document.body,
     {
-      subtree: true,
-      childList: true,
-      attributes: true,
-      attributeFilter: [
+      attributes:true,
+      attributeFilter:[
         'class'
       ]
     }
   );
 
 
-  /*
-    Run immediately.
-    app.js has already loaded, so rebuilding S9 here
-    removes its old direct matching listeners.
-  */
+  /* =======================================================
+     INIT — AFTER ui-alignment.js
+     ======================================================= */
 
-  refresh();
+  function init() {
+
+    /*
+      Remove ui-alignment generic action bar
+      from Slide 9 so only ONE Check / Reset exists.
+    */
+
+    $('.screen[data-screen="9"] .u11-actionbar')
+      ?.remove();
 
 
-  window.ELEAP_U11_CLEAN = {
-    version: '7.0',
-    refresh,
-    resetSlide9,
-    resetSlide12,
-    resetSlide13
+    buildSlide9();
+  }
+
+
+  if (
+    document.readyState ===
+    'loading'
+  ) {
+
+    document.addEventListener(
+      'DOMContentLoaded',
+      init
+    );
+
+  } else {
+
+    init();
+  }
+
+
+  window.ELEAP_U11_SLIDE9 = {
+    version:'8.0',
+    reset:resetSlide9
   };
 
 })();
