@@ -4233,3 +4233,1389 @@ body.presentation .u11-modes:hover{
     min-height:160px;
   }
 }
+
+/* =========================================================
+   E-LEAP U1.1 — FINAL CONTROL & INTERACTION STYLE v3.0
+   Works with ui-alignment.js v3.0
+   Golden Reference alignment with U1.2
+   ========================================================= */
+
+
+/* =========================================================
+   1. GLOBAL ANSWER / INPUT STANDARD
+   One typography and colour system across all 16 screens
+   ========================================================= */
+
+:root{
+  --u11-control-green:#123f3a;
+  --u11-control-green2:#1e6a5c;
+  --u11-control-mint:#e5f5ef;
+  --u11-control-cream:#fffdf8;
+  --u11-control-gold:#f2c45e;
+  --u11-control-coral:#e66f61;
+  --u11-control-line:#d6e3de;
+  --u11-control-ink:#173f38;
+  --u11-answer-green:#174f31;
+  --u11-answer-bg:#e5f5ec;
+  --u11-wrong:#8b302b;
+  --u11-wrong-bg:#fff0ef;
+}
+
+.u11-student-input,
+.u11-homework-textarea,
+.u11-speaker-input{
+  width:100%!important;
+  min-width:0!important;
+  min-height:48px!important;
+
+  border:2px solid #bfd3cc!important;
+  border-radius:11px!important;
+
+  padding:10px 13px!important;
+
+  background:#fff!important;
+
+  color:var(--u11-control-ink)!important;
+
+  font-family:
+    "Avenir Next",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif!important;
+
+  font-size:21px!important;
+  line-height:1.4!important;
+
+  font-weight:500!important;
+
+  box-shadow:none!important;
+}
+
+textarea.u11-student-input,
+.u11-homework-textarea{
+  min-height:110px!important;
+  resize:vertical!important;
+}
+
+.u11-student-input:focus,
+.u11-homework-textarea:focus,
+.u11-speaker-input:focus{
+  outline:3px solid rgba(242,196,94,.34)!important;
+  border-color:#b59038!important;
+}
+
+.u11-student-input::placeholder,
+.u11-homework-textarea::placeholder,
+.u11-speaker-input::placeholder{
+  color:#91a39d!important;
+  font-weight:400!important;
+}
+
+
+/* Correct / wrong answers */
+
+.u11-student-input.answer-correct,
+.u11-speaker-input.answer-correct{
+  background:#e6f7ec!important;
+  border:3px solid #43a568!important;
+  color:#185d32!important;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(67,165,104,.12)!important;
+}
+
+.u11-student-input.answer-wrong,
+.u11-speaker-input.answer-wrong{
+  background:#fff0ef!important;
+  border:3px solid #d8665f!important;
+  color:#8b2e29!important;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(216,102,95,.11)!important;
+}
+
+
+/* Teacher revealed answer */
+
+.u11-revealed-answer{
+  display:block!important;
+
+  margin-top:10px!important;
+
+  padding:10px 13px!important;
+
+  border:2px solid #8fc2aa!important;
+  border-radius:11px!important;
+
+  background:var(--u11-answer-bg)!important;
+
+  color:var(--u11-answer-green)!important;
+
+  font-family:
+    "Avenir Next",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif!important;
+
+  font-size:21px!important;
+  line-height:1.42!important;
+
+  font-weight:800!important;
+
+  text-align:left!important;
+
+  animation:u11AnswerIn .18s ease-out;
+}
+
+@keyframes u11AnswerIn{
+  from{
+    opacity:0;
+    transform:translateY(-5px);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.u11-reveal-target.u11-revealed{
+  border-color:#89bda8!important;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(67,165,104,.08)!important;
+}
+
+
+/* =========================================================
+   2. HEADER — MATCH U1.2
+   ========================================================= */
+
+.u11-header-right{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+
+  gap:12px!important;
+
+  margin-left:auto!important;
+}
+
+.u11-modes{
+  display:flex!important;
+  gap:5px!important;
+}
+
+.u11-modes button{
+  min-height:37px!important;
+
+  padding:7px 11px!important;
+
+  border:1px solid var(--u11-control-line)!important;
+  border-radius:10px!important;
+
+  background:#fff!important;
+
+  color:var(--u11-control-green)!important;
+
+  font-size:13px!important;
+  font-weight:800!important;
+}
+
+.u11-modes button.active{
+  background:var(--u11-control-green)!important;
+  color:#fff!important;
+
+  border-color:var(--u11-control-green)!important;
+}
+
+.u11-teacher-tools{
+  display:flex!important;
+
+  gap:6px!important;
+
+  align-items:center!important;
+}
+
+.u11-teacher-tools button{
+  min-height:38px!important;
+
+  padding:7px 10px!important;
+
+  border:1px solid var(--u11-control-line)!important;
+  border-radius:10px!important;
+
+  background:#fff!important;
+
+  color:var(--u11-control-green)!important;
+
+  font-size:14px!important;
+  font-weight:800!important;
+}
+
+.u11-teacher-tools button:hover{
+  background:var(--u11-control-green)!important;
+
+  color:#fff!important;
+
+  border-color:var(--u11-control-green)!important;
+}
+
+
+/* Student must not see Teacher tools */
+
+body.u11-student .u11-teacher-tools{
+  display:none!important;
+}
+
+
+/* Teacher sees full tools */
+
+body.u11-teacher .u11-teacher-tools{
+  display:flex!important;
+}
+
+
+/* =========================================================
+   3. MODAL — TIMER / RESPONSES / LUCKY
+   ========================================================= */
+
+.u11-modal{
+  position:fixed!important;
+  inset:0!important;
+
+  z-index:120!important;
+
+  display:none;
+
+  align-items:center!important;
+  justify-content:center!important;
+
+  padding:20px!important;
+
+  background:
+    rgba(11,29,24,.68)!important;
+}
+
+.u11-modal.show{
+  display:flex!important;
+}
+
+.u11-modalbox{
+  position:relative!important;
+
+  width:min(760px,92vw)!important;
+  max-height:84dvh!important;
+
+  overflow:auto!important;
+
+  padding:24px!important;
+
+  background:#fff!important;
+
+  border-radius:20px!important;
+
+  box-shadow:
+    0 25px 70px
+    rgba(0,0,0,.30)!important;
+}
+
+.u11-close{
+  position:absolute!important;
+
+  right:14px!important;
+  top:12px!important;
+
+  width:40px!important;
+  height:40px!important;
+  min-height:40px!important;
+
+  display:grid!important;
+  place-items:center!important;
+
+  border:0!important;
+  border-radius:999px!important;
+
+  background:#edf4f1!important;
+
+  color:var(--u11-control-green)!important;
+
+  font-size:25px!important;
+  line-height:1!important;
+}
+
+.u11-modalbox h2{
+  color:var(--u11-control-green)!important;
+
+  font-size:32px!important;
+
+  margin:3px 0 18px!important;
+}
+
+
+/* =========================================================
+   4. TIMER — TEACHER SELECTS DURATION FIRST
+   ========================================================= */
+
+.u11-timer-note{
+  text-align:center!important;
+
+  font-size:18px!important;
+
+  color:#5c6e68!important;
+}
+
+.u11-timerbig{
+  margin:23px!important;
+
+  text-align:center!important;
+
+  color:var(--u11-control-green)!important;
+
+  font-size:76px!important;
+  line-height:1!important;
+
+  font-weight:950!important;
+}
+
+.u11-timer-presets{
+  display:flex!important;
+
+  gap:8px!important;
+
+  justify-content:center!important;
+
+  flex-wrap:wrap!important;
+
+  margin-bottom:16px!important;
+}
+
+.u11-timer-presets button{
+  min-height:42px!important;
+
+  padding:8px 13px!important;
+
+  border:1px solid var(--u11-control-line)!important;
+  border-radius:10px!important;
+
+  background:#fff!important;
+
+  color:var(--u11-control-green)!important;
+
+  font-weight:850!important;
+}
+
+.u11-timer-presets button:hover{
+  background:var(--u11-control-mint)!important;
+}
+
+.u11-custom-time{
+  display:flex!important;
+
+  align-items:center!important;
+  justify-content:center!important;
+
+  gap:8px!important;
+
+  flex-wrap:wrap!important;
+
+  margin:10px 0 18px!important;
+}
+
+.u11-custom-time label{
+  font-size:16px!important;
+  font-weight:800!important;
+
+  color:var(--u11-control-green)!important;
+}
+
+.u11-custom-time input{
+  width:140px!important;
+  min-height:42px!important;
+
+  padding:8px 10px!important;
+
+  border:1px solid #b9cec6!important;
+  border-radius:9px!important;
+
+  font-size:17px!important;
+}
+
+.u11-custom-time button{
+  min-height:42px!important;
+
+  padding:8px 13px!important;
+
+  border:1px solid var(--u11-control-green2)!important;
+  border-radius:9px!important;
+
+  background:#fff!important;
+
+  color:var(--u11-control-green2)!important;
+
+  font-weight:800!important;
+}
+
+.u11-timercontrols{
+  display:flex!important;
+
+  gap:10px!important;
+
+  justify-content:center!important;
+}
+
+.u11-timercontrols button{
+  min-height:44px!important;
+
+  padding:9px 15px!important;
+
+  border:1px solid var(--u11-control-line)!important;
+  border-radius:10px!important;
+
+  background:#fff!important;
+
+  color:var(--u11-control-green)!important;
+
+  font-weight:850!important;
+}
+
+.u11-timercontrols #u11TStart:not(:disabled){
+  background:var(--u11-control-green)!important;
+  color:#fff!important;
+}
+
+.u11-timercontrols button:disabled{
+  opacity:.45!important;
+  cursor:not-allowed!important;
+}
+
+
+/* =========================================================
+   5. RESPONSES
+   ========================================================= */
+
+.u11-tabs{
+  display:flex!important;
+
+  gap:8px!important;
+
+  margin:12px 0!important;
+}
+
+.u11-tabs button{
+  min-height:38px!important;
+
+  padding:7px 12px!important;
+
+  border:1px solid var(--u11-control-line)!important;
+  border-radius:9px!important;
+
+  background:#fff!important;
+
+  font-weight:800!important;
+}
+
+.u11-tabs button.active{
+  background:var(--u11-control-green)!important;
+  color:#fff!important;
+}
+
+.u11-response-card{
+  margin:8px 0!important;
+
+  padding:12px 14px!important;
+
+  border:1px solid var(--u11-control-line)!important;
+  border-radius:12px!important;
+
+  background:#f8fbfa!important;
+
+  color:var(--u11-control-ink)!important;
+
+  font-size:18px!important;
+  line-height:1.4!important;
+}
+
+
+/* =========================================================
+   6. LUCKY NUMBER
+   ========================================================= */
+
+.u11-lucky{
+  padding:34px!important;
+
+  text-align:center!important;
+
+  color:var(--u11-control-coral)!important;
+
+  font-size:72px!important;
+
+  font-weight:950!important;
+}
+
+
+/* =========================================================
+   7. ACTION BAR — CHECK / RESET
+   ========================================================= */
+
+.u11-actionbar{
+  position:sticky!important;
+
+  bottom:0!important;
+
+  z-index:35!important;
+
+  display:flex!important;
+
+  justify-content:flex-end!important;
+
+  gap:9px!important;
+
+  margin-top:12px!important;
+
+  padding:
+    17px
+    0
+    4px!important;
+
+  background:
+    linear-gradient(
+      180deg,
+      transparent,
+      rgba(237,244,241,.97)
+      30%
+    )!important;
+}
+
+.u11-actionbar button{
+  min-height:43px!important;
+
+  padding:8px 15px!important;
+
+  border:1px solid var(--u11-control-line)!important;
+  border-radius:11px!important;
+
+  background:#fff!important;
+
+  color:var(--u11-control-green)!important;
+
+  font-size:16px!important;
+
+  font-weight:850!important;
+}
+
+.u11-actionbar .u11-check{
+  border:2px solid var(--u11-control-green2)!important;
+
+  color:var(--u11-control-green2)!important;
+}
+
+.u11-actionbar .u11-check.reveal-on{
+  background:var(--u11-control-green2)!important;
+
+  color:#fff!important;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(30,106,92,.12)!important;
+}
+
+
+/* =========================================================
+   8. REVEAL MODE VISUAL CUE
+   ========================================================= */
+
+body.u11-reveal-mode
+[data-u11-answer]{
+  cursor:pointer!important;
+
+  outline:
+    2px dashed
+    rgba(30,106,92,.25)!important;
+
+  outline-offset:3px!important;
+}
+
+body.u11-reveal-mode
+[data-u11-answer]:hover{
+  box-shadow:
+    0 0 0 4px
+    rgba(30,106,92,.10)!important;
+}
+
+
+/* =========================================================
+   9. FEEDBACK TOAST
+   ========================================================= */
+
+.u11-toast{
+  position:sticky!important;
+
+  bottom:56px!important;
+
+  z-index:55!important;
+
+  width:max-content!important;
+  max-width:90%!important;
+
+  margin:
+    12px
+    auto
+    0!important;
+
+  padding:
+    10px
+    17px!important;
+
+  border-radius:13px!important;
+
+  font-size:18px!important;
+
+  font-weight:850!important;
+
+  text-align:center!important;
+}
+
+.u11-toast.good{
+  background:#e6f7ec!important;
+
+  color:#185d32!important;
+
+  border:1px solid #8bc9a1!important;
+}
+
+.u11-toast.try{
+  background:#fff3ef!important;
+
+  color:#8b3b32!important;
+
+  border:1px solid #e2a19a!important;
+}
+
+
+/* =========================================================
+   10. RECORDING
+   ========================================================= */
+
+.u11-record{
+  display:flex!important;
+
+  align-items:center!important;
+
+  gap:8px!important;
+
+  flex-wrap:wrap!important;
+
+  margin-top:9px!important;
+}
+
+.u11-record button{
+  min-height:40px!important;
+
+  padding:7px 11px!important;
+
+  border:1px solid #b9cec6!important;
+  border-radius:9px!important;
+
+  background:#fff!important;
+
+  color:var(--u11-control-green)!important;
+
+  font-size:14px!important;
+  font-weight:850!important;
+}
+
+.u11-record-start{
+  border-color:#c96a63!important;
+
+  color:#9c3833!important;
+}
+
+.u11-record-stop:not(:disabled){
+  background:#fbeeed!important;
+
+  border-color:#c96a63!important;
+
+  color:#8b302b!important;
+}
+
+.u11-record-status{
+  font-size:14px!important;
+
+  color:#60706c!important;
+
+  font-weight:700!important;
+}
+
+.u11-record-playback{
+  width:100%!important;
+
+  margin-top:5px!important;
+}
+
+
+/* =========================================================
+   11. SLIDE 1–2 OPEN RESPONSE
+   ========================================================= */
+
+.u11-open-response{
+  display:grid!important;
+
+  gap:8px!important;
+
+  margin-top:12px!important;
+}
+
+.screen[data-screen="2"]
+.question-card{
+  padding-bottom:14px!important;
+}
+
+.screen[data-screen="2"]
+textarea.u11-student-input{
+  min-height:72px!important;
+}
+
+
+/* =========================================================
+   12. SLIDE 3 — CUMULATIVE REVEAL CARDS
+   ========================================================= */
+
+.screen[data-screen="3"]
+.layer-card{
+  position:relative!important;
+
+  overflow:visible!important;
+}
+
+.screen[data-screen="3"]
+.layer-card .u11-revealed-answer{
+  font-size:18px!important;
+
+  font-weight:700!important;
+}
+
+
+/* =========================================================
+   13. SLIDE 4 — EXTRA VOCAB + MINI TASK
+   ========================================================= */
+
+.u11-vocab-extra{
+  margin-top:12px!important;
+
+  padding:14px!important;
+
+  border:1px solid #cbded6!important;
+  border-radius:12px!important;
+
+  background:#fff!important;
+}
+
+.u11-vocab-extra label{
+  display:block!important;
+
+  margin-bottom:8px!important;
+
+  color:var(--u11-control-green)!important;
+
+  font-size:18px!important;
+
+  font-weight:850!important;
+}
+
+.u11-vocab-extra input{
+  width:100%!important;
+
+  min-height:46px!important;
+}
+
+.u11-mini-response{
+  margin-top:10px!important;
+
+  padding:14px!important;
+
+  border:1px solid #cbded6!important;
+  border-radius:12px!important;
+
+  background:#fff!important;
+}
+
+.u11-mini-response textarea{
+  min-height:90px!important;
+}
+
+
+/* =========================================================
+   14. SLIDE 5 — PHOTO TASK
+   ========================================================= */
+
+.screen[data-screen="5"]
+.support-box .u11-open-response{
+  margin-top:15px!important;
+}
+
+/* Hotspot answer opens as a readable tooltip */
+
+.screen[data-screen="5"]
+.hotspot{
+  overflow:visible!important;
+}
+
+.screen[data-screen="5"]
+.hotspot .u11-revealed-answer{
+  position:absolute!important;
+
+  left:0!important;
+  top:calc(100% + 7px)!important;
+
+  z-index:80!important;
+
+  width:230px!important;
+
+  margin:0!important;
+
+  font-size:16px!important;
+
+  line-height:1.3!important;
+
+  white-space:normal!important;
+}
+
+
+/* =========================================================
+   15. SLIDE 6 — SPEAKER INPUT
+   ========================================================= */
+
+.screen[data-screen="6"]
+.speaker-match>div{
+  display:grid!important;
+
+  grid-template-columns:
+    110px
+    minmax(0,1fr)!important;
+
+  gap:8px!important;
+
+  align-items:center!important;
+}
+
+.screen[data-screen="6"]
+.speaker-match>div
+.u11-revealed-answer{
+  grid-column:1/-1!important;
+}
+
+.u11-speaker-input{
+  min-height:42px!important;
+
+  font-size:18px!important;
+}
+
+
+/* =========================================================
+   16. SLIDE 7 — PHRASAL VERB MEANING GRID
+   ========================================================= */
+
+.u11-phrasal-grid{
+  display:grid!important;
+
+  grid-template-columns:
+    1fr
+    1fr!important;
+
+  gap:10px!important;
+
+  margin-top:14px!important;
+}
+
+.u11-phrasal-row{
+  padding:12px 13px!important;
+
+  border:1px solid #d2e0db!important;
+  border-radius:12px!important;
+
+  background:#fff!important;
+}
+
+.u11-phrasal-row>b{
+  display:block!important;
+
+  margin-bottom:7px!important;
+
+  color:var(--u11-control-green2)!important;
+
+  font-size:20px!important;
+}
+
+.u11-phrasal-row
+.u11-student-input{
+  min-height:44px!important;
+
+  font-size:18px!important;
+}
+
+
+/* =========================================================
+   17. SLIDE 8 — GUIDED DISCOVERY
+   ========================================================= */
+
+.screen[data-screen="8"]
+.discovery-card{
+  min-height:92px!important;
+}
+
+.screen[data-screen="8"]
+.discovery-card.u11-revealed{
+  background:#fff!important;
+
+  color:#17332a!important;
+}
+
+
+/* =========================================================
+   18. SLIDE 9 — STEP 1 / STEP 2
+   ========================================================= */
+
+.ex7-step-tabs{
+  display:flex!important;
+
+  gap:8px!important;
+
+  margin:
+    5px
+    0
+    12px!important;
+}
+
+.ex7-step-tab{
+  min-width:135px!important;
+  min-height:42px!important;
+
+  padding:
+    8px
+    18px!important;
+
+  border:1px solid #b8cdc5!important;
+  border-radius:999px!important;
+
+  background:#fff!important;
+
+  color:var(--u11-control-green)!important;
+
+  font-size:16px!important;
+
+  font-weight:900!important;
+}
+
+.ex7-step-tab.active{
+  background:var(--u11-control-green)!important;
+
+  color:#fff!important;
+
+  border-color:var(--u11-control-green)!important;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(30,106,92,.10)!important;
+}
+
+.screen[data-screen="9"]
+.ex7-step{
+  display:none!important;
+}
+
+.screen[data-screen="9"]
+.ex7-step.ex7-active{
+  display:block!important;
+}
+
+.screen[data-screen="9"]
+.candidate-item.u11-answer-correct{
+  background:#e6f7ec!important;
+
+  border:3px solid #43a568!important;
+}
+
+.screen[data-screen="9"]
+.candidate-item.u11-answer-wrong{
+  background:#fff0ef!important;
+
+  border:3px solid #d8665f!important;
+}
+
+
+/* =========================================================
+   19. SLIDE 12 — SPEAKING RECORD
+   ========================================================= */
+
+.u11-speaking-response{
+  margin-top:12px!important;
+
+  padding:14px!important;
+
+  border:1px solid #cbded6!important;
+  border-radius:13px!important;
+
+  background:#fff!important;
+}
+
+.u11-speaking-response
+textarea{
+  min-height:80px!important;
+}
+
+
+/* =========================================================
+   20. SLIDE 13 — 4 CHALLENGE ROWS
+   ========================================================= */
+
+.screen[data-screen="13"]
+.challenge-grid{
+  display:grid!important;
+
+  grid-template-columns:
+    minmax(0,1fr)
+    minmax(300px,.72fr)!important;
+
+  gap:10px!important;
+
+  align-items:stretch!important;
+}
+
+.screen[data-screen="13"]
+.challenge-card{
+  min-height:92px!important;
+
+  padding:13px 15px!important;
+
+  font-size:20px!important;
+}
+
+.screen[data-screen="13"]
+.u11-challenge-input{
+  width:100%!important;
+
+  min-height:92px!important;
+
+  align-self:stretch!important;
+}
+
+.screen[data-screen="13"]
+.challenge-card
+.u11-revealed-answer{
+  font-size:19px!important;
+}
+
+
+/* =========================================================
+   21. SLIDE 14 — EXIT TICKET CHECK + ANSWERS
+   ========================================================= */
+
+.screen[data-screen="14"]
+.exit-grid>div{
+  min-width:0!important;
+
+  position:relative!important;
+}
+
+.screen[data-screen="14"]
+.exit-grid textarea{
+  min-height:120px!important;
+
+  font-family:
+    "Avenir Next",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif!important;
+
+  font-size:20px!important;
+
+  line-height:1.4!important;
+}
+
+.screen[data-screen="14"]
+.u11-revealed-answer{
+  font-size:19px!important;
+}
+
+
+/* =========================================================
+   22. SLIDE 15 — HOMEWORK
+   ========================================================= */
+
+.screen[data-screen="15"]
+.homework-card{
+  max-width:none!important;
+
+  width:100%!important;
+
+  display:grid!important;
+
+  grid-template-columns:1fr!important;
+
+  gap:14px!important;
+
+  padding:20px!important;
+}
+
+.u11-homework-response{
+  display:grid!important;
+
+  gap:10px!important;
+
+  margin-top:4px!important;
+}
+
+.u11-homework-label{
+  color:var(--u11-control-green)!important;
+
+  font-size:21px!important;
+
+  font-weight:900!important;
+}
+
+.u11-homework-textarea{
+  min-height:180px!important;
+
+  font-size:21px!important;
+}
+
+.u11-homework-actions{
+  display:flex!important;
+
+  justify-content:flex-end!important;
+
+  gap:9px!important;
+
+  flex-wrap:wrap!important;
+}
+
+.u11-homework-actions button{
+  min-height:43px!important;
+
+  padding:8px 14px!important;
+
+  border:1px solid var(--u11-control-line)!important;
+  border-radius:10px!important;
+
+  background:#fff!important;
+
+  color:var(--u11-control-green)!important;
+
+  font-size:16px!important;
+
+  font-weight:850!important;
+}
+
+.u11-homework-submit{
+  background:var(--u11-control-green)!important;
+
+  color:#fff!important;
+}
+
+.u11-homework-submit.submitted{
+  background:#477f72!important;
+}
+
+.u11-suggested-answer{
+  display:none!important;
+
+  margin-top:5px!important;
+
+  padding:17px 19px!important;
+
+  border-left:
+    6px solid
+    var(--u11-control-green2)!important;
+
+  border-radius:12px!important;
+
+  background:
+    var(--u11-control-mint)!important;
+
+  color:var(--u11-answer-green)!important;
+
+  font-family:
+    "Avenir Next",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif!important;
+
+  font-size:20px!important;
+  line-height:1.5!important;
+
+  font-weight:600!important;
+}
+
+.u11-suggested-answer.show{
+  display:block!important;
+}
+
+.u11-suggested-answer b{
+  color:var(--u11-answer-green)!important;
+
+  font-weight:900!important;
+}
+
+
+/* =========================================================
+   23. PRESENTATION
+   ========================================================= */
+
+body.presentation
+.u11-header-right{
+  display:block!important;
+}
+
+body.presentation
+.u11-teacher-tools{
+  position:fixed!important;
+
+  right:18px!important;
+  top:12px!important;
+
+  z-index:90!important;
+
+  display:flex!important;
+
+  padding:6px!important;
+
+  border:1px solid #c8dad4!important;
+  border-radius:13px!important;
+
+  background:
+    rgba(255,255,255,.92)!important;
+
+  box-shadow:
+    0 8px 24px
+    rgba(18,63,58,.12)!important;
+}
+
+body.presentation
+.u11-modes{
+  position:fixed!important;
+
+  left:16px!important;
+  top:12px!important;
+
+  z-index:90!important;
+
+  display:flex!important;
+
+  padding:5px!important;
+
+  border-radius:12px!important;
+
+  background:
+    rgba(255,255,255,.90)!important;
+}
+
+
+/* =========================================================
+   24. TABLET
+   ========================================================= */
+
+@media(max-width:1000px){
+
+  .u11-header-right{
+    gap:7px!important;
+  }
+
+  .u11-teacher-tools{
+    flex-wrap:wrap!important;
+  }
+
+  .u11-modes button,
+  .u11-teacher-tools button{
+    font-size:12px!important;
+
+    padding:6px 8px!important;
+  }
+
+  .u11-phrasal-grid{
+    grid-template-columns:1fr!important;
+  }
+
+  .screen[data-screen="13"]
+  .challenge-grid{
+    grid-template-columns:1fr!important;
+  }
+
+  .screen[data-screen="13"]
+  .u11-challenge-input{
+    min-height:60px!important;
+  }
+}
+
+
+/* =========================================================
+   25. PHONE
+   ========================================================= */
+
+@media(max-width:700px){
+
+  .u11-header-right{
+    width:100%!important;
+
+    display:block!important;
+  }
+
+  .u11-modes{
+    margin-bottom:5px!important;
+  }
+
+  .u11-teacher-tools{
+    display:flex!important;
+
+    gap:4px!important;
+  }
+
+  body.u11-student
+  .u11-teacher-tools{
+    display:none!important;
+  }
+
+  .u11-teacher-tools button{
+    flex:1 1 auto!important;
+  }
+
+  .u11-timerbig{
+    font-size:58px!important;
+  }
+
+  .u11-custom-time{
+    display:grid!important;
+
+    grid-template-columns:
+      1fr!important;
+  }
+
+  .u11-custom-time input{
+    width:100%!important;
+  }
+
+  .u11-timercontrols{
+    flex-wrap:wrap!important;
+  }
+
+  .screen[data-screen="6"]
+  .speaker-match>div{
+    grid-template-columns:1fr!important;
+  }
+
+  .screen[data-screen="13"]
+  .challenge-grid{
+    grid-template-columns:1fr!important;
+  }
+
+  .u11-homework-textarea{
+    min-height:150px!important;
+  }
+}
