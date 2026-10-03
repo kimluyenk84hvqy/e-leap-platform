@@ -2282,3 +2282,935 @@
   };
 
 })();
+
+/* =========================================================
+   E-LEAP U1.1 — FINAL CORRECTION v4.0
+   Fixes:
+   S03 Student typing
+   S08 Student typing + teacher reveal layout
+   S09 role separation + teacher matching reveal + reset
+   S10/S11 real Student input + Teacher reveal
+   S12 Teacher suggested answer
+   S15 Suggested answer Teacher-only
+   Action bar overlay
+   Teacher controls audit
+   ========================================================= */
+
+(function(){
+  'use strict';
+
+  const $=(s,r=document)=>r.querySelector(s);
+  const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+
+  const screen=()=>$('.screen.active');
+
+  const screenNo=()=>Number(
+    screen()?.dataset.screen||0
+  );
+
+  const isStudent=()=>
+    document.body.classList.contains(
+      'u11-student'
+    );
+
+  const isTeacher=()=>
+    document.body.classList.contains(
+      'u11-teacher'
+    ) ||
+    document.body.classList.contains(
+      'presentation'
+    );
+
+  const revealIsOn=()=>
+    document.body.classList.contains(
+      'u11-reveal-mode'
+    );
+
+
+  /* =======================================================
+     HELPERS
+     ======================================================= */
+
+  function normalise(v){
+    return String(v||'')
+      .toLowerCase()
+      .replace(/[’‘]/g,"'")
+      .replace(/[^a-z0-9' ]+/g,' ')
+      .replace(/\s+/g,' ')
+      .trim();
+  }
+
+  function matchesAnswer(value,expected){
+
+    const got=normalise(value);
+
+    const options=
+      String(expected||'')
+        .split('/')
+        .map(x=>normalise(x))
+        .filter(Boolean);
+
+    return options.some(
+      x=>x===got
+    );
+  }
+
+  function toast(text,type='good'){
+
+    const s=screen();
+
+    if(!s)return;
+
+    $('.u11-v4-toast',s)?.remove();
+
+    const d=
+      document.createElement('div');
+
+    d.className=
+      `u11-v4-toast ${type}`;
+
+    d.textContent=text;
+
+    s.appendChild(d);
+
+    setTimeout(
+      ()=>d.remove(),
+      2500
+    );
+  }
+
+  function makeRevealAnswer(
+    target,
+    html
+  ){
+
+    if(!target)return;
+
+    let answer=
+      $('.u11-v4-answer',target);
+
+    if(!answer){
+
+      answer=
+        document.createElement('div');
+
+      answer.className=
+        'u11-v4-answer';
+
+      target.appendChild(answer);
+    }
+
+    answer.innerHTML=html;
+
+    target.classList.add(
+      'u11-v4-revealed'
+    );
+  }
+
+
+  /* =======================================================
+     SLIDE 3
+     STUDENT TYPES INTO EACH STRATEGY CARD
+     ======================================================= */
+
+  function fixSlide3(){
+
+    const s=
+      $('.screen[data-screen="3"]');
+
+    if(!s)return;
+
+    $$('.layer-card',s)
+      .forEach((card,n)=>{
+
+        if(
+          $('.u11-v4-card-response',card)
+        ){
+          return;
+        }
+
+        const wrap=
+          document.createElement('div');
+
+        wrap.className=
+          'u11-v4-card-response';
+
+        wrap.innerHTML=`
+          <textarea
+            class="u11-v4-input"
+            placeholder="Type your response here…"
+            aria-label="Speaking strategy response ${n+1}">
+          </textarea>
+        `;
+
+        card.appendChild(wrap);
+      });
+  }
+
+
+  /* =======================================================
+     SLIDE 8
+     STUDENT TYPES INTO EACH DISCOVERY CARD
+     ======================================================= */
+
+  function fixSlide8(){
+
+    const s=
+      $('.screen[data-screen="8"]');
+
+    if(!s)return;
+
+    $$('.discovery-card',s)
+      .forEach((card,n)=>{
+
+        if(
+          $('.u11-v4-card-response',card)
+        ){
+          return;
+        }
+
+        const wrap=
+          document.createElement('div');
+
+        wrap.className=
+          'u11-v4-card-response';
+
+        wrap.innerHTML=`
+          <textarea
+            class="u11-v4-input"
+            placeholder="Type your answer first…"
+            aria-label="Guided discovery response ${n+1}">
+          </textarea>
+        `;
+
+        card.appendChild(wrap);
+      });
+  }
+
+
+  /* =======================================================
+     PREVENT LEGACY DIRECT REVEAL
+     Student must NEVER click the original card
+     and immediately see teacher answer.
+     ======================================================= */
+
+  document.addEventListener(
+    'click',
+    e=>{
+
+      if(!isStudent())return;
+
+      if(
+        e.target.closest(
+          '.u11-v4-input,'+
+          '.u11-student-input,'+
+          'textarea,input'
+        )
+      ){
+        return;
+      }
+
+      const legacy=
+        e.target.closest(
+          '.layer-card,'+
+          '.discovery-card,'+
+          '.inline-blank,'+
+          '.item-check'
+        );
+
+      if(legacy){
+
+        e.preventDefault();
+        e.stopImmediatePropagation();
+      }
+
+    },
+    true
+  );
+
+
+  /* =======================================================
+     SLIDE 9 — STEP 1
+     Student: choose checkboxes
+     Teacher: Check => click each whole item =>
+              HEARD / NOT HEARD
+     ======================================================= */
+
+  function fixSlide9Step1(){
+
+    const s=
+      $('.screen[data-screen="9"]');
+
+    if(!s)return;
+
+    $$('.candidate-item',s)
+      .forEach(item=>{
+
+        const legacy=
+          $('.item-check',item);
+
+        if(!legacy)return;
+
+        const heard=
+          legacy.dataset.heard==='yes';
+
+        item.dataset.u11V4Heard=
+          heard?'yes':'no';
+      });
+  }
+
+
+  /* =======================================================
+     SLIDE 9 — STEP 2
+     Teacher Check => click left verb.
+     Correct definition on right lights up.
+     Previous answers remain visible.
+     ======================================================= */
+
+  document.addEventListener(
+    'click',
+    e=>{
+
+      if(
+        screenNo()!==9 ||
+        !isTeacher() ||
+        !revealIsOn()
+      ){
+        return;
+      }
+
+      const verb=
+        e.target.closest(
+          '.match-item'
+        );
+
+      if(!verb)return;
+
+      e.preventDefault();
+      e.stopImmediatePropagation();
+
+      const letter=
+        verb.dataset.match;
+
+      if(!letter)return;
+
+      const definition=
+        $(
+          `.definition-item[data-letter="${letter}"]`,
+          screen()
+        );
+
+      if(!definition)return;
+
+      verb.classList.add(
+        'u11-v4-match-source'
+      );
+
+      definition.classList.add(
+        'u11-v4-match-answer'
+      );
+
+      if(
+        !$('.u11-v4-answer-label',definition)
+      ){
+
+        const tag=
+          document.createElement('span');
+
+        tag.className=
+          'u11-v4-answer-label';
+
+        tag.textContent=
+          '✓ ANSWER';
+
+        definition.appendChild(tag);
+      }
+
+    },
+    true
+  );
+
+
+  /* =======================================================
+     SLIDE 9 — STEP 1 TEACHER REVEAL
+     ======================================================= */
+
+  document.addEventListener(
+    'click',
+    e=>{
+
+      if(
+        screenNo()!==9 ||
+        !isTeacher() ||
+        !revealIsOn()
+      ){
+        return;
+      }
+
+      const item=
+        e.target.closest(
+          '.candidate-item'
+        );
+
+      if(
+        !item ||
+        !item.closest(
+          '.candidate-grid'
+        )
+      ){
+        return;
+      }
+
+      e.preventDefault();
+      e.stopImmediatePropagation();
+
+      const heard=
+        item.dataset.u11V4Heard==='yes';
+
+      makeRevealAnswer(
+        item,
+        heard
+          ?'<b>HEARD ✓</b>'
+          :'<b>NOT HEARD</b>'
+      );
+
+    },
+    true
+  );
+
+
+  /* =======================================================
+     SLIDE 9 REAL RESET
+     Calls original matching reset so its private
+     selectedVerb variable is cleared too.
+     ======================================================= */
+
+  document.addEventListener(
+    'click',
+    e=>{
+
+      if(
+        e.target.id!=='u11Reset'
+      ){
+        return;
+      }
+
+      const n=
+        screenNo();
+
+      setTimeout(
+        ()=>{
+
+          if(n===9){
+
+            $('#resetMatch')
+              ?.click();
+
+            const s=
+              $('.screen[data-screen="9"]');
+
+            $(
+              '#matchStatus',
+              s
+            )?.replaceChildren(
+              document.createTextNode(
+                'Select a phrasal verb, then select its definition.'
+              )
+            );
+
+            $$('.candidate-item',s)
+              .forEach(item=>{
+
+                item.classList.remove(
+                  'u11-answer-correct',
+                  'u11-answer-wrong',
+                  'u11-v4-revealed'
+                );
+
+                $('.u11-v4-answer',item)
+                  ?.remove();
+
+                const cb=
+                  $('input[type="checkbox"]',item);
+
+                if(cb){
+                  cb.checked=false;
+                }
+              });
+
+            $$(
+              '.match-item,'+
+              '.definition-item',
+              s
+            ).forEach(x=>{
+
+              x.disabled=false;
+
+              x.classList.remove(
+                'selected',
+                'matched',
+                'wrong',
+                'u11-v4-match-source',
+                'u11-v4-match-answer'
+              );
+
+              $('.u11-v4-answer-label',x)
+                ?.remove();
+            });
+          }
+
+          /*
+            S3 / S8:
+            reset in the previous layer restores
+            original HTML, so rebuild Student inputs.
+          */
+
+          if(n===3){
+            fixSlide3();
+          }
+
+          if(n===8){
+            fixSlide8();
+          }
+
+          applyRoleRules();
+
+        },
+        30
+      );
+
+    },
+    true
+  );
+
+
+  /* =======================================================
+     SLIDE 10–11
+     Replace old clickable-answer buttons with genuine
+     STUDENT INPUTS.
+     Teacher Check => click answer field to reveal.
+     ======================================================= */
+
+  function convertInlineAnswers(
+    number
+  ){
+
+    const s=
+      $(
+        `.screen[data-screen="${number}"]`
+      );
+
+    if(!s)return;
+
+    $$('.inline-blank',s)
+      .forEach((old,n)=>{
+
+        if(
+          old.dataset.u11V4Converted==='1'
+        ){
+          return;
+        }
+
+        const expected=
+          old.dataset.answer||'';
+
+        const shell=
+          document.createElement('span');
+
+        shell.className=
+          'u11-v4-inline-shell';
+
+        shell.dataset.u11Answer=
+          expected;
+
+        shell.innerHTML=`
+          <input
+            type="text"
+            class="u11-v4-inline-input"
+            data-expected="${expected.replace(/"/g,'&quot;')}"
+            aria-label="Answer ${n+1}"
+            placeholder="Type…">
+        `;
+
+        old.replaceWith(shell);
+      });
+  }
+
+
+  /* =======================================================
+     STUDENT CHECK FOR SLIDE 10–11
+     Does not reveal answer.
+     ======================================================= */
+
+  function checkInlineStudent(){
+
+    const s=screen();
+
+    if(!s)return;
+
+    const inputs=
+      $$('.u11-v4-inline-input',s);
+
+    if(!inputs.length)return;
+
+    let all=true;
+    let completed=true;
+
+    inputs.forEach(input=>{
+
+      const value=
+        input.value.trim();
+
+      if(!value){
+        completed=false;
+        all=false;
+      }
+
+      const ok=
+        value &&
+        matchesAnswer(
+          value,
+          input.dataset.expected
+        );
+
+      input.classList.remove(
+        'u11-v4-correct',
+        'u11-v4-wrong'
+      );
+
+      input.classList.add(
+        ok
+          ?'u11-v4-correct'
+          :'u11-v4-wrong'
+      );
+
+      all=all&&ok;
+    });
+
+    if(!completed){
+
+      toast(
+        'Complete all the answers first.',
+        'try'
+      );
+
+    }else if(all){
+
+      toast(
+        '✓ Correct!',
+        'good'
+      );
+
+    }else{
+
+      toast(
+        'Try again — check the highlighted answer(s).',
+        'try'
+      );
+    }
+  }
+
+
+  /* =======================================================
+     Override STUDENT Check on S10/S11.
+     Teacher Check continues to use Reveal mode.
+     ======================================================= */
+
+  document.addEventListener(
+    'click',
+    e=>{
+
+      if(
+        e.target.id!=='u11Check' ||
+        !isStudent()
+      ){
+        return;
+      }
+
+      if(
+        screenNo()===10 ||
+        screenNo()===11
+      ){
+
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        checkInlineStudent();
+      }
+
+    },
+    true
+  );
+
+
+  /* =======================================================
+     SLIDE 12
+     Teacher Check should SHOW suggested answer immediately.
+     ======================================================= */
+
+  const slide12Answer=`
+    <b>Suggested answer</b><br>
+    If I were Emma, I would wear clothes that make me
+    feel comfortable and confident. She could
+    <b>dress up</b> for special occasions, but she
+    does not need to <b>keep up with</b> every new
+    fashion. She could also <b>put together</b> an
+    outfit that suits her personality.
+  `;
+
+  function revealSlide12(){
+
+    const s=
+      $('.screen[data-screen="12"]');
+
+    if(!s)return;
+
+    let panel=
+      $('.u11-v4-s12-answer',s);
+
+    if(!panel){
+
+      panel=
+        document.createElement('div');
+
+      panel.className=
+        'u11-v4-s12-answer';
+
+      panel.innerHTML=
+        slide12Answer;
+
+      $('.advice-layout',s)
+        ?.after(panel);
+    }
+
+    panel.classList.add(
+      'show'
+    );
+  }
+
+  document.addEventListener(
+    'click',
+    e=>{
+
+      if(
+        e.target.id!=='u11Check' ||
+        screenNo()!==12 ||
+        !isTeacher()
+      ){
+        return;
+      }
+
+      e.preventDefault();
+      e.stopImmediatePropagation();
+
+      document.body.classList.add(
+        'u11-reveal-mode'
+      );
+
+      e.target.textContent=
+        '✓ Answer shown';
+
+      e.target.classList.add(
+        'reveal-on'
+      );
+
+      revealSlide12();
+
+    },
+    true
+  );
+
+
+  /* =======================================================
+     SLIDE 15
+     Suggested answer = TEACHER / PRESENTATION ONLY
+     Student never sees teacher model answer.
+     ======================================================= */
+
+  function applySlide15Role(){
+
+    const s=
+      $('.screen[data-screen="15"]');
+
+    if(!s)return;
+
+    const button=
+      $('#u11SuggestedAnswer',s);
+
+    const panel=
+      $('#u11SuggestedPanel',s);
+
+    if(!button)return;
+
+    if(isStudent()){
+
+      button.style.display='none';
+
+      panel?.classList.remove(
+        'show'
+      );
+
+    }else{
+
+      button.style.display='';
+    }
+  }
+
+
+  /* =======================================================
+     ROLE RULES
+     Hide legacy teacher controls from Student.
+     ======================================================= */
+
+  function applyRoleRules(){
+
+    /*
+      S9 old per-item teacher checks
+      are not needed anymore.
+    */
+
+    $$(
+      '.screen[data-screen="9"] .item-check'
+    ).forEach(
+      x=>x.style.display='none'
+    );
+
+    /*
+      Old Hide answers / Reset controls on S10/S11
+      are teacher-era legacy controls.
+      Use the standard bottom Check / Reset instead.
+    */
+
+    $$(
+      '.screen[data-screen="10"] .mini-controls,'+
+      '.screen[data-screen="11"] .mini-controls'
+    ).forEach(
+      x=>x.style.display='none'
+    );
+
+    applySlide15Role();
+  }
+
+
+  /* =======================================================
+     AUDIT / REPAIR TEACHER TOOL BUTTONS
+     ======================================================= */
+
+  function auditTeacherTools(){
+
+    const tools=[
+      ['u11Timer','Timer'],
+      ['u11Responses','Responses'],
+      ['u11Lucky','Lucky No.'],
+      ['u11Reveal','Reveal next']
+    ];
+
+    tools.forEach(
+      ([id,label])=>{
+
+        const b=$(`#${id}`);
+
+        if(!b){
+          console.warn(
+            `E-LEAP U1.1: ${label} control missing`
+          );
+        }
+      }
+    );
+
+    /*
+      Student must never see teacher toolbar.
+    */
+
+    const toolbar=
+      $('.u11-teacher-tools');
+
+    if(toolbar){
+
+      toolbar.setAttribute(
+        'aria-label',
+        'Teacher controls'
+      );
+    }
+  }
+
+
+  /* =======================================================
+     RE-APPLY AFTER MODE / SCREEN CHANGE
+     ======================================================= */
+
+  function applyFixes(){
+
+    fixSlide3();
+    fixSlide8();
+
+    fixSlide9Step1();
+
+    convertInlineAnswers(10);
+    convertInlineAnswers(11);
+
+    applyRoleRules();
+
+    auditTeacherTools();
+  }
+
+
+  const bodyObserver=
+    new MutationObserver(
+      ()=>{
+
+        setTimeout(
+          applyFixes,
+          0
+        );
+      }
+    );
+
+  bodyObserver.observe(
+    document.body,
+    {
+      attributes:true,
+      attributeFilter:['class']
+    }
+  );
+
+
+  $$('.screen')
+    .forEach(
+      s=>{
+
+        new MutationObserver(
+          ms=>{
+
+            if(
+              ms.some(
+                m=>
+                  m.type==='attributes' &&
+                  m.attributeName==='class'
+              )
+            ){
+              setTimeout(
+                applyFixes,
+                0
+              );
+            }
+          }
+        ).observe(
+          s,
+          {
+            attributes:true,
+            attributeFilter:['class']
+          }
+        );
+      }
+    );
+
+
+  /* Initial correction */
+
+  setTimeout(
+    applyFixes,
+    30
+  );
+
+})();
