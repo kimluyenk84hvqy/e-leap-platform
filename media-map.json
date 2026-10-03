@@ -5,10 +5,16 @@
   "u01/l01/speaker-1.mp3": "/api/media?pathname=objective-first-b2/u01/l01/assets/media/speaker-1.mp3",
   "u01/l01/speakers-2-5.mp3": "/api/media?pathname=objective-first-b2/u01/l01/assets/media/speakers-2-5.mp3",
   "u01/l01/phrasal-verbs.mp4": "/api/media?pathname=objective-first-b2/u01/l01/assets/media/phrasal-verbs.mp4",
+
   "u01/l02/previous_lesson_1.mp4": "/api/media?pathname=objective-first-b2/u01/l02/assets/media/previous_lesson_1.mp4",
-"u01/l02/previous_lesson_2.mp4": "/api/media?pathname=objective-first-b2/u01/l02/assets/media/previous_lesson_2.mp4",
-"u01/l02/previous_lesson_3.mp4": "/api/media?pathname=objective-first-b2/u01/l02/assets/media/previous_lesson_3.mp4",
-"u01/l02/previous_lesson_4.mp4": "/api/media?pathname=objective-first-b2/u01/l02/assets/media/previous_lesson_4.mp4",
-"u01/l02/previous_lesson_5.mp4": "/api/media?pathname=objective-first-b2/u01/l02/assets/media/previous_lesson_5.mp4",
-"u01/l02/previous_lesson_6.mp4": "/api/media?pathname=objective-first-b2/u01/l02/assets/media/previous_lesson_6.mp4"
+  "u01/l02/previous_lesson_2.mp4": "/api/media?pathname=objective-first-b2/u01/l02/assets/media/previous_lesson_2.mp4",
+  "u01/l02/previous_lesson_3.mp4": "/api/media?pathname=objective-first-b2/u01/l02/assets/media/previous_lesson_3.mp4",
+  "u01/l02/previous_lesson_4.mp4": "/api/media?pathname=objective-first-b2/u01/l02/assets/media/previous_lesson_4.mp4",
+  "u01/l02/previous_lesson_5.mp4": "/api/media?pathname=objective-first-b2/u01/l02/assets/media/previous_lesson_5.mp4",
+  "u01/l02/previous_lesson_6.mp4": "/api/media?pathname=objective-first-b2/u01/l02/assets/media/previous_lesson_6.mp4",
+
+  "u01/l02/old_jeans_photo.png": "/api/media?pathname=objective-first-b2/u01/l02/assets/images/old_jeans_photo.png",
+  "u01/l02/slide01_img01.jpg": "/api/media?pathname=objective-first-b2/u01/l02/assets/images/slide01_img01.jpg",
+  "u01/l02/slide02_img02.png": "/api/media?pathname=objective-first-b2/u01/l02/assets/images/slide02_img02.png",
+  "u01/l02/slide20_img09.png": "/api/media?pathname=objective-first-b2/u01/l02/assets/images/slide20_img09.png"
 }
