@@ -1,18 +1,18 @@
-/* E-LEAP Standalone Learning Bridge v1.2
-   ---------------------------------------------------------
-   Production-safe lesson-side adapter for E-LEAP.
+/* =========================================================
+   E-LEAP Standalone Learning Bridge v1.3
+   Research-ready production bridge
 
-   Functions:
-   1. Preserve standalone lesson operation.
-   2. Forward learning events to the E-LEAP platform host.
-   3. Keep a small local QA/recovery log.
-   4. Send research telemetry to /api/research/events.
-   5. Read Teacher/Class/Session/Participant context from:
-      - window.ELEAP_RESEARCH_CONTEXT
-      - URL query parameters
-   6. Research/API failures must NEVER break the lesson.
+   PURPOSE
    ---------------------------------------------------------
-*/
+   - Preserve standalone lesson operation
+   - Preserve platform-host event forwarding
+   - Keep lightweight local QA/recovery log
+   - Send research telemetry to /api/research/events
+   - Read Teacher/Class/Session/Participant context
+   - Capture navigation, responses, checks, submissions,
+     media use and assessment result
+   - Research failures NEVER break the lesson
+   ========================================================= */
 
 (function () {
   'use strict';
@@ -42,9 +42,12 @@
     resourceId;
 
   /*
-    Example:
+    Convert:
+
     objective-first-b2-u01-l02
-    ->
+
+    to:
+
     objective-first-b2/u01/l02
   */
 
@@ -61,16 +64,18 @@
 
 
   /* =======================================================
-     2. EVENT ID
+     2. UNIQUE EVENT ID
      ======================================================= */
 
   function uid() {
-    if (
-      globalThis.crypto &&
-      typeof globalThis.crypto.randomUUID === 'function'
-    ) {
-      return globalThis.crypto.randomUUID();
-    }
+    try {
+      if (
+        globalThis.crypto &&
+        typeof globalThis.crypto.randomUUID === 'function'
+      ) {
+        return globalThis.crypto.randomUUID();
+      }
+    } catch (_) {}
 
     return (
       'evt-' +
@@ -84,18 +89,20 @@
 
 
   /* =======================================================
-     3. CURRENT ACTIVITY
+     3. CURRENT ACTIVITY ID
      ======================================================= */
 
   function activity() {
     /*
-      Preferred:
-      use LESSON.activities when available.
+      Preferred source:
+      LESSON.activities
     */
 
     if (
       window.LESSON &&
-      Array.isArray(window.LESSON.activities)
+      Array.isArray(
+        window.LESSON.activities
+      )
     ) {
       const screenNumber =
         Number(
@@ -116,7 +123,7 @@
 
     /*
       Fallback:
-      inspect active screen.
+      active DOM screen
     */
 
     const active =
@@ -134,13 +141,18 @@
       );
     }
 
-    const bodyScreen =
+    /*
+      Final fallback:
+      body dataset
+    */
+
+    const screen =
       document.body.dataset.screen;
 
-    if (bodyScreen) {
+    if (screen) {
       return (
         'screen-' +
-        bodyScreen
+        screen
       );
     }
 
@@ -149,12 +161,12 @@
 
 
   /* =======================================================
-     4. RESEARCH RUNTIME CONTEXT
+     4. RESEARCH CONTEXT
      ======================================================= */
 
   function researchRuntime() {
     /*
-      Runtime context supplied by platform.
+      Context supplied by platform host.
     */
 
     const runtime =
@@ -162,7 +174,7 @@
       {};
 
     /*
-      URL context.
+      Context supplied by URL.
 
       Example:
 
@@ -172,10 +184,17 @@
       &participantId=...
     */
 
-    const params =
-      new URLSearchParams(
-        window.location.search
-      );
+    let params;
+
+    try {
+      params =
+        new URLSearchParams(
+          window.location.search
+        );
+    } catch (_) {
+      params =
+        new URLSearchParams();
+    }
 
     return {
       sessionId:
@@ -202,7 +221,7 @@
 
 
   /* =======================================================
-     5. LESSON CONTEXT
+     5. GENERAL LESSON CONTEXT
      ======================================================= */
 
   function context() {
@@ -278,18 +297,23 @@
           '.selected,' +
           '.matched,' +
           '.answer-correct,' +
-          '.answer-wrong'
+          '.answer-wrong,' +
+          '.option-correct,' +
+          '.option-wrong'
         )
       ]
-        .slice(0, 80)
+        .slice(0, 100)
         .map(
           el =>
             (
               el.dataset.value ||
               el.dataset.letter ||
               el.textContent ||
+              el.value ||
               ''
-            ).trim()
+            )
+              .toString()
+              .trim()
         )
         .filter(Boolean);
 
@@ -301,42 +325,141 @@
 
 
   /* =======================================================
-     7. LOCAL RECOVERY LOG
+     7. ASSESSMENT RESULT
+     ======================================================= */
+
+  function getAssessmentResult() {
+    /*
+      Preferred source:
+      lesson engine result.
+
+      checkActivity() in U1.2 now writes:
+      window.ELEAP_LAST_RESULT
+    */
+
+    const stored =
+      window.ELEAP_LAST_RESULT;
+
+    if (
+      stored &&
+      typeof stored.isCorrect === 'boolean'
+    ) {
+      return {
+        isCorrect:
+          stored.isCorrect,
+
+        score:
+          typeof stored.score === 'number'
+            ? stored.score
+            : (
+                stored.isCorrect
+                  ? 1
+                  : 0
+              ),
+
+        source:
+          'lesson-engine'
+      };
+    }
+
+    /*
+      Fallback for video round and other
+      activities where the lesson engine
+      marks DOM elements directly.
+    */
+
+    const root =
+      document.querySelector(
+        '.screen.active'
+      ) ||
+      document;
+
+    const wrong =
+      root.querySelectorAll(
+        '.answer-wrong,' +
+        '.option-wrong'
+      ).length;
+
+    const correct =
+      root.querySelectorAll(
+        '.answer-correct,' +
+        '.option-correct'
+      ).length;
+
+    if (wrong > 0) {
+      return {
+        isCorrect:
+          false,
+
+        score:
+          0,
+
+        source:
+          'dom-assessment'
+      };
+    }
+
+    if (
+      correct > 0 &&
+      wrong === 0
+    ) {
+      return {
+        isCorrect:
+          true,
+
+        score:
+          1,
+
+        source:
+          'dom-assessment'
+      };
+    }
+
+    return {
+      isCorrect:
+        null,
+
+      score:
+        null,
+
+      source:
+        null
+    };
+  }
+
+
+  /* =======================================================
+     8. LOCAL RECOVERY LOG
      ======================================================= */
 
   function saveLocal(event) {
     try {
-      const existing =
+      const rows =
         JSON.parse(
           localStorage.getItem(
             localKey
           ) || '[]'
         );
 
-      existing.push(event);
-
-      /*
-        Keep only most recent 250 events.
-      */
-
-      const trimmed =
-        existing.slice(-250);
+      rows.push(event);
 
       localStorage.setItem(
         localKey,
-        JSON.stringify(trimmed)
+        JSON.stringify(
+          rows.slice(-250)
+        )
       );
     } catch (_) {
       /*
-        Local storage failure must
-        never break lesson.
+        Local storage failure must not
+        affect the lesson.
       */
     }
   }
 
 
   /* =======================================================
-     8. SEND TO RESEARCH API
+     9. SEND TO RESEARCH API
      ======================================================= */
 
   async function sendToResearch(event) {
@@ -344,11 +467,45 @@
       const runtime =
         researchRuntime();
 
+      const result =
+        getAssessmentResult();
+
+      /*
+        Event payload may explicitly
+        provide a result.
+
+        If not, use assessment result
+        detected from lesson engine / DOM.
+      */
+
+      const explicitCorrect =
+        typeof event.payload
+          ?.isCorrect === 'boolean'
+          ? event.payload.isCorrect
+          : null;
+
+      const explicitScore =
+        typeof event.payload
+          ?.score === 'number'
+          ? event.payload.score
+          : null;
+
+      const isCorrect =
+        explicitCorrect !== null
+          ? explicitCorrect
+          : result.isCorrect;
+
+      const score =
+        explicitScore !== null
+          ? explicitScore
+          : result.score;
+
       const response =
         await fetch(
           '/api/research/events',
           {
-            method: 'POST',
+            method:
+              'POST',
 
             credentials:
               'same-origin',
@@ -388,18 +545,9 @@
                   event.payload ||
                   null,
 
-                isCorrect:
-                  typeof event.payload
-                    ?.isCorrect ===
-                    'boolean'
-                    ? event.payload
-                        .isCorrect
-                    : null,
+                isCorrect,
 
-                score:
-                  event.payload
-                    ?.score ??
-                  null,
+                score,
 
                 occurredAt:
                   event.occurredAt,
@@ -409,7 +557,7 @@
                     'e-leap-standalone-bridge',
 
                   bridgeVersion:
-                    '1.2',
+                    '1.3',
 
                   resourceId,
 
@@ -419,7 +567,10 @@
 
                   mode:
                     cfg.mode ||
-                    'standalone'
+                    'standalone',
+
+                  assessmentSource:
+                    result.source
                 }
               })
           }
@@ -438,14 +589,17 @@
         return await response.json();
       } catch (_) {
         return {
-          ok: true
+          ok:
+            true
         };
       }
+
     } catch (error) {
       /*
-        Critical production rule:
-        research telemetry failure
-        must never affect teaching.
+        CRITICAL RULE:
+
+        Research telemetry must NEVER
+        break the lesson.
       */
 
       console.warn(
@@ -459,7 +613,7 @@
 
 
   /* =======================================================
-     9. EMIT LEARNING EVENT
+     10. EMIT EVENT
      ======================================================= */
 
   function emit(
@@ -501,8 +655,8 @@
 
 
     /*
-      Embedded lesson:
-      forward to platform host.
+      Embedded mode:
+      forward event to platform host.
     */
 
     if (
@@ -524,8 +678,8 @@
 
 
     /*
-      Standalone lesson:
-      keep lightweight local recovery log.
+      Standalone:
+      lightweight recovery log.
     */
 
     if (
@@ -553,21 +707,19 @@
 
 
     /*
-      Research telemetry.
+      Research API.
 
-      Fire-and-forget:
-      do not await.
+      Fire-and-forget.
     */
 
     sendToResearch(event);
-
 
     return event;
   }
 
 
   /* =======================================================
-     10. INPUT EVENTS
+     11. INPUT / DRAFT EVENTS
      ======================================================= */
 
   document.addEventListener(
@@ -608,7 +760,7 @@
 
 
   /* =======================================================
-     11. MEDIA EVENTS
+     12. MEDIA EVENTS
      ======================================================= */
 
   document.addEventListener(
@@ -678,7 +830,7 @@
 
 
   /* =======================================================
-     12. BUTTON EVENTS
+     13. BUTTON EVENTS
      ======================================================= */
 
   document.addEventListener(
@@ -695,36 +847,14 @@
       }
 
 
-      /*
-        SUBMIT
-      */
+      /* ---------------------------------------------------
+         CHECK ANSWER
 
-      if (
-        button.matches(
-          '#submit,' +
-          '.submit,' +
-          '#roundSubmit'
-        )
-      ) {
-        setTimeout(
-          () => {
-            emit(
-              'response.submitted',
-              {
-                response:
-                  snapshot()
-              }
-            );
-          },
-
-          0
-        );
-      }
-
-
-      /*
-        CHECK
-      */
+         Wait briefly so app.js finishes:
+         - checkActivity()
+         - CSS marking
+         - ELEAP_LAST_RESULT
+         --------------------------------------------------- */
 
       if (
         button.matches(
@@ -735,32 +865,127 @@
       ) {
         setTimeout(
           () => {
+            const result =
+              getAssessmentResult();
+
             emit(
               'attempt.checked',
               {
                 response:
-                  snapshot()
+                  snapshot(),
+
+                isCorrect:
+                  result.isCorrect,
+
+                score:
+                  result.score
               }
             );
           },
 
-          0
+          40
         );
+
+        return;
       }
 
 
-      /*
-        NAVIGATION / ACTIVITY VIEW
-      */
+      /* ---------------------------------------------------
+         VIDEO ROUND SUBMIT
+
+         roundSubmit performs correctness
+         checking inside app.js.
+
+         Wait for DOM result.
+         --------------------------------------------------- */
+
+      if (
+        button.matches(
+          '#roundSubmit'
+        )
+      ) {
+        setTimeout(
+          () => {
+            const result =
+              getAssessmentResult();
+
+            emit(
+              'response.submitted',
+              {
+                response:
+                  snapshot(),
+
+                isCorrect:
+                  result.isCorrect,
+
+                score:
+                  result.score,
+
+                submissionType:
+                  'video-round'
+              }
+            );
+          },
+
+          60
+        );
+
+        return;
+      }
+
+
+      /* ---------------------------------------------------
+         NORMAL SUBMIT
+         --------------------------------------------------- */
+
+      if (
+        button.matches(
+          '#submit,' +
+          '.submit'
+        )
+      ) {
+        setTimeout(
+          () => {
+            const result =
+              getAssessmentResult();
+
+            emit(
+              'response.submitted',
+              {
+                response:
+                  snapshot(),
+
+                isCorrect:
+                  result.isCorrect,
+
+                score:
+                  result.score
+              }
+            );
+          },
+
+          40
+        );
+
+        return;
+      }
+
+
+      /* ---------------------------------------------------
+         NAVIGATION
+         --------------------------------------------------- */
 
       if (
         button.matches(
           '#next,' +
           '#nextBtn,' +
+          '#prev,' +
           '.navbtn,' +
           '.item-tab,' +
           '.round-next,' +
-          '.round-dot'
+          '.round-dot,' +
+          '#roundPrev,' +
+          '#roundNext'
         )
       ) {
         setTimeout(
@@ -771,7 +996,7 @@
             );
           },
 
-          0
+          30
         );
       }
     },
@@ -781,7 +1006,7 @@
 
 
   /* =======================================================
-     13. INITIAL LESSON EVENT
+     14. INITIAL ACTIVITY EVENT
      ======================================================= */
 
   window.addEventListener(
@@ -800,7 +1025,7 @@
 
 
   /* =======================================================
-     14. GLOBAL E-LEAP BRIDGE API
+     15. PUBLIC E-LEAP BRIDGE API
      ======================================================= */
 
   window.ELEAP = {
@@ -819,7 +1044,9 @@
     researchLessonId,
 
     getResearchContext:
-      researchRuntime
+      researchRuntime,
+
+    getAssessmentResult
   };
 
 })();
