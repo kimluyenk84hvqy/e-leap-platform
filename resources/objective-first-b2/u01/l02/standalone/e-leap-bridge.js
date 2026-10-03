@@ -1,13 +1,28 @@
-/* E-LEAP Standalone Learning Bridge v1.1
-   Portable lesson-side adapter.
-   Production-safe research telemetry:
-   - keeps existing platform event forwarding
-   - keeps local recovery log for standalone QA
-   - additionally sends learning events to E-LEAP Research API
-   - research failure must never break the lesson
+/* E-LEAP Standalone Learning Bridge v1.2
+   ---------------------------------------------------------
+   Production-safe lesson-side adapter for E-LEAP.
+
+   Functions:
+   1. Preserve standalone lesson operation.
+   2. Forward learning events to the E-LEAP platform host.
+   3. Keep a small local QA/recovery log.
+   4. Send research telemetry to /api/research/events.
+   5. Read Teacher/Class/Session/Participant context from:
+      - window.ELEAP_RESEARCH_CONTEXT
+      - URL query parameters
+   6. Research/API failures must NEVER break the lesson.
+   ---------------------------------------------------------
 */
+
 (function () {
-  const cfg = window.ELEAP_LESSON_BRIDGE || {};
+  'use strict';
+
+  /* =======================================================
+     1. LESSON CONFIG
+     ======================================================= */
+
+  const cfg =
+    window.ELEAP_LESSON_BRIDGE || {};
 
   const resourceId =
     cfg.resourceId ||
@@ -27,13 +42,12 @@
     resourceId;
 
   /*
-    Convert:
+    Example:
     objective-first-b2-u01-l02
-    =>
+    ->
     objective-first-b2/u01/l02
-
-    This keeps research lesson IDs consistent with R1.
   */
+
   const researchLessonId =
     cfg.researchLessonId ||
     lessonId.replace(
@@ -42,143 +56,374 @@
     );
 
   const localKey =
-    'e-leap-standalone-events:' + resourceId;
+    'e-leap-standalone-events:' +
+    resourceId;
 
-  const uid = () =>
-    globalThis.crypto?.randomUUID?.() ||
-    (
+
+  /* =======================================================
+     2. EVENT ID
+     ======================================================= */
+
+  function uid() {
+    if (
+      globalThis.crypto &&
+      typeof globalThis.crypto.randomUUID === 'function'
+    ) {
+      return globalThis.crypto.randomUUID();
+    }
+
+    return (
       'evt-' +
       Date.now() +
       '-' +
-      Math.random().toString(16).slice(2)
+      Math.random()
+        .toString(16)
+        .slice(2)
     );
+  }
 
-  const activity = () => {
-    if (window.LESSON?.activities) {
-      const n = Math.max(
-        0,
-        (Number(document.body.dataset.screen) || 1) - 1
-      );
+
+  /* =======================================================
+     3. CURRENT ACTIVITY
+     ======================================================= */
+
+  function activity() {
+    /*
+      Preferred:
+      use LESSON.activities when available.
+    */
+
+    if (
+      window.LESSON &&
+      Array.isArray(window.LESSON.activities)
+    ) {
+      const screenNumber =
+        Number(
+          document.body.dataset.screen
+        ) || 1;
+
+      const index =
+        Math.max(
+          0,
+          screenNumber - 1
+        );
 
       return (
-        window.LESSON.activities[n]?.id ||
-        ('screen-' + (n + 1))
+        window.LESSON.activities[index]?.id ||
+        'screen-' + screenNumber
       );
     }
 
+    /*
+      Fallback:
+      inspect active screen.
+    */
+
     const active =
-      document.querySelector('.screen.active');
+      document.querySelector(
+        '.screen.active'
+      );
 
-    return active?.dataset.screen
-      ? 'screen-' + active.dataset.screen
-      : null;
-  };
+    if (
+      active &&
+      active.dataset.screen
+    ) {
+      return (
+        'screen-' +
+        active.dataset.screen
+      );
+    }
 
-  const context = () => ({
-    mode: cfg.mode || 'standalone',
-    courseId,
-    unitId,
-    lessonId,
-    researchLessonId
-  });
+    const bodyScreen =
+      document.body.dataset.screen;
 
-  /*
-    R1 runtime context.
-    Later Teacher/Class/Session UI will populate these automatically.
-  */
+    if (bodyScreen) {
+      return (
+        'screen-' +
+        bodyScreen
+      );
+    }
+
+    return null;
+  }
+
+
+  /* =======================================================
+     4. RESEARCH RUNTIME CONTEXT
+     ======================================================= */
+
   function researchRuntime() {
+    /*
+      Runtime context supplied by platform.
+    */
+
     const runtime =
-      window.ELEAP_RESEARCH_CONTEXT || {};
+      window.ELEAP_RESEARCH_CONTEXT ||
+      {};
+
+    /*
+      URL context.
+
+      Example:
+
+      ?sessionId=...
+      &teacherId=...
+      &classId=...
+      &participantId=...
+    */
+
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
 
     return {
       sessionId:
-        runtime.sessionId || null,
+        runtime.sessionId ||
+        params.get('sessionId') ||
+        null,
 
       teacherId:
-        runtime.teacherId || null,
+        runtime.teacherId ||
+        params.get('teacherId') ||
+        null,
 
       classId:
-        runtime.classId || null,
+        runtime.classId ||
+        params.get('classId') ||
+        null,
 
       participantId:
-        runtime.participantId || null
+        runtime.participantId ||
+        params.get('participantId') ||
+        null
     };
   }
 
-  /*
-    Send event to Research API.
-    IMPORTANT:
-    Never throw back into the lesson.
-  */
+
+  /* =======================================================
+     5. LESSON CONTEXT
+     ======================================================= */
+
+  function context() {
+    const runtime =
+      researchRuntime();
+
+    return {
+      mode:
+        cfg.mode ||
+        'standalone',
+
+      courseId,
+
+      unitId,
+
+      lessonId,
+
+      researchLessonId,
+
+      sessionId:
+        runtime.sessionId,
+
+      teacherId:
+        runtime.teacherId,
+
+      classId:
+        runtime.classId,
+
+      participantId:
+        runtime.participantId
+    };
+  }
+
+
+  /* =======================================================
+     6. RESPONSE SNAPSHOT
+     ======================================================= */
+
+  function snapshot() {
+    const root =
+      document.querySelector(
+        '.screen.active'
+      ) ||
+      document;
+
+    const inputs =
+      [
+        ...root.querySelectorAll(
+          'input,textarea,select'
+        )
+      ].map(
+        (el, index) => ({
+          name:
+            el.name ||
+            el.id ||
+            'field-' + index,
+
+          type:
+            el.type ||
+            el.tagName.toLowerCase(),
+
+          value:
+            el.type === 'checkbox' ||
+            el.type === 'radio'
+              ? el.checked
+              : el.value
+        })
+      );
+
+    const selected =
+      [
+        ...root.querySelectorAll(
+          '.selected,' +
+          '.matched,' +
+          '.answer-correct,' +
+          '.answer-wrong'
+        )
+      ]
+        .slice(0, 80)
+        .map(
+          el =>
+            (
+              el.dataset.value ||
+              el.dataset.letter ||
+              el.textContent ||
+              ''
+            ).trim()
+        )
+        .filter(Boolean);
+
+    return {
+      inputs,
+      selected
+    };
+  }
+
+
+  /* =======================================================
+     7. LOCAL RECOVERY LOG
+     ======================================================= */
+
+  function saveLocal(event) {
+    try {
+      const existing =
+        JSON.parse(
+          localStorage.getItem(
+            localKey
+          ) || '[]'
+        );
+
+      existing.push(event);
+
+      /*
+        Keep only most recent 250 events.
+      */
+
+      const trimmed =
+        existing.slice(-250);
+
+      localStorage.setItem(
+        localKey,
+        JSON.stringify(trimmed)
+      );
+    } catch (_) {
+      /*
+        Local storage failure must
+        never break lesson.
+      */
+    }
+  }
+
+
+  /* =======================================================
+     8. SEND TO RESEARCH API
+     ======================================================= */
+
   async function sendToResearch(event) {
     try {
-      const runtime = researchRuntime();
+      const runtime =
+        researchRuntime();
 
-      const response = await fetch(
-        '/api/research/events',
-        {
-          method: 'POST',
+      const response =
+        await fetch(
+          '/api/research/events',
+          {
+            method: 'POST',
 
-          headers: {
-            'Content-Type': 'application/json'
-          },
+            credentials:
+              'same-origin',
 
-          credentials: 'same-origin',
+            headers: {
+              'Content-Type':
+                'application/json'
+            },
 
-          body: JSON.stringify({
-            clientEventId: event.eventId,
+            body:
+              JSON.stringify({
+                clientEventId:
+                  event.eventId,
 
-            sessionId:
-              runtime.sessionId,
+                sessionId:
+                  runtime.sessionId,
 
-            teacherId:
-              runtime.teacherId,
+                teacherId:
+                  runtime.teacherId,
 
-            classId:
-              runtime.classId,
+                classId:
+                  runtime.classId,
 
-            participantId:
-              runtime.participantId,
+                participantId:
+                  runtime.participantId,
 
-            lessonId:
-              researchLessonId,
+                lessonId:
+                  researchLessonId,
 
-            activityId:
-              event.activityId,
+                activityId:
+                  event.activityId,
 
-            eventType:
-              event.eventType,
+                eventType:
+                  event.eventType,
 
-            answer:
-              event.payload || null,
+                answer:
+                  event.payload ||
+                  null,
 
-            isCorrect:
-              typeof event.payload?.isCorrect === 'boolean'
-                ? event.payload.isCorrect
-                : null,
+                isCorrect:
+                  typeof event.payload
+                    ?.isCorrect ===
+                    'boolean'
+                    ? event.payload
+                        .isCorrect
+                    : null,
 
-            score:
-              event.payload?.score ?? null,
+                score:
+                  event.payload
+                    ?.score ??
+                  null,
 
-            occurredAt:
-              event.occurredAt,
+                occurredAt:
+                  event.occurredAt,
 
-            metadata: {
-              source:
-                'e-leap-standalone-bridge',
+                metadata: {
+                  source:
+                    'e-leap-standalone-bridge',
 
-              resourceId,
+                  bridgeVersion:
+                    '1.2',
 
-              courseId,
+                  resourceId,
 
-              unitId,
+                  courseId,
 
-              mode:
-                cfg.mode || 'standalone'
-            }
-          })
-        }
-      );
+                  unitId,
+
+                  mode:
+                    cfg.mode ||
+                    'standalone'
+                }
+              })
+          }
+        );
 
       if (!response.ok) {
         console.warn(
@@ -189,8 +434,20 @@
         return null;
       }
 
-      return await response.json();
+      try {
+        return await response.json();
+      } catch (_) {
+        return {
+          ok: true
+        };
+      }
     } catch (error) {
+      /*
+        Critical production rule:
+        research telemetry failure
+        must never affect teaching.
+      */
+
       console.warn(
         'E-LEAP research telemetry unavailable:',
         error
@@ -200,7 +457,18 @@
     }
   }
 
-  function emit(eventType, payload = {}) {
+
+  /* =======================================================
+     9. EMIT LEARNING EVENT
+     ======================================================= */
+
+  function emit(
+    eventType,
+    payload = {}
+  ) {
+    const runtime =
+      researchRuntime();
+
     const event = {
       eventId:
         uid(),
@@ -208,7 +476,8 @@
       eventType,
 
       occurredAt:
-        new Date().toISOString(),
+        new Date()
+          .toISOString(),
 
       resourceId,
 
@@ -219,7 +488,7 @@
         null,
 
       sessionId:
-        researchRuntime().sessionId,
+        runtime.sessionId,
 
       context:
         context(),
@@ -230,260 +499,327 @@
         'compatibility-bridge'
     };
 
+
     /*
-      Existing platform-host bridge.
+      Embedded lesson:
+      forward to platform host.
     */
-    if (window.parent !== window) {
-      window.parent.postMessage(
-        {
-          type: 'e-leap:learning-event',
-          event
-        },
-        location.origin
-      );
-    } else {
-      /*
-        Existing standalone recovery log.
-      */
+
+    if (
+      window.parent !== window
+    ) {
       try {
-        const rows =
-          JSON.parse(
-            localStorage.getItem(localKey) ||
-            '[]'
-          );
+        window.parent.postMessage(
+          {
+            type:
+              'e-leap:learning-event',
 
-        rows.push(event);
+            event
+          },
 
-        localStorage.setItem(
-          localKey,
-          JSON.stringify(
-            rows.slice(-250)
-          )
+          location.origin
         );
       } catch (_) {}
     }
 
-    /*
-      Existing local event bus.
-    */
-    window.dispatchEvent(
-      new CustomEvent(
-        'e-leap:lesson-event',
-        {
-          detail: event
-        }
-      )
-    );
 
     /*
-      NEW R1 research telemetry.
-      Fire-and-forget so lesson UX is never blocked.
+      Standalone lesson:
+      keep lightweight local recovery log.
     */
+
+    if (
+      window.parent === window
+    ) {
+      saveLocal(event);
+    }
+
+
+    /*
+      Internal lesson event bus.
+    */
+
+    try {
+      window.dispatchEvent(
+        new CustomEvent(
+          'e-leap:lesson-event',
+          {
+            detail:
+              event
+          }
+        )
+      );
+    } catch (_) {}
+
+
+    /*
+      Research telemetry.
+
+      Fire-and-forget:
+      do not await.
+    */
+
     sendToResearch(event);
+
 
     return event;
   }
 
-  function snapshot() {
-    const root =
-      document.querySelector('.screen.active') ||
-      document;
 
-    const inputs = [
-      ...root.querySelectorAll(
-        'input,textarea,select'
-      )
-    ].map(
-      (el, n) => ({
-        name:
-          el.name ||
-          el.id ||
-          ('field-' + n),
-
-        type:
-          el.type ||
-          el.tagName.toLowerCase(),
-
-        value:
-          el.type === 'checkbox' ||
-          el.type === 'radio'
-            ? el.checked
-            : el.value
-      })
-    );
-
-    const selected = [
-      ...root.querySelectorAll(
-        '.selected,.matched,.answer-correct,.answer-wrong'
-      )
-    ]
-      .slice(0, 80)
-      .map(
-        el =>
-          (
-            el.dataset.value ||
-            el.dataset.letter ||
-            el.textContent ||
-            ''
-          ).trim()
-      )
-      .filter(Boolean);
-
-    return {
-      inputs,
-      selected
-    };
-  }
+  /* =======================================================
+     10. INPUT EVENTS
+     ======================================================= */
 
   document.addEventListener(
     'input',
-    e => {
+
+    event => {
+      const target =
+        event.target;
+
       if (
-        e.target.matches(
+        !target ||
+        !target.matches(
           'input,textarea,select'
         )
       ) {
-        emit(
-          'response.drafted',
-          {
-            field:
-              e.target.name ||
-              e.target.id ||
-              null,
-
-            value:
-              e.target.type === 'password'
-                ? '[redacted]'
-                : e.target.value
-          }
-        );
+        return;
       }
+
+      emit(
+        'response.drafted',
+        {
+          field:
+            target.name ||
+            target.id ||
+            null,
+
+          value:
+            target.type ===
+            'password'
+              ? '[redacted]'
+              : target.value
+        }
+      );
     },
+
     true
   );
+
+
+  /* =======================================================
+     11. MEDIA EVENTS
+     ======================================================= */
 
   document.addEventListener(
     'play',
-    e => {
+
+    event => {
+      const target =
+        event.target;
+
       if (
-        e.target.matches(
+        !target ||
+        !target.matches(
           'audio,video'
         )
       ) {
-        emit(
-          'media.played',
-          {
-            src:
-              e.target.currentSrc ||
-              e.target.getAttribute('src') ||
-              null
-          }
-        );
+        return;
       }
+
+      emit(
+        'media.played',
+        {
+          src:
+            target.currentSrc ||
+            target.getAttribute(
+              'src'
+            ) ||
+            null
+        }
+      );
     },
+
     true
   );
+
 
   document.addEventListener(
     'ended',
-    e => {
+
+    event => {
+      const target =
+        event.target;
+
       if (
-        e.target.matches(
+        !target ||
+        !target.matches(
           'audio,video'
         )
       ) {
-        emit(
-          'media.completed',
-          {
-            src:
-              e.target.currentSrc ||
-              e.target.getAttribute('src') ||
-              null
-          }
-        );
+        return;
       }
+
+      emit(
+        'media.completed',
+        {
+          src:
+            target.currentSrc ||
+            target.getAttribute(
+              'src'
+            ) ||
+            null
+        }
+      );
     },
+
     true
   );
 
+
+  /* =======================================================
+     12. BUTTON EVENTS
+     ======================================================= */
+
   document.addEventListener(
     'click',
-    e => {
-      const b =
-        e.target.closest('button');
 
-      if (!b) return;
+    event => {
+      const button =
+        event.target.closest(
+          'button'
+        );
+
+      if (!button) {
+        return;
+      }
+
+
+      /*
+        SUBMIT
+      */
 
       if (
-        b.matches(
-          '#submit,.submit,#roundSubmit'
+        button.matches(
+          '#submit,' +
+          '.submit,' +
+          '#roundSubmit'
         )
       ) {
         setTimeout(
-          () =>
+          () => {
             emit(
               'response.submitted',
               {
                 response:
                   snapshot()
               }
-            ),
+            );
+          },
+
           0
         );
       }
 
+
+      /*
+        CHECK
+      */
+
       if (
-        b.matches(
-          '#check,[id^="check"],.item-check'
+        button.matches(
+          '#check,' +
+          '[id^="check"],' +
+          '.item-check'
         )
       ) {
         setTimeout(
-          () =>
+          () => {
             emit(
               'attempt.checked',
               {
                 response:
                   snapshot()
               }
-            ),
+            );
+          },
+
           0
         );
       }
 
+
+      /*
+        NAVIGATION / ACTIVITY VIEW
+      */
+
       if (
-        b.matches(
-          '#next,#nextBtn,.navbtn,.item-tab,.round-next,.round-dot'
+        button.matches(
+          '#next,' +
+          '#nextBtn,' +
+          '.navbtn,' +
+          '.item-tab,' +
+          '.round-next,' +
+          '.round-dot'
         )
       ) {
         setTimeout(
-          () =>
+          () => {
             emit(
               'activity.viewed',
               {}
-            ),
+            );
+          },
+
           0
         );
       }
     },
+
     true
   );
 
+
+  /* =======================================================
+     13. INITIAL LESSON EVENT
+     ======================================================= */
+
   window.addEventListener(
     'load',
+
     () => {
       emit(
         'activity.viewed',
         {
-          initial: true
+          initial:
+            true
         }
       );
     }
   );
 
+
+  /* =======================================================
+     14. GLOBAL E-LEAP BRIDGE API
+     ======================================================= */
+
   window.ELEAP = {
     emit,
+
     snapshot,
+
     resourceId,
-    researchLessonId
+
+    courseId,
+
+    unitId,
+
+    lessonId,
+
+    researchLessonId,
+
+    getResearchContext:
+      researchRuntime
   };
+
 })();
