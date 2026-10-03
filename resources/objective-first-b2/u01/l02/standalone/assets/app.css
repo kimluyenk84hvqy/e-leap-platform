@@ -1690,3 +1690,42 @@ body[data-screen="17"] .tf-row .teacher-answer-badge{
     transform:none!important;
   }
 }
+
+
+/* ===== U1.2 Presentation exit control ===== */
+.exit-presentation{
+  display:none;
+}
+body.presentation .exit-presentation{
+  display:inline-flex!important;
+  position:fixed!important;
+  left:18px!important;
+  top:14px!important;
+  z-index:80!important;
+  align-items:center!important;
+  gap:7px!important;
+  min-height:42px!important;
+  padding:8px 13px!important;
+  border:1px solid rgba(180,205,196,.95)!important;
+  border-radius:12px!important;
+  background:rgba(255,255,255,.92)!important;
+  color:var(--green)!important;
+  font-size:14px!important;
+  font-weight:800!important;
+  box-shadow:0 8px 22px rgba(18,63,58,.14)!important;
+  backdrop-filter:blur(8px)!important;
+}
+body.presentation .exit-presentation:hover{
+  background:var(--green)!important;
+  color:#fff!important;
+}
+@media(max-width:640px){
+  body.presentation .exit-presentation{
+    left:10px!important;
+    top:10px!important;
+    min-height:40px!important;
+    padding:7px 10px!important;
+    font-size:13px!important;
+  }
+}
+\n\n/* =========================================================\n   U1.2 ACADEMIC VISUAL PASS v7\n   Postgraduate-facing typography + discreet Teacher answer reveal.\n   ========================================================= */\n\n/* Answer-key / teacher-note text: restrained, academic scale. */\n.answer{\n  font-size:18px!important;\n  line-height:1.45!important;\n  font-weight:500!important;\n  padding:12px 15px!important;\n}\n.answer b{\n  font-size:16px!important;\n  font-weight:700!important;\n  letter-spacing:.01em!important;\n}\n\n/* Teacher/Presentation reveal: the correct option itself is the key.\n   No oversized badge, no child-oriented heavy treatment. */\n.teacher .teacher-revealed-option,\n.presentation .teacher-revealed-option{\n  background:#e8f3ef!important;\n  border:2px solid #6aa694!important;\n  color:inherit!important;\n  font-weight:700!important;\n  box-shadow:none!important;\n}\n\n/* Screens 16–17: preserve the normal option typography when revealed. */\nbody[data-screen="16"] .teacher-revealed-option,\nbody[data-screen="17"] .teacher-revealed-option{\n  font-size:inherit!important;\n  line-height:inherit!important;\n}\n\n/* Retire the old large auxiliary answer badge if any stale DOM survives. */\n.teacher-answer-badge{display:none!important}\n\n/* Keep Teacher check state professional and compact. */\n.teacher #check.reveal-mode-on,\n.presentation #check.reveal-mode-on{\n  box-shadow:none!important;\n  border-width:2px!important;\n  font-weight:700!important;\n}\n

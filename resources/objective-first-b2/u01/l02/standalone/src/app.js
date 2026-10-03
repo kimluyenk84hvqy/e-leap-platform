@@ -1,5 +1,5 @@
 const L=window.LESSON;
-let i=0,mode='student',timerInt=null;
+let i=0,mode='student',lastNonPresentationMode='student',timerInt=null;
 const videoRoundState={round:0,answers:Array(6).fill(''),submitted:Array(6).fill(false)};
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
@@ -1260,13 +1260,6 @@ function restorePresentationReveals(a){
         }
       });
 
-      const row=opts[0]?.closest('.mcq,.tf-row');
-      if(row && !row.querySelector('.teacher-answer-badge')){
-        const badge=document.createElement('div');
-        badge.className='teacher-answer-badge';
-        badge.textContent=`Answer: ${displayExpected(val)}`;
-        row.appendChild(badge);
-      }
     });
 
   if(
@@ -1402,14 +1395,6 @@ function setupPresentationReveal(a){
               )
             )
           );
-
-          let badge=row.querySelector('.teacher-answer-badge');
-          if(!badge){
-            badge=document.createElement('div');
-            badge.className='teacher-answer-badge';
-            row.appendChild(badge);
-          }
-          badge.textContent=`Answer: ${displayExpected(exp)}`;
 
           feedbackTone(true);
 
@@ -1885,7 +1870,11 @@ document
           m=>m.pause()
         );
 
-      mode=b.dataset.mode;
+      const nextMode=b.dataset.mode;
+      if(nextMode!=='presentation'){
+        lastNonPresentationMode=nextMode;
+      }
+      mode=nextMode;
 
       document
         .querySelectorAll('[data-mode]')
@@ -1899,6 +1888,24 @@ document
       render();
     }
   );
+
+
+const exitPresentationBtn=document.getElementById('exitPresentation');
+if(exitPresentationBtn){
+  exitPresentationBtn.onclick=()=>{
+    document
+      .querySelectorAll('video,audio')
+      .forEach(m=>m.pause());
+
+    mode=lastNonPresentationMode||'teacher';
+
+    document
+      .querySelectorAll('[data-mode]')
+      .forEach(x=>x.classList.toggle('active',x.dataset.mode===mode));
+
+    render();
+  };
+}
 
 $('#prev').onclick=()=>{
 
