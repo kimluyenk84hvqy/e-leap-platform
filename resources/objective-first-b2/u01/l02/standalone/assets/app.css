@@ -521,3 +521,798 @@ input,textarea,select{max-width:100%}
   #progress{display:none}
   footer{justify-content:space-between}
 }
+
+/* =========================================================
+   E-LEAP RESPONSIVE FIT PASS v2.0
+   U1.2 Golden Reference
+   Device-aware / Embedded-safe / Classroom-first
+
+   BREAKPOINTS
+   ---------------------------------------------------------
+   >= 1400px  : Large desktop / projector
+   1100-1399  : Laptop / classroom desktop
+   768-1099   : Tablet landscape / small laptop
+   <= 767px   : Tablet portrait / phone
+   ========================================================= */
+
+
+/* =========================================================
+   1. GLOBAL SAFETY
+   ========================================================= */
+
+html,
+body{
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+}
+
+body{
+  min-height:100dvh;
+}
+
+.app{
+  min-height:100dvh;
+  width:100%;
+}
+
+img,
+video,
+audio{
+  max-width:100%;
+}
+
+.stage,
+.content,
+.top,
+.action,
+footer{
+  min-width:0;
+}
+
+
+/* =========================================================
+   2. DESKTOP / LAPTOP BASE
+   Embedded iframe uses its own viewport automatically.
+   ========================================================= */
+
+@media (min-width:1100px){
+
+  header{
+    min-height:68px!important;
+    height:68px!important;
+    padding:8px 20px!important;
+  }
+
+  .brand b{
+    font-size:22px!important;
+  }
+
+  .brand span{
+    font-size:15px!important;
+  }
+
+  main{
+    height:calc(100dvh - 68px)!important;
+    min-height:0!important;
+    overflow:hidden!important;
+  }
+
+  aside{
+    width:auto!important;
+    min-width:0!important;
+    padding:12px!important;
+    overflow:hidden!important;
+  }
+
+  nav{
+    max-height:calc(100dvh - 155px)!important;
+    overflow-y:auto!important;
+  }
+
+  .navbtn{
+    padding:8px 10px!important;
+    font-size:12px!important;
+    line-height:1.22!important;
+  }
+
+  .unit{
+    padding:8px 10px!important;
+    font-size:17px!important;
+  }
+
+  .stage{
+    height:100%!important;
+    min-height:0!important;
+    overflow:hidden!important;
+
+    padding:
+      clamp(12px,1.45vh,20px)
+      clamp(18px,2vw,30px)!important;
+
+    display:flex!important;
+    flex-direction:column!important;
+  }
+
+  .top{
+    flex:0 0 auto!important;
+    min-height:0!important;
+    align-items:flex-start!important;
+    gap:12px!important;
+  }
+
+  .eyebrow{
+    font-size:clamp(11px,1.2vw,14px)!important;
+  }
+
+  h1{
+    font-size:clamp(30px,2.55vw,40px)!important;
+    line-height:1.05!important;
+    margin:3px 0 8px!important;
+  }
+
+  .teacher-tools{
+    gap:5px!important;
+  }
+
+  .teacher-tools button{
+    font-size:13px!important;
+    padding:7px 9px!important;
+    min-height:38px!important;
+  }
+
+  .content{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    max-height:none!important;
+
+    overflow:auto!important;
+
+    padding:
+      clamp(16px,1.8vh,24px)
+      clamp(18px,2vw,28px)!important;
+
+    border-radius:18px!important;
+
+    font-size:
+      clamp(19px,1.55vw,24px)!important;
+
+    line-height:1.36!important;
+  }
+
+  .content:before{
+    margin:
+      calc(-1 * clamp(16px,1.8vh,24px))
+      calc(-1 * clamp(18px,2vw,28px))
+      14px!important;
+  }
+
+  .subtitle{
+    font-size:clamp(20px,1.7vw,25px)!important;
+    line-height:1.2!important;
+    margin-bottom:8px!important;
+  }
+
+  .instruction{
+    font-size:clamp(18px,1.55vw,23px)!important;
+    line-height:1.3!important;
+    padding:8px 12px!important;
+    margin-bottom:10px!important;
+  }
+
+  .action{
+    position:relative!important;
+    bottom:auto!important;
+
+    flex:0 0 auto!important;
+
+    padding:7px 0 3px!important;
+    margin:0!important;
+
+    background:transparent!important;
+  }
+
+  .action button{
+    min-height:40px!important;
+    padding:7px 13px!important;
+  }
+
+  footer{
+    flex:0 0 auto!important;
+    margin-top:0!important;
+    padding-top:6px!important;
+    min-height:42px!important;
+  }
+
+  footer button{
+    min-height:38px!important;
+    padding:7px 12px!important;
+  }
+
+  #progress{
+    font-size:13px!important;
+  }
+
+
+  /* -------------------------------------------------------
+     General dense content
+     ------------------------------------------------------- */
+
+  .qtext,
+  .inline-q,
+  .example-list li,
+  .bullet,
+  .source-line,
+  .reading,
+  .stacked-q,
+  .compact-q,
+  .structure-q,
+  .degree-q,
+  .spelling-line,
+  .word-item,
+  .grammar-card,
+  .tf-row,
+  .vocab-q,
+  .grammar-line,
+  .rewrite-q,
+  .rewrite-line,
+  .hw-step{
+    font-size:clamp(18px,1.45vw,23px)!important;
+    line-height:1.34!important;
+  }
+
+  input,
+  textarea,
+  .miniinput,
+  .inlineinput,
+  .stackinput,
+  .cellinput,
+  .transform-input,
+  .rewrite-input,
+  .homework-input{
+    font-size:clamp(18px,1.4vw,22px)!important;
+    line-height:1.3!important;
+  }
+
+
+  /* -------------------------------------------------------
+     Media
+     ------------------------------------------------------- */
+
+  .sourceimg{
+    max-height:38dvh!important;
+    width:auto!important;
+    object-fit:contain!important;
+  }
+
+  .jeans-photo{
+    max-height:31dvh!important;
+    object-fit:contain!important;
+  }
+
+  .video-round-main video{
+    height:auto!important;
+    max-height:48dvh!important;
+  }
+
+  .media-card video{
+    height:auto!important;
+    max-height:24dvh!important;
+  }
+
+
+  /* -------------------------------------------------------
+     Slide 1 cover
+     ------------------------------------------------------- */
+
+  .hero-cover{
+    min-height:0!important;
+    height:100%!important;
+    max-height:100%!important;
+
+    padding:
+      clamp(24px,3vh,38px)!important;
+
+    gap:20px!important;
+  }
+
+  .hero-title{
+    font-size:clamp(46px,5vw,66px)!important;
+    margin:10px 0 18px!important;
+  }
+
+  .hero-visual{
+    min-height:0!important;
+    height:100%!important;
+  }
+
+  .hero-visual img{
+    max-height:42dvh!important;
+    max-width:84%!important;
+  }
+
+
+  /* -------------------------------------------------------
+     Slide 10 image + questions
+     ------------------------------------------------------- */
+
+  body[data-screen="10"] .image-question-layout{
+    height:100%!important;
+    align-items:center!important;
+  }
+
+  body[data-screen="10"] .image-question-layout .sourceimg{
+    max-height:36dvh!important;
+  }
+
+  body[data-screen="10"] .inline-q{
+    font-size:clamp(18px,1.45vw,22px)!important;
+    padding:9px 12px!important;
+  }
+
+  body[data-screen="10"] .inlineinput{
+    min-height:46px!important;
+    font-size:clamp(18px,1.4vw,22px)!important;
+  }
+
+
+  /* -------------------------------------------------------
+     Slides 16-17 reading
+     ------------------------------------------------------- */
+
+  body[data-screen="16"] .reading-predict-split,
+  body[data-screen="17"] .reading-task-split{
+    height:100%!important;
+    min-height:0!important;
+    align-items:start!important;
+  }
+
+  body[data-screen="16"] .evidence-text,
+  body[data-screen="17"] .evidence-text{
+    font-size:clamp(18px,1.45vw,22px)!important;
+    line-height:1.4!important;
+
+    max-height:
+      calc(100dvh - 300px)!important;
+
+    overflow:auto!important;
+  }
+
+  body[data-screen="16"] .predict-panel .jeans-photo{
+    max-height:26dvh!important;
+  }
+
+  body[data-screen="16"] .mcq-options .option{
+    font-size:clamp(17px,1.35vw,21px)!important;
+    padding:8px 10px!important;
+  }
+
+
+  /* -------------------------------------------------------
+     Homework / long screens
+     ------------------------------------------------------- */
+
+  .homework-card{
+    padding:18px!important;
+    gap:12px!important;
+  }
+
+  .homework-input{
+    min-height:110px!important;
+  }
+
+  .thankyou.modern{
+    min-height:0!important;
+    height:100%!important;
+  }
+}
+
+
+/* =========================================================
+   3. LARGE DESKTOP / PROJECTOR
+   ========================================================= */
+
+@media (min-width:1400px){
+
+  main{
+    grid-template-columns:270px 1fr!important;
+  }
+
+  .content{
+    font-size:23px!important;
+  }
+
+  .qtext,
+  .inline-q,
+  .bullet,
+  .reading,
+  .structure-q,
+  .degree-q,
+  .vocab-q,
+  .grammar-line,
+  .rewrite-q{
+    font-size:22px!important;
+  }
+
+  .hero-visual img{
+    max-height:46dvh!important;
+  }
+
+  .video-round-main video{
+    max-height:52dvh!important;
+  }
+}
+
+
+/* =========================================================
+   4. SMALL LAPTOP / TABLET LANDSCAPE
+   768–1099px
+   ========================================================= */
+
+@media (min-width:768px) and (max-width:1099px){
+
+  header{
+    min-height:60px!important;
+    height:auto!important;
+    padding:8px 12px!important;
+  }
+
+  main{
+    display:block!important;
+    min-height:calc(100dvh - 60px)!important;
+  }
+
+  aside{
+    display:none!important;
+  }
+
+  .stage{
+    padding:12px 14px!important;
+    min-height:calc(100dvh - 60px)!important;
+  }
+
+  h1{
+    font-size:clamp(28px,4vw,34px)!important;
+    margin:3px 0 8px!important;
+  }
+
+  .content{
+    padding:16px!important;
+    font-size:20px!important;
+    overflow:visible!important;
+  }
+
+  .subtitle,
+  .instruction{
+    font-size:20px!important;
+  }
+
+  .source-sections.two,
+  .source-sections.three,
+  .reading-question-split,
+  .reading-predict-split,
+  .reading-task-split{
+    grid-template-columns:1fr 1fr!important;
+  }
+
+  .groups.horizontal:not(.consolidation){
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+
+  .groups.horizontal:not(.consolidation) .group:last-child{
+    grid-column:1/-1!important;
+  }
+
+  .image-question-layout{
+    grid-template-columns:minmax(220px,34%) 1fr!important;
+  }
+
+  .video-round-shell{
+    grid-template-columns:1fr!important;
+  }
+
+  .video-round-main video{
+    max-height:46dvh!important;
+  }
+
+  .hero-cover{
+    grid-template-columns:1fr 1fr!important;
+    min-height:0!important;
+    padding:24px!important;
+  }
+
+  .hero-title{
+    font-size:48px!important;
+  }
+
+  .hero-visual{
+    min-height:240px!important;
+  }
+
+  .hero-visual img{
+    max-height:32dvh!important;
+  }
+
+  footer{
+    position:sticky!important;
+    bottom:0!important;
+  }
+}
+
+
+/* =========================================================
+   5. TABLET PORTRAIT / PHONE
+   <= 767px
+   ========================================================= */
+
+@media (max-width:767px){
+
+  header{
+    min-height:54px!important;
+    padding:7px 9px!important;
+  }
+
+  .brand b{
+    font-size:18px!important;
+  }
+
+  .brand span{
+    font-size:12px!important;
+  }
+
+  main{
+    display:block!important;
+    min-height:calc(100dvh - 54px)!important;
+  }
+
+  aside{
+    display:none!important;
+  }
+
+  .stage{
+    padding:9px!important;
+  }
+
+  .top{
+    display:block!important;
+  }
+
+  h1{
+    font-size:27px!important;
+    line-height:1.08!important;
+    margin:3px 0 8px!important;
+  }
+
+  .content{
+    padding:12px!important;
+    border-radius:14px!important;
+
+    font-size:18px!important;
+
+    max-height:none!important;
+    overflow:visible!important;
+  }
+
+  .content:before{
+    margin:-12px -12px 10px!important;
+  }
+
+  .subtitle,
+  .instruction{
+    font-size:18px!important;
+  }
+
+  .source-sections,
+  .groups,
+  .groups.horizontal,
+  .groups.horizontal.consolidation,
+  .reading-question-split,
+  .reading-predict-split,
+  .reading-task-split,
+  .image-question-layout,
+  .evidence-layout.with-image,
+  .video-round-shell,
+  .predict-panel,
+  .cardgrid,
+  .media-grid,
+  .compact-grid,
+  .grammar-card-grid,
+  .structure-question-grid,
+  .vocab-q-grid,
+  .rewrite-grid,
+  .qrows,
+  .word-grid,
+  .mcq-options{
+    grid-template-columns:1fr!important;
+  }
+
+  .hero-cover{
+    display:block!important;
+    height:auto!important;
+    padding:20px!important;
+  }
+
+  .hero-title{
+    font-size:42px!important;
+  }
+
+  .hero-visual{
+    min-height:0!important;
+    margin-top:18px!important;
+  }
+
+  .hero-visual img{
+    max-height:none!important;
+    width:min(78%,340px)!important;
+  }
+
+  .sourceimg,
+  .jeans-photo{
+    max-height:none!important;
+    width:100%!important;
+    object-fit:contain!important;
+  }
+
+  .video-round-main video,
+  .media-card video{
+    height:auto!important;
+    max-height:none!important;
+  }
+
+  .inlineinput,
+  .transform-input,
+  .rewrite-input,
+  .miniinput,
+  .stackinput,
+  .cellinput{
+    width:100%!important;
+    min-width:0!important;
+  }
+
+  .action{
+    position:sticky!important;
+    bottom:52px!important;
+    z-index:25!important;
+  }
+
+  footer{
+    position:sticky!important;
+    bottom:0!important;
+    z-index:30!important;
+  }
+}
+
+
+/* =========================================================
+   6. PRESENTATION MODE
+   Projector / classroom full-screen
+   ========================================================= */
+
+.presentation main{
+  height:100dvh!important;
+  min-height:0!important;
+}
+
+.presentation .stage{
+  height:100dvh!important;
+  min-height:0!important;
+  overflow:hidden!important;
+}
+
+.presentation .content{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  overflow:auto!important;
+}
+
+.presentation .hero-cover,
+.presentation .thankyou.modern{
+  min-height:0!important;
+}
+
+.presentation .sourceimg{
+  max-height:48dvh!important;
+}
+
+.presentation .jeans-photo{
+  max-height:34dvh!important;
+}
+
+
+/* =========================================================
+   7. SHORT-SCREEN SAFETY
+   MacBook / browser with many bars / embedded lesson-host
+   ========================================================= */
+
+@media (min-width:1100px) and (max-height:820px){
+
+  header{
+    min-height:58px!important;
+    height:58px!important;
+  }
+
+  main{
+    height:calc(100dvh - 58px)!important;
+  }
+
+  .stage{
+    padding:9px 18px!important;
+  }
+
+  h1{
+    font-size:30px!important;
+    margin:2px 0 6px!important;
+  }
+
+  .eyebrow{
+    font-size:11px!important;
+  }
+
+  .content{
+    padding:14px 18px!important;
+  }
+
+  .content:before{
+    margin:-14px -18px 11px!important;
+  }
+
+  .subtitle{
+    font-size:20px!important;
+  }
+
+  .instruction{
+    font-size:19px!important;
+    padding:7px 11px!important;
+    margin-bottom:8px!important;
+  }
+
+  .qtext,
+  .inline-q,
+  .bullet,
+  .source-line,
+  .reading,
+  .structure-q,
+  .degree-q,
+  .vocab-q,
+  .grammar-line,
+  .rewrite-q{
+    font-size:19px!important;
+    line-height:1.3!important;
+  }
+
+  input,
+  textarea,
+  .miniinput,
+  .inlineinput,
+  .stackinput,
+  .cellinput,
+  .transform-input,
+  .rewrite-input{
+    font-size:18px!important;
+  }
+
+  .hero-title{
+    font-size:48px!important;
+  }
+
+  .hero-cover{
+    padding:22px 30px!important;
+  }
+
+  .hero-visual img{
+    max-height:38dvh!important;
+  }
+
+  .sourceimg{
+    max-height:32dvh!important;
+  }
+
+  .video-round-main video{
+    max-height:43dvh!important;
+  }
+
+  footer{
+    min-height:36px!important;
+    padding-top:3px!important;
+  }
+}
