@@ -2,9 +2,11 @@
 export class ELeapLessonEngine {
   constructor({registryUrl='../../data/resources.json'}={}){this.registryUrl=registryUrl;this.registry=null;}
   async init(){
-    const cacheKey='e-leap:resource-registry:v1';
-    try{const cached=sessionStorage.getItem(cacheKey);if(cached)this.registry=JSON.parse(cached);}catch(_){ }
-    try{const r=await fetch(this.registryUrl,{cache:'default'});if(r.ok){this.registry=await r.json();try{sessionStorage.setItem(cacheKey,JSON.stringify(this.registry))}catch(_){}}else if(!this.registry)throw new Error(`Resource registry unavailable (${r.status})`);}catch(e){if(!this.registry)throw e;}
+    const cacheKey='e-leap:resource-registry:v1.1';
+    try{const r=await fetch(this.registryUrl,{cache:'no-store'});if(r.ok){this.registry=await r.json();try{sessionStorage.setItem(cacheKey,JSON.stringify(this.registry))}catch(_){}}else throw new Error(`Resource registry unavailable (${r.status})`);}catch(e){
+      try{const cached=sessionStorage.getItem(cacheKey);if(cached)this.registry=JSON.parse(cached);}catch(_){ }
+      if(!this.registry)throw e;
+    }
     return this;
   }
   getResource(id){return this.registry?.resources?.find(r=>r.id===id)??null;}
