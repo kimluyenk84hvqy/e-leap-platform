@@ -43,7 +43,7 @@
     command(action){
       if(action==='timer'){if(window.ELEAP_U11_UI?.openTimer){window.ELEAP_U11_UI.openTimer();return true}return clickFirstVisible('#timer,#u11Timer')}
       if(action==='responses'){if(window.ELEAP_U11_UI?.openResponses){window.ELEAP_U11_UI.openResponses();return true}return clickFirstVisible('#responses,#u11Responses')}
-      if(action==='reveal'){if(window.ELEAP_U11_UI?.revealNext){window.ELEAP_U11_UI.revealNext();return true}return clickFirstVisible('#reveal,#u11Reveal')}
+      if(action==='reveal'){if(window.ELEAP_U12_UI?.revealCurrent){return window.ELEAP_U12_UI.revealCurrent()===true}if(window.ELEAP_U11_UI?.revealNext){window.ELEAP_U11_UI.revealNext();return true}return clickFirstExisting('#reveal,#u11Reveal')}
       if(action==='submit'){
         /* A top-level Submit saves the WHOLE current activity state.
            Item-level controls such as U1.2 #roundSubmit remain Check-like practice controls. */

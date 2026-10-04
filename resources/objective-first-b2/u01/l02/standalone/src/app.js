@@ -1524,6 +1524,74 @@ function setupPresentationReveal(a){
   restorePresentationReveals(a);
 }
 
+/* E-LEAP host-facing reveal adapter — R4 RC1.6.1
+   Reveal the answer/model for the CURRENT U1.2 screen without relying on hidden
+   legacy buttons. This keeps Golden lesson content intact while exposing a
+   stable Platform action for Teacher/Presentation. */
+function revealAllCurrentForHost(){
+  if(mode!=='teacher'&&mode!=='presentation')return false;
+  const a=L.activities[i];
+  if(!a)return false;
+  const hasExpected=Array.isArray(a.expected)&&a.expected.length>0;
+  const hasPresentation=Array.isArray(a.presentationExpected)&&a.presentationExpected.length>0;
+  const hasOptions=Array.isArray(a.optionExpected)&&a.optionExpected.length>0;
+  const hasArticle=a.type==='article-typed'&&!!document.querySelector('[data-article-answer]');
+  if(!hasExpected&&!hasPresentation&&!hasOptions&&!hasArticle)return false;
+
+  const st=revealState();
+  st.active=true;
+  const revealExpected=hasPresentation?a.presentationExpected:(hasExpected?a.expected:null);
+
+  if(revealExpected){
+    document.querySelectorAll('input[data-answer-index],textarea[data-answer-index]').forEach(el=>{
+      const idx=Number(el.dataset.answerIndex);
+      const exp=revealExpected[idx];
+      if(exp===undefined)return;
+      const val=displayExpected(exp);
+      st.inputs[idx]=val;
+      el.value=val;
+      el.readOnly=true;
+      el.classList.remove('answer-wrong');
+      el.classList.add('teacher-revealed');
+    });
+  }
+
+  if(hasOptions){
+    a.optionExpected.forEach((exp,qi)=>{ st.options[qi]=exp; });
+  }
+
+  if(a.type==='video-responses'&&hasExpected){
+    const idx=videoRoundState.round;
+    const exp=a.expected[idx];
+    if(exp!==undefined){
+      const val=displayExpected(exp);
+      st.inputs['video-'+idx]=val;
+      videoRoundState.answers[idx]=val;
+      videoRoundState.submitted[idx]=true;
+      const el=$('#roundAnswer');
+      if(el){el.value=val;el.readOnly=true;el.classList.add('teacher-revealed');}
+    }
+  }
+
+  if(hasArticle){
+    const box=document.querySelector('[data-article-answer]');
+    const model=hasPresentation?a.presentationExpected.join('<br>'):(a.answer||'');
+    if(box&&model){st.inputs['article']=model;box.innerHTML=model;box.classList.add('teacher-revealed-article');}
+  }
+
+  restorePresentationReveals(a);
+  feedbackTone(true);
+  return true;
+}
+
+window.ELEAP_U12_UI=Object.assign(window.ELEAP_U12_UI||{}, {
+  revealCurrent: revealAllCurrentForHost,
+  hasReveal(){
+    const a=L.activities[i];
+    return !!(a&&(Array.isArray(a.expected)||Array.isArray(a.presentationExpected)||Array.isArray(a.optionExpected)||a.type==='article-typed'));
+  }
+});
+
 function needsActions(a){
   return ![
     'cover-modern',

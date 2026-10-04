@@ -1,5 +1,5 @@
 const CACHE_PREFIX='e-leap-cache-';
-const CACHE=CACHE_PREFIX+'runtime-v20261004-r4-rc1.6';
+const CACHE=CACHE_PREFIX+'runtime-v20261004-r4-rc1.6.1';
 const MEDIA_RE=/\.(?:png|jpe?g|svg|webp|gif|mp3|m4a|wav|ogg|mp4|webm|woff2?)$/i;
 self.addEventListener('install',e=>{self.skipWaiting();});
 self.addEventListener('activate',e=>e.waitUntil(Promise.all([
