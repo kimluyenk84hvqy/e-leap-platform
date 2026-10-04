@@ -1,7 +1,7 @@
 {
-  "release": "E-LEAP CLEAN V1.1 MASTER",
-  "base": "E-LEAP CLEAN V1 MASTER",
-  "purpose": "Clean branch baseline for production lesson authoring",
+  "release": "E-LEAP CLEAN V1.2 MASTER",
+  "base": "E-LEAP CLEAN V1.1 MASTER",
+  "purpose": "Clean production baseline with locked visual contract before U2.1 authoring",
   "lockedContracts": [
     "Modular Source Architecture",
     "Role Control Contract",
@@ -16,7 +16,12 @@
     "K84 Home identity",
     "cleaner Create/Choose Class UX",
     "Research DB common env support + idempotent bootstrap",
-    "Live Session QR flow retained"
+    "Live Session QR flow retained",
+    "Official visual direction: Dark shell + clean warm-green canvas + crisp white cards + stronger active green",
+    "Poppins as default shell and Studio typography",
+    "Removed MASTER PASS CANDIDATE developer copy from Home",
+    "Increased canvas/card/active-state contrast without darkening lesson workspace",
+    "Service-worker cache namespace bumped to prevent stale visual assets"
   ],
   "goldenReferences": [
     "U1.1",

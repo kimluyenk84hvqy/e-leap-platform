@@ -1,4 +1,4 @@
-# E-LEAP CLEAN V1.1 MASTER
+# E-LEAP CLEAN V1.2 MASTER
 
 This is the clean source baseline for branch `e-leap-clean-v1` and future lesson production.
 
