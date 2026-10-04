@@ -28,6 +28,7 @@
       const m=b.dataset.u11Mode||b.dataset.mode;
       const permitted=canTeach?(m==='teacher'||m==='presentation'):(m==='student');
       b.hidden=!permitted;
+      b.disabled=!permitted;
       b.setAttribute('aria-hidden',permitted?'false':'true');
       if(!permitted)b.tabIndex=-1;
     });

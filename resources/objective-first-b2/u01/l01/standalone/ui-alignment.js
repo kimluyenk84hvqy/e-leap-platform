@@ -19,7 +19,18 @@
   const $=(s,r=document)=>r.querySelector(s);
   const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 
-  let mode='teacher';
+  const __eleapParams=new URLSearchParams(location.search);
+  const __eleapHosted=__eleapParams.get('eleapHosted')==='1';
+  const __eleapRole=['guest','student','teacher','admin'].includes(__eleapParams.get('eleapRole'))?__eleapParams.get('eleapRole'):'guest';
+  const __eleapCanTeach=['teacher','admin'].includes(__eleapRole);
+  const __eleapRequestedPresentation=__eleapParams.get('eleapMode')==='presentation';
+  const __eleapLockedMode=__eleapHosted?(__eleapCanTeach?(__eleapRequestedPresentation?'presentation':'teacher'):'student'):null;
+  const __eleapNormalizeMode=(requested)=>{
+    if(!__eleapHosted)return requested;
+    if(!__eleapCanTeach)return 'student';
+    return requested==='presentation'?'presentation':'teacher';
+  };
+  let mode=__eleapLockedMode||'teacher';
   let timerInt=null;
   let revealMode=false;
   let recorder=null;
@@ -253,12 +264,23 @@
     topbar.appendChild(right);
 
     $$('[data-u11-mode]',right)
-      .forEach(
-        b=>b.onclick=
-          ()=>setMode(
-            b.dataset.u11Mode
-          )
-      );
+      .forEach(b=>{
+        const requested=b.dataset.u11Mode;
+        if(__eleapHosted){
+          const permitted=__eleapCanTeach?(requested==='teacher'||requested==='presentation'):(requested==='student');
+          b.hidden=!permitted;
+          b.disabled=!permitted;
+          b.setAttribute('aria-hidden',permitted?'false':'true');
+          if(!permitted)b.tabIndex=-1;
+        }
+        b.onclick=(e)=>{
+          if(__eleapHosted){
+            const permitted=__eleapCanTeach?(requested==='teacher'||requested==='presentation'):(requested==='student');
+            if(!permitted){e?.preventDefault?.();e?.stopImmediatePropagation?.();return false;}
+          }
+          setMode(requested);
+        };
+      });
   }
 
 
@@ -594,6 +616,7 @@
 
   function setMode(m){
 
+    m=__eleapNormalizeMode(m);
     mode=m;
     revealMode=false;
 
@@ -2277,8 +2300,11 @@
     openResponses,
     revealNext,
     resetScreen,
-    decorateCurrentScreen
+    decorateCurrentScreen,
+    getMode:()=>mode,
+    hostedRoleLock:__eleapHosted?{role:__eleapRole,mode:__eleapLockedMode}:null
   };
+  if(__eleapHosted){queueMicrotask(()=>setMode(__eleapLockedMode));}
 
 })();
 

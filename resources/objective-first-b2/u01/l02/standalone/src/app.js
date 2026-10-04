@@ -1,5 +1,16 @@
 const L=window.LESSON;
-let i=0,mode='student',lastNonPresentationMode='student',timerInt=null;
+const __eleapParams=new URLSearchParams(location.search);
+const __eleapHosted=__eleapParams.get('eleapHosted')==='1';
+const __eleapRole=['guest','student','teacher','admin'].includes(__eleapParams.get('eleapRole'))?__eleapParams.get('eleapRole'):'guest';
+const __eleapCanTeach=['teacher','admin'].includes(__eleapRole);
+const __eleapRequestedPresentation=__eleapParams.get('eleapMode')==='presentation';
+const __eleapLockedMode=__eleapHosted?(__eleapCanTeach?(__eleapRequestedPresentation?'presentation':'teacher'):'student'):null;
+const __eleapNormalizeMode=(requested)=>{
+  if(!__eleapHosted)return requested;
+  if(!__eleapCanTeach)return 'student';
+  return requested==='presentation'?'presentation':'teacher';
+};
+let i=0,mode=__eleapLockedMode||'student',lastNonPresentationMode=(__eleapHosted&&__eleapCanTeach)?'teacher':'student',timerInt=null;
 const videoRoundState={round:0,answers:Array(6).fill(''),submitted:Array(6).fill(false)};
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
@@ -1859,6 +1870,18 @@ L.activities.forEach((a,n)=>{
   $('#nav').appendChild(b);
 });
 
+if(__eleapHosted){
+  document.querySelectorAll('[data-mode]').forEach(b=>{
+    const requested=b.dataset.mode;
+    const permitted=__eleapCanTeach?(requested==='teacher'||requested==='presentation'):(requested==='student');
+    b.hidden=!permitted;
+    b.disabled=!permitted;
+    b.setAttribute('aria-hidden',permitted?'false':'true');
+    if(!permitted)b.tabIndex=-1;
+    b.classList.toggle('active',requested===mode);
+  });
+}
+
 document
   .querySelectorAll('[data-mode]')
   .forEach(
@@ -1870,7 +1893,9 @@ document
           m=>m.pause()
         );
 
-      const nextMode=b.dataset.mode;
+      const requestedMode=b.dataset.mode;
+      const nextMode=__eleapNormalizeMode(requestedMode);
+      if(__eleapHosted && nextMode!==requestedMode)return;
       if(nextMode!=='presentation'){
         lastNonPresentationMode=nextMode;
       }
@@ -1897,7 +1922,7 @@ if(exitPresentationBtn){
       .querySelectorAll('video,audio')
       .forEach(m=>m.pause());
 
-    mode=lastNonPresentationMode||'teacher';
+    mode=__eleapNormalizeMode(lastNonPresentationMode||'teacher');
 
     document
       .querySelectorAll('[data-mode]')
