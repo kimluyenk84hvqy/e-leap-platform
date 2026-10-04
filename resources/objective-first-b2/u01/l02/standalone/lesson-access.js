@@ -1,4 +1,4 @@
-/* E-LEAP Hosted Lesson Access Enforcer — R3B RC2
+/* E-LEAP Hosted Lesson Access Enforcer — R3B RC3
    Hosted lessons inherit role/mode from the platform. Runtime context may change
    (Teacher <-> Presentation) without allowing role escalation. */
 (function(){
@@ -16,8 +16,8 @@
   function enforce(){
     if(window.ELEAP_U11_UI?.setMode){try{window.ELEAP_U11_UI.setMode(allowedLessonMode)}catch(_){}}
     const switcher=document.querySelector(`[data-mode="${allowedLessonMode}"]`);if(switcher&&!switcher.classList.contains('active')){try{switcher.click()}catch(_){}}
-    document.querySelectorAll('[data-u11-mode],[data-mode]').forEach(b=>{const m=b.dataset.u11Mode||b.dataset.mode;const permitted=canTeach?(m==='teacher'||m==='presentation'):(m==='student');b.hidden=!permitted;b.disabled=!permitted;b.setAttribute('aria-hidden',permitted?'false':'true');if(!permitted)b.tabIndex=-1;});
-    if(!canTeach){document.querySelectorAll('.u11-teacher-tools,.teacher-tools,#u11Reveal,#u11Responses,#u11Lucky,#u11Timer').forEach(el=>el.hidden=true);document.body.classList.remove('u11-teacher','presentation','u11-reveal-mode','presentation-reveal-active');document.body.classList.add('u11-student');}
+    document.querySelectorAll('[data-u11-mode],[data-mode]').forEach(b=>{b.hidden=true;b.disabled=true;b.setAttribute('aria-hidden','true');b.tabIndex=-1;});
+    if(document.body){document.body.dataset.eleapRole=role;document.body.dataset.eleapHosted='1';}if(!canTeach){document.querySelectorAll('.u11-teacher-tools,.teacher-tools,#u11Reveal,#u11Responses,#u11Lucky,#u11Timer').forEach(el=>el.hidden=true);document.body.classList.remove('u11-teacher','presentation','u11-reveal-mode','presentation-reveal-active');document.body.classList.add('u11-student');}
   }
   window.addEventListener('message',(ev)=>{if(ev.origin!==location.origin)return;const msg=ev.data;if(!msg||msg.type!=='e-leap:runtime-context'||!msg.context)return;const c=msg.context;const nextRole=roles.includes(c.role)?c.role:role;if(nextRole!==role)return;requestedPresentation=c.mode==='presentation';canTeach=['teacher','admin'].includes(role);allowedLessonMode=requestedPresentation&&canTeach?'presentation':(canTeach?'teacher':'student');publishContext(c);enforce();});
   window.addEventListener('DOMContentLoaded',()=>setTimeout(enforce,0));window.addEventListener('load',()=>{enforce();setTimeout(enforce,100)});new MutationObserver(()=>enforce()).observe(document.documentElement,{subtree:true,childList:true});
