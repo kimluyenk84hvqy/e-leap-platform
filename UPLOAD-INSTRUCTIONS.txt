@@ -1,2 +1,10 @@
-Upload the CONTENTS of this patch to branch r1-r2-preview, preserving folders. Commit: Harden R3A shared runtime foundation RC2
-Do not upload to Production.
+E-LEAP R3A RC3 - Shared Runtime interaction fix
+Upload this patch to branch: r1-r2-preview
+Commit message: Fix shared runtime reveal and writing controls RC3
+
+Changed:
+- Teacher click-reveal now shows Check / arm reveal and reveals only after arming.
+- Student/Guest click-reveal stays locked when studentReveal=false.
+- Writing no longer shows a meaningless Check / arm reveal in Teacher/Admin mode.
+- Student writing keeps Submit.
+- Guest writing remains public-practice preview without official submission.

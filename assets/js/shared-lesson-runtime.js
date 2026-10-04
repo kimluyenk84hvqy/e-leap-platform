@@ -45,14 +45,25 @@ export class ELeapSharedLessonRuntime{
       const inputType=a.type==='multi-select'?'checkbox':'radio';
       return `<div class="eleap-card"><p class="eleap-question">${esc(a.prompt||'')}</p><div class="eleap-options">${(a.options||[]).map(o=>`<label data-option-id="${esc(o.id||o.value||o.label||o)}"><input type="${inputType}" name="answer" value="${esc(o.id||o.value||o.label||o)}"><span>${esc(o.label||o.value||o)}</span></label>`).join('')}</div>${this.studentActionBar(a)}</div>`;
     }
-    if(a.type==='fill'||a.type==='writing') return `<div class="eleap-card"><p class="eleap-question">${esc(a.prompt||'')}</p><textarea data-response rows="${a.type==='writing'?8:4}" placeholder="${esc(a.placeholder||'Type your answer…')}"></textarea>${this.studentActionBar(a)}</div>`;
-    if(a.type==='click-reveal'||a.type==='flashcards') return `<div class="eleap-card"><p class="eleap-question">${esc(a.prompt||'')}</p><div class="eleap-reveal-grid">${(a.items||[]).map((it,i)=>`<button data-reveal="${i}">${esc(it.front||it.question||it.prompt||('Item '+(i+1)))}</button>`).join('')}</div></div>`;
+    if(a.type==='fill'||a.type==='writing') return `<div class="eleap-card"><p class="eleap-question">${esc(a.prompt||'')}</p><textarea data-response rows="${a.type==='writing'?8:4}" placeholder="${esc(a.placeholder||'Type your answer…')}"></textarea>${this.responseActionBar(a)}</div>`;
+    if(a.type==='click-reveal'||a.type==='flashcards') return `<div class="eleap-card"><p class="eleap-question">${esc(a.prompt||'')}</p><div class="eleap-reveal-grid">${(a.items||[]).map((it,i)=>`<button data-reveal="${i}">${esc(it.front||it.question||it.prompt||('Item '+(i+1)))}</button>`).join('')}</div>${this.revealActionBar(a)}</div>`;
     return `<div class="eleap-card"><p class="eleap-question">${esc(a.prompt||def.label)}</p><p class="eleap-muted">${esc(def.label)} uses the shared runtime contract. Renderer parity is being added template by template.</p>${this.studentActionBar(a)}</div>`;
   }
   studentActionBar(a){
     if(this.context.role==='student') return `<div class="eleap-actions"><button class="primary" data-submit>Submit</button><span data-status>Not submitted</span></div>`;
     if(this.context.role==='guest') return `<div class="eleap-actions"><span class="eleap-muted">Public practice preview</span></div>`;
     if(this.context.can('teacher:reveal')) return `<div class="eleap-actions"><button data-arm-check>Check / arm reveal</button><span data-status>Teacher mode</span></div>`;
+    return '';
+  }
+  revealActionBar(a){
+    if(this.context.can('teacher:reveal')) return `<div class="eleap-actions"><button data-arm-check>Check / arm reveal</button><span data-status>Teacher mode</span></div>`;
+    if((this.context.role==='student'||this.context.role==='guest') && a.policy?.studentReveal===true) return `<div class="eleap-actions"><span class="eleap-muted">Tap a card to reveal</span></div>`;
+    return '';
+  }
+  responseActionBar(a){
+    if(this.context.role==='student') return `<div class="eleap-actions"><button class="primary" data-submit>Submit</button><span data-status>Not submitted</span></div>`;
+    if(this.context.role==='guest') return `<div class="eleap-actions"><span class="eleap-muted">Public practice preview</span></div>`;
+    if(this.context.role==='teacher'||this.context.role==='admin') return `<div class="eleap-actions"><span data-status>Teacher mode · responses will appear in Responses</span></div>`;
     return '';
   }
   wireActivity(a){
