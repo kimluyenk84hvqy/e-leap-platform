@@ -29,7 +29,34 @@
       if(action==='timer'){if(window.ELEAP_U11_UI?.openTimer){window.ELEAP_U11_UI.openTimer();return true}return clickFirstVisible('#timer,#u11Timer')}
       if(action==='responses'){if(window.ELEAP_U11_UI?.openResponses){window.ELEAP_U11_UI.openResponses();return true}return clickFirstVisible('#responses,#u11Responses')}
       if(action==='reveal'){if(window.ELEAP_U11_UI?.revealNext){window.ELEAP_U11_UI.revealNext();return true}return clickFirstVisible('#reveal,#u11Reveal')}
-      if(action==='submit'){return clickFirstVisible('#submit,#roundSubmit,#u11HomeworkSubmit,.submit')}
+      if(action==='submit'){
+        // Prefer a lesson-owned Submit when one exists so its native behavior is preserved.
+        if(clickFirstVisible('#submit,#roundSubmit,#u11HomeworkSubmit,.submit')) return true;
+        // Most Golden Reference activities use Check / matching / typing rather than a local Submit.
+        // The host Submit must SAVE the current response, not trigger Check or reveal answers.
+        try{
+          if(window.ELEAP?.snapshot && window.ELEAP?.emit){
+            const response=window.ELEAP.snapshot();
+            const hasInputs=Array.isArray(response?.inputs) && response.inputs.some(x=>{
+              if(!x) return false;
+              if(x.type==='checkbox'||x.type==='radio') return x.value===true;
+              return String(x.value??'').trim()!=='';
+            });
+            const hasSelected=Array.isArray(response?.selected) && response.selected.length>0;
+            if(!hasInputs && !hasSelected) return false;
+            let result=null;
+            try{ result=window.ELEAP.getAssessmentResult?.()||null; }catch(_){}
+            window.ELEAP.emit('response.submitted',{
+              response,
+              isCorrect:result?.isCorrect??null,
+              score:result?.score??null,
+              submissionType:'host-unified-submit'
+            },result);
+            return true;
+          }
+        }catch(_){}
+        return false;
+      }
       if(action==='check'){return clickFirstVisible('#check,#s9Check,#u11Check')}
       return false;
     }
