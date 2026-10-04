@@ -1,14 +1,21 @@
 {
-  "version":"1.0",
+  "version":"1.1",
+  "contract":"Objective activities inherit Check + Reset + Submit + Score. Productive activities inherit Reset + Submit + teacher/rubric review. Guest practice never creates a learner submission.",
   "templates":[
-    {"type":"mcq","label":"Multiple Choice","autoDetect":["choose the correct answer","multiple choice"],"defaultPolicy":{"studentSubmit":true,"studentReveal":false,"teacherReveal":true}},
-    {"type":"true-false","label":"True / False","autoDetect":["true or false","mark t or f"],"defaultPolicy":{"studentSubmit":true,"studentReveal":false,"teacherReveal":true}},
-    {"type":"fill","label":"Fill in the Blank","autoDetect":["fill in the blank","complete the sentence","gap-fill"],"defaultPolicy":{"studentSubmit":true,"studentReveal":false,"teacherReveal":true}},
-    {"type":"matching","label":"Matching","autoDetect":["match the words","match with definitions"],"defaultPolicy":{"studentSubmit":true,"studentReveal":false,"teacherReveal":true}},
-    {"type":"listening","label":"Listening","autoDetect":["listen and choose","listen and complete"],"defaultPolicy":{"studentSubmit":true,"studentReveal":false,"teacherReveal":true}},
-    {"type":"video-question","label":"Watch & Answer","autoDetect":["watch the video","watch and answer"],"defaultPolicy":{"studentSubmit":true,"studentReveal":false,"teacherReveal":true}},
-    {"type":"speaking-record","label":"Speaking / Record","autoDetect":["speak","record","role-play"],"defaultPolicy":{"studentSubmit":true,"studentReveal":false,"teacherReveal":false}},
-    {"type":"writing","label":"Writing","autoDetect":["write","essay","paragraph","email"],"defaultPolicy":{"studentSubmit":true,"studentReveal":false,"teacherReveal":false}},
-    {"type":"click-reveal","label":"Click to Reveal","autoDetect":["guess","reveal","suggested answers"],"defaultPolicy":{"studentSubmit":false,"studentReveal":false,"teacherReveal":true}}
+    {"type":"mcq","label":"Multiple Choice","category":"Practice","graded":true,"controls":["check","reset","submit","score"]},
+    {"type":"multi-select","label":"Multiple Response","category":"Practice","graded":true,"controls":["check","reset","submit","score"]},
+    {"type":"true-false","label":"True / False","category":"Practice","graded":true,"controls":["check","reset","submit","score"]},
+    {"type":"fill","label":"Fill in the Blank","category":"Practice","graded":true,"controls":["check","reset","submit","score"]},
+    {"type":"matching","label":"Matching","category":"Practice","graded":true,"controls":["check","reset","submit","score"]},
+    {"type":"ordering","label":"Reorder","category":"Practice","graded":true,"controls":["check","reset","submit","score"]},
+    {"type":"categorising","label":"Drag / Categorize","category":"Practice","graded":true,"controls":["check","reset","submit","score"]},
+    {"type":"listening","label":"Listen & Answer","category":"Language Skills","graded":true,"controls":["check","reset","submit","score"]},
+    {"type":"video-question","label":"Interactive Video","category":"Language Skills","graded":true,"controls":["check","reset","submit","score"]},
+    {"type":"speaking-record","label":"Speaking / Record","category":"Language Skills","graded":false,"controls":["reset","submit","review"]},
+    {"type":"writing","label":"Writing Response","category":"Language Skills","graded":false,"controls":["reset","submit","review"]},
+    {"type":"discussion","label":"Open Response","category":"Language Skills","graded":false,"controls":["reset","submit","review"]},
+    {"type":"click-reveal","label":"Reveal","category":"Interaction","graded":false,"controls":["reset","reveal"]},
+    {"type":"flashcards","label":"Flashcards","category":"Interaction","graded":false,"controls":["reset","reveal"]},
+    {"type":"poll","label":"Poll","category":"Interaction","graded":false,"controls":["reset","submit","responses"]}
   ]
 }

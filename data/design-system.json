@@ -1,9 +1,11 @@
 {
-  "version":"1.0",
+  "version":"1.1",
   "fontFamily":"Poppins",
-  "principles":["large-readable-type","clear-hierarchy","generous-whitespace","single-visual-focus","responsive-by-component","no-pixel-level-teacher-styling"],
+  "principles":["large-readable-type","clear-hierarchy","generous-whitespace","single-visual-focus","responsive-by-component","theme-first-not-pixel-first","controlled-overrides-only"],
   "textRoles":["display","h1","h2","instruction","body","answer","caption"],
-  "layoutPresets":["cover","objectives-3-card","media-40-60","media-50-50","question-options","two-column-match","reading-split","speaking-prompt","summary-cards"],
-  "density":["standard","spacious"],
-  "rule":"Hierarchy and component rules are canonical; individual lessons do not own typography or spacing."
+  "layoutPresets":["standard","media-40-60","media-50-50","question-options","two-column","reading-split","speaking-prompt"],
+  "themePresets":["E-LEAP Classic","Kids","Teen","Academic","Exam"],
+  "fontChoices":["Poppins","Arial","Georgia","Times New Roman"],
+  "defaultTheme":{"preset":"E-LEAP Classic","fontFamily":"Poppins","titleSize":36,"bodySize":18,"textColor":"#173f38","accentColor":"#0d7d6d","backgroundColor":"#ffffff"},
+  "rule":"Teachers author content and choose activity types. The platform owns interaction logic, grading, reset, submit, responsive behavior and canonical styling."
 }
