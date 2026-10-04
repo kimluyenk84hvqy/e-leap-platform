@@ -15,3 +15,15 @@
 .eleap-options label.eleap-answer-correct::after{content:"✓ Correct";font-weight:700;margin-left:auto}
 .eleap-options label.eleap-answer-incorrect{opacity:.62}
 .eleap-options label.eleap-answer-incorrect::after{content:"Not key";font-weight:600;margin-left:auto}
+
+/* R3A RC4 teacher response/model-answer states */
+.eleap-teacher-response-board{min-height:180px;padding:24px;border:1px solid var(--eleap-border,#d7e5e0);border-radius:18px;background:#fff}.eleap-teacher-response-board strong{display:block;margin-bottom:8px}.eleap-model-answer{margin-top:16px;padding:18px 20px;border:1px solid var(--eleap-border,#d7e5e0);border-radius:14px;background:rgba(232,246,239,.72)}.eleap-model-answer p{margin:8px 0 0}
+
+/* R3A RC5 role UX + Studio entry */
+.eleap-runtime-head-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.eleap-studio-link{display:inline-flex;align-items:center;justify-content:center;border:1px solid #0d7d6d;border-radius:12px;padding:9px 13px;color:#0d6d5f;text-decoration:none;font-weight:700;background:#fff}
+.eleap-studio-link:hover{background:#eef8f5}
+.eleap-teacher-response-board{border:1px dashed #b9d1c8;border-radius:14px;padding:18px;background:#f8fbfa;margin:12px 0}
+.eleap-model-answer{border-left:4px solid #0d7d6d;background:#eef8f5;border-radius:10px;padding:12px 14px;margin:12px 0}
+.eleap-revealed-answer{display:block;margin-top:10px;padding-top:10px;border-top:1px solid #d3e3dd}
+@media(max-width:760px){.eleap-runtime-head{align-items:flex-start}.eleap-runtime-head-actions{justify-content:flex-start}}
