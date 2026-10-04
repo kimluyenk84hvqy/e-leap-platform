@@ -1528,7 +1528,7 @@ function setupPresentationReveal(a){
    Reveal the answer/model for the CURRENT U1.2 screen without relying on hidden
    legacy buttons. This keeps Golden lesson content intact while exposing a
    stable Platform action for Teacher/Presentation. */
-function revealAllCurrentForHost(){
+function armItemRevealForHost(){
   if(mode!=='teacher'&&mode!=='presentation')return false;
   const a=L.activities[i];
   if(!a)return false;
@@ -1537,55 +1537,17 @@ function revealAllCurrentForHost(){
   const hasOptions=Array.isArray(a.optionExpected)&&a.optionExpected.length>0;
   const hasArticle=a.type==='article-typed'&&!!document.querySelector('[data-article-answer]');
   if(!hasExpected&&!hasPresentation&&!hasOptions&&!hasArticle)return false;
-
   const st=revealState();
-  st.active=true;
-  const revealExpected=hasPresentation?a.presentationExpected:(hasExpected?a.expected:null);
-
-  if(revealExpected){
-    document.querySelectorAll('input[data-answer-index],textarea[data-answer-index]').forEach(el=>{
-      const idx=Number(el.dataset.answerIndex);
-      const exp=revealExpected[idx];
-      if(exp===undefined)return;
-      const val=displayExpected(exp);
-      st.inputs[idx]=val;
-      el.value=val;
-      el.readOnly=true;
-      el.classList.remove('answer-wrong');
-      el.classList.add('teacher-revealed');
-    });
-  }
-
-  if(hasOptions){
-    a.optionExpected.forEach((exp,qi)=>{ st.options[qi]=exp; });
-  }
-
-  if(a.type==='video-responses'&&hasExpected){
-    const idx=videoRoundState.round;
-    const exp=a.expected[idx];
-    if(exp!==undefined){
-      const val=displayExpected(exp);
-      st.inputs['video-'+idx]=val;
-      videoRoundState.answers[idx]=val;
-      videoRoundState.submitted[idx]=true;
-      const el=$('#roundAnswer');
-      if(el){el.value=val;el.readOnly=true;el.classList.add('teacher-revealed');}
-    }
-  }
-
-  if(hasArticle){
-    const box=document.querySelector('[data-article-answer]');
-    const model=hasPresentation?a.presentationExpected.join('<br>'):(a.answer||'');
-    if(box&&model){st.inputs['article']=model;box.innerHTML=model;box.classList.add('teacher-revealed-article');}
-  }
-
+  st.active=!st.active;
+  document.body.classList.toggle('platform-reveal-armed',st.active);
+  const check=$('#check');
+  if(check){check.classList.toggle('reveal-mode-on',st.active);check.textContent=st.active?'✓ Reveal mode ON':'Show answer';}
   restorePresentationReveals(a);
-  feedbackTone(true);
   return true;
 }
 
 window.ELEAP_U12_UI=Object.assign(window.ELEAP_U12_UI||{}, {
-  revealCurrent: revealAllCurrentForHost,
+  revealCurrent: armItemRevealForHost,
   hasReveal(){
     const a=L.activities[i];
     return !!(a&&(Array.isArray(a.expected)||Array.isArray(a.presentationExpected)||Array.isArray(a.optionExpected)||a.type==='article-typed'));
@@ -1610,6 +1572,7 @@ function needsActions(a){
 
 function render(){
   const a=L.activities[i];
+  try{document.body.classList.toggle('platform-reveal-armed',Boolean(revealState()?.active)&&(mode==='teacher'||mode==='presentation'));}catch(_){}
 
   document.body.className=mode;
   document.body.dataset.screen=String(i+1);

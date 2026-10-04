@@ -1,21 +1,48 @@
-# E-LEAP — English Learning, Engagement and Assessment Platform
+# E-LEAP CLEAN V1.1 MASTER
 
-**Release:** Production FULL v1.0 — Clean Replacement  
-**Technical ID:** `e-leap`
+This is the clean source baseline for branch `e-leap-clean-v1` and future lesson production.
 
-This is the single clean source tree for the new E-LEAP Production architecture. It replaces development checkpoint overlays.
+Locked foundations: Modular Source Architecture; Role Control Contract; Control Layout & Visual State Contract; Lesson Template Contract v1.0.
 
-## Large shells
-Courses · Skills Lab · Assignments · Mock Tests · Progress
+New lessons use Poppins, the VMMU/Faculty institutional cover, fresh military-green theme, standard smart templates, shared activity/grading controls, asset-based media references, and Quality Gate validation.
 
-## Core architecture
-Generic nested Shell model + Resource Registry + Shared Lesson Engine + Native Activity/Submission contracts + Learning Event contract + copyright/license metadata.
+U1.1/U1.2 remain Golden References. U2.1 is the first Golden Authoring Test.
 
-## Golden Reference lessons
-Objective First B2 → Unit 1 → U1.1 and U1.2. They can be mounted inside E-LEAP while retaining standalone entry points.
+# E-LEAP CLEAN V1 MASTER
 
-## Content policy
-Course structures are data-driven. Life has 12 Unit shells with 3 Lesson shells per Unit as approved project requirements. Medical English supports teacher-led and self-study tracking. Pharmaceutical English does not invent unit structure before the approved syllabus is supplied.
+This is the clean-source baseline for **E-LEAP — English Learning, Engagement and Assessment Platform**.
 
-## Media policy
-Heavy image/audio/video files are not stored in this GitHub-safe package. Resource references and copyright audit metadata remain in the repository.
+## Purpose
+- one clean master source instead of chained RC patches;
+- modular functional ownership so defects can be fixed locally;
+- U1.1/U1.2 retained as Golden References during migration;
+- all new lessons (starting with U2.1) use structured authoring/runtime data rather than lesson-specific code.
+
+## Active module map
+- `assets/js/controls/` — Role Control Contract + Teacher/Admin/Student/Guest/Presentation shells.
+- `assets/js/authoring/` — lesson model, layout/content/media references.
+- `assets/js/activities/` — activity registry and future activity modules.
+- `assets/js/grading/` — scoring core and attempt semantics.
+- `assets/js/assessment/` — Practice/Homework/Mock Test/Presentation policy.
+- `assets/js/themes/` — theme tokens.
+- `assets/js/quality/` — authoring/publish quality gates.
+- `assets/js/runtime/` — lesson engine/runtime context/shared runtime.
+- `assets/js/live/` — live-session transport.
+- `assets/js/media/` — media asset/resolver layer.
+- `assets/css/controls/` — role-control layout and visual states.
+- `courses/` — Course → Unit → Lesson structured data.
+- `lessons/` — Golden/legacy lesson renderers retained only for migration compatibility.
+- `media/images`, `media/audio`, `media/video` — destination for new media assets.
+- `data/` — registries, policies, authoring data and platform shell data.
+- `studio/` — Authoring Studio shell.
+
+## Compatibility rule
+Small bridge entrypoints remain in `assets/js/` so U1.1/U1.2 keep working while the clean runtime is adopted. New features must be implemented in the functional folders above, not in new root-level monoliths.
+
+## Locked references
+- U1.1 and U1.2 remain Golden References.
+- Next/Previous behavior remains locked.
+- Role Control Contract remains locked.
+
+## Next milestone
+U2.1 is the first **Golden Authoring Test** created on this clean modular source.

@@ -1911,3 +1911,6 @@ body[data-screen="4"] .round-controls button{font-size:14px!important;font-weigh
   .instruction{font-size:18px!important}
   button,.option,.submit,.round-submit,.item-tab,.tab,.teacher-tools button{font-size:14px!important}
 }
+
+/* CLEAN V1.1: item-by-item teacher reveal. Platform Show answer arms targets; click a question/blank to reveal only that item. */
+body.platform-reveal-armed input[data-answer-index],body.platform-reveal-armed textarea[data-answer-index],body.platform-reveal-armed .presentation-answer-target,body.platform-reveal-armed [data-article-answer],body.platform-reveal-armed #roundAnswer{outline:2px solid rgba(79,138,103,.35);outline-offset:2px;cursor:pointer;}
