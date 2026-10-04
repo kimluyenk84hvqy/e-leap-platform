@@ -14,7 +14,7 @@
     catch{return {version:1,accounts:[],teacherGrants:[],lastUpdatedAt:null};}
   }
   function write(d){d.lastUpdatedAt=now();localStorage.setItem(KEY,JSON.stringify(d));return d;}
-  function role(){const r=localStorage.getItem(roleKey)||'teacher';return allowedRoles.has(r)?r:'guest';}
+  function role(){const r=localStorage.getItem(roleKey)||'guest';return allowedRoles.has(r)?r:'guest';}
   function currentLearner(){
     const key=localStorage.getItem('e-leap-student-preview-key');
     const core=window.ELEAPLearningCore?.read?.();

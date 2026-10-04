@@ -28,7 +28,8 @@ export default async function handler(req, res) {
       res.setHeader('Content-Type', result.blob.contentType);
     }
 
-    res.setHeader('Cache-Control', 'private, max-age=300');
+    res.setHeader('Cache-Control', 'private, max-age=3600, stale-while-revalidate=86400');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
 
     const reader = result.stream.getReader();
 
