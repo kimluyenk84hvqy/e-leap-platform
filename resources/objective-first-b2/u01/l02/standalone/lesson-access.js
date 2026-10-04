@@ -29,7 +29,7 @@
       if(action==='timer'){if(window.ELEAP_U11_UI?.openTimer){window.ELEAP_U11_UI.openTimer();return true}return clickFirstVisible('#timer,#u11Timer')}
       if(action==='responses'){if(window.ELEAP_U11_UI?.openResponses){window.ELEAP_U11_UI.openResponses();return true}return clickFirstVisible('#responses,#u11Responses')}
       if(action==='reveal'){if(window.ELEAP_U11_UI?.revealNext){window.ELEAP_U11_UI.revealNext();return true}return clickFirstVisible('#reveal,#u11Reveal')}
-      if(action==='submit'){return clickFirstVisible('#submit,#roundSubmit,#u11HomeworkSubmit,#s9Check,#u11Check,.submit')}
+      if(action==='submit'){return clickFirstVisible('#submit,#roundSubmit,#u11HomeworkSubmit,.submit')}
       if(action==='check'){return clickFirstVisible('#check,#s9Check,#u11Check')}
       return false;
     }
