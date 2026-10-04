@@ -1,0 +1,14 @@
+{
+  "schemaVersion":"1.0",
+  "id":"runtime-lab-001",
+  "resourceId":"runtime-lab-001",
+  "courseLabel":"E-LEAP Runtime Lab",
+  "lessonNumber":"Foundation",
+  "title":"Shared Lesson Runtime",
+  "status":"draft",
+  "screens":[
+    {"id":"s1","stage":"Choice","title":"One content object, one shared renderer","instruction":"Student submits; Teacher/Admin receive teacher controls from the platform role.","activity":{"id":"a1","type":"mcq","prompt":"Which architecture scales best?","options":[{"id":"A","label":"A separate website for every lesson"},{"id":"B","label":"One shared runtime + structured lesson data"}],"answerKey":["B"],"policy":{"studentReveal":false}}},
+    {"id":"s2","stage":"Reveal","title":"Role-bound reveal","instruction":"Student cannot reveal the answer unless the activity policy explicitly allows it.","activity":{"id":"a2","type":"click-reveal","prompt":"Teacher reveal test","items":[{"question":"What controls lesson behavior?","answer":"The shared runtime and platform role context."}],"policy":{"studentReveal":false}}},
+    {"id":"s3","stage":"Writing","title":"Autosave-ready template boundary","instruction":"Writing renderer is centralized; persistence will connect to the shared submission service.","activity":{"id":"a3","type":"writing","prompt":"Write one sentence describing the benefit of a shared runtime.","placeholder":"Type here…","policy":{"studentReveal":false}}}
+  ]
+}

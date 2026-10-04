@@ -1,0 +1,9 @@
+{
+  "version":"1.0",
+  "fontFamily":"Poppins",
+  "principles":["large-readable-type","clear-hierarchy","generous-whitespace","single-visual-focus","responsive-by-component","no-pixel-level-teacher-styling"],
+  "textRoles":["display","h1","h2","instruction","body","answer","caption"],
+  "layoutPresets":["cover","objectives-3-card","media-40-60","media-50-50","question-options","two-column-match","reading-split","speaking-prompt","summary-cards"],
+  "density":["standard","spacious"],
+  "rule":"Hierarchy and component rules are canonical; individual lessons do not own typography or spacing."
+}

@@ -1,3 +1,2 @@
-Upload ALL contents of this folder to branch r1-r2-preview, preserving paths.
-Commit: Fix R1.5 hard lesson role lock RC4
-Then wait for Vercel Preview = Ready and test Student -> U1.1 first.
+Upload the CONTENTS of this patch to branch r1-r2-preview, preserving folders. Commit: Harden R3A shared runtime foundation RC2
+Do not upload to Production.

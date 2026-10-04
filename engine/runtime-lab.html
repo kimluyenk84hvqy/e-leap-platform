@@ -1,0 +1,5 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>E-LEAP Shared Runtime Lab</title><link rel="stylesheet" href="../assets/css/e-leap-design-system.css"></head><body><main id="app"></main><script src="../assets/js/access-control.js"></script><script src="../assets/js/identity-access.js"></script><script type="module">
+import {ELeapSharedLessonRuntime} from '../assets/js/shared-lesson-runtime.js';
+const res=await fetch('../data/runtime-lab-lesson.json',{cache:'no-store'}); if(!res.ok) throw new Error('Runtime lab lesson not found'); const lesson=await res.json();
+const params=new URLSearchParams(location.search); const runtime=new ELeapSharedLessonRuntime({root:document.getElementById('app'),lesson,context:{sessionId:params.get('sessionId'),classId:params.get('classId')}}); await runtime.mount();
+</script></body></html>

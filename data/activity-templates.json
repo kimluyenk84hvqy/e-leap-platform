@@ -1,0 +1,14 @@
+{
+  "version":"1.0",
+  "templates":[
+    {"type":"mcq","label":"Multiple Choice","autoDetect":["choose the correct answer","multiple choice"],"defaultPolicy":{"studentSubmit":true,"studentReveal":false,"teacherReveal":true}},
+    {"type":"true-false","label":"True / False","autoDetect":["true or false","mark t or f"],"defaultPolicy":{"studentSubmit":true,"studentReveal":false,"teacherReveal":true}},
+    {"type":"fill","label":"Fill in the Blank","autoDetect":["fill in the blank","complete the sentence","gap-fill"],"defaultPolicy":{"studentSubmit":true,"studentReveal":false,"teacherReveal":true}},
+    {"type":"matching","label":"Matching","autoDetect":["match the words","match with definitions"],"defaultPolicy":{"studentSubmit":true,"studentReveal":false,"teacherReveal":true}},
+    {"type":"listening","label":"Listening","autoDetect":["listen and choose","listen and complete"],"defaultPolicy":{"studentSubmit":true,"studentReveal":false,"teacherReveal":true}},
+    {"type":"video-question","label":"Watch & Answer","autoDetect":["watch the video","watch and answer"],"defaultPolicy":{"studentSubmit":true,"studentReveal":false,"teacherReveal":true}},
+    {"type":"speaking-record","label":"Speaking / Record","autoDetect":["speak","record","role-play"],"defaultPolicy":{"studentSubmit":true,"studentReveal":false,"teacherReveal":false}},
+    {"type":"writing","label":"Writing","autoDetect":["write","essay","paragraph","email"],"defaultPolicy":{"studentSubmit":true,"studentReveal":false,"teacherReveal":false}},
+    {"type":"click-reveal","label":"Click to Reveal","autoDetect":["guess","reveal","suggested answers"],"defaultPolicy":{"studentSubmit":false,"studentReveal":false,"teacherReveal":true}}
+  ]
+}
