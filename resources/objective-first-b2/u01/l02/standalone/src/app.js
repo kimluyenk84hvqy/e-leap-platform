@@ -1933,6 +1933,21 @@ if(exitPresentationBtn){
   };
 }
 
+// E-LEAP host-controlled mode API. The platform owns Teacher <-> Presentation.
+window.ELEAP_LESSON_MODE_API={
+  setMode(requested){
+    const next=__eleapNormalizeMode(requested);
+    if(__eleapHosted && !__eleapCanTeach && next!=='student') return false;
+    if(next!=='presentation') lastNonPresentationMode=next;
+    mode=next;
+    document.querySelectorAll('video,audio').forEach(m=>m.pause());
+    document.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('active',x.dataset.mode===mode));
+    render();
+    return true;
+  },
+  getMode(){return mode;}
+};
+
 $('#prev').onclick=()=>{
 
   document

@@ -10,7 +10,9 @@ const id=params.get('resource');
 const allowedRoles=new Set(['guest','student','teacher','admin']);
 const roleRaw=localStorage.getItem('e-leap-preview-role')||'guest';
 const role=allowedRoles.has(roleRaw)?roleRaw:'guest';
-let presentation=localStorage.getItem('e-leap-presentation-mode')==='1'&&['teacher','admin'].includes(role);
+let presentation=false;
+// Presentation is a transient teaching mode. Never inherit stale mode from a previous lesson/session.
+try{localStorage.removeItem('e-leap-presentation-mode')}catch(_){}
 const core=(()=>{try{return JSON.parse(localStorage.getItem('e-leap-learning-core-v3')||localStorage.getItem('e-leap-learning-core-v2')||'{}')}catch{return {}}})();
 const learnerKey=localStorage.getItem('e-leap-student-preview-key');
 const learner=(core.learners||[]).find(x=>x.learnerKey===learnerKey)||null;
@@ -33,8 +35,8 @@ function syncPresentationUI(){host.classList.toggle('presentation',presentation)
 function sendRuntimeContext(){try{frame.contentWindow?.postMessage({type:'e-leap:runtime-context',context:context()},location.origin)}catch(_){}}
 let shellPoll=null;
 function stopShellPoll(){if(shellPoll){clearInterval(shellPoll);shellPoll=null}}
-function watchLessonShell(){stopShellPoll();let ticks=0;shellPoll=setInterval(()=>{ticks++;try{const d=frame.contentDocument;if(d&&d.body&&d.readyState!=='loading'&&d.body.children.length){hideLoading();stopShellPoll();sendRuntimeContext();return}}catch(_){}if(ticks>80)stopShellPoll();},100)}
-function setPresentation(on){if(!['teacher','admin'].includes(role))return;presentation=!!on;presentation?localStorage.setItem('e-leap-presentation-mode','1'):localStorage.removeItem('e-leap-presentation-mode');syncPresentationUI();sendRuntimeContext()}
+function watchLessonShell(){stopShellPoll();let ticks=0;shellPoll=setInterval(()=>{ticks++;try{const d=frame.contentDocument;if(d&&d.body&&d.body.children.length){hideLoading();stopShellPoll();sendRuntimeContext();return}}catch(_){}if(ticks>80)stopShellPoll();},100)}
+function setPresentation(on){if(!['teacher','admin'].includes(role))return;presentation=!!on;syncPresentationUI();sendRuntimeContext()}
 presentationToggle.addEventListener('click',()=>setPresentation(!presentation));
 retryBtn.addEventListener('click',()=>{showLoading(); if(currentResource){ const engine=new ELeapLessonEngine({registryUrl:'../data/resources.json'}); engine.init().then(()=>{engine.mountCompatibilityFrame(id,frame,{context:context(),cacheBust:true});watchLessonShell()}).catch(e=>{loadingTitle.textContent='Lesson could not be opened';loadingText.textContent=e.message;loadingActions.hidden=false}) } else location.reload()});
 frame.addEventListener('load',()=>{const src=frame.getAttribute('src')||'';if(!src||!src.includes('eleapHosted=1'))return;stopShellPoll();hideLoading();sendRuntimeContext();});
@@ -53,5 +55,7 @@ try{
   window.addEventListener('message',async(ev)=>{if(ev.source!==frame.contentWindow)return;if(ev.origin!==location.origin)return;const msg=ev.data;if(!msg)return;if(msg.type==='e-leap:request-runtime-context'){sendRuntimeContext();return;}if(msg.type!=='e-leap:learning-event'||!msg.event)return;const incoming=msg.event;if(incoming.resourceId!==id)return;const allowed=new Set(['activity.viewed','response.drafted','response.submitted','attempt.checked','media.played','media.completed','progress.updated','feedback.created']);if(!allowed.has(incoming.eventType))return;const normalized={...incoming,context:{...incoming.context,...eventContext()},source:'compatibility-bridge'};await sink.write(normalized);globalThis.dispatchEvent(new CustomEvent('e-leap:learning-event',{detail:normalized}));});
   window.addEventListener('pagehide',()=>events.emit('lesson.closed'));
 }catch(e){clearTimeout(slowTimer);clearTimeout(failTimer);loading.hidden=true;document.getElementById('stage').innerHTML=`<div class="error"><b>Lesson could not be opened.</b><br>${e.message}</div>`;document.getElementById('standalone').hidden=true;presentationToggle.hidden=true;}
-if('serviceWorker' in navigator){navigator.serviceWorker.register('../service-worker.js').catch(()=>{});}
+// Preview stability pass: avoid stale mixed-version lesson assets from an older service worker.
+if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(rs=>Promise.all(rs.map(r=>r.unregister()))).catch(()=>{});}
+if('caches' in globalThis){caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('e-leap-')).map(k=>caches.delete(k)))).catch(()=>{});}
 </script></body></html>
