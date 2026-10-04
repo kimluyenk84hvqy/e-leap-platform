@@ -1197,11 +1197,10 @@ return false;
 }
 
 function isAutoCheckable(a){
-  return !!(
-    a.expected||
-    a.optionExpected||
-    a.presentationExpected
-  );
+  /* Student Check is reserved for objectively gradable activities.
+     Teacher/Presentation may also use Check as a reveal aid for model responses. */
+  if(mode==='student') return !!(a.expected||a.optionExpected);
+  return !!(a.expected||a.optionExpected||a.presentationExpected);
 }
 
 /* =========================================================
@@ -1628,6 +1627,15 @@ function render(){
           delete presentationRevealState[i];
         }
 
+        /* R4 RC1.1: a true activity reset must clear the six-video state,
+           not only rerender the current video round. */
+        if(a.type==='video-responses'){
+          videoRoundState.round=0;
+          videoRoundState.answers=Array(a.videos?.length||6).fill('');
+          videoRoundState.submitted=Array(a.videos?.length||6).fill(false);
+        }
+
+        window.ELEAP_LAST_RESULT=null;
         render();
       }
     );

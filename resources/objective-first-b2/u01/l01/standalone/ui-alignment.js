@@ -1018,7 +1018,7 @@
       });
 
     $$(
-      '.u11-student-input,textarea',
+      '.u11-student-input,.u11-v4-inline-input,textarea',
       s
     ).forEach(
       x=>x.value=''
@@ -1088,6 +1088,15 @@
           'u11-answer-wrong'
         )
       );
+
+    $$('.u11-v4-inline-input,.u11-student-input',s)
+      .forEach(x=>x.classList.remove(
+        'u11-v4-correct','u11-v4-wrong','answer-correct','answer-wrong'
+      ));
+
+    const hn=$('#u11HomeworkSubmit',s);
+    if(hn){hn.textContent='Submit';hn.classList.remove('submitted');hn.disabled=false;}
+    try{state.submitted[screenNo()]=false;}catch(_){}
 
     $$(
       '.match-item,'+

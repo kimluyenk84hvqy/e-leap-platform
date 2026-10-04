@@ -328,6 +328,20 @@
         )
         .filter(Boolean);
 
+    const activity=currentActivityData();
+    if(activity?.type==='video-responses'){
+      try{
+        if(typeof videoRoundState!=='undefined' && Array.isArray(videoRoundState.answers)){
+          const current=document.querySelector('#roundAnswer');
+          if(current) videoRoundState.answers[videoRoundState.round]=current.value;
+          return {
+            inputs:videoRoundState.answers.slice(0,activity.expected?.length||activity.videos?.length||6).map((value,index)=>({name:'video-'+index,type:'text',value})),
+            selected
+          };
+        }
+      }catch(_){}
+    }
+
     return {
       inputs,
       selected
@@ -340,130 +354,72 @@
      ======================================================= */
 
   function calculateNormalAssessment() {
-    const activity =
-      currentActivityData();
+    const activity = currentActivityData();
+    if (!activity) return null;
 
-    if (!activity) {
-      return null;
+    /* Six-video previous-lesson activity keeps all six answers in videoRoundState. */
+    if (activity.type === 'video-responses' && Array.isArray(activity.expected)) {
+      let answers = [];
+      try {
+        if (typeof videoRoundState !== 'undefined' && Array.isArray(videoRoundState.answers)) {
+          const current = document.querySelector('#roundAnswer');
+          if (current) videoRoundState.answers[videoRoundState.round] = current.value;
+          answers = videoRoundState.answers.slice(0, activity.expected.length);
+        }
+      } catch (_) {}
+      while (answers.length < activity.expected.length) answers.push('');
+      const total = activity.expected.length;
+      const answered = answers.filter(v => normalizeAnswer(v) !== '').length;
+      const correct = answers.reduce((n, value, i) => n + (normalizeAnswer(value) !== '' && matchesExpected(value, activity.expected[i]) ? 1 : 0), 0);
+      return {
+        isCorrect: correct === total,
+        score: total ? correct / total : null,
+        correctCount: correct,
+        answeredCount: answered,
+        wrongCount: Math.max(0, answered - correct),
+        unansweredCount: Math.max(0, total - answered),
+        totalCount: total,
+        source: 'lesson-data-video-rounds'
+      };
     }
 
     let assessable = 0;
+    let answered = 0;
     let correct = 0;
 
-
-    /* ---------------------------------------------------
-       Typed answers
-       --------------------------------------------------- */
-
-    if (
-      Array.isArray(activity.expected)
-    ) {
-      const inputs =
-        [
-          ...document.querySelectorAll(
-            'input[data-answer-index],' +
-            'textarea[data-answer-index]'
-          )
-        ];
-
-      inputs.forEach(
-        el => {
-          const index =
-            Number(
-              el.dataset.answerIndex
-            );
-
-          const expected =
-            activity.expected[index];
-
-          if (
-            expected === undefined
-          ) {
-            return;
-          }
-
-          assessable++;
-
-          if (
-            matchesExpected(
-              el.value,
-              expected
-            )
-          ) {
-            correct++;
-          }
-        }
-      );
+    if (Array.isArray(activity.expected)) {
+      const inputs = [...document.querySelectorAll('input[data-answer-index],textarea[data-answer-index]')];
+      inputs.forEach(el => {
+        const index = Number(el.dataset.answerIndex);
+        const expected = activity.expected[index];
+        if (expected === undefined) return;
+        assessable++;
+        if (normalizeAnswer(el.value) !== '') answered++;
+        if (normalizeAnswer(el.value) !== '' && matchesExpected(el.value, expected)) correct++;
+      });
     }
 
-
-    /* ---------------------------------------------------
-       MCQ / T-F / options
-       --------------------------------------------------- */
-
-    if (
-      Array.isArray(
-        activity.optionExpected
-      )
-    ) {
-      activity.optionExpected.forEach(
-        (expected, questionIndex) => {
-          const options =
-            [
-              ...document.querySelectorAll(
-                `.option[data-q="${questionIndex}"]`
-              )
-            ];
-
-          if (!options.length) {
-            return;
-          }
-
-          assessable++;
-
-          const selected =
-            options.find(
-              option =>
-                option.classList.contains(
-                  'selected'
-                )
-            );
-
-          if (
-            selected &&
-            matchesExpected(
-              selected.textContent,
-              expected
-            )
-          ) {
-            correct++;
-          }
-        }
-      );
+    if (Array.isArray(activity.optionExpected)) {
+      activity.optionExpected.forEach((expected, questionIndex) => {
+        const options = [...document.querySelectorAll(`.option[data-q="${questionIndex}"]`)];
+        if (!options.length) return;
+        assessable++;
+        const selected = options.find(option => option.classList.contains('selected'));
+        if (selected) answered++;
+        if (selected && matchesExpected(selected.textContent, expected)) correct++;
+      });
     }
 
-
-    if (assessable === 0) {
-      return null;
-    }
-
-    const score =
-      correct / assessable;
-
+    if (assessable === 0) return null;
     return {
-      isCorrect:
-        correct === assessable,
-
-      score,
-
-      correctCount:
-        correct,
-
-      totalCount:
-        assessable,
-
-      source:
-        'lesson-data'
+      isCorrect: correct === assessable,
+      score: correct / assessable,
+      correctCount: correct,
+      answeredCount: answered,
+      wrongCount: Math.max(0, answered - correct),
+      unansweredCount: Math.max(0, assessable - answered),
+      totalCount: assessable,
+      source: 'lesson-data'
     };
   }
 
@@ -473,54 +429,21 @@
      ======================================================= */
 
   function calculateDomAssessment() {
-    const root =
-      document.querySelector(
-        '.screen.active'
-      ) ||
-      document;
-
-    const wrong =
-      root.querySelectorAll(
-        '.answer-wrong,' +
-        '.option-wrong'
-      ).length;
-
-    const correct =
-      root.querySelectorAll(
-        '.answer-correct,' +
-        '.option-correct'
-      ).length;
-
-    if (wrong > 0) {
-      return {
-        isCorrect:
-          false,
-
-        score:
-          0,
-
-        source:
-          'dom-assessment'
-      };
-    }
-
-    if (
-      correct > 0 &&
-      wrong === 0
-    ) {
-      return {
-        isCorrect:
-          true,
-
-        score:
-          1,
-
-        source:
-          'dom-assessment'
-      };
-    }
-
-    return null;
+    const root = document.querySelector('.screen.active') || document;
+    const wrong = root.querySelectorAll('.answer-wrong,.option-wrong').length;
+    const correct = root.querySelectorAll('.answer-correct,.option-correct').length;
+    const total = correct + wrong;
+    if (!total) return null;
+    return {
+      isCorrect: wrong === 0 && correct === total,
+      score: correct / total,
+      correctCount: correct,
+      answeredCount: total,
+      wrongCount: wrong,
+      unansweredCount: 0,
+      totalCount: total,
+      source: 'dom-assessment'
+    };
   }
 
 
@@ -604,6 +527,21 @@
       source:
         null
     };
+  }
+
+
+  function getActivityCapabilities(){
+    const n=Math.max(0,(Number(document.body?.dataset?.screen)||1)-1);
+    const a=window.LESSON?.activities?.[n]||null;
+    if(!a)return {check:false,reset:false,submit:false,score:false,assessable:false};
+    const objective=Array.isArray(a.expected)||Array.isArray(a.optionExpected);
+    const root=document.querySelector('#content')||document;
+    const hasFields=!!root.querySelector('input,textarea,select');
+    const hasOptions=!!root.querySelector('.option,.round-answer');
+    const productive=['reading-questions','structure-questions','productive-homework','consolidation-rich'].includes(a.type)||Array.isArray(a.presentationExpected);
+    const submit=objective||productive||hasFields||hasOptions||a.type==='video-responses';
+    const reset=submit||!!document.querySelector('#reset');
+    return {check:objective,reset,submit,score:objective,assessable:objective};
   }
 
 
@@ -1265,6 +1203,8 @@
       researchRuntime,
 
     getAssessmentResult,
+
+    getActivityCapabilities,
 
     calculateNormalAssessment,
 

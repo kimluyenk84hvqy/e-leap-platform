@@ -1,8 +1,5 @@
-# Upload this patch to `r1-r2-preview`
+# Upload this patch
+Upload the contents of this folder to the repository root on branch `r1-r2-preview`, preserving paths and replacing matching files.
 
-Upload every file/folder in this patch to the repository root, preserving paths and replacing existing files when names match.
-
-Suggested commit message:
-`R4 RC1 - Class QR Live Session transport`
-
-This patch is based on R3C LOCKED FULL. Do not upload to `production-full-v1` yet.
+Commit message:
+`R4 RC1.2 - Post-review universal controls grading reset fixes`

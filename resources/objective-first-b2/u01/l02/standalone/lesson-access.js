@@ -15,49 +15,86 @@
   document.addEventListener('click',blockEscalation,true);
   function hideLegacyControls(){
     let st=document.getElementById('eleapHostedControlStyle');
-    if(!st){st=document.createElement('style');st.id='eleapHostedControlStyle';st.textContent=`html[data-eleap-hosted="1"] .u11-header-right,html[data-eleap-hosted="1"] header .modes,html[data-eleap-hosted="1"] .teacher-tools,html[data-eleap-hosted="1"] #exitPresentation{display:none!important}`;document.head.appendChild(st);}
+    if(!st){st=document.createElement('style');st.id='eleapHostedControlStyle';st.textContent=`html[data-eleap-hosted="1"] .u11-header-right,html[data-eleap-hosted="1"] header .modes,html[data-eleap-hosted="1"] .teacher-tools,html[data-eleap-hosted="1"] #exitPresentation,html[data-eleap-hosted="1"] #action{display:none!important}`;document.head.appendChild(st);}
   }
   function clickFirstVisible(selectors){
     const list=[...document.querySelectorAll(selectors)];
     const el=list.find(x=>{const cs=getComputedStyle(x);const r=x.getBoundingClientRect();return !x.disabled&&cs.display!=='none'&&cs.visibility!=='hidden'&&r.width>0&&r.height>0});
     if(el){el.click();return true}return false;
   }
+  function clickFirstExisting(selectors){const el=[...document.querySelectorAll(selectors)].find(x=>!x.disabled);if(el){el.click();return true}return false;}
+  function currentActivityId(){
+    const n=Number(document.body?.dataset?.screen)||1;
+    try{return window.LESSON?.activities?.[Math.max(0,n-1)]?.id||('screen-'+n)}catch(_){return 'screen-'+n}
+  }
+  const attemptState=new Map();
+  function attemptFor(id){if(!attemptState.has(id))attemptState.set(id,{attemptNo:1,submitCount:0});return attemptState.get(id)}
+  function activityState(){
+    let response=null,assessment=null,capabilities=null;
+    try{response=window.ELEAP?.snapshot?.()||null}catch(_){}
+    try{assessment=window.ELEAP?.getAssessmentResult?.()||null}catch(_){}
+    try{capabilities=window.ELEAP?.getActivityCapabilities?.()||null}catch(_){}
+    return {activityId:currentActivityId(),response,assessment,capabilities};
+  }
   window.ELEAP_LESSON_HOST_API={
     setMode(mode){allowedLessonMode=(mode==='presentation'&&canTeach)?'presentation':(canTeach?'teacher':'student');publishContext();enforce();return true},
     getMode(){return allowedLessonMode},
+    getActivityState(){return activityState()},
     command(action){
       if(action==='timer'){if(window.ELEAP_U11_UI?.openTimer){window.ELEAP_U11_UI.openTimer();return true}return clickFirstVisible('#timer,#u11Timer')}
       if(action==='responses'){if(window.ELEAP_U11_UI?.openResponses){window.ELEAP_U11_UI.openResponses();return true}return clickFirstVisible('#responses,#u11Responses')}
       if(action==='reveal'){if(window.ELEAP_U11_UI?.revealNext){window.ELEAP_U11_UI.revealNext();return true}return clickFirstVisible('#reveal,#u11Reveal')}
       if(action==='submit'){
-        // Prefer a lesson-owned Submit when one exists so its native behavior is preserved.
-        if(clickFirstVisible('#submit,#roundSubmit,#u11HomeworkSubmit,.submit')) return true;
-        // Most Golden Reference activities use Check / matching / typing rather than a local Submit.
-        // The host Submit must SAVE the current response, not trigger Check or reveal answers.
+        /* A top-level Submit saves the WHOLE current activity state.
+           Item-level controls such as U1.2 #roundSubmit remain Check-like practice controls. */
         try{
           if(window.ELEAP?.snapshot && window.ELEAP?.emit){
-            const response=window.ELEAP.snapshot();
-            const hasInputs=Array.isArray(response?.inputs) && response.inputs.some(x=>{
-              if(!x) return false;
-              if(x.type==='checkbox'||x.type==='radio') return x.value===true;
-              return String(x.value??'').trim()!=='';
-            });
+            const state=activityState();
+            const response=state.response;
+            const hasInputs=Array.isArray(response?.inputs) && response.inputs.some(x=>x&&((x.type==='checkbox'||x.type==='radio')?x.value===true:String(x.value??'').trim()!==''));
             const hasSelected=Array.isArray(response?.selected) && response.selected.length>0;
             if(!hasInputs && !hasSelected) return false;
-            let result=null;
-            try{ result=window.ELEAP.getAssessmentResult?.()||null; }catch(_){}
+            const a=attemptFor(state.activityId);a.submitCount++;
+            const r=state.assessment||{};
             window.ELEAP.emit('response.submitted',{
               response,
-              isCorrect:result?.isCorrect??null,
-              score:result?.score??null,
+              isCorrect:r?.isCorrect??null,
+              score:r?.score??null,
+              correctCount:r?.correctCount??null,
+              answeredCount:r?.answeredCount??null,
+              wrongCount:r?.wrongCount??null,
+              unansweredCount:r?.unansweredCount??null,
+              totalCount:r?.totalCount??null,
+              grading:r,
+              attemptNo:a.attemptNo,
+              submitCount:a.submitCount,
               submissionType:'host-unified-submit'
-            },result);
+            },r);
             return true;
           }
         }catch(_){}
         return false;
       }
-      if(action==='check'){return clickFirstVisible('#check,#s9Check,#u11Check')}
+      if(action==='check'){
+        if(clickFirstExisting('#check,#s9Check,#u11Check')) return true;
+        return Boolean(window.ELEAP?.getAssessmentResult);
+      }
+      if(action==='reset'){
+        if(clickFirstExisting('#reset,#s9Reset,#u11Reset,#resetMatch')) return true;
+        try{
+          const n=Number(document.body?.dataset?.screen)||1;
+          const a=window.LESSON?.activities?.[Math.max(0,n-1)];
+          if(a?.type==='video-responses' && typeof videoRoundState!=='undefined' && typeof render==='function'){
+            videoRoundState.round=0;
+            videoRoundState.answers=Array(a.videos?.length||6).fill('');
+            videoRoundState.submitted=Array(a.videos?.length||6).fill(false);
+            window.ELEAP_LAST_RESULT=null;
+            render();
+            return true;
+          }
+        }catch(_){}
+        return false;
+      }
       return false;
     }
   };
