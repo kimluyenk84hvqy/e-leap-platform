@@ -6,14 +6,16 @@ import {normaliseDeliveryPolicy,E_LEAP_DELIVERY_POLICIES} from './assessment-pol
 import {auditLesson} from './quality-gate.js';
 import {ELeapAuthoringSaveService} from './authoring-save-service.js';
 import {controlModelForRole} from './controls/control-shell.js';
+import {createLesson as modelCreateLesson,ensureLessonSchema as modelEnsureLessonSchema,createScreen as modelCreateScreen,createBlock as modelCreateBlock,normaliseActivity as modelNormaliseActivity,defaultActivityPrompt,legacyToBlocks as modelLegacyToBlocks,clone as modelClone,uid as modelUid,parsePipeLines,duplicateLesson as modelDuplicateLesson} from './authoring/lesson-model.js';
+import {E_LEAP_LAYOUT_IDS} from './authoring/layout-registry.js';
 
 const root=document.getElementById('studio');
 const ctx=new ELeapRuntimeContext();
 const qs=new URLSearchParams(location.search);
 const source=qs.get('source')||'';
 const esc=s=>String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));
-const clone=x=>JSON.parse(JSON.stringify(x));
-const uid=p=>`${p}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,7)}`;
+const clone=modelClone;
+const uid=modelUid;
 const DEFAULT_THEME=E_LEAP_THEME_DEFAULT;
 const THEMES=E_LEAP_THEME_PRESETS;
 const LIBRARY=E_LEAP_AUTHORING_LIBRARY;
@@ -36,56 +38,14 @@ async function loadLesson(){
   if(source){
     try{const r=await fetch(source,{cache:'no-store'});if(r.ok)return await r.json();}catch{}
   }
-  return {schemaVersion:'1.2',version:1,id:uid('lesson'),deliveryPolicy:normaliseDeliveryPolicy({id:'practice'}),courseLabel:'Objective First B2',lessonNumber:'U2.1',title:'New Lesson',status:'draft',theme:clone(DEFAULT_THEME),screens:[newScreen('Lead-in','Welcome to the lesson')],authoringPath:'../studio/index.html'};
+  return modelCreateLesson();
 }
-function ensureSchema(){
-  lesson.schemaVersion='1.2'; lesson.version=Number(lesson.version||1); lesson.deliveryPolicy=normaliseDeliveryPolicy(lesson.deliveryPolicy||{id:'practice'});
-  lesson.theme={...DEFAULT_THEME,...(lesson.theme||{})};
-  lesson.screens=Array.isArray(lesson.screens)&&lesson.screens.length?lesson.screens:[newScreen()];
-  lesson.screens.forEach((s,i)=>{
-    s.id=s.id||uid('screen');s.stage=s.stage||`Slide ${i+1}`;s.title=s.title||'Untitled slide';s.instruction=s.instruction||'';
-    if(!Array.isArray(s.blocks)) s.blocks=legacyToBlocks(s);
-    s.blocks.forEach(b=>{b.id=b.id||uid('block');b.type=b.type||'text';b.style=b.style||{};if(b.activity)b.activity=normaliseActivity(b.activity,b.type);});
-  });
-}
-function legacyToBlocks(s){
-  if(s.blocks?.length)return s.blocks;
-  const blocks=[];
-  if(s.media?.image)blocks.push({id:uid('block'),type:'image',content:{src:s.media.image,alt:'',fit:'contain'},style:{}});
-  if(s.media?.audio)blocks.push({id:uid('block'),type:'audio',content:{src:s.media.audio,label:'Audio'},style:{}});
-  if(s.media?.video)blocks.push({id:uid('block'),type:'video',content:{src:s.media.video,label:'Video'},style:{}});
-  if(s.activity){blocks.push({id:uid('block'),type:s.activity.type||'mcq',activity:clone(s.activity),style:{}});}
-  else if(s.prompt||s.question){blocks.push({id:uid('block'),type:'text',content:{text:s.prompt||s.question,role:'body'},style:{}});}
-  return blocks.length?blocks:[newBlock('text')];
-}
-function newScreen(stage='New slide',title='New slide'){return {id:uid('screen'),stage,title,instruction:'',layout:'standard',blocks:[newBlock('text')]};}
-function newBlock(type){
-  const id=uid('block');
-  if(type==='text')return {id,type,content:{text:'Type your content here…',role:'body'},style:{}};
-  if(type==='image')return {id,type,content:{src:'',alt:'',fit:'contain',caption:''},style:{}};
-  if(type==='audio')return {id,type,content:{src:'',label:'Listen',transcript:''},style:{}};
-  if(type==='video')return {id,type,content:{src:'',label:'Watch',poster:'',caption:''},style:{}};
-  if(type==='vocabulary')return {id,type,content:{items:[{word:'Word',meaning:'Meaning',example:'Example sentence.'}]},style:{}};
-  if(type==='grammar-note')return {id,type,content:{rule:'Grammar rule',form:'Form / pattern',examples:['Example sentence.']},style:{}};
-  return {id,type,activity:normaliseActivity({},type),style:{}};
-}
-function normaliseActivity(a={},type){
-  a={...a,type,id:a.id||uid('activity'),prompt:a.prompt||defaultPrompt(type),policy:{studentSubmit:!['click-reveal','flashcards'].includes(type),studentReveal:false,teacherReveal:true,...(a.policy||{})},points:Number.isFinite(+a.points)?+a.points:1};
-  if(['mcq','multi-select','true-false','poll'].includes(type)){
-    a.options=a.options?.length?a.options:(type==='true-false'?[{id:'T',label:'True'},{id:'F',label:'False'}]:[{id:'A',label:'Option A'},{id:'B',label:'Option B'}]);
-    if(type!=='poll')a.answerKey=a.answerKey?.length?a.answerKey:[a.options[0].id];
-  }
-  if(type==='fill'){a.items=a.items?.length?a.items:[{id:'1',prompt:'Sentence with a blank: _____.',answers:['answer']}];}
-  if(type==='matching'){a.pairs=a.pairs?.length?a.pairs:[{id:'1',left:'Item 1',right:'Match 1'},{id:'2',left:'Item 2',right:'Match 2'}];}
-  if(type==='ordering'){a.items=a.items?.length?a.items:[{id:'1',text:'First'},{id:'2',text:'Second'}];a.answerKey=a.answerKey?.length?a.answerKey:a.items.map(x=>x.id);}
-  if(type==='categorising'){a.categories=a.categories?.length?a.categories:['Group A','Group B'];a.items=a.items?.length?a.items:[{id:'1',text:'Item 1',category:a.categories[0]}];}
-  if(['writing','discussion'].includes(type)){a.placeholder=a.placeholder||'Type your response here…';a.rubric=a.rubric||'';a.modelAnswer=a.modelAnswer||'';}
-  if(type==='speaking-record'){a.maxSeconds=a.maxSeconds||120;a.rubric=a.rubric||'';}
-  if(['listening','video-question'].includes(type)){a.media=a.media||{src:'',kind:type==='listening'?'audio':'video'};a.responseType=a.responseType||'mcq';a.options=a.options?.length?a.options:[{id:'A',label:'Option A'},{id:'B',label:'Option B'}];a.answerKey=a.answerKey?.length?a.answerKey:['A'];}
-  if(['click-reveal','flashcards'].includes(type)){a.items=a.items?.length?a.items:[{question:'Prompt',answer:'Answer'}];}
-  return a;
-}
-function defaultPrompt(type){return ({mcq:'Choose the correct answer.', 'multi-select':'Choose all correct answers.','true-false':'Is the statement true or false?',fill:'Complete the sentence.',matching:'Match the items.',ordering:'Put the items in the correct order.',categorising:'Sort the items into the correct groups.',listening:'Listen and answer.', 'video-question':'Watch and answer.', 'speaking-record':'Record your response.',writing:'Write your response.',discussion:'Share your response.',poll:'Choose one option.', 'click-reveal':'Click to reveal.',flashcards:'Review the cards.'})[type]||'Activity';}
+function ensureSchema(){lesson=modelEnsureLessonSchema(lesson);}
+function legacyToBlocks(s){return modelLegacyToBlocks(s);}
+function newScreen(stage='New slide',title='New slide'){return modelCreateScreen(stage,title);}
+function newBlock(type){return modelCreateBlock(type);}
+function normaliseActivity(a={},type){return modelNormaliseActivity(a,type);}
+function defaultPrompt(type){return defaultActivityPrompt(type);}
 function currentScreen(){return lesson.screens[selectedScreen]}
 function currentBlock(){return currentScreen().blocks[selectedBlock]||currentScreen().blocks[0]}
 function markDirty(){dirty=true;status('Unsaved changes');clearTimeout(autosaveTimer);autosaveTimer=setTimeout(saveDraft,700)}
@@ -115,9 +75,9 @@ function renderCanvas(s){const t=lesson.theme;return `<div class="canvas-wrap" s
 function renderBlock(b,i){return `<section class="block ${i===selectedBlock?'selected':''}" data-block="${i}">${blockPreview(b)}</section>`}
 function blockPreview(b){
   if(b.type==='text')return `<div class="block-label">Text</div><div contenteditable="true" data-edit="block-text">${esc(b.content?.text||'')}</div>`;
-  if(b.type==='image')return `<div class="block-label">Image</div><div class="media-placeholder"><div><strong>▧ ${esc(b.content?.caption||'Image')}</strong>${b.content?.src?esc(b.content.src):'Choose an image from Media Library or paste a media path.'}</div></div>`;
-  if(b.type==='audio')return `<div class="block-label">Audio</div><div class="media-placeholder"><div><strong>♪ ${esc(b.content?.label||'Audio')}</strong>${b.content?.src?esc(b.content.src):'Add audio source'}</div></div>`;
-  if(b.type==='video')return `<div class="block-label">Video</div><div class="media-placeholder"><div><strong>▶ ${esc(b.content?.label||'Video')}</strong>${b.content?.src?esc(b.content.src):'Add video source'}</div></div>`;
+  if(b.type==='image')return `<div class="block-label">Image</div><div class="media-placeholder"><div><strong>▧ ${esc(b.content?.caption||'Image')}</strong>${b.content?.src?esc(b.content.src):(b.content?.assetId?`Asset: ${esc(b.content.assetId)}`:'Choose an image from Media Library or paste a media path.')}</div></div>`;
+  if(b.type==='audio')return `<div class="block-label">Audio</div><div class="media-placeholder"><div><strong>♪ ${esc(b.content?.label||'Audio')}</strong>${b.content?.src?esc(b.content.src):(b.content?.assetId?`Asset: ${esc(b.content.assetId)}`:'Add audio source')}</div></div>`;
+  if(b.type==='video')return `<div class="block-label">Video</div><div class="media-placeholder"><div><strong>▶ ${esc(b.content?.label||'Video')}</strong>${b.content?.src?esc(b.content.src):(b.content?.assetId?`Asset: ${esc(b.content.assetId)}`:'Add video source')}</div></div>`;
   if(b.type==='vocabulary')return `<div class="block-label">Vocabulary</div><div class="activity-card">${(b.content?.items||[]).map(x=>`<p><b>${esc(x.word)}</b> — ${esc(x.meaning)} <small>${esc(x.example||'')}</small></p>`).join('')}</div>`;
   if(b.type==='grammar-note')return `<div class="block-label">Grammar note</div><div class="activity-card"><h3>${esc(b.content?.rule||'Rule')}</h3><p><b>${esc(b.content?.form||'')}</b></p>${(b.content?.examples||[]).map(x=>`<p>${esc(x)}</p>`).join('')}</div>`;
   const a=b.activity||{};return `<div class="block-label">${esc(typeLabel(b.type))}</div><div class="activity-card"><div class="activity-prompt">${esc(a.prompt||'')}</div>${activityDemo(b.type,a)}<div class="interaction-row">${controlChips(b.type,a).map(x=>`<span class="${x.on?'on':''}">${esc(x.label)}</span>`).join('')}</div></div>`;
@@ -136,7 +96,7 @@ function activityDemo(type,a){
 function controlChips(type,a){const objective=['mcq','multi-select','true-false','fill','matching','ordering','categorising','listening','video-question'].includes(type);const productive=['writing','discussion','speaking-record'].includes(type);const role=previewRole==='presentation'?'teacher':previewRole;const model=controlModelForRole({role,presentation:previewRole==='presentation',capabilities:{check:objective,reset:true,reveal:objective||Boolean(a?.modelAnswer||a?.answerKey),submit:objective||productive,score:objective}});return model.map(c=>({label:c.label,on:c.enabled}));}
 function renderProperties(){return `${lessonProps()}${slideProps()}${blockProps()}`}
 function lessonProps(){const t=lesson.theme;return `<section class="property-section"><h3>Lesson</h3>${field('Lesson title','lesson.title',lesson.title)}<div class="field-row">${field('Course','lesson.courseLabel',lesson.courseLabel||'')}${field('Lesson no.','lesson.lessonNumber',lesson.lessonNumber||'')}</div></section><section class="property-section"><h3>Theme & typography</h3>${select('Theme preset','theme.preset',t.preset,Object.keys(THEMES))}${select('Font','theme.fontFamily',t.fontFamily,E_LEAP_ALLOWED_FONTS)}${select('Use as','lesson.deliveryPolicy',lesson.deliveryPolicy?.id||'practice',Object.keys(E_LEAP_DELIVERY_POLICIES))}<div class="field-row">${numField('Title size','theme.titleSize',t.titleSize,28,52)}${numField('Body size','theme.bodySize',t.bodySize,14,26)}</div><div class="field-row">${colorField('Text','theme.textColor',t.textColor)}${colorField('Accent','theme.accentColor',t.accentColor)}</div>${colorField('Background','theme.backgroundColor',t.backgroundColor)}<div class="token-note">Default styling is inherited by every slide. Use overrides only when necessary so lessons stay consistent.</div></section>`}
-function slideProps(){const s=currentScreen();return `<section class="property-section"><h3>Current slide</h3>${field('Stage','screen.stage',s.stage||'')}${field('Title','screen.title',s.title||'')}${area('Instruction','screen.instruction',s.instruction||'')}${select('Layout','screen.layout',s.layout||'standard',['standard','media-40-60','media-50-50','question-options','two-column','reading-split','speaking-prompt'])}<div class="studio-inline-actions"><button class="studio-btn" data-slide-up ${selectedScreen===0?'disabled':''}>↑</button><button class="studio-btn" data-slide-down ${selectedScreen===lesson.screens.length-1?'disabled':''}>↓</button><button class="studio-btn" data-duplicate-slide>Duplicate</button><button class="studio-btn danger" data-delete-slide ${lesson.screens.length===1?'disabled':''}>Delete</button></div></section>`}
+function slideProps(){const s=currentScreen();return `<section class="property-section"><h3>Current slide</h3>${field('Stage','screen.stage',s.stage||'')}${field('Title','screen.title',s.title||'')}${area('Instruction','screen.instruction',s.instruction||'')}${select('Layout','screen.layout',s.layout||'standard',E_LEAP_LAYOUT_IDS)}<div class="studio-inline-actions"><button class="studio-btn" data-slide-up ${selectedScreen===0?'disabled':''}>↑</button><button class="studio-btn" data-slide-down ${selectedScreen===lesson.screens.length-1?'disabled':''}>↓</button><button class="studio-btn" data-duplicate-slide>Duplicate</button><button class="studio-btn danger" data-delete-slide ${lesson.screens.length===1?'disabled':''}>Delete</button></div></section>`}
 function blockProps(){const b=currentBlock();if(!b)return '';let body=`<section class="property-section"><h3>Selected block</h3><div class="helper">${esc(typeLabel(b.type))}</div>`;
   if(b.type==='text')body+=area('Text','block.content.text',b.content?.text||'')+select('Text role','block.content.role',b.content?.role||'body',['display','h1','h2','instruction','body','answer','caption']);
   else if(b.type==='image')body+=field('Media Asset ID','block.content.assetId',b.content?.assetId||'')+field('Media path / URL','block.content.src',b.content?.src||'')+field('Alt text','block.content.alt',b.content?.alt||'')+field('Caption','block.content.caption',b.content?.caption||'')+select('Fit','block.content.fit',b.content?.fit||'contain',['contain','cover']);
@@ -154,7 +114,7 @@ function activityProps(b){const a=b.activity||{};let out=area('Prompt','activity
   if(b.type==='categorising')out+=area('Categories (one per line)','activity.categories',(a.categories||[]).join('\n'))+area('Items: item | category','activity.categoryItems',(a.items||[]).map(x=>`${x.text} | ${x.category}`).join('\n'));
   if(['writing','discussion'].includes(b.type))out+=field('Placeholder','activity.placeholder',a.placeholder||'')+area('Rubric / teacher criteria','activity.rubric',a.rubric||'')+area('Model answer (optional)','activity.modelAnswer',a.modelAnswer||'');
   if(b.type==='speaking-record')out+=numField('Max seconds','activity.maxSeconds',a.maxSeconds||120,15,600)+area('Rubric / teacher criteria','activity.rubric',a.rubric||'');
-  if(['listening','video-question'].includes(b.type))out+=field(b.type==='listening'?'Audio path':'Video path','activity.media.src',a.media?.src||'');
+  if(['listening','video-question'].includes(b.type))out+=field('Media Asset ID','activity.media.assetId',a.media?.assetId||'')+field(b.type==='listening'?'Audio path / URL':'Video path / URL','activity.media.src',a.media?.src||'');
   if(['click-reveal','flashcards'].includes(b.type))out+=area('Cards: prompt | answer','activity.revealItems',(a.items||[]).map(x=>`${x.question||''} | ${x.answer||''}`).join('\n'));
   out+=`<div class="helper">Controls are inherited from the activity type. Objective activities automatically use Check · Reset · Submit · Score; productive activities use Reset · Submit · Review.</div>`;return out;}
 function field(label,path,val){return `<div class="studio-field"><label>${esc(label)}</label><input data-path="${esc(path)}" value="${esc(val??'')}"></div>`}
@@ -165,9 +125,6 @@ function select(label,path,val,opts){return `<div class="studio-field"><label>${
 function renderAddDialog(){return `<div class="add-panel" data-add-panel><div class="add-dialog"><div class="add-dialog-head"><div><h2>Add content or activity</h2><small>Choose a reusable E-LEAP block. Behavior comes from the shared engine.</small></div><button class="studio-btn" data-close-library>Close</button></div><div class="activity-library"><section class="library-group"><h3>Smart templates</h3><div class="library-grid">${Object.entries(E_LEAP_SMART_TEMPLATES).map(([key,t])=>`<button class="library-card" data-add-template="${key}"><div class="library-icon">✦</div><b>${esc(t.label)}</b><small>${esc(t.description)}</small></button>`).join('')}</div></section>${Object.entries(LIBRARY).map(([group,items])=>`<section class="library-group"><h3>${esc(group)}</h3><div class="library-grid">${items.map(([type,icon,label,desc])=>`<button class="library-card" data-add-type="${type}"><div class="library-icon">${icon}</div><b>${esc(label)}</b><small>${esc(desc)}</small></button>`).join('')}</div></section>`).join('')}</div></div></div>`}
 function runQuality(){return auditLesson(lesson);}
 function renderQualityPanel(){const issues=runQuality();const good=issues.filter(x=>x[0]==='error').length===0;return `<aside class="quality-panel" data-quality-panel><div class="quality-head"><b>Quality check</b><button class="studio-btn ghost" data-close-quality>×</button></div><div class="quality-body">${good?'<div class="quality-item ok">No blocking issues. Lesson can be staged for publishing.</div>':''}${issues.map(([k,m])=>`<div class="quality-item ${k}">${esc(m)}</div>`).join('')||'<div class="quality-item ok">All checks passed.</div>'}</div></aside>`}
-function isObjective(t){return ['mcq','multi-select','true-false','fill','matching','ordering','categorising','listening','video-question'].includes(t)}
-function hasAnswer(a,t){if(['mcq','multi-select','true-false','listening','video-question'].includes(t))return (a.answerKey||[]).length>0;if(t==='fill')return (a.items||[]).every(x=>(x.answers||[]).length);if(t==='matching')return (a.pairs||[]).length>0;if(t==='ordering')return (a.answerKey||[]).length>0;if(t==='categorising')return (a.items||[]).every(x=>x.category);return true}
-
 function wire(){
   document.querySelectorAll('[data-slide]').forEach(b=>b.onclick=()=>{selectedScreen=+b.dataset.slide;selectedBlock=0;render()});
   document.querySelectorAll('[data-block]').forEach(b=>b.onclick=e=>{if(e.target.closest('[contenteditable]'))return;selectedBlock=+b.dataset.block;render()});
@@ -192,8 +149,8 @@ function wire(){
   document.querySelector('[data-quality]')?.addEventListener('click',()=>document.querySelector('[data-quality-panel]').classList.add('open'));
   document.querySelector('[data-close-quality]')?.addEventListener('click',()=>document.querySelector('[data-quality-panel]').classList.remove('open'));
   document.querySelector('[data-publish]')?.addEventListener('click',()=>{const blocking=runQuality().filter(x=>x[0]==='error');status(blocking.length?`Fix ${blocking.length} blocking issue(s) before publish`:(ctx.can('content:publish')?'Publishing candidate…':'Publish request staged for review'));if(blocking.length){document.querySelector('[data-quality-panel]').classList.add('open')}else if(ctx.can('content:publish')){saveService.publish(lesson).then(r=>status(r.mode==='server'?'Published as a new version':'Publish candidate staged locally'))}});
-  document.querySelector('[data-new]')?.addEventListener('click',()=>{if(!confirm('Start a new lesson? Your current draft remains saved locally.'))return;lesson={schemaVersion:'1.2',version:1,id:uid('lesson'),deliveryPolicy:normaliseDeliveryPolicy({id:'practice'}),courseLabel:'Objective First B2',lessonNumber:'U2.1',title:'New Lesson',status:'draft',theme:clone(DEFAULT_THEME),screens:[newScreen('Lead-in','Welcome to the lesson')]};selectedScreen=selectedBlock=0;draftKey=`e-leap-studio-v1:${lesson.id}`;markDirty();render()});
-  document.querySelector('[data-duplicate-lesson]')?.addEventListener('click',()=>{lesson=clone(lesson);lesson.id=uid('lesson');lesson.title=`${lesson.title} Copy`;lesson.status='draft';draftKey=`e-leap-studio-v1:${lesson.id}`;markDirty();render()});
+  document.querySelector('[data-new]')?.addEventListener('click',()=>{if(!confirm('Start a new lesson? Your current draft remains saved locally.'))return;lesson=modelCreateLesson();selectedScreen=selectedBlock=0;draftKey=`e-leap-studio-v1:${lesson.id}`;markDirty();render()});
+  document.querySelector('[data-duplicate-lesson]')?.addEventListener('click',()=>{lesson=modelDuplicateLesson(lesson);draftKey=`e-leap-studio-v1:${lesson.id}`;markDirty();render()});
 }
 function renderSoft(){/* Inputs remain active; full render happens on structural actions or blur. */}
 function move(arr,index,delta,after){const to=index+delta;if(to<0||to>=arr.length)return;[arr[index],arr[to]]=[arr[to],arr[index]];after();markDirty();render()}
@@ -208,9 +165,9 @@ function applyPath(path,value){
   else if(path==='activity.options')a.options=parseLines(value,2).map((x,i)=>({id:x[0]||String.fromCharCode(65+i),label:x[1]||x[0]}));else if(path==='activity.answerKey')a.answerKey=value.split(',').map(x=>x.trim()).filter(Boolean);
   else if(path==='activity.fillItems')a.items=parseLines(value,2).map((x,i)=>({id:String(i+1),prompt:x[0],answers:(x[1]||'').split(';').map(y=>y.trim()).filter(Boolean)}));else if(path==='activity.pairs')a.pairs=parseLines(value,2).map((x,i)=>({id:String(i+1),left:x[0],right:x[1]}));
   else if(path==='activity.orderItems'){a.items=value.split('\n').map((x,i)=>({id:String(i+1),text:x.trim()})).filter(x=>x.text);a.answerKey=a.items.map(x=>x.id)}else if(path==='activity.categories')a.categories=value.split('\n').map(x=>x.trim()).filter(Boolean);else if(path==='activity.categoryItems')a.items=parseLines(value,2).map((x,i)=>({id:String(i+1),text:x[0],category:x[1]}));
-  else if(path==='activity.media.src'){a.media=a.media||{};a.media.src=value}else if(path==='activity.revealItems')a.items=parseLines(value,2).map(x=>({question:x[0],answer:x[1]}));
+  else if(path==='activity.media.assetId'){a.media=a.media||{};a.media.assetId=value||null}else if(path==='activity.media.src'){a.media=a.media||{};a.media.src=value}else if(path==='activity.revealItems')a.items=parseLines(value,2).map(x=>({question:x[0],answer:x[1]}));
 }
-function parseLines(value,n){return String(value||'').split('\n').map(line=>{const p=line.split('|').map(x=>x.trim());while(p.length<n)p.push('');return p.slice(0,n)}).filter(x=>x.some(Boolean))}
+function parseLines(value,n){return parsePipeLines(value,n)}
 function exportJSON(){const blob=new Blob([JSON.stringify(lesson,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`${(lesson.lessonNumber||'lesson').replace(/[^a-z0-9._-]+/gi,'-')}-lesson.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
 function typeLabel(type){return E_LEAP_ACTIVITY_TYPES[type]?.label||({'text':'Text','image':'Image','audio':'Audio','video':'Video','vocabulary':'Vocabulary','grammar-note':'Grammar note'}[type]||type)}
 function cap(s){return String(s||'').replace(/(^|[-_ ])\w/g,m=>m.toUpperCase())}

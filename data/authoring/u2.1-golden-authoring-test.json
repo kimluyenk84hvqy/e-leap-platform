@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "1.2",
+  "version": 1,
+  "id": "objective-first-b2-u2-1-golden-authoring-test",
+  "courseLabel": "Objective First B2",
+  "unitLabel": "Unit 2",
+  "lessonNumber": "U2.1",
+  "title": "U2.1 — Golden Authoring Test",
+  "status": "draft-template",
+  "deliveryPolicy": {
+    "id": "practice"
+  },
+  "theme": {
+    "preset": "E-LEAP Classic",
+    "fontFamily": "Poppins",
+    "titleSize": 36,
+    "bodySize": 18,
+    "textColor": "#173f38",
+    "accentColor": "#0d7d6d",
+    "backgroundColor": "#ffffff",
+    "density": "standard"
+  },
+  "metadata": {
+    "purpose": "Golden Authoring Test",
+    "contentStatus": "awaiting-source-content",
+    "cefr": "B2"
+  },
+  "screens": [
+    {
+      "id": "u2-1-screen-001",
+      "stage": "Lead-in",
+      "title": "U2.1",
+      "instruction": "Add the approved source content for U2.1 here.",
+      "layout": "standard",
+      "blocks": [
+        {
+          "id": "u2-1-block-001",
+          "type": "text",
+          "content": {
+            "text": "Golden Authoring Test scaffold — replace with approved U2.1 content.",
+            "role": "body"
+          },
+          "style": {}
+        }
+      ]
+    }
+  ],
+  "authoringPath": "../studio/index.html"
+}
