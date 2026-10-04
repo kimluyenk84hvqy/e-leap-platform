@@ -10,6 +10,14 @@ export function auditLesson(lesson={}){
   if(!String(lesson.title||'').trim())issues.push(['error','Lesson title is missing']);
   if(!lesson.deliveryPolicy?.id)issues.push(['warn','Delivery policy is not explicit; Practice defaults will be used.']);
   pushDup(issues,seen,lesson.id,'Lesson');
+  const cover=(lesson.screens||[])[0];
+  if(!cover||cover.templateId!=='lesson-cover')issues.push(['error','Slide 1 must use the official Lesson Cover template']);
+  else{
+    const coverText=(cover.blocks||[]).map(b=>b.content?.text||'').join(' | ');
+    if(!coverText.includes('VIETNAM MILITARY MEDICAL UNIVERSITY'))issues.push(['error','Lesson Cover: VMMU institution line is missing']);
+    if(!coverText.includes('FACULTY OF FOREIGN LANGUAGES'))issues.push(['error','Lesson Cover: Faculty of Foreign Languages line is missing']);
+  }
+  if((lesson.theme?.fontFamily||'')!=='Poppins')issues.push(['warn','Template Contract: Poppins is the default lesson font']);
   (lesson.screens||[]).forEach((s,si)=>{
     const sw=`Slide ${si+1}`;pushDup(issues,seen,s.id,sw);
     if(!String(s.title||'').trim())issues.push(['error',`${sw}: missing title`]);

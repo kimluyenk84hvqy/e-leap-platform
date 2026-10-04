@@ -134,7 +134,12 @@ export class UnifiedLessonControls{
   revealCurrent(){
     if(!['teacher','admin'].includes(this.role))return false;
     const ok=this._command('reveal');
-    if(ok)this._flash(this.revealBtn,'is-active',900);
+    if(ok){
+      let armed=false;
+      try{armed=Boolean(this.frame?.contentDocument?.body?.classList?.contains('platform-reveal-armed'))}catch(_){ }
+      if(armed){this.revealBtn?.classList.add('is-active');this.revealBtn?.setAttribute('aria-pressed','true');}
+      else{this.revealBtn?.classList.remove('is-active');this.revealBtn?.setAttribute('aria-pressed','false');this._flash(this.revealBtn,'is-success',620);}
+    }
     if(!ok)this._showNotice('No answer to reveal','This screen does not expose a teacher reveal action.');
     return ok;
   }

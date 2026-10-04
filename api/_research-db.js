@@ -6,6 +6,11 @@ function getConnectionString() {
   return (
     process.env.RESEARCH_DB_URL_DATABASE_URL ||
     process.env.RESEARCH_DB_URL_POSTGRES_URL ||
+    process.env.RESEARCH_DB_URL ||
+    process.env.DATABASE_URL ||
+    process.env.POSTGRES_URL ||
+    process.env.POSTGRES_PRISMA_URL ||
+    process.env.NEON_DATABASE_URL ||
     null
   );
 }

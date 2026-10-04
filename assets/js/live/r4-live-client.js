@@ -7,6 +7,7 @@ async function req(path,options={}){
 }
 const qs=o=>{const p=new URLSearchParams();Object.entries(o||{}).forEach(([k,v])=>{if(v!==''&&v!=null)p.set(k,String(v))});return p.toString()};
 export const R4Live={
+  bootstrap:()=>req('/bootstrap',{method:'POST',body:'{}'}),
   getClasses:(q={})=>req(`/classes?${qs(q)}`),
   createClass:(body)=>req('/classes',{method:'POST',body:JSON.stringify(body)}),
   getSessions:(q={})=>req(`/sessions?${qs(q)}`),

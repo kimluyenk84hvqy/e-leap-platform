@@ -41,7 +41,7 @@ export class ELeapSharedLessonRuntime{
     this.root.innerHTML=`<section class="eleap-runtime-shell">
       <header class="eleap-runtime-head"><div><div class="eleap-kicker">${esc(this.lesson.courseLabel||'E-LEAP')} · ${esc(this.lesson.lessonNumber||'')}</div><h1>${esc(this.lesson.title)}</h1></div><div class="eleap-runtime-head-actions">${this.studioLink()}<div class="eleap-runtime-role">${esc(this.roleLabel())}</div></div></header>
       <main class="eleap-runtime-grid"><nav class="eleap-screen-nav" aria-label="Lesson sections">${this.lesson.screens.map((x,i)=>`<button data-screen="${i}" class="${i===this.index?'active':''}"><span>${String(i+1).padStart(2,'0')}</span>${esc(x.stage||x.title||'Screen')}</button>`).join('')}</nav>
-      <article class="eleap-screen"><div class="eleap-screen-meta"><span>${esc(s.stage||'Lesson')}</span><span>${this.index+1} / ${this.lesson.screens.length}</span></div><h2>${esc(s.title||'')}</h2>${s.instruction?`<p class="eleap-instruction">${esc(s.instruction)}</p>`:''}${this.renderScreenBody(s)}</article></main>
+      <article class="eleap-screen eleap-layout-${esc(s.layout||'standard')} eleap-template-${esc(s.templateId||'custom')}" style="--eleap-font:${esc(this.lesson.theme?.fontFamily||'Poppins')};--eleap-accent:${esc(this.lesson.theme?.accentColor||'#2F6B4F')};--eleap-text:${esc(this.lesson.theme?.textColor||'#183329')};--eleap-bg:${esc(this.lesson.theme?.backgroundColor||'#F7FAF8')}"><div class="eleap-screen-meta"><span>${esc(s.stage||'Lesson')}</span><span>${this.index+1} / ${this.lesson.screens.length}</span></div><h2>${esc(s.title||'')}</h2>${s.instruction?`<p class="eleap-instruction">${esc(s.instruction)}</p>`:''}${this.renderScreenBody(s)}</article></main>
       <footer class="eleap-runtime-foot"><button data-prev ${this.index===0?'disabled':''}>← Previous</button><div>${canPresent?'<span class="eleap-capability-note">Teacher controls are role-bound by the shared runtime.</span>':''}</div><button data-next ${this.index===this.lesson.screens.length-1?'disabled':''}>Next →</button></footer>
     </section>`;
     this.root.querySelectorAll('[data-screen]').forEach(b=>b.onclick=()=>this.setIndex(Number(b.dataset.screen)));
@@ -69,7 +69,7 @@ export class ELeapSharedLessonRuntime{
   }
   renderAuthoredBlock(b,index){
     const c=b.content||{};
-    if(b.type==='text') return `<section class="eleap-content-block eleap-text-block">${c.role==='h1'?`<h2>${esc(c.text||'')}</h2>`:c.role==='h2'?`<h3>${esc(c.text||'')}</h3>`:`<p>${esc(c.text||'')}</p>`}</section>`;
+    if(b.type==='text'){const role=c.role||'body';const tag=role==='display'?'h1':(role==='h1'?'h2':(role==='h2'?'h3':'p'));return `<section class="eleap-content-block eleap-text-block eleap-role-${esc(role)}"><${tag}>${esc(c.text||'')}</${tag}></section>`;}
     if(b.type==='image') return `<section class="eleap-content-block">${this.media.render({type:'image',src:c.src,alt:c.alt,title:c.caption})}</section>`;
     if(b.type==='audio') return `<section class="eleap-content-block">${this.media.render({type:'audio',src:c.src,title:c.label})}${c.transcript?`<details class="eleap-transcript"><summary>Transcript</summary><p>${esc(c.transcript)}</p></details>`:''}</section>`;
     if(b.type==='video') return `<section class="eleap-content-block">${this.media.render({type:'video',src:c.src,poster:c.poster,title:c.caption||c.label})}</section>`;

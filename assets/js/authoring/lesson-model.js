@@ -63,7 +63,7 @@ export function ensureLessonSchema(input={}){
 }
 
 export function createLesson(overrides={}){
-  return ensureLessonSchema({schemaVersion:AUTHORING_SCHEMA_VERSION,version:1,id:uid('lesson'),deliveryPolicy:normaliseDeliveryPolicy({id:'practice'}),courseLabel:'Objective First B2',lessonNumber:'U2.1',title:'New Lesson',status:'draft',theme:clone(E_LEAP_THEME_DEFAULT),screens:[createScreen('Lead-in','Welcome to the lesson')],authoringPath:'../studio/index.html',...overrides});
+  return ensureLessonSchema({schemaVersion:AUTHORING_SCHEMA_VERSION,version:1,id:uid('lesson'),deliveryPolicy:normaliseDeliveryPolicy({id:'practice'}),courseLabel:'Objective First B2',lessonNumber:'U2.1',title:'New Lesson',status:'draft',theme:clone(E_LEAP_THEME_DEFAULT),screens:[{id:uid('screen'),stage:'Cover',title:'New Lesson',instruction:'',layout:'hero',templateId:'lesson-cover',blocks:[{id:uid('block'),type:'text',content:{text:'VIETNAM MILITARY MEDICAL UNIVERSITY',role:'institution'},style:{}},{id:uid('block'),type:'text',content:{text:'FACULTY OF FOREIGN LANGUAGES',role:'faculty'},style:{}},{id:uid('block'),type:'text',content:{text:'Unit 2 · Lesson U2.1',role:'eyebrow'},style:{}},{id:uid('block'),type:'text',content:{text:'New Lesson',role:'display'},style:{}},{id:uid('block'),type:'image',content:{assetId:null,src:'',alt:'Lesson cover image',fit:'cover',caption:''},style:{}}]}],authoringPath:'../studio/index.html',...overrides});
 }
 
 export function duplicateLesson(source={}){
