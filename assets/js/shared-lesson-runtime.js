@@ -3,6 +3,8 @@ import {ELeapLearningEvents,LocalEventSink} from './learning-events.js';
 import {getActivityDefinition} from './activity-registry.js';
 import {ELeapAutosaveStore} from './autosave-store.js';
 import {ELeapMediaResolver} from './media-resolver.js';
+import {normalizeAssessment,scoreText,detailText} from './grading-core.js';
+import {inlineActivityControlsHTML} from './controls/control-shell.js';
 
 const esc=s=>String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));
 
@@ -39,14 +41,68 @@ export class ELeapSharedLessonRuntime{
     this.root.innerHTML=`<section class="eleap-runtime-shell">
       <header class="eleap-runtime-head"><div><div class="eleap-kicker">${esc(this.lesson.courseLabel||'E-LEAP')} · ${esc(this.lesson.lessonNumber||'')}</div><h1>${esc(this.lesson.title)}</h1></div><div class="eleap-runtime-head-actions">${this.studioLink()}<div class="eleap-runtime-role">${esc(this.roleLabel())}</div></div></header>
       <main class="eleap-runtime-grid"><nav class="eleap-screen-nav" aria-label="Lesson sections">${this.lesson.screens.map((x,i)=>`<button data-screen="${i}" class="${i===this.index?'active':''}"><span>${String(i+1).padStart(2,'0')}</span>${esc(x.stage||x.title||'Screen')}</button>`).join('')}</nav>
-      <article class="eleap-screen"><div class="eleap-screen-meta"><span>${esc(s.stage||'Lesson')}</span><span>${this.index+1} / ${this.lesson.screens.length}</span></div><h2>${esc(s.title||'')}</h2>${s.instruction?`<p class="eleap-instruction">${esc(s.instruction)}</p>`:''}<div class="eleap-activity" data-activity-id="${esc(s.activity?.id||s.id||'')}">${this.renderActivity(s.activity||s)}</div></article></main>
+      <article class="eleap-screen"><div class="eleap-screen-meta"><span>${esc(s.stage||'Lesson')}</span><span>${this.index+1} / ${this.lesson.screens.length}</span></div><h2>${esc(s.title||'')}</h2>${s.instruction?`<p class="eleap-instruction">${esc(s.instruction)}</p>`:''}${this.renderScreenBody(s)}</article></main>
       <footer class="eleap-runtime-foot"><button data-prev ${this.index===0?'disabled':''}>← Previous</button><div>${canPresent?'<span class="eleap-capability-note">Teacher controls are role-bound by the shared runtime.</span>':''}</div><button data-next ${this.index===this.lesson.screens.length-1?'disabled':''}>Next →</button></footer>
     </section>`;
     this.root.querySelectorAll('[data-screen]').forEach(b=>b.onclick=()=>this.setIndex(Number(b.dataset.screen)));
     this.root.querySelector('[data-prev]')?.addEventListener('click',()=>this.setIndex(this.index-1));
     this.root.querySelector('[data-next]')?.addEventListener('click',()=>this.setIndex(this.index+1));
-    this.wireActivity(s.activity||s);
-    this.events.emit('activity.viewed',{activityId:(s.activity||s).id||s.id,studentId:this.context.studentId,sessionId:this.context.sessionId});
+    const activities=this.screenActivities(s);
+    if(activities.length){
+      activities.forEach(({activity,index})=>{
+        const host=this.root.querySelector(`[data-block-activity="${index}"]`)||this.root.querySelector('.eleap-activity');
+        if(host) this.wireActivity(activity,host);
+        this.events.emit('activity.viewed',{activityId:activity.id||s.id,studentId:this.context.studentId,sessionId:this.context.sessionId});
+      });
+    }else{
+      this.wireActivity(s.activity||s,this.root.querySelector('.eleap-activity'));
+      this.events.emit('activity.viewed',{activityId:(s.activity||s).id||s.id,studentId:this.context.studentId,sessionId:this.context.sessionId});
+    }
+  }
+  screenActivities(s){
+    if(Array.isArray(s.blocks)) return s.blocks.map((b,index)=>({block:b,index,activity:b.activity?this.normalizeAuthoredActivity(b.activity,b.type):null})).filter(x=>x.activity);
+    return [];
+  }
+  renderScreenBody(s){
+    if(!Array.isArray(s.blocks)||!s.blocks.length) return `<div class="eleap-activity" data-activity-id="${esc(s.activity?.id||s.id||'')}">${this.renderActivity(s.activity||s)}</div>`;
+    return `<div class="eleap-authored-blocks">${s.blocks.map((b,index)=>this.renderAuthoredBlock(b,index)).join('')}</div>`;
+  }
+  renderAuthoredBlock(b,index){
+    const c=b.content||{};
+    if(b.type==='text') return `<section class="eleap-content-block eleap-text-block">${c.role==='h1'?`<h2>${esc(c.text||'')}</h2>`:c.role==='h2'?`<h3>${esc(c.text||'')}</h3>`:`<p>${esc(c.text||'')}</p>`}</section>`;
+    if(b.type==='image') return `<section class="eleap-content-block">${this.media.render({type:'image',src:c.src,alt:c.alt,title:c.caption})}</section>`;
+    if(b.type==='audio') return `<section class="eleap-content-block">${this.media.render({type:'audio',src:c.src,title:c.label})}${c.transcript?`<details class="eleap-transcript"><summary>Transcript</summary><p>${esc(c.transcript)}</p></details>`:''}</section>`;
+    if(b.type==='video') return `<section class="eleap-content-block">${this.media.render({type:'video',src:c.src,poster:c.poster,title:c.caption||c.label})}</section>`;
+    if(b.type==='vocabulary') return `<section class="eleap-content-block eleap-card"><div class="eleap-vocab-grid">${(c.items||[]).map(x=>`<article><strong>${esc(x.word||'')}</strong><span>${esc(x.meaning||'')}</span>${x.example?`<small>${esc(x.example)}</small>`:''}</article>`).join('')}</div></section>`;
+    if(b.type==='grammar-note') return `<section class="eleap-content-block eleap-card"><h3>${esc(c.rule||'Grammar')}</h3>${c.form?`<p><strong>${esc(c.form)}</strong></p>`:''}${(c.examples||[]).map(x=>`<p>${esc(x)}</p>`).join('')}</section>`;
+    if(b.activity){const a=this.normalizeAuthoredActivity(b.activity,b.type);return `<section class="eleap-activity eleap-authored-activity" data-block-activity="${index}" data-activity-id="${esc(a.id||b.id||'')}">${this.renderActivity(a)}</section>`;}
+    return '';
+  }
+  normalizeAuthoredActivity(a,type){
+    const out={...a,type:type||a.type};
+    if(out.media && !Array.isArray(out.media)){
+      const m=out.media;
+      if(m.src) out.media=[{type:m.kind||((out.type==='listening')?'audio':(out.type==='video-question'?'video':'image')),src:m.src,title:m.title||''}];
+    }
+    if(out.type==='matching' && Array.isArray(out.pairs)){
+      out.items=out.pairs.map((p,i)=>({id:p.id||String(i+1),label:p.left}));
+      out.choices=out.pairs.map((p,i)=>({id:p.id||String(i+1),label:p.right}));
+      out.answerKey=Object.fromEntries(out.pairs.map((p,i)=>[p.id||String(i+1),p.id||String(i+1)]));
+    }
+    if(out.type==='categorising'){
+      out.categories=(out.categories||[]).map(c=>typeof c==='string'?{id:c,label:c}:c);
+      out.items=(out.items||[]).map((x,i)=>({id:x.id||String(i+1),label:x.label||x.text||'',category:x.category}));
+      out.answerKey=Object.fromEntries(out.items.map(x=>[x.id,x.category]));
+    }
+    if(out.type==='ordering'){
+      out.items=(out.items||[]).map((x,i)=>({id:x.id||String(i+1),label:x.label||x.text||String(x)}));
+      out.answerKey=out.answerKey?.length?out.answerKey:out.items.map(x=>x.id);
+    }
+    if(out.type==='fill' && Array.isArray(out.items)){
+      /* Shared runtime v1 uses a single response field. Multiple fill items stay assessable in Studio/next renderer; preserve first prompt/answers for backward-compatible runtime preview. */
+      if(out.items[0]){out.prompt=out.items.length===1?(out.items[0].prompt||out.prompt):out.prompt;out.answerKey=out.items[0].answers||out.answerKey;}
+    }
+    return out;
   }
   renderActivity(a){
     const def=getActivityDefinition(a.type);
@@ -97,39 +153,61 @@ export class ELeapSharedLessonRuntime{
     return `<div class="eleap-recorder"><button type="button" data-record-start>Record</button><button type="button" data-record-stop disabled>Stop</button><audio data-record-preview controls hidden></audio><button class="primary" type="button" data-submit-recording disabled>Submit recording</button><span data-status>Ready</span></div>`;
   }
   pollActionBar(a){
-    if(this.context.role==='student') return `<div class="eleap-actions"><button class="primary" data-submit>Submit vote</button><span data-status>Not submitted</span></div>`;
-    if(this.context.role==='guest') return `<div class="eleap-actions"><button class="primary" data-guest-finish>Vote</button><span data-status>Public poll · vote is not saved</span></div>`;
-    return `<div class="eleap-actions"><span data-status>Responses will appear during a live session</span></div>`;
+    return inlineActivityControlsHTML({
+      role:this.context.role,
+      presentation:this.context.mode==='presentation',
+      capabilities:{check:false,reset:true,reveal:false,submit:this.context.role==='student',score:false}
+    });
   }
   choiceActionBar(a){
-    if(this.context.role==='student') return `<div class="eleap-actions"><button class="primary" data-submit>Submit</button><span data-status>Not submitted</span></div>`;
-    if(this.context.role==='guest') return `<div class="eleap-actions"><button class="primary" data-guest-check>Check answer</button><span data-status>Public practice · progress is not saved</span></div>`;
-    if(this.context.can('teacher:reveal')) return `<div class="eleap-actions"><button data-arm-check>Check / arm reveal</button><span data-status>Teacher mode</span></div>`;
-    return '';
+    const objective=a.answerKey!=null;
+    return inlineActivityControlsHTML({
+      role:this.context.role,
+      presentation:this.context.mode==='presentation',
+      capabilities:{check:objective,reset:true,reveal:objective,submit:this.context.role==='student',score:objective}
+    });
   }
   revealActionBar(a){
-    if(this.context.can('teacher:reveal')) return `<div class="eleap-actions"><button data-arm-check>Arm reveal</button><span data-status>Teacher mode</span></div>`;
-    if(this.context.role==='student' && a.policy?.studentReveal===true) return `<div class="eleap-actions"><span class="eleap-muted">Tap a card to reveal</span></div>`;
-    if(this.context.role==='guest' && (a.policy?.guestReveal===true||a.policy?.publicPracticeReveal===true)) return `<div class="eleap-actions"><button class="primary" data-guest-reveal>Show answer</button><span data-status>Public practice · answer can be viewed</span></div>`;
-    const msg=this.context.role==='guest'?'Answer reveal is not available in this public activity.':'Answer reveal is controlled by the teacher.';
-    return `<div class="eleap-actions"><span class="eleap-muted">${esc(msg)}</span></div>`;
+    const hasAnswer=Boolean(a.modelAnswer||a.answerKey||(a.items||[]).some(x=>x.answer||x.back));
+    return inlineActivityControlsHTML({
+      role:this.context.role,
+      presentation:this.context.mode==='presentation',
+      capabilities:{check:false,reset:true,reveal:hasAnswer,submit:false,score:false}
+    });
   }
   responseActionBar(a){
-    if(this.context.role==='student') return `<div class="eleap-actions"><button class="primary" data-submit>Submit</button><span data-status>Not submitted</span></div>`;
-    if(this.context.role==='guest'){
-      const hasModel=Boolean(a.modelAnswer || (Array.isArray(a.answerKey)&&a.answerKey.length));
-      const compare=hasModel?'<button data-model-answer>Compare with model answer</button>':'';
-      return `<div class="eleap-actions"><button class="primary" data-guest-finish>Finish practice</button>${compare}<span data-status>Public practice · response is not saved</span></div>`;
-    }
-    if(this.context.role==='teacher'||this.context.role==='admin'){
-      const hasModel=Boolean(a.modelAnswer || (Array.isArray(a.answerKey)&&a.answerKey.length));
-      const modelBtn=hasModel?'<button data-model-answer>Show model answer</button>':'';
-      return `<div class="eleap-actions">${modelBtn}<span data-status>Teacher mode · responses will appear in Responses</span></div>`;
-    }
-    return '';
+    const objective=a.answerKey!=null;
+    const hasModel=Boolean(a.modelAnswer||a.answerKey);
+    return inlineActivityControlsHTML({
+      role:this.context.role,
+      presentation:this.context.mode==='presentation',
+      capabilities:{check:objective,reset:true,reveal:hasModel,submit:this.context.role==='student',score:objective}
+    });
   }
-  wireActivity(a){
-    const host=this.root.querySelector('.eleap-activity');
+  gradeActivity(a,response){
+    const norm=v=>String(v??'').trim().toLowerCase();
+    let total=0,answered=0,correct=0;
+    const key=a.answerKey;
+    if(a.type==='mcq'||a.type==='true-false'||a.type==='video-question'||a.type==='listening'){
+      const keys=Array.isArray(key)?key:[key];
+      if(keys.filter(v=>v!=null).length){total=1;answered=norm(response)?1:0;correct=answered&&keys.some(k=>norm(k)===norm(response))?1:0;}
+    }else if(a.type==='multi-select'&&Array.isArray(key)){
+      total=key.length||1;const vals=Array.isArray(response)?response:[];answered=vals.length;correct=vals.filter(v=>key.map(norm).includes(norm(v))).length;
+    }else if((a.type==='matching'||a.type==='categorising')&&key&&typeof key==='object'&&!Array.isArray(key)){
+      const entries=Object.entries(key);total=entries.length;entries.forEach(([k,v])=>{const got=response?.[k];if(norm(got)){answered++;if(norm(got)===norm(v))correct++;}});
+    }else if(a.type==='ordering'&&Array.isArray(key)){
+      total=key.length;const vals=Array.isArray(response)?response:[];answered=Math.min(vals.length,total);correct=key.reduce((n,v,i)=>n+(norm(vals[i])===norm(v)?1:0),0);
+    }else if((a.type==='fill'||a.type==='writing'||a.type==='discussion')&&key!=null){
+      const keys=Array.isArray(key)?key:[key];total=1;answered=norm(response)?1:0;correct=answered&&keys.some(k=>norm(k)===norm(response))?1:0;
+    }
+    if(!total)return normalizeAssessment({score:null},{value:response});
+    return normalizeAssessment({correctCount:correct,answeredCount:answered,totalCount:total,isCorrect:correct===total,score:correct/total},response);
+  }
+  setGradeStatus(host,g,{submitted=false}={}){
+    const st=host?.querySelector('[data-status]');if(!st)return;st.textContent=scoreText(g,{submitted});st.title=detailText(g);
+  }
+  resetActivity(){this.render();}
+  wireActivity(a,host=this.root.querySelector('.eleap-activity')){
     this.restoreAutosave(a,host);
     host?.querySelector('[data-response]')?.addEventListener('input',(e)=>this.saveAutosave(a,e.target.value));
     host?.querySelectorAll('[data-move-up],[data-move-down]').forEach(btn=>btn.addEventListener('click',()=>{
@@ -138,22 +216,29 @@ export class ELeapSharedLessonRuntime{
       if(btn.hasAttribute('data-move-down')&&li.nextElementSibling) li.parentElement.insertBefore(li.nextElementSibling,li);
     }));
     this.wireRecorder(a,host);
-    host?.querySelector('[data-submit]')?.addEventListener('click',async()=>{
-      const response=this.collectResponse(a,host);
-      host.querySelector('[data-status]').textContent='Submitted';
-      await this.events.emit('response.submitted',{activityId:a.id,studentId:this.context.studentId,sessionId:this.context.sessionId,payload:{response}});
+    host?.querySelector('[data-check]')?.addEventListener('click',()=>{
+      const response=this.collectResponse(a,host);const g=this.gradeActivity(a,response);this.setGradeStatus(host,g);
     });
-    host?.querySelector('[data-guest-check]')?.addEventListener('click',()=>{
-      const response=this.collectResponse(a,host);
-      const keys=(a.answerKey||[]).map(String);
-      let ok=false;
-      if(Array.isArray(response)) ok=response.length===keys.length&&response.map(String).sort().join('|')===keys.slice().sort().join('|');
-      else ok=keys.includes(String(response));
-      host.querySelector('[data-status]').textContent=response===''||response==null?'Choose an answer first':(ok?'Correct':'Not quite · try again');
-      host.querySelectorAll('[data-option-id]').forEach(label=>{
-        const id=String(label.dataset.optionId||'');
-        if(String(response)===id || (Array.isArray(response)&&response.map(String).includes(id))) label.classList.toggle('eleap-answer-correct',ok);
-      });
+    host?.querySelector('[data-reset]')?.addEventListener('click',()=>this.resetActivity());
+    host?.querySelector('[data-show-answer]')?.addEventListener('click',()=>{
+      if(!(this.context.role==='teacher'||this.context.role==='admin'||this.context.mode==='presentation')) return;
+      const labels=new Map((a.options||[]).map(o=>[String(o.id||o.value||o.label||o),String(o.label||o.value||o)]));
+      const key=a.answerKey;
+      let answer='';
+      if(a.modelAnswer) answer=String(a.modelAnswer);
+      else if(Array.isArray(key)) answer=key.map(x=>labels.get(String(x))||String(x)).join(' / ');
+      else if(key&&typeof key==='object') answer=Object.entries(key).map(([k,v])=>`${k}: ${v}`).join(' · ');
+      else if(key!=null) answer=labels.get(String(key))||String(key);
+      const st=host?.querySelector('[data-status]');if(st)st.textContent=answer?`Answer: ${answer}`:'No model answer on this activity';
+      host?.querySelectorAll('[data-option-id]').forEach(label=>{const ids=Array.isArray(key)?key:[key];if(ids.filter(x=>x!=null).map(String).includes(String(label.dataset.optionId||'')))label.classList.add('eleap-answer-correct');});
+      host?.querySelectorAll('[data-reveal]').forEach(btn=>{if(btn.dataset.revealed==='1')return;const i=Number(btn.dataset.reveal);const item=(a.items||[])[i]||{};const val=item.answer||item.back||'';btn.dataset.revealed='1';btn.insertAdjacentHTML('beforeend',`<strong class="eleap-revealed-answer">${esc(val)}</strong>`);});
+    });
+    host?.querySelector('[data-exit-presentation]')?.addEventListener('click',()=>{this.root.dispatchEvent(new CustomEvent('e-leap:exit-presentation',{bubbles:true}));});
+    host?.querySelector('[data-submit]')?.addEventListener('click',async()=>{
+      const response=this.collectResponse(a,host);const g=this.gradeActivity(a,response);
+      if(g.assessable&&g.unansweredCount>0&&!globalThis.confirm(`You have answered ${g.answeredCount} of ${g.totalCount} questions. ${g.unansweredCount} question(s) are unanswered and will receive 0 points. Submit anyway?`))return;
+      this.setGradeStatus(host,g,{submitted:true});
+      await this.events.emit('response.submitted',{activityId:a.id,studentId:this.context.studentId,sessionId:this.context.sessionId,payload:{response,grading:g,score:g.score,correctCount:g.correctCount,answeredCount:g.answeredCount,wrongCount:g.wrongCount,unansweredCount:g.unansweredCount,totalCount:g.totalCount,attemptNo:1,submissionType:'shared-runtime'}});
     });
     host?.querySelector('[data-guest-finish]')?.addEventListener('click',()=>{
       const response=this.collectResponse(a,host);
