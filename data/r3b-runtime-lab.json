@@ -1,0 +1,10 @@
+{
+  "schemaVersion":"1.0","id":"r3b-runtime-lab","resourceId":"r3b-runtime-lab","courseLabel":"E-LEAP Runtime Lab","lessonNumber":"R3B","title":"Shared Activity Renderers","status":"draft",
+  "screens":[
+    {"id":"m1","stage":"Matching","title":"Matching renderer","activity":{"id":"r3b-match","type":"matching","prompt":"Match each role with its function.","items":[{"id":"gp","label":"GP"},{"id":"ph","label":"Pharmacist"}],"choices":[{"id":"general","label":"General medical care"},{"id":"meds","label":"Dispenses medicine"}],"answerKey":{"gp":"general","ph":"meds"}}},
+    {"id":"m2","stage":"Ordering","title":"Ordering renderer","activity":{"id":"r3b-order","type":"ordering","prompt":"Put the lesson flow in order.","items":[{"id":"prepare","label":"Prepare"},{"id":"teach","label":"Teach"},{"id":"review","label":"Review"}],"answerKey":["prepare","teach","review"]}},
+    {"id":"m3","stage":"Categorising","title":"Categorising renderer","activity":{"id":"r3b-cat","type":"categorising","prompt":"Sort the items.","categories":[{"id":"people","label":"People"},{"id":"places","label":"Places"}],"items":[{"id":"nurse","label":"Nurse"},{"id":"ward","label":"Ward"}],"answerKey":{"nurse":"people","ward":"places"}}},
+    {"id":"m4","stage":"Writing","title":"Autosave renderer","activity":{"id":"r3b-writing","type":"writing","prompt":"Write one sentence. Refresh the page to verify draft restoration.","modelAnswer":"A shared renderer reduces repeated lesson-specific code."}},
+    {"id":"m5","stage":"Speaking","title":"Recorder renderer","activity":{"id":"r3b-speaking","type":"speaking-record","prompt":"Record a short test response."}}
+  ],"authoringPath":"../studio/index.html?source=../data/r3b-runtime-lab.json"
+}

@@ -1,6 +1,8 @@
 import {ELeapRuntimeContext} from './runtime-context.js';
 import {ELeapLearningEvents,LocalEventSink} from './learning-events.js';
 import {getActivityDefinition} from './activity-registry.js';
+import {ELeapAutosaveStore} from './autosave-store.js';
+import {ELeapMediaResolver} from './media-resolver.js';
 
 const esc=s=>String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));
 
@@ -11,6 +13,8 @@ export class ELeapSharedLessonRuntime{
     this.root=root; this.lesson=lesson; this.index=0;
     this.context=new ELeapRuntimeContext({...context,resourceId:lesson.resourceId||lesson.id});
     this.events=new ELeapLearningEvents({resourceId:lesson.resourceId||lesson.id,context:this.context.toJSON(),sink:eventSink||new LocalEventSink(),source:'shared-runtime'});
+    this.autosave=new ELeapAutosaveStore();
+    this.media=new ELeapMediaResolver({basePath:'..'});
   }
   async mount(){
     document.documentElement.dataset.eleapRole=this.context.role;
@@ -47,19 +51,55 @@ export class ELeapSharedLessonRuntime{
   renderActivity(a){
     const def=getActivityDefinition(a.type);
     if(!def) return `<div class="eleap-card"><b>Unsupported activity type:</b> ${esc(a.type||'unknown')}</div>`;
-    if(a.type==='mcq'||a.type==='true-false'||a.type==='multi-select'){
+    const media=(a.media||[]).map(m=>this.media.render(m)).join('');
+    if(a.type==='mcq'||a.type==='true-false'||a.type==='multi-select'||a.type==='poll'){
       const inputType=a.type==='multi-select'?'checkbox':'radio';
-      return `<div class="eleap-card"><p class="eleap-question">${esc(a.prompt||'')}</p><div class="eleap-options">${(a.options||[]).map(o=>`<label data-option-id="${esc(o.id||o.value||o.label||o)}"><input type="${inputType}" name="answer" value="${esc(o.id||o.value||o.label||o)}"><span>${esc(o.label||o.value||o)}</span></label>`).join('')}</div>${this.choiceActionBar(a)}</div>`;
+      return `<div class="eleap-card">${media}<p class="eleap-question">${esc(a.prompt||'')}</p><div class="eleap-options">${(a.options||[]).map(o=>`<label data-option-id="${esc(o.id||o.value||o.label||o)}"><input type="${inputType}" name="answer" value="${esc(o.id||o.value||o.label||o)}"><span>${esc(o.label||o.value||o)}</span></label>`).join('')}</div>${a.type==='poll'?this.pollActionBar(a):this.choiceActionBar(a)}</div>`;
     }
-    if(a.type==='fill'||a.type==='writing'){
+    if(a.type==='fill'||a.type==='writing'||a.type==='discussion'){
       const teacherView=this.context.role==='teacher'||this.context.role==='admin';
       const responseArea=teacherView
         ? `<div class="eleap-teacher-response-board" data-response-board><strong>Responses</strong><p class="eleap-muted">Student responses will appear here during a live session.</p></div>`
-        : `<textarea data-response rows="${a.type==='writing'?8:4}" placeholder="${esc(a.placeholder||'Type your answer…')}"></textarea>`;
-      return `<div class="eleap-card"><p class="eleap-question">${esc(a.prompt||'')}</p>${responseArea}${this.responseActionBar(a)}</div>`;
+        : `<textarea data-response rows="${a.type==='writing'||a.type==='discussion'?8:4}" placeholder="${esc(a.placeholder||'Type your answer…')}"></textarea>`;
+      return `<div class="eleap-card">${media}<p class="eleap-question">${esc(a.prompt||'')}</p>${responseArea}${this.responseActionBar(a)}</div>`;
     }
-    if(a.type==='click-reveal'||a.type==='flashcards') return `<div class="eleap-card"><p class="eleap-question">${esc(a.prompt||'')}</p><div class="eleap-reveal-grid">${(a.items||[]).map((it,i)=>`<button data-reveal="${i}">${esc(it.front||it.question||it.prompt||('Item '+(i+1)))}</button>`).join('')}</div>${this.revealActionBar(a)}</div>`;
-    return `<div class="eleap-card"><p class="eleap-question">${esc(a.prompt||def.label)}</p><p class="eleap-muted">${esc(def.label)} uses the shared runtime contract. Renderer parity is being added template by template.</p>${this.choiceActionBar(a)}</div>`;
+    if(a.type==='click-reveal'||a.type==='flashcards') return `<div class="eleap-card">${media}<p class="eleap-question">${esc(a.prompt||'')}</p><div class="eleap-reveal-grid">${(a.items||[]).map((it,i)=>`<button data-reveal="${i}">${esc(it.front||it.question||it.prompt||('Item '+(i+1)))}</button>`).join('')}</div>${this.revealActionBar(a)}</div>`;
+    if(a.type==='matching'){
+      const choices=(a.choices||a.rightItems||[]);
+      return `<div class="eleap-card">${media}<p class="eleap-question">${esc(a.prompt||'Match the items.')}</p><div class="eleap-match-list">${(a.items||a.leftItems||[]).map((it,i)=>`<label class="eleap-match-row"><span>${esc(it.label||it.left||it.prompt||('Item '+(i+1)))}</span><select data-match="${esc(it.id||i)}"><option value="">Choose…</option>${choices.map(c=>`<option value="${esc(c.id||c.value||c.label||c)}">${esc(c.label||c.value||c)}</option>`).join('')}</select></label>`).join('')}</div>${this.choiceActionBar(a)}</div>`;
+    }
+    if(a.type==='ordering'){
+      return `<div class="eleap-card">${media}<p class="eleap-question">${esc(a.prompt||'Put the items in order.')}</p><ol class="eleap-order-list">${(a.items||[]).map((it,i)=>`<li data-order-id="${esc(it.id||i)}"><span>${esc(it.label||it.value||it)}</span><span class="eleap-order-buttons"><button type="button" data-move-up="${i}" aria-label="Move up">↑</button><button type="button" data-move-down="${i}" aria-label="Move down">↓</button></span></li>`).join('')}</ol>${this.choiceActionBar(a)}</div>`;
+    }
+    if(a.type==='categorising'){
+      return `<div class="eleap-card">${media}<p class="eleap-question">${esc(a.prompt||'Sort each item into a category.')}</p><div class="eleap-category-list">${(a.items||[]).map((it,i)=>`<label class="eleap-match-row"><span>${esc(it.label||it.value||it)}</span><select data-category="${esc(it.id||i)}"><option value="">Choose…</option>${(a.categories||[]).map(c=>`<option value="${esc(c.id||c.value||c.label||c)}">${esc(c.label||c.value||c)}</option>`).join('')}</select></label>`).join('')}</div>${this.choiceActionBar(a)}</div>`;
+    }
+    if(a.type==='listening'||a.type==='video-question'){
+      const m=a.media?.[0]||{type:a.type==='listening'?'audio':'video',src:a.src||a.audioSrc||a.videoSrc,title:a.mediaTitle||''};
+      return `<div class="eleap-card">${this.media.render(m)}<p class="eleap-question">${esc(a.prompt||'')}</p>${this.renderEmbeddedResponse(a)}</div>`;
+    }
+    if(a.type==='speaking-record') return `<div class="eleap-card">${media}<p class="eleap-question">${esc(a.prompt||'')}</p>${this.renderSpeakingRecorder(a)}</div>`;
+    return `<div class="eleap-card">${media}<p class="eleap-question">${esc(a.prompt||def.label)}</p><p class="eleap-muted">${esc(def.label)} uses the shared runtime contract.</p>${this.choiceActionBar(a)}</div>`;
+  }
+  renderEmbeddedResponse(a){
+    const mode=a.responseType||'mcq';
+    if(mode==='writing'||mode==='fill'){
+      const teacherView=this.context.role==='teacher'||this.context.role==='admin';
+      const area=teacherView?`<div class="eleap-teacher-response-board"><strong>Responses</strong><p class="eleap-muted">Responses appear here during a live session.</p></div>`:`<textarea data-response rows="4" placeholder="${esc(a.placeholder||'Type your answer…')}"></textarea>`;
+      return `${area}${this.responseActionBar(a)}`;
+    }
+    const inputType=mode==='multi-select'?'checkbox':'radio';
+    return `<div class="eleap-options">${(a.options||[]).map(o=>`<label data-option-id="${esc(o.id||o.value||o.label||o)}"><input type="${inputType}" name="answer" value="${esc(o.id||o.value||o.label||o)}"><span>${esc(o.label||o.value||o)}</span></label>`).join('')}</div>${this.choiceActionBar(a)}`;
+  }
+  renderSpeakingRecorder(a){
+    if(this.context.role==='teacher'||this.context.role==='admin') return `<div class="eleap-teacher-response-board"><strong>Recorded responses</strong><p class="eleap-muted">Student recordings will appear here during a live session.</p></div>`;
+    if(this.context.role==='guest') return `<div class="eleap-recorder"><button type="button" data-record-start>Record practice</button><button type="button" data-record-stop disabled>Stop</button><audio data-record-preview controls hidden></audio><span data-status>Practice recording is not saved.</span></div>`;
+    return `<div class="eleap-recorder"><button type="button" data-record-start>Record</button><button type="button" data-record-stop disabled>Stop</button><audio data-record-preview controls hidden></audio><button class="primary" type="button" data-submit-recording disabled>Submit recording</button><span data-status>Ready</span></div>`;
+  }
+  pollActionBar(a){
+    if(this.context.role==='student') return `<div class="eleap-actions"><button class="primary" data-submit>Submit vote</button><span data-status>Not submitted</span></div>`;
+    if(this.context.role==='guest') return `<div class="eleap-actions"><button class="primary" data-guest-finish>Vote</button><span data-status>Public poll · vote is not saved</span></div>`;
+    return `<div class="eleap-actions"><span data-status>Responses will appear during a live session</span></div>`;
   }
   choiceActionBar(a){
     if(this.context.role==='student') return `<div class="eleap-actions"><button class="primary" data-submit>Submit</button><span data-status>Not submitted</span></div>`;
@@ -90,6 +130,14 @@ export class ELeapSharedLessonRuntime{
   }
   wireActivity(a){
     const host=this.root.querySelector('.eleap-activity');
+    this.restoreAutosave(a,host);
+    host?.querySelector('[data-response]')?.addEventListener('input',(e)=>this.saveAutosave(a,e.target.value));
+    host?.querySelectorAll('[data-move-up],[data-move-down]').forEach(btn=>btn.addEventListener('click',()=>{
+      const li=btn.closest('[data-order-id]'); if(!li) return;
+      if(btn.hasAttribute('data-move-up')&&li.previousElementSibling) li.parentElement.insertBefore(li,li.previousElementSibling);
+      if(btn.hasAttribute('data-move-down')&&li.nextElementSibling) li.parentElement.insertBefore(li.nextElementSibling,li);
+    }));
+    this.wireRecorder(a,host);
     host?.querySelector('[data-submit]')?.addEventListener('click',async()=>{
       const response=this.collectResponse(a,host);
       host.querySelector('[data-status]').textContent='Submitted';
@@ -156,10 +204,35 @@ export class ELeapSharedLessonRuntime{
       btn.dataset.revealed='1'; btn.insertAdjacentHTML('beforeend',`<strong class="eleap-revealed-answer">${esc(answer)}</strong>`);
     }));
   }
+  autosaveMeta(a){return {lessonId:this.lesson.id,activityId:a.id||this.current()?.id,studentId:this.context.studentId,sessionId:this.context.sessionId};}
+  saveAutosave(a,value){
+    if(this.context.role!=='student') return;
+    this.autosave.save(this.autosaveMeta(a),value);
+    this.events.emit('response.autosaved',{activityId:a.id,studentId:this.context.studentId,sessionId:this.context.sessionId,payload:{length:String(value||'').length}});
+  }
+  restoreAutosave(a,host){
+    if(this.context.role!=='student') return;
+    const box=host?.querySelector('[data-response]'); if(!box) return;
+    const saved=this.autosave.load(this.autosaveMeta(a)); if(saved?.value!=null){box.value=saved.value; const st=host.querySelector('[data-status]'); if(st) st.textContent='Draft restored';}
+  }
+  wireRecorder(a,host){
+    const start=host?.querySelector('[data-record-start]'), stop=host?.querySelector('[data-record-stop]'), preview=host?.querySelector('[data-record-preview]'), submit=host?.querySelector('[data-submit-recording]');
+    if(!start||!stop||!preview) return;
+    let recorder=null,chunks=[],blob=null,stream=null;
+    start.addEventListener('click',async()=>{
+      if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){const st=host.querySelector('[data-status]'); if(st) st.textContent='Recording is not supported on this browser.'; return;}
+      try{stream=await navigator.mediaDevices.getUserMedia({audio:true}); recorder=new MediaRecorder(stream); chunks=[]; recorder.ondataavailable=e=>e.data.size&&chunks.push(e.data); recorder.onstop=()=>{blob=new Blob(chunks,{type:recorder.mimeType||'audio/webm'}); preview.src=URL.createObjectURL(blob); preview.hidden=false; if(submit) submit.disabled=false; stream?.getTracks().forEach(t=>t.stop()); const st=host.querySelector('[data-status]'); if(st) st.textContent=this.context.role==='guest'?'Practice recording ready · not saved':'Recording ready';}; recorder.start(); start.disabled=true; stop.disabled=false; const st=host.querySelector('[data-status]'); if(st) st.textContent='Recording…'; await this.events.emit('recording.started',{activityId:a.id,studentId:this.context.studentId,sessionId:this.context.sessionId});}catch{const st=host.querySelector('[data-status]'); if(st) st.textContent='Microphone permission is required.';}
+    });
+    stop.addEventListener('click',()=>{if(recorder?.state==='recording') recorder.stop(); start.disabled=false; stop.disabled=true;});
+    submit?.addEventListener('click',async()=>{if(!blob)return; const st=host.querySelector('[data-status]'); if(st) st.textContent='Submitted'; await this.events.emit('recording.submitted',{activityId:a.id,studentId:this.context.studentId,sessionId:this.context.sessionId,payload:{size:blob.size,type:blob.type}});});
+  }
   collectResponse(a,host){
-    if(a.type==='mcq'||a.type==='true-false') return host.querySelector('input[name="answer"]:checked')?.value||'';
+    if(a.type==='mcq'||a.type==='true-false'||a.type==='poll') return host.querySelector('input[name="answer"]:checked')?.value||'';
     if(a.type==='multi-select') return [...host.querySelectorAll('input[name="answer"]:checked')].map(x=>x.value);
-    if(a.type==='fill'||a.type==='writing') return host.querySelector('[data-response]')?.value||'';
+    if(a.type==='fill'||a.type==='writing'||a.type==='discussion'||a.type==='listening'||a.type==='video-question') return host.querySelector('[data-response]')?.value||host.querySelector('input[name="answer"]:checked')?.value||'';
+    if(a.type==='matching') return Object.fromEntries([...host.querySelectorAll('[data-match]')].map(x=>[x.dataset.match,x.value]));
+    if(a.type==='categorising') return Object.fromEntries([...host.querySelectorAll('[data-category]')].map(x=>[x.dataset.category,x.value]));
+    if(a.type==='ordering') return [...host.querySelectorAll('[data-order-id]')].map(x=>x.dataset.orderId);
     return null;
   }
 }
