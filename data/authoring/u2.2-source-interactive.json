@@ -1,0 +1,31 @@
+{
+  "schemaVersion":"1.2",
+  "id":"objective-first-b2-u2-2-source-interactive",
+  "courseLabel":"Objective First B2","unitLabel":"Unit 2","lessonNumber":"U2.2","title":"Review of Present Tenses",
+  "status":"draft-preview","deliveryPolicy":{"id":"practice"},
+  "theme":{"preset":"VMMU Military Green","fontFamily":"Poppins","titleSize":40,"bodySize":22,"textColor":"#183E31","accentColor":"#2F6B4F","backgroundColor":"#F5F8F5","density":"standard"},
+  "metadata":{"contentStatus":"source-aligned","cefr":"B2","sourcePolicy":"Keep book content; change delivery format only to increase interaction."},
+  "screens":[
+    {"id":"s01","type":"cover","title":"Review of Present Tenses"},
+    {"id":"s02","type":"aims","title":"Aims of the Lesson"},
+    {"id":"s03","type":"video-response","title":"Checking the Previous Lesson"},
+    {"id":"s04","type":"single-choice","title":"From Gaming to Grammar"},
+    {"id":"s05","type":"split-source-sort","title":"Notice the Difference"},
+    {"id":"s06","type":"video-gap","title":"Grammar Video 1"},
+    {"id":"s07","type":"rule-builder","title":"Build the Rule"},
+    {"id":"s08","type":"matching","title":"Other Uses of Present Tenses"},
+    {"id":"s09","type":"video-response","title":"Grammar Video 2"},
+    {"id":"s10","type":"error-detective-rounds","title":"Error Detective"},
+    {"id":"s11","type":"tabbed-gapfill","tabs":["4a–d","4e–h"],"title":"Present Tense Challenge"},
+    {"id":"s12","type":"tabbed-reading-gapfill","tabs":["Part 1","Part 2"],"title":"Googlewhacking"},
+    {"id":"s13","type":"categorise","title":"Stative or Action?"},
+    {"id":"s14","type":"meaning-choice","title":"Same Verb, Different Meaning"},
+    {"id":"s15","type":"word-family","title":"Word Formation"},
+    {"id":"s16","type":"gapfill","title":"Make Adjectives"},
+    {"id":"s17","type":"categorise-tags","title":"Positive or Negative?"},
+    {"id":"s18","type":"word-formation-context","title":"Tablet Computers"},
+    {"id":"s19","type":"mixed-quiz","title":"Consolidation"},
+    {"id":"s20","type":"assignment","title":"Homework"},
+    {"id":"s21","type":"end-screen","title":"Thank You"}
+  ]
+}

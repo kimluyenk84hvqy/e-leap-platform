@@ -1,0 +1,14 @@
+{
+  "id":"objective-first-b2-u02-l02",
+  "courseId":"objective-first-b2",
+  "unitId":"unit-02",
+  "lessonNumber":"U2.2",
+  "title":"Review of Present Tenses",
+  "status":"DRAFT-PREVIEW",
+  "cefr":"B2",
+  "source":"Cambridge Objective First B2 Unit 2.2 + teacher-edited U2.2 PPT",
+  "theme":{"preset":"VMMU Military Green","fontFamily":"Poppins","background":"#F5F8F5","deepGreen":"#183E31","activeGreen":"#2F6B4F","strongGreen":"#24543F","softGreen":"#DDEBE3"},
+  "screenCount":21,
+  "designRules":["large readable type","flat warm off-white canvas","more deep-green activity boxes","two-pane independent scroll for source-heavy screens","same control placement across screens"],
+  "interactionRules":["Check evaluates current screen","Reset restores current activity","Teacher reveal is item-by-item","Student Submit logs response","score denominator includes unanswered items"]
+}

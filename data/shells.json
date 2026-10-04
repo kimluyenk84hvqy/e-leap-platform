@@ -2870,6 +2870,30 @@
       "type": "pathway-hub",
       "order": 2,
       "status": "published"
+    },
+    {
+      "id": "objective-first-b2-u02",
+      "parentId": "objective-first-b2",
+      "name": "Unit 2",
+      "type": "unit",
+      "order": 2,
+      "status": "draft"
+    },
+    {
+      "id": "objective-first-b2-u02-l01",
+      "parentId": "objective-first-b2-u02",
+      "name": "U2.1 · The Virtual World",
+      "type": "lesson",
+      "order": 1,
+      "status": "draft"
+    },
+    {
+      "id": "objective-first-b2-u02-l02",
+      "parentId": "objective-first-b2-u02",
+      "name": "U2.2 · Review of Present Tenses",
+      "type": "lesson",
+      "order": 2,
+      "status": "draft"
     }
   ]
 }

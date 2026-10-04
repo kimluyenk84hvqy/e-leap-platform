@@ -1,10 +1,9 @@
-E-LEAP R3A RC3 - Shared Runtime interaction fix
-Upload this patch to branch: r1-r2-preview
-Commit message: Fix shared runtime reveal and writing controls RC3
+1. Open branch: e-leap-clean-v1
+2. Unzip E-LEAP_U2.2_INTERACTIVE_READY_PATCH.zip on your computer.
+3. Upload ALL folders/files from inside the patch into the repository root.
+4. Keep existing files; overwrite only same-path files when prompted.
+5. Commit message: Add U2.2 source-based interactive lesson
+6. Wait for Vercel Preview = Ready.
+7. Test: Courses > Objective First B2 > Unit 2 > U2.2 · Review of Present Tenses
 
-Changed:
-- Teacher click-reveal now shows Check / arm reveal and reveals only after arming.
-- Student/Guest click-reveal stays locked when studentReveal=false.
-- Writing no longer shows a meaningless Check / arm reveal in Teacher/Admin mode.
-- Student writing keeps Submit.
-- Guest writing remains public-practice preview without official submission.
+NOTE: grammar videos are split into parts under 25 MB each; the lesson auto-continues to the next part.

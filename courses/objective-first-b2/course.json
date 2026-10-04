@@ -9,6 +9,12 @@
       "title": "Unit 1",
       "status": "published",
       "path": "unit-01/unit.json"
+    },
+    {
+      "id": "unit-02",
+      "title": "Unit 2",
+      "status": "draft",
+      "path": "unit-02/unit.json"
     }
   ],
   "description": "Golden Reference course with classroom and self-study delivery."

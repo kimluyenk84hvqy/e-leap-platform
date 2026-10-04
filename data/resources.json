@@ -58,6 +58,56 @@
         "usageScope": "private-until-cleared",
         "evidence": null
       }
+    },
+    {
+      "id": "res-objective-first-b2-u02-l01",
+      "name": "U2.1 · The Virtual World",
+      "type": "interactive-lesson",
+      "version": "GOLDEN PREVIEW 0.1",
+      "status": "draft",
+      "source": {
+        "kind": "lesson-data",
+        "path": "resources/objective-first-b2/u02/l01/lesson.json",
+        "standaloneUrl": "resources/objective-first-b2/u02/l01/standalone/index.html",
+        "package": "E-LEAP-U2.1-GOLDEN-PREVIEW"
+      },
+      "capabilities": [
+        "classroom",
+        "self-study",
+        "presentation",
+        "responses",
+        "progress"
+      ],
+      "copyright": {
+        "reviewStatus": "private-course-material",
+        "trafficLight": "amber",
+        "usageScope": "private-until-cleared"
+      }
+    },
+    {
+      "id": "res-objective-first-b2-u02-l02",
+      "name": "U2.2 · Review of Present Tenses",
+      "type": "interactive-lesson",
+      "version": "SOURCE INTERACTIVE 0.2",
+      "status": "draft",
+      "source": {
+        "kind": "lesson-data",
+        "path": "resources/objective-first-b2/u02/l02/lesson.json",
+        "standaloneUrl": "resources/objective-first-b2/u02/l02/standalone/index.html",
+        "package": "E-LEAP-U2.2-INTERACTIVE-READY"
+      },
+      "capabilities": [
+        "classroom",
+        "self-study",
+        "presentation",
+        "responses",
+        "progress"
+      ],
+      "copyright": {
+        "reviewStatus": "private-course-material",
+        "trafficLight": "amber",
+        "usageScope": "private-until-cleared"
+      }
     }
   ],
   "placements": [
@@ -72,6 +122,20 @@
       "id": "placement-u01-l02",
       "resourceId": "res-objective-first-b2-u01-l02",
       "shellId": "objective-first-b2-u01-l02",
+      "order": 1,
+      "status": "active"
+    },
+    {
+      "id": "placement-u02-l01",
+      "resourceId": "res-objective-first-b2-u02-l01",
+      "shellId": "objective-first-b2-u02-l01",
+      "order": 1,
+      "status": "active"
+    },
+    {
+      "id": "placement-u02-l02",
+      "resourceId": "res-objective-first-b2-u02-l02",
+      "shellId": "objective-first-b2-u02-l02",
       "order": 1,
       "status": "active"
     }
