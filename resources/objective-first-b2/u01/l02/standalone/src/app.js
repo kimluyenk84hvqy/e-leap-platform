@@ -38,14 +38,15 @@ function privateMediaKey(path){
 
 async function getPrivateMediaMap(){
   if(privateMediaMap)return privateMediaMap;
-
-  const response=await fetch('/media-map.json',{cache:'no-store'});
-
-  if(!response.ok){
-    throw new Error(`media-map.json: ${response.status}`);
-  }
-
+  const cacheKey='e-leap:media-map:v2';
+  try{
+    const raw=sessionStorage.getItem(cacheKey);
+    if(raw){const cached=JSON.parse(raw);if(cached?.value&&Date.now()-(cached.savedAt||0)<600000){privateMediaMap=cached.value;return privateMediaMap;}}
+  }catch(_){}
+  const response=await fetch('/media-map.json',{cache:'default'});
+  if(!response.ok)throw new Error(`media-map.json: ${response.status}`);
   privateMediaMap=await response.json();
+  try{sessionStorage.setItem(cacheKey,JSON.stringify({savedAt:Date.now(),value:privateMediaMap}))}catch(_){}
   return privateMediaMap;
 }
 

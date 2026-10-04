@@ -194,31 +194,28 @@ document.querySelectorAll('.item-check').forEach(btn=>{
   });
 });
 
-// E-LEAP Private Media Resolver
+// E-LEAP Private Media Resolver — R3B RC2 performance pass
 (async function resolvePrivateMedia() {
-  try {
-    const response = await fetch('/media-map.json', { cache: 'no-store' });
-    if (!response.ok) throw new Error(`media-map.json: ${response.status}`);
-
-    const mediaMap = await response.json();
-
-    document.querySelectorAll('[data-media-key]').forEach((element) => {
-      const key = element.dataset.mediaKey;
-      const url = mediaMap[key];
-
-      if (!url) {
-        console.warn('E-LEAP media key not found:', key);
-        return;
-      }
-
-      if (element.tagName === 'IMG' ||
-          element.tagName === 'AUDIO' ||
-          element.tagName === 'VIDEO' ||
-          element.tagName === 'SOURCE') {
-        element.src = url;
-      }
-    });
-  } catch (error) {
-    console.error('E-LEAP private media resolver failed:', error);
+  const CACHE_KEY='e-leap:media-map:v2';
+  async function getMap(){
+    try{const raw=sessionStorage.getItem(CACHE_KEY);if(raw){const c=JSON.parse(raw);if(c?.value&&Date.now()-(c.savedAt||0)<600000)return c.value;}}catch(_){ }
+    const response=await fetch('/media-map.json',{cache:'default'});if(!response.ok)throw new Error(`media-map.json: ${response.status}`);const value=await response.json();try{sessionStorage.setItem(CACHE_KEY,JSON.stringify({savedAt:Date.now(),value}))}catch(_){ }return value;
   }
+  function markUnavailable(el,key){el.dataset.mediaState='error';el.setAttribute('aria-label',`${el.getAttribute('aria-label')||'Media'} unavailable`);console.warn('E-LEAP media unavailable:',key);}
+  try {
+    const mediaMap=await getMap();
+    const els=[...document.querySelectorAll('[data-media-key]')];
+    // Warm the first-screen hero without blocking the lesson shell.
+    const hero=els.find(el=>el.dataset.mediaKey==='u01/l01/fashion-hero.jpeg');
+    if(hero&&mediaMap[hero.dataset.mediaKey]){const img=new Image();img.decoding='async';img.src=mediaMap[hero.dataset.mediaKey];}
+    els.forEach((element,index)=>{
+      const key=element.dataset.mediaKey,url=mediaMap[key];if(!url){markUnavailable(element,key);return;}
+      if(element.tagName==='IMG'){element.loading=index===0?'eager':'lazy';element.decoding='async';if(index===0)element.fetchPriority='high';element.addEventListener('error',()=>markUnavailable(element,key),{once:true});element.src=url;}
+      else if(element.tagName==='AUDIO'||element.tagName==='VIDEO'){element.preload='none';element.addEventListener('error',()=>markUnavailable(element,key),{once:true});element.src=url;}
+      else if(element.tagName==='SOURCE'){element.src=url;element.parentElement?.load?.();}
+      element.dataset.mediaState='loading';
+      element.addEventListener('loadeddata',()=>element.dataset.mediaState='ready',{once:true});
+      element.addEventListener('load',()=>element.dataset.mediaState='ready',{once:true});
+    });
+  } catch (error) {console.error('E-LEAP private media resolver failed:',error);document.querySelectorAll('[data-media-key]').forEach(el=>el.dataset.mediaState='error');}
 })();

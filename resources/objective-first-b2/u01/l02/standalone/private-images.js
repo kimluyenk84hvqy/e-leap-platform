@@ -16,9 +16,20 @@
 
     if (loadingMap) return loadingMap;
 
+    try {
+      const raw = sessionStorage.getItem('e-leap:media-map:v2');
+      if (raw) {
+        const cached = JSON.parse(raw);
+        if (cached?.value && Date.now() - (cached.savedAt || 0) < 600000) {
+          mediaMap = cached.value;
+          return mediaMap;
+        }
+      }
+    } catch (_) {}
+
     loadingMap = fetch('/media-map.json', {
       credentials: 'same-origin',
-      cache: 'no-store'
+      cache: 'default'
     })
       .then(response => {
         if (!response.ok) {
@@ -31,6 +42,7 @@
       })
       .then(data => {
         mediaMap = data || {};
+        try { sessionStorage.setItem('e-leap:media-map:v2', JSON.stringify({savedAt: Date.now(), value: mediaMap})); } catch (_) {}
         return mediaMap;
       })
       .catch(error => {
