@@ -1,13 +1,19 @@
-# E-LEAP Teacher Live · Create Class UI Fix
+# E-LEAP Research DB Environment Compatibility Fix
 
-Fixes the first end-to-end live-class test failure:
-- `+ Create a new class` now immediately shows **New class name** even if the live DB/bootstrap request fails or returns no existing classes.
-- Switching to an existing class hides the new-class field; switching back shows it again.
-- Focus moves to the class-name input automatically.
-- Pressing Enter in the class-name field starts the same create-session flow.
-- Existing class/session/QR APIs are unchanged.
+Purpose: fix `Research database unavailable` on Vercel/Neon when the Marketplace integration prefixes the Neon environment variables.
 
-Upload `teacher-live.html` to the repository root on branch `e-leap-clean-v1` and overwrite the existing file.
+Changes:
+- `api/_research-db.js` now recognizes common E-LEAP names plus Vercel/Neon prefixed `*_DATABASE_URL` variables.
+- Prefers pooled URLs and ignores `*_UNPOOLED`.
+- `api/research/bootstrap.js` returns only the detected environment-variable NAME for safe diagnostics; it never returns the database secret.
+
+Upload the CONTENTS of this ZIP to the repository root on branch `e-leap-clean-v1`, overwriting matching files.
 
 Suggested commit:
-`Fix Teacher Live new class input visibility`
+`Fix Research DB Neon environment compatibility`
+
+After Vercel reports Ready, open Teacher Live / QR again. Expected result:
+1. `Research database unavailable` disappears.
+2. Create Class succeeds.
+3. Create Live Session returns a join code.
+4. QR is rendered.

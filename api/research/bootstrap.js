@@ -1,7 +1,7 @@
-import { getResearchDb, researchDbAvailable } from '../_research-db.js';
+import { getResearchDb, researchDbAvailable, getResearchDbConnectionInfo } from '../_research-db.js';
 export default async function handler(req,res){
   if(!['GET','POST'].includes(req.method)){res.setHeader('Allow',['GET','POST']);return res.status(405).json({ok:false,error:'Method not allowed'});}
-  if(!researchDbAvailable())return res.status(503).json({ok:false,error:'Live database is not configured',code:'DB_NOT_CONFIGURED'});
+  if(!researchDbAvailable()){const info=getResearchDbConnectionInfo();return res.status(503).json({ok:false,error:'Live database is not configured',code:'DB_NOT_CONFIGURED',connectionVariable:info.source});}
   try{
     const sql=getResearchDb();
     await sql`CREATE TABLE IF NOT EXISTS classes (class_id BIGSERIAL PRIMARY KEY,teacher_id TEXT NOT NULL,class_name TEXT NOT NULL,course_id TEXT,academic_year TEXT,status TEXT NOT NULL DEFAULT 'active',created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())`;
@@ -18,6 +18,6 @@ export default async function handler(req,res){
     await sql`CREATE INDEX IF NOT EXISTS idx_participants_session ON participants(session_id)`;
     await sql`CREATE INDEX IF NOT EXISTS idx_events_session ON events(session_id)`;
     await sql`CREATE INDEX IF NOT EXISTS idx_events_lesson_type ON events(lesson_id,event_type)`;
-    return res.status(200).json({ok:true,ready:true,assessmentResearchVersion:'1.0'});
+    const info=getResearchDbConnectionInfo();return res.status(200).json({ok:true,ready:true,assessmentResearchVersion:'1.0',connectionVariable:info.source});
   }catch(error){console.error('E-LEAP bootstrap failed',error);return res.status(500).json({ok:false,error:'Live database bootstrap failed'});}
 }
