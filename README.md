@@ -1,27 +1,23 @@
-# E-LEAP Teacher Live UUID Identity Fix
+# E-LEAP Teacher Live · Server Identity Fix
 
-Purpose: fix Teacher Live falsely reporting `Research database unavailable` even though `/api/research/bootstrap` and `/api/research/classes` are healthy.
+This patch fixes the remaining Teacher Live class-creation failure after the Research DB and classes API were confirmed healthy.
 
-Root cause confirmed from live diagnostics:
-- Research DB bootstrap: PASS.
-- Classes API: PASS.
-- Existing `classes.teacher_id` values are UUIDs.
-- Older Teacher Live stored local teacher IDs as `teacher-<uuid>`, which is incompatible with UUID-backed class/session queries.
+Root cause addressed:
+- Teacher Live was inventing a local UUID and using it directly as `teacher_id`.
+- The existing Research schema treats `classes.teacher_id` as a real server-side `users.user_id` and may enforce a foreign key.
+- A locally invented UUID therefore cannot reliably create classes/sessions.
 
 Changes:
-- Teacher Live now uses a plain RFC-4122 UUID for `teacherId`.
-- Existing incompatible `teacher-...` IDs are migrated automatically on first load while preserving the teacher name.
-- Error messaging now surfaces the actual client/API message instead of collapsing everything to `Research database unavailable`.
-- No lesson, assessment, database schema, or QR API changes.
+- Teacher Live first creates/recovers a real teacher user through `/api/research/users` using a stable preview `externalAuthId` stored locally.
+- It then uses the returned server `user_id` for class and session operations.
+- Class loading is scoped to that server teacher identity.
+- Adds an explicit `+ New class` button so class creation is no longer hidden inside a dropdown option.
+- Existing class selection and new-class mode are clearly separated.
+- Real API errors are shown as `Create failed: ...` for further diagnosis if necessary.
+- No database schema changes.
+- No lesson files changed.
 
-Upload `teacher-live.html` to repository root on branch `e-leap-clean-v1`, overwrite the existing file, deploy, then hard refresh.
+Upload `teacher-live.html` to repository root on branch `e-leap-clean-v1`, overwriting the existing file.
 
 Suggested commit:
-`Fix Teacher Live UUID identity for Research DB`
-
-Expected test:
-1. Open Live Class / QR.
-2. Status should become `Live database ready`.
-3. Create a new class.
-4. Create Live Session.
-5. Join Code + QR should appear.
+`Fix Teacher Live server identity and new class flow`
