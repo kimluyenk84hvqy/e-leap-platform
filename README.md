@@ -1,23 +1,19 @@
-# E-LEAP U2.2 — Interactive Ready Patch
+# E-LEAP U2.2 V2 — Visual + Video + Teacher Reveal Fix
 
-Target branch: `e-leap-clean-v1` only.
+This is a CODE-ONLY hotfix plus three lightweight video poster images. It does not replace the existing large MP4 files.
 
-This patch adds Objective First B2 → Unit 2 → U2.2 · Review of Present Tenses.
+Fixes:
+- restores the cleaner U1-style multi-accent palette (green / navy / amber / plum) and removes repeated heavy dark-green boxes;
+- enlarges headings, source text, exercise text, inputs and video players for projection;
+- gives both grammar videos a large player and explicit Part buttons;
+- changes video sources to root-absolute `/media/u2.2/...` paths to avoid iframe-relative path problems;
+- displays an explicit media-path diagnostic only if a video really cannot load;
+- Teacher Show answer now exposes one answer at a time, including gap-fill answers and open-response model answers;
+- supports host commands `reveal`, `show-answer`, and `showanswer`;
+- keeps Exercise 4 and Googlewhacking in two-tab single-screen layouts;
+- preserves the 21-screen source-based lesson content.
 
-## Locked presentation rules
-- Poppins; large readable body text.
-- Flat warm off-white canvas.
-- More deep military-green activity boxes to avoid a washed-out screen.
-- Source-heavy screens use two independent scroll panes.
-- Book content is kept; only the delivery format is changed to increase student interaction.
+Upload all contents of this patch to the root of branch `e-leap-clean-v1` and overwrite matching files.
+Commit: `Fix U2.2 video reveal typography and visual design`
 
-## Interaction highlights
-- Screen 10: one-at-a-time Error Detective (Correct / Incorrect → correction → Check).
-- Screen 11: Exercise 4a–d and 4e–h are two tabs on one screen.
-- Screen 12: Googlewhacking Part 1 / Part 2 are two tabs on one screen, with reading/gist check.
-- Both grammar videos from the teacher PPT are included; the previous-lesson gaming video is also included.
-- Video files are split into seamless parts so every upload file stays under 25 MB.
-
-## Upload
-Unzip and upload the contents to the repository root. Do not delete existing files.
-Suggested commit: `Add U2.2 source-based interactive lesson`
+IMPORTANT: Existing video files must already exist under `/media/u2.2/` from the previous media uploads.
