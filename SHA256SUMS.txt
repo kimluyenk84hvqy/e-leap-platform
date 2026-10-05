@@ -1,5 +1,3 @@
-a017c8c8eb3fb53777fa54f53205ede00a8fb606d2cd5810f90f3e362eef8f1c  README.md
-ab2a178a292628abec8acb409f4293c7bee5dc5c1991f12b1fa93bdbccda0cac  resources/objective-first-b2/u02/l02/standalone/app.js
-cf16704a38b8d8bd8db472cc8338916b2a47f4c8fff7bb6059fb40378ff34ecd  resources/objective-first-b2/u02/l02/standalone/index.html
-7497c359c35d8dfd80cba6a4aa4069726ffee16eecf7d517c0405266136594c0  resources/objective-first-b2/u02/l02/standalone/styles.css
-f24641bced5c137d819123ec535a8c87baedcc824524df8c11f5505e0dbd17ae  service-worker.js
+12e339b6015929d1130dde24dd0a34ea71997a62b7e439fc4dfc20e03c50f7d4  ./README.md
+64d2b96455606884a8977048118fb91b55c66fe831ee140ce50a7642f5db2eb3  ./resources/objective-first-b2/u02/l02/standalone/app.js
+c1ecdf82ef11fe84fe14ac4d5a59ca3e241562d7b18e4635f4f0faadcabe6d33  ./service-worker.js

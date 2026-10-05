@@ -1,15 +1,8 @@
-# E-LEAP U2.2 Final Polish Patch
+# U2.2 video path fix
 
-Purpose: refine answer reveal and layout after classroom preview.
+Fixes video URLs to match the actual GitHub repository structure shown in the screenshot:
+- /u2.2/gaming-leadin.mp4
+- /u2.2/present-tenses/part-00.mp4 ... part-03.mp4
+- /u2.2/stative-action/part-00.mp4 ... part-02.mp4
 
-Changes:
-- Show Answer now places objective answers directly inside the existing control; duplicate answer boxes removed.
-- Error Detective highlights Correct/Incorrect and puts the correct/corrected sentence inside the existing green answer field.
-- Same Verb, Different Meaning reveals via the original dropdown instead of First/Second explanation boxes.
-- Stative/Action and Positive/Negative reveal by highlighting the correct button only.
-- Slide 6 instruction shortened to one sentence.
-- Consolidation rebuilt as two closer panes with larger type and answers only in the right-side controls.
-- Cache version bumped.
-
-Upload all files in this patch to repository root and overwrite matching files.
-Commit suggestion: Polish U2.2 answer reveal and layout final
+No video re-upload is required. Overwrite these files in branch e-leap-clean-v1.
