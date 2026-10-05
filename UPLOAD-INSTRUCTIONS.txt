@@ -1,9 +1,8 @@
-1. Open branch: e-leap-clean-v1
-2. Unzip E-LEAP_U2.2_INTERACTIVE_READY_PATCH.zip on your computer.
-3. Upload ALL folders/files from inside the patch into the repository root.
-4. Keep existing files; overwrite only same-path files when prompted.
-5. Commit message: Add U2.2 source-based interactive lesson
-6. Wait for Vercel Preview = Ready.
-7. Test: Courses > Objective First B2 > Unit 2 > U2.2 · Review of Present Tenses
-
-NOTE: grammar videos are split into parts under 25 MB each; the lesson auto-continues to the next part.
+1. Extract this ZIP.
+2. Open branch: e-leap-clean-v1.
+3. GitHub > Add file > Upload files.
+4. Drag the CONTENTS of this extracted folder to the repository root.
+5. Allow matching U2.1 files and service-worker.js to be replaced.
+6. Commit: Finalize U2.1 interaction reveal and visual polish
+7. Wait for Vercel Preview = Ready.
+8. Hard refresh: Cmd + Shift + R.

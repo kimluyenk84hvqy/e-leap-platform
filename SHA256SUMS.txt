@@ -1,3 +1,8 @@
-12e339b6015929d1130dde24dd0a34ea71997a62b7e439fc4dfc20e03c50f7d4  ./README.md
-64d2b96455606884a8977048118fb91b55c66fe831ee140ce50a7642f5db2eb3  ./resources/objective-first-b2/u02/l02/standalone/app.js
-c1ecdf82ef11fe84fe14ac4d5a59ca3e241562d7b18e4635f4f0faadcabe6d33  ./service-worker.js
+68b38a587e38102099c6967d2b375231e865f240f0f5aa71497a1def668793fe  ./README.md
+7ab66edd98f678ab27b78abe3f7184db0de0fca77be45caffe5c3cba0cd620ea  ./UPLOAD-INSTRUCTIONS.txt
+0d1a7c62838e4ca719c2159e19ae6d7964fc9b48698f1895d858ed5747b035c4  ./courses/objective-first-b2/unit-02/lesson-01/lesson.json
+0d1a7c62838e4ca719c2159e19ae6d7964fc9b48698f1895d858ed5747b035c4  ./resources/objective-first-b2/u02/l01/lesson.json
+23448d748e3619cdc8f71a1dd0e2e89a4e18df03f155d286327e9200b2d30e33  ./resources/objective-first-b2/u02/l01/standalone/app.js
+cf57e59649bf51a6e78691f16f433eb716f20c31d0dca59dcd6f5cb1c17a666f  ./resources/objective-first-b2/u02/l01/standalone/index.html
+fa68f2cdaeb90da7ee2c462e3a813f7a4c984d6cf1c2b4fd2df65b04e143408b  ./resources/objective-first-b2/u02/l01/standalone/styles.css
+0d68cdf3a39f15463e978a80671d00799305480c317c6b60c9706dd23aa6ef96  ./service-worker.js

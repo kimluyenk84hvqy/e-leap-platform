@@ -4,7 +4,7 @@
   "unitId": "unit-02",
   "lessonNumber": "U2.1",
   "title": "The Virtual World",
-  "status": "DRAFT-PREVIEW",
+  "status": "FINAL-CANDIDATE",
   "cefr": "B2",
   "periods": 4,
   "source": "Cambridge Objective First B2 Unit 2.1 pages 16–17 + teacher-edited U2.1 PPT",
@@ -109,32 +109,32 @@
     {
       "id": "s13",
       "stage": "READING",
-      "type": "matching",
-      "title": "Match Players to Reviews"
+      "type": "review-evaluation",
+      "title": "Skim, identify and evaluate"
     },
     {
       "id": "s14",
       "stage": "READING",
-      "type": "categorise-tabs",
+      "type": "categorise",
       "title": "Good Points / Bad Points"
     },
     {
       "id": "s15",
-      "stage": "IDEAS",
-      "type": "single-choice",
-      "title": "Which Support Is Stronger?"
+      "stage": "VOCABULARY",
+      "type": "collocation-matching",
+      "title": "Collocations"
     },
     {
       "id": "s16",
-      "stage": "VOCABULARY",
-      "type": "matching",
-      "title": "Collocation Builder"
+      "stage": "LANGUAGE",
+      "type": "adverb-formation",
+      "title": "-ly Adverbs"
     },
     {
       "id": "s17",
       "stage": "LANGUAGE",
-      "type": "mixed",
-      "title": "Adverbs in Context"
+      "type": "error-correction",
+      "title": "Correct the Adverbs"
     },
     {
       "id": "s18",
@@ -151,17 +151,18 @@
   ],
   "screenCount": 19,
   "designRules": [
-    "large readable type",
-    "flat warm off-white canvas",
-    "more deep-green activity boxes",
-    "two-pane independent scroll for source-heavy screens",
-    "same control placement across screens"
+    "Poppins body typography with large classroom-readable type",
+    "flat warm off-white canvas with restrained section accents",
+    "compact two-pane source/activity layout for source-heavy screens",
+    "answers reveal once inside the control or item, never in detached answer boxes",
+    "book activity number appears only in the main instruction line"
   ],
   "interactionRules": [
-    "Check evaluates current screen",
-    "Reset restores current activity",
-    "Teacher reveal is item-by-item",
-    "Student Submit logs response",
+    "Check evaluates current screen without submitting",
+    "Reset restores the current activity",
+    "Teacher reveal is item-by-item and integrates the answer into the activity control",
+    "MCQ reveal highlights the correct option and shows evidence where appropriate",
+    "Student Submit logs the current response",
     "score denominator includes unanswered items"
   ]
 }
