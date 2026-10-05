@@ -1,5 +1,5 @@
 const CACHE_PREFIX='e-leap-clean-v1-2';
-const CACHE=CACHE_PREFIX+'runtime-v20261005-u21-u22-nav-evidence-fix-1';
+const CACHE=CACHE_PREFIX+'runtime-v20261005-assessment-research-data-v1-final';
 const MEDIA_RE=/\.(?:png|jpe?g|svg|webp|gif|mp3|m4a|wav|ogg|mp4|webm|woff2?)$/i;
 self.addEventListener('install',e=>{self.skipWaiting();});
 self.addEventListener('activate',e=>e.waitUntil(Promise.all([

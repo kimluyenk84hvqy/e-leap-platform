@@ -1,0 +1,38 @@
+{
+  "version": "1.0",
+  "rubrics": [
+    {
+      "id": "writing-core-v1",
+      "name": "Writing Core Rubric",
+      "skill": "writing",
+      "maxScore": 10,
+      "criteria": [
+        {"id":"task","label":"Task Fulfilment","max":2},
+        {"id":"organisation","label":"Organisation","max":2},
+        {"id":"vocabulary","label":"Vocabulary","max":2},
+        {"id":"grammar","label":"Grammar","max":2},
+        {"id":"style","label":"Style / Register","max":2}
+      ]
+    },
+    {
+      "id": "speaking-core-v1",
+      "name": "Speaking Core Rubric",
+      "skill": "speaking",
+      "maxScore": 10,
+      "criteria": [
+        {"id":"task","label":"Task Achievement","max":2},
+        {"id":"fluency","label":"Fluency & Coherence","max":2},
+        {"id":"vocabulary","label":"Vocabulary","max":2},
+        {"id":"grammar","label":"Grammar","max":2},
+        {"id":"pronunciation","label":"Pronunciation","max":2}
+      ]
+    },
+    {
+      "id": "general-100-v1",
+      "name": "General 100-point Marking",
+      "skill": "general",
+      "maxScore": 100,
+      "criteria": []
+    }
+  ]
+}
