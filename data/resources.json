@@ -108,6 +108,35 @@
         "trafficLight": "amber",
         "usageScope": "private-until-cleared"
       }
+    },
+    {
+      "id": "res-adv-writing-letter-email-writing-informal-l01",
+      "name": "Lesson 1 · Writing to a Friend",
+      "type": "interactive-lesson",
+      "version": "FINAL-v1.0",
+      "status": "approved",
+      "source": {
+        "kind": "lesson-data",
+        "path": "resources/advanced-skills/writing/letter-email/informal/l01/lesson.json",
+        "standaloneUrl": "resources/advanced-skills/writing/letter-email/informal/l01/standalone/index.html",
+        "package": "E-LEAP-Academic-Skills-Informal-Letter-L1-FINAL-v1.0"
+      },
+      "capabilities": [
+        "classroom",
+        "self-study",
+        "presentation",
+        "responses",
+        "progress"
+      ],
+      "copyright": {
+        "reviewStatus": "source-material-user-provided",
+        "trafficLight": "amber",
+        "owner": null,
+        "license": null,
+        "attributionRequired": null,
+        "usageScope": "private-educational-use",
+        "evidence": "User-provided PPT and Cambridge Objective First Writing Folder source pages."
+      }
     }
   ],
   "placements": [
@@ -136,6 +165,13 @@
       "id": "placement-u02-l02",
       "resourceId": "res-objective-first-b2-u02-l02",
       "shellId": "objective-first-b2-u02-l02",
+      "order": 1,
+      "status": "active"
+    },
+    {
+      "id": "placement-adv-writing-letter-email-writing-informal-l01",
+      "resourceId": "res-adv-writing-letter-email-writing-informal-l01",
+      "shellId": "adv-writing-letter-email-writing-informal-l01",
       "order": 1,
       "status": "active"
     }

@@ -1,8 +1,2 @@
-1. Extract this ZIP.
-2. Open branch: e-leap-clean-v1.
-3. GitHub > Add file > Upload files.
-4. Drag the CONTENTS of this extracted folder to the repository root.
-5. Allow matching U2.1 files and service-worker.js to be replaced.
-6. Commit: Finalize U2.1 interaction reveal and visual polish
-7. Wait for Vercel Preview = Ready.
-8. Hard refresh: Cmd + Shift + R.
+Upload all files and folders inside this patch to the repository root on e-leap-clean-v1.
+Commit: Add Advanced Skills Informal Letter Lesson 1 FINAL

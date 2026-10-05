@@ -1,0 +1,50 @@
+{
+  "id": "adv-writing-letter-email-writing-informal-l01",
+  "courseId": "advanced-skills",
+  "moduleId": "adv-writing-letter-email-writing",
+  "topicId": "adv-writing-letter-email-writing-informal",
+  "lessonNumber": "Lesson 1",
+  "title": "Writing to a Friend",
+  "status": "FINAL",
+  "cefr": "B1–B2",
+  "screenCount": 20,
+  "pedagogy": [
+    "guided discovery",
+    "task analysis",
+    "model analysis",
+    "controlled transformation",
+    "idea development",
+    "planning",
+    "drafting",
+    "revision"
+  ],
+  "sources": [
+    {
+      "kind": "teacher-ppt",
+      "name": "Viết thư 1.pptx",
+      "use": "formal/informal contrast, letter structure, task criteria and sample tasks"
+    },
+    {
+      "kind": "coursebook",
+      "name": "Cambridge Objective First · Writing Folder 1 · Informal letters",
+      "use": "informal-letter task, language awareness, weak-sample analysis, planning and editing sequence"
+    },
+    {
+      "kind": "teacher-edited-ppt",
+      "name": "Unit 2.2 (Mai edited).pptx",
+      "use": "informal-letter task analysis and sample answer"
+    }
+  ],
+  "integration": {
+    "mode": "standalone-adapter",
+    "entry": "standalone/index.html"
+  },
+  "interactionRules": [
+    "Answers reveal once inside the relevant control or text",
+    "MCQ and binary choices highlight the correct choice and evidence",
+    "Open writing is not auto-scored",
+    "Teacher reveal is item-by-item",
+    "Student submit records the current response",
+    "Reset restores only the current screen"
+  ]
+}

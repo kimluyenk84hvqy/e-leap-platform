@@ -2894,6 +2894,14 @@
       "type": "lesson",
       "order": 2,
       "status": "draft"
+    },
+    {
+      "id": "adv-writing-letter-email-writing-informal-l01",
+      "parentId": "adv-writing-letter-email-writing-informal",
+      "name": "Lesson 1 · Writing to a Friend",
+      "type": "lesson",
+      "order": 1,
+      "status": "published"
     }
   ]
 }
