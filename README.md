@@ -1,18 +1,8 @@
-# E-LEAP Academic Skills · Informal Letter Lesson 1 · Navigation + Theme Fix
-
-Placement already exists:
-Courses → Advanced Skills Courses → Writing → Letter & Email Writing → Informal → Lesson 1 · Writing to a Friend
-
-Changes in this patch:
-- Restores Previous / Next on Teacher, Admin, Student and Guest hosted views.
-- Hosted navigation is placed in a safe zone above the E-LEAP Smart Dock.
-- Internal Check / Reset / Show answer buttons are hidden in hosted mode to avoid duplicated controls; the shared E-LEAP dock remains authoritative.
-- Changes the lesson tone to the palette inspired by the supplied writing PPT: deep teal, warm coral/orange, mustard, cream and paper white.
-- Adds restrained decorative writing motifs (envelope, pen and books) as local SVG assets; no external image dependency.
-- Keeps the 20-screen pedagogy and interactions unchanged.
-- Adds cache-busting query strings for CSS/JS.
-
-Upload only the CONTENTS of this patch to repository root on branch `e-leap-clean-v1` and overwrite matching files.
-
-Commit suggestion:
-`Fix Informal Letter Lesson 1 navigation and PPT-inspired theme`
+E-LEAP Writing L1 Final Polish + Teacher Live 5th Lesson Patch
+- Writing Lesson 1: 21 screens + Thank You.
+- Slide 3/4 instruction line-fit refinement.
+- Slide 8/14 larger type and tighter grouping.
+- Teacher Live includes Informal Letter L1.
+- Includes direct stable-link list and research-readiness audit.
+Upload CONTENTS to repository root and overwrite matching files.
+Commit: Finalize Writing L1 21 screens and Teacher Live links

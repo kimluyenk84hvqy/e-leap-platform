@@ -83,3 +83,25 @@ html[data-eleap-hosted="1"] .nav #next{margin-left:auto}
   html[data-eleap-hosted="1"] .nav{left:12px;right:12px;bottom:84px}
   html[data-eleap-hosted="1"] .nav #prev,html[data-eleap-hosted="1"] .nav #next{min-width:108px;font-size:15px;padding:10px 14px}
 }
+
+/* v1.2 final visual polish */
+.instruction-one-line{white-space:nowrap;font-size:22px;letter-spacing:-.01em}
+.slide-register-compact .classify-list{max-width:1040px;margin:0 auto;gap:10px}
+.slide-register-compact .classify-row{grid-template-columns:minmax(0,1fr) 270px;gap:12px;padding:15px 18px;font-size:24px}
+.slide-register-compact .classify-row b{font-size:24px;line-height:1.28}
+.slide-register-compact .classify-row div{justify-content:flex-end}
+.slide-register-compact .classify-row button{font-size:20px;padding:14px 16px;min-width:118px}
+.slide-idea-compact .match-list{max-width:1020px;margin:0 auto;gap:10px}
+.slide-idea-compact .match-row{grid-template-columns:minmax(0,1fr) minmax(330px,420px);gap:14px;padding:15px 18px;font-size:24px}
+.slide-idea-compact .match-row p{font-size:24px;font-weight:700}
+.slide-idea-compact .match-row select{font-size:21px;padding:14px 15px}
+.slide-idea-compact .short-write{display:block;max-width:1020px;margin:16px auto 0;font-size:22px;min-height:115px}
+.thank-you.active{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 150px)}
+.thank-card{position:relative;z-index:2;width:min(900px,92%);text-align:center;background:#fffdf8;border:1px solid #eadfca;border-radius:26px;padding:62px 54px;box-shadow:0 18px 45px rgba(67,68,50,.10)}
+.thank-card h2{font-size:68px;margin:18px 0 16px;color:var(--write-teal-dark)}
+.thank-card p{font-size:25px;line-height:1.5;color:#49665f;margin:0 auto;max-width:760px}
+.thank-ribbon{display:inline-block;margin-top:28px;padding:14px 24px;border-radius:999px;background:var(--write-coral);color:#fff;font-size:20px;font-weight:900}
+.thank-deco{position:absolute;pointer-events:none;opacity:.18;filter:drop-shadow(0 10px 14px rgba(32,91,84,.10))}
+.thank-envelope{width:170px;left:50px;bottom:60px;transform:rotate(-10deg)}
+.thank-pen{width:145px;right:55px;top:75px;transform:rotate(8deg)}
+@media(max-width:1100px){.instruction-one-line{white-space:normal}.slide-register-compact .classify-row,.slide-idea-compact .match-row{grid-template-columns:1fr}.slide-register-compact .classify-row div{justify-content:flex-start}.thank-card h2{font-size:54px}}

@@ -113,13 +113,13 @@
       "id": "res-adv-writing-letter-email-writing-informal-l01",
       "name": "Lesson 1 · Writing to a Friend",
       "type": "interactive-lesson",
-      "version": "FINAL-v1.0",
+      "version": "FINAL-v1.2.0",
       "status": "approved",
       "source": {
         "kind": "lesson-data",
         "path": "resources/advanced-skills/writing/letter-email/informal/l01/lesson.json",
         "standaloneUrl": "resources/advanced-skills/writing/letter-email/informal/l01/standalone/index.html",
-        "package": "E-LEAP-Academic-Skills-Informal-Letter-L1-FINAL-v1.0"
+        "package": "E-LEAP-Academic-Skills-Informal-Letter-L1-FINAL-v1.2.0"
       },
       "capabilities": [
         "classroom",

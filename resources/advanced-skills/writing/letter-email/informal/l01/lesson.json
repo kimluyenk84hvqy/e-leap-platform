@@ -5,9 +5,9 @@
   "topicId": "adv-writing-letter-email-writing-informal",
   "lessonNumber": "Lesson 1",
   "title": "Writing to a Friend",
-  "status": "FINAL-v1.1.1",
+  "status": "FINAL-v1.2.0",
   "cefr": "B1–B2",
-  "screenCount": 20,
+  "screenCount": 21,
   "pedagogy": [
     "guided discovery",
     "task analysis",
@@ -47,5 +47,5 @@
     "Student submit records the current response",
     "Reset restores only the current screen"
   ],
-  "visualRevision": "PPT-inspired teal-coral-cream theme; hosted Previous/Next safe navigation; decorative writing motifs"
+  "visualRevision": "PPT-inspired teal-coral-cream theme; hosted Previous/Next safe navigation; compact register/idea layouts; 21-screen final including Thank You."
 }
