@@ -53,3 +53,17 @@
 .word-bank{font-size:21px}
 .source p,.reading-text p{font-size:26px}
 @media(max-width:1000px){.instruction{font-size:21px!important}.book-lines p{font-size:21px}.book-lines input{font-size:19px;width:145px}.video-card video,.video-focus .video-card video{min-height:300px}}
+
+
+/* U2.2 final polish — one answer only, tighter composition, larger classroom type */
+.row .teacher-answer,.class-item .teacher-answer,.meaning-card .teacher-answer{display:none!important}
+.answer-filled{background:#e8f4ee!important;border-color:#5d9f82!important;color:#0f5c45!important;font-weight:900!important;box-shadow:0 0 0 2px #cce4d8 inset!important}
+.answer-correct{background:#dcefe6!important;color:#0b5e45!important;border-color:#65a789!important;box-shadow:0 0 0 2px #bddfce inset!important}
+.round-options button.answer-correct,.class-actions button.answer-correct{background:#dcefe6!important;color:#0b5e45!important;border-color:#65a789!important;outline:3px solid #c6e2d4!important}
+.round-card #edCorrection.answer-filled{margin-top:12px;font-size:21px;line-height:1.35}
+.meaning-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.meaning-card{padding:16px 18px}.meaning-card h3{font-size:24px;margin:0 0 7px}.meaning-card p{font-size:22px;line-height:1.42;margin:0 0 12px}.meaning-card select{font-size:20px;min-height:48px}
+#stateAction.classify-grid,#posNeg.classify-grid{gap:10px}.class-item{padding:14px 16px}.class-item b{font-size:23px}.class-actions button{font-size:18px;padding:10px 9px}
+.consolidation-split{display:grid;grid-template-columns:minmax(0,.86fr) minmax(0,1.14fr);gap:12px;max-width:1190px;margin:8px auto 0}.summary-pane,.quiz-pane{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 22px;min-width:0}.summary-pane h3,.quiz-pane h3{font-size:25px;color:var(--review);margin:0 0 14px}.summary-list{display:grid;gap:11px}.summary-list>div{padding:15px 16px;background:var(--review-bg);border-left:5px solid var(--review);border-radius:10px}.summary-list b{display:block;font-size:22px;color:#45366c;margin-bottom:4px}.summary-list span{font-size:20px;line-height:1.35;color:#344d45}.quiz-pane .row{grid-template-columns:minmax(0,1fr) minmax(210px,270px);font-size:22px;padding:14px 16px}.quiz-pane .row select{font-size:20px}
+#wordFamily .row,#adjectiveBuild .row{grid-template-columns:minmax(150px,.55fr) minmax(0,1.45fr)}#wordFamily .row input,#adjectiveBuild .row input{font-size:20px}
+@media(max-width:1000px){.meaning-grid,.consolidation-split{grid-template-columns:1fr}.quiz-pane .row{grid-template-columns:1fr}.summary-list b{font-size:20px}.summary-list span{font-size:19px}}
