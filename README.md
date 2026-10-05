@@ -1,10 +1,18 @@
-E-LEAP U2.1 + U2.2 NAV / EVIDENCE FIX
+# E-LEAP Academic Skills · Informal Letter Lesson 1 · Navigation + Theme Fix
 
-Fixes:
-- U2.1 and U2.2 Student/Guest: Next/Previous navigation moved into a safe footer zone above the E-LEAP bottom smart dock, so Slide 1 can advance.
-- U2.1 Slide 12: each evidence clue now offers the four FULL book questions (not just a/b/c/d). Teacher Show answer reveals the complete correct question inside the same dropdown/box.
-- U2.1 Slide 11/12 evidence highlight behavior is preserved.
-- U2.2 latest working video paths are preserved.
+Placement already exists:
+Courses → Advanced Skills Courses → Writing → Letter & Email Writing → Informal → Lesson 1 · Writing to a Friend
 
-Upload contents of this folder to repository root on e-leap-clean-v1 and overwrite matching files.
-Commit suggestion: Fix U2.1 U2.2 student Next and U2.1 evidence questions
+Changes in this patch:
+- Restores Previous / Next on Teacher, Admin, Student and Guest hosted views.
+- Hosted navigation is placed in a safe zone above the E-LEAP Smart Dock.
+- Internal Check / Reset / Show answer buttons are hidden in hosted mode to avoid duplicated controls; the shared E-LEAP dock remains authoritative.
+- Changes the lesson tone to the palette inspired by the supplied writing PPT: deep teal, warm coral/orange, mustard, cream and paper white.
+- Adds restrained decorative writing motifs (envelope, pen and books) as local SVG assets; no external image dependency.
+- Keeps the 20-screen pedagogy and interactions unchanged.
+- Adds cache-busting query strings for CSS/JS.
+
+Upload only the CONTENTS of this patch to repository root on branch `e-leap-clean-v1` and overwrite matching files.
+
+Commit suggestion:
+`Fix Informal Letter Lesson 1 navigation and PPT-inspired theme`

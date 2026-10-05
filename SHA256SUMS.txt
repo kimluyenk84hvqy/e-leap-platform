@@ -1,8 +1,8 @@
-ca914574be62562a370cb20fdb2e4c1f9abf961f62dbd612e9121f08ade69d80  ./README.md
-45843eec7b7f87fb5f953b42cbe718c37a69d9d9a34429f2350454b859362e24  ./resources/objective-first-b2/u02/l01/standalone/app.js
-4de4ad20c035d7f11c09c516ec9be0ed48582a75b6691762784f804fda1c68f2  ./resources/objective-first-b2/u02/l01/standalone/index.html
-29a42009592703e795070411d23b51b912c7b5607ecfc7697e5bd71482d28894  ./resources/objective-first-b2/u02/l01/standalone/styles.css
-64d2b96455606884a8977048118fb91b55c66fe831ee140ce50a7642f5db2eb3  ./resources/objective-first-b2/u02/l02/standalone/app.js
-cf16704a38b8d8bd8db472cc8338916b2a47f4c8fff7bb6059fb40378ff34ecd  ./resources/objective-first-b2/u02/l02/standalone/index.html
-c606382f42676e99a6fa832995d5d78b22690ab1bd6605656058b3fa49f456e4  ./resources/objective-first-b2/u02/l02/standalone/styles.css
-bf82be2b1b0e81f2b191d2a103efad233af7e6d23d231e9f9076fa40fd8d81d4  ./service-worker.js
+fb2948fbb6c6cda7c3883449a30a553dfb306fd941d98ab4d638f3385e4e9ef2  ./README.md
+64165a621db780bc4380bcdb601a753815f58fd347db5031de5f2fdcdbfdb140  ./resources/advanced-skills/writing/letter-email/informal/l01/lesson.json
+f80fc749aee0782d4a5c7cee499c61a27af5b849021d55a8b0e9051f5aac9a76  ./resources/advanced-skills/writing/letter-email/informal/l01/standalone/app.js
+67401b2b85203f1d0af5cae9e048d133f3237d358abc9a225da4dc75f98a39fb  ./resources/advanced-skills/writing/letter-email/informal/l01/standalone/assets/books.svg
+a76054a5d1ba0df8975050620ec8372ee8a6a9084cfe3c44a0ddf44258b0985e  ./resources/advanced-skills/writing/letter-email/informal/l01/standalone/assets/envelope.svg
+3cab671ef10348a4c1ac460f8770001f7fd5ca047933a83d0050ce0442366d23  ./resources/advanced-skills/writing/letter-email/informal/l01/standalone/assets/pen.svg
+8a0ef9118a4989aef2ca6f8dd09693db5e37127e2fab9245c4ed26c1aab188fa  ./resources/advanced-skills/writing/letter-email/informal/l01/standalone/index.html
+4e63c0c1f74eb132c6df4b6157a5014584f7dd8f9ee41814db1a7fa36a58ac6a  ./resources/advanced-skills/writing/letter-email/informal/l01/standalone/styles.css
