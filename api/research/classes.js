@@ -1,140 +1,28 @@
 import { getResearchDb } from '../_research-db.js';
-
-export default async function handler(req, res) {
-  try {
-    const sql = getResearchDb();
-
-    if (req.method === 'GET') {
-      const teacherId = req.query?.teacherId;
-
-      if (teacherId) {
-        const rows = await sql`
-          SELECT
-            class_id,
-            teacher_id,
-            class_name,
-            course_id,
-            academic_year,
-            status,
-            created_at,
-            updated_at
-          FROM classes
-          WHERE teacher_id = ${teacherId}
-          ORDER BY created_at DESC
-        `;
-
-        return res.status(200).json({
-          ok: true,
-          classes: rows
-        });
-      }
-
-      const rows = await sql`
-        SELECT
-          class_id,
-          teacher_id,
-          class_name,
-          course_id,
-          academic_year,
-          status,
-          created_at,
-          updated_at
-        FROM classes
-        ORDER BY created_at DESC
-      `;
-
-      return res.status(200).json({
-        ok: true,
-        classes: rows
-      });
+import { requireAuth,requireSameOrigin,teacherOwnsClass } from '../_auth.js';
+export default async function handler(req,res){
+  try{
+    const sql=getResearchDb(); const user=await requireAuth(req,res); if(!user)return;
+    if(req.method==='GET'){
+      let rows=[];
+      if(user.role==='admin') rows=await sql`SELECT * FROM classes WHERE status<>'archived' ORDER BY created_at DESC`;
+      else if(user.role==='teacher') rows=await sql`SELECT * FROM classes WHERE teacher_id=${user.user_id} AND status<>'archived' ORDER BY created_at DESC`;
+      else rows=await sql`SELECT c.* FROM classes c JOIN auth_class_members m ON m.class_id::text=c.class_id::text WHERE m.student_user_id=${user.user_id} AND m.status='active' AND c.status<>'archived' ORDER BY c.created_at DESC`;
+      return res.status(200).json({ok:true,classes:rows});
     }
-
-    if (req.method === 'POST') {
-      const {
-        teacherId,
-        className,
-        courseId = null,
-        academicYear = null
-      } = req.body || {};
-
-      if (!teacherId || !className) {
-        return res.status(400).json({
-          ok: false,
-          error: 'teacherId and className are required'
-        });
-      }
-
-      const rows = await sql`
-        INSERT INTO classes (
-          teacher_id,
-          class_name,
-          course_id,
-          academic_year
-        )
-        VALUES (
-          ${teacherId},
-          ${className},
-          ${courseId},
-          ${academicYear}
-        )
-        RETURNING
-          class_id,
-          teacher_id,
-          class_name,
-          course_id,
-          academic_year,
-          status,
-          created_at,
-          updated_at
-      `;
-
-      return res.status(201).json({
-        ok: true,
-        class: rows[0]
-      });
+    if(req.method==='POST'){
+      if(!requireSameOrigin(req,res))return; if(!['teacher','admin'].includes(user.role))return res.status(403).json({ok:false,error:'Teacher or admin required'});
+      const {className,courseId=null,academicYear=null}=req.body||{}; if(!String(className||'').trim())return res.status(400).json({ok:false,error:'className is required'});
+      const teacherId=user.role==='admin'&&req.body?.teacherId?req.body.teacherId:user.user_id;
+      const rows=await sql`INSERT INTO classes(teacher_id,class_name,course_id,academic_year) VALUES(${teacherId},${String(className).trim().slice(0,160)},${courseId},${academicYear}) RETURNING *`;
+      return res.status(201).json({ok:true,class:rows[0]});
     }
-
-    if (req.method === 'PATCH') {
-      const { classId, className, courseId, academicYear, status } = req.body || {};
-
-      if (!classId) {
-        return res.status(400).json({ ok: false, error: 'classId is required' });
-      }
-
-      const allowedStatus = status == null || ['active', 'archived'].includes(status);
-      if (!allowedStatus) {
-        return res.status(400).json({ ok: false, error: 'Invalid class status' });
-      }
-
-      const rows = await sql`
-        UPDATE classes
-        SET
-          class_name = COALESCE(${className || null}, class_name),
-          course_id = COALESCE(${courseId ?? null}, course_id),
-          academic_year = COALESCE(${academicYear ?? null}, academic_year),
-          status = COALESCE(${status || null}, status),
-          updated_at = NOW()
-        WHERE class_id = ${classId}
-        RETURNING
-          class_id, teacher_id, class_name, course_id, academic_year, status, created_at, updated_at
-      `;
-
-      if (!rows.length) return res.status(404).json({ ok: false, error: 'Class not found' });
-      return res.status(200).json({ ok: true, class: rows[0] });
+    if(req.method==='PATCH'){
+      if(!requireSameOrigin(req,res))return; const {classId,className,status}=req.body||{}; if(!classId)return res.status(400).json({ok:false,error:'classId is required'});
+      if(!await teacherOwnsClass(sql,user,classId))return res.status(403).json({ok:false,error:'Class access denied'});
+      const rows=await sql`UPDATE classes SET class_name=COALESCE(${className?String(className).slice(0,160):null},class_name),status=COALESCE(${status||null},status),updated_at=NOW() WHERE class_id=${classId} RETURNING *`;
+      return res.status(200).json({ok:true,class:rows[0]});
     }
-
-    res.setHeader('Allow', ['GET', 'POST', 'PATCH']);
-
-    return res.status(405).json({
-      ok: false,
-      error: 'Method not allowed'
-    });
-  } catch (error) {
-    console.error('R1 classes API failed:', error);
-
-    return res.status(500).json({
-      ok: false,
-      error: 'Research database unavailable'
-    });
-  }
+    res.setHeader('Allow',['GET','POST','PATCH']);return res.status(405).json({ok:false,error:'Method not allowed'});
+  }catch(e){console.error('classes failed',e);return res.status(500).json({ok:false,error:'Classes request failed'});}
 }
