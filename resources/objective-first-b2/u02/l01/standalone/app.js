@@ -47,7 +47,13 @@ const skimTabs=$('#skimTabs');$$('button',skimTabs).forEach(b=>b.onclick=()=>{$$
 const scan=[['a. Which review is the cheapest?',['Review 1','Review 2','Review 3','Review 4'],'Review 4'],['b. Which review gives the strongest overall recommendation?',['Review 1','Review 2','Review 3','Review 4'],'Review 3'],['c. Which game seems least suitable for adults?',['Review 1','Review 2','Review 3','Review 4'],'Review 4'],['d. Which review praises the soundtrack most strongly?',['Review 1','Review 2','Review 3','Review 4'],'Review 1']];
 function scanRow(question,opts,ans,name,label='Review'){return `<div class="row scan-row" data-answer="${esc(ans)}"><div class="scan-question">${esc(question)}</div><div class="scan-answer-line"><span>${label}</span><select name="${name}"><option value="">Choose…</option>${opts.map(o=>`<option value="${esc(o)}">${esc(o)}</option>`).join('')}</select></div></div>`}
 $('#scanQuiz').innerHTML=scan.map((x,i)=>scanRow(x[0],x[1],x[2],`scan${i}`)).join('');
-const evid=[['£17.99 in The Verdict',['a','b','c','d'],'a'],['“easily the best available”',['a','b','c','d'],'b'],['aimed at kids under ten',['a','b','c','d'],'c'],["background music is 'truly original'",['a','b','c','d'],'d']];
+const evidenceQuestions=scan.map(x=>x[0]);
+const evid=[
+ ['£17.99 in The Verdict',evidenceQuestions,evidenceQuestions[0]],
+ ['“easily the best available”',evidenceQuestions,evidenceQuestions[1]],
+ ['aimed at kids under ten',evidenceQuestions,evidenceQuestions[2]],
+ ["background music is 'truly original'",evidenceQuestions,evidenceQuestions[3]]
+];
 $('#evidenceQuiz').innerHTML=evid.map((x,i)=>scanRow(x[0],x[1],x[2],`ev${i}`,'Question')).join('');
 const gb=[['Review 1 · Unique way of thinking','good'],['Review 1 · Almost no instructions; can be frustrating','bad'],['Review 2 · A great sense of progression','good'],['Review 2 · The gun resets to weak with each new level','bad'],['Review 3 · Eight different bikes and nine long tracks','good'],['Review 3 · Can get quite tricky','bad'],['Review 4 · Bright and colourful graphics','good'],['Review 4 · Only six levels and no multi-player mode','bad']];
 $('#goodBad').innerHTML=gb.map(([x,a])=>`<div class="class-item" data-answer="${a}"><b>${x}</b><div class="class-actions"><button data-v="good">Good point</button><button data-v="bad">Bad point</button></div></div>`).join('');

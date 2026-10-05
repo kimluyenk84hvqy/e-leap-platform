@@ -24,5 +24,20 @@ html[data-eleap-hosted="1"] .local-actions{display:none}
 .scan-row{grid-template-columns:1fr;gap:9px}.scan-question{font-size:20px;line-height:1.45;font-weight:800;width:100%}.scan-answer-line{display:grid;grid-template-columns:auto minmax(190px,260px);align-items:center;justify-content:start;gap:12px}.scan-answer-line>span{font-size:17px;color:var(--muted);font-weight:900}.scan-answer-line select{margin-top:0!important}
 .colloc-bank{margin-top:14px}.colloc-row{grid-template-columns:minmax(180px,240px) 1fr}.colloc-row select{margin-top:0!important}.colloc-row span{font-size:20px}
 .teacher-suggestions{margin-top:18px;padding:18px 20px;border:1px solid #dfc9af;border-left:6px solid var(--homework);background:#fffaf5;border-radius:12px;color:#513921}.teacher-suggestions h3{color:var(--homework);margin-bottom:10px}.teacher-suggestions ol{font-size:19px!important}.teacher-suggestions li{margin:10px 0!important}
-html[data-eleap-hosted="1"][data-eleap-role="student"] .nav,html[data-eleap-hosted="1"][data-eleap-role="guest"] .nav{grid-template-columns:1fr auto 1fr;padding-right:26px}.nav #prev{grid-column:1}.nav #next{grid-column:3}html[data-eleap-hosted="1"][data-eleap-role="student"] .nav #next,html[data-eleap-hosted="1"][data-eleap-role="guest"] .nav #next{grid-column:2;justify-self:center}
+
 @media(max-width:1000px){.idea-bank{columns:1}.scan-answer-line{grid-template-columns:auto 1fr}.colloc-row{grid-template-columns:minmax(140px,210px) 1fr}}
+
+/* Hosted Student/Guest navigation safe zone — keep Next above the platform dock */
+html[data-eleap-hosted="1"][data-eleap-role="student"] .lesson-shell,
+html[data-eleap-hosted="1"][data-eleap-role="guest"] .lesson-shell{grid-template-rows:64px 1fr 116px}
+html[data-eleap-hosted="1"][data-eleap-role="student"] .nav,
+html[data-eleap-hosted="1"][data-eleap-role="guest"] .nav{align-items:start;padding:10px 92px 58px 26px;min-height:116px;position:relative;z-index:60}
+html[data-eleap-hosted="1"][data-eleap-role="student"] .nav #prev,
+html[data-eleap-hosted="1"][data-eleap-role="guest"] .nav #prev{grid-column:1;justify-self:start}
+html[data-eleap-hosted="1"][data-eleap-role="student"] .nav #next,
+html[data-eleap-hosted="1"][data-eleap-role="guest"] .nav #next{grid-column:3;justify-self:end}
+#evidenceQuiz .scan-row{padding:15px 16px}
+#evidenceQuiz .scan-question{font-size:21px;color:#5b4210}
+#evidenceQuiz .scan-answer-line{grid-template-columns:1fr;gap:6px}
+#evidenceQuiz .scan-answer-line>span{font-size:15px;text-transform:uppercase;letter-spacing:.06em}
+#evidenceQuiz .scan-answer-line select{width:100%;max-width:none;min-height:52px;font-size:17px;line-height:1.35}

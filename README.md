@@ -1,12 +1,10 @@
-# E-LEAP Academic Skills · Writing · Informal · Lesson 1 FINAL
+E-LEAP U2.1 + U2.2 NAV / EVIDENCE FIX
 
-Placement:
-Courses → Advanced Skills Courses → Writing → Letter & Email Writing → Informal → Lesson 1 · Writing to a Friend
+Fixes:
+- U2.1 and U2.2 Student/Guest: Next/Previous navigation moved into a safe footer zone above the E-LEAP bottom smart dock, so Slide 1 can advance.
+- U2.1 Slide 12: each evidence clue now offers the four FULL book questions (not just a/b/c/d). Teacher Show answer reveals the complete correct question inside the same dropdown/box.
+- U2.1 Slide 11/12 evidence highlight behavior is preserved.
+- U2.2 latest working video paths are preserved.
 
-Pedagogy: guided discovery → task analysis → model analysis → idea development → planning → drafting → revision.
-
-Sources: user-provided `Viết thư 1.pptx`, Cambridge Objective First Writing Folder 1 (Informal letters), and the teacher-edited Unit 2.2 letter-writing material.
-
-Upload the CONTENTS of this patch to the repository root on branch `e-leap-clean-v1`, allowing overwrite of `data/shells.json` and `data/resources.json`.
-
-Commit: `Add Advanced Skills Informal Letter Lesson 1 FINAL`
+Upload contents of this folder to repository root on e-leap-clean-v1 and overwrite matching files.
+Commit suggestion: Fix U2.1 U2.2 student Next and U2.1 evidence questions
