@@ -9,7 +9,14 @@ import {R4Live} from './assets/js/r4-live-client.js';
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 localStorage.setItem('e-leap-preview-role','teacher');
 const pageParams=new URLSearchParams(location.search);const requestedLesson=pageParams.get('lesson'),requestedClassId=pageParams.get('classId');if(requestedLesson&&[...$('#lesson').options].some(o=>o.value===requestedLesson))$('#lesson').value=requestedLesson;
-const teacherKey='e-leap-r4-teacher';let profile=JSON.parse(localStorage.getItem(teacherKey)||'null')||{teacherId:`teacher-${crypto.randomUUID?.()||Date.now()}`,name:''};localStorage.setItem(teacherKey,JSON.stringify(profile));
+const teacherKey='e-leap-r4-teacher';
+const UUID_RE=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+function newUuid(){return crypto.randomUUID?.()||`${Date.now().toString(16).padStart(8,'0')}-0000-4000-8000-${Math.random().toString(16).slice(2,14).padEnd(12,'0')}`.slice(0,36)}
+let profile=JSON.parse(localStorage.getItem(teacherKey)||'null')||{teacherId:newUuid(),name:''};
+// Migration: older Teacher Live builds stored IDs as `teacher-<uuid>`, but the Research DB schema uses UUID.
+// Preserve the teacher name, replace only the incompatible local identifier.
+if(!UUID_RE.test(String(profile.teacherId||''))){profile={...profile,teacherId:newUuid()};}
+localStorage.setItem(teacherKey,JSON.stringify(profile));
 $('#teacherName').value=profile.name||'';let session=null,currentClass=null,poll=null;
 async function loadClasses(){
   try{
@@ -20,7 +27,7 @@ async function loadClasses(){
     $('#classSelect').value=requestedClassId&&rows.some(c=>String(c.class_id)===String(requestedClassId))?String(requestedClassId):(rows.length?'':'__new__');
     syncClassField();
     $('#setupStatus').textContent='Live database ready';
-  }catch(e){$('#setupStatus').textContent=e.message==='Live database is not configured'?'Live database not configured yet. Connect the Research DB in Vercel Environment Variables.':'Live setup: '+e.message;}
+  }catch(e){console.error('Teacher Live class load failed',e);$('#setupStatus').textContent='Live setup: '+(e?.message||'Unable to load classes.');}
 }
 function syncClassField(){const isNew=$('#classSelect').value==='__new__';$('#newClassField').classList.toggle('hidden',!isNew);if(isNew){setTimeout(()=>$('#className')?.focus(),0)}}
 $('#classSelect').onchange=syncClassField;syncClassField();
