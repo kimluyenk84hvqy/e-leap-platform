@@ -51,3 +51,4 @@ main{background:var(--eleap-canvas)}
 .manager-bar b{color:var(--eleap-active)}.manager-bar button{background:#EEF6F2;color:var(--eleap-active);border-color:#A8C8B8}
 .learning-loop{background:var(--eleap-shell)}
 .foundation{display:none!important}
+.class-live-status{margin:0 0 18px;padding:12px 14px;border-radius:10px;background:#f4f7f5;border:1px solid #d9e3df;color:#5d726b;font-size:13px;font-weight:700}.class-live-status.ready{background:#edf6f2;border-color:#cfe2da;color:#245f50}.live-class-card{padding:18px 20px}.class-actions-row{display:flex;gap:8px;flex-wrap:wrap}.archived-grid{opacity:.78}.archived-grid .class-card{background:#f8faf9}@media(max-width:720px){.class-actions-row{width:100%}.class-actions-row .btn{flex:1 1 auto}}

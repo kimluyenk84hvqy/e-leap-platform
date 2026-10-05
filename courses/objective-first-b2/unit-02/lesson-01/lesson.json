@@ -1,0 +1,167 @@
+{
+  "id": "objective-first-b2-u02-l01",
+  "courseId": "objective-first-b2",
+  "unitId": "unit-02",
+  "lessonNumber": "U2.1",
+  "title": "The Virtual World",
+  "status": "DRAFT-PREVIEW",
+  "cefr": "B2",
+  "periods": 4,
+  "source": "Cambridge Objective First B2 Unit 2.1 pages 16–17 + teacher-edited U2.1 PPT",
+  "theme": {
+    "preset": "VMMU Military Green",
+    "fontFamily": "Poppins",
+    "background": "#F5F8F5",
+    "deepGreen": "#183E31",
+    "activeGreen": "#2F6B4F",
+    "strongGreen": "#24543F",
+    "softGreen": "#DDEBE3"
+  },
+  "screens": [
+    {
+      "id": "s01",
+      "stage": "COVER",
+      "type": "cover",
+      "title": "The Virtual World",
+      "subtitle": "Objective First B2 · Unit 2.1",
+      "institution": [
+        "VIETNAM MILITARY MEDICAL UNIVERSITY",
+        "FACULTY OF FOREIGN LANGUAGES"
+      ]
+    },
+    {
+      "id": "s02",
+      "stage": "REVIEW",
+      "type": "lucky-wheel",
+      "title": "Checking the Previous Lesson",
+      "instruction": "Spin the wheel and answer the challenge you land on.",
+      "items": 8
+    },
+    {
+      "id": "s03",
+      "stage": "REVIEW",
+      "type": "mixed-challenge",
+      "title": "Comparative Challenge · 1–4"
+    },
+    {
+      "id": "s04",
+      "stage": "REVIEW",
+      "type": "mixed-challenge",
+      "title": "Comparative Challenge · 5–8"
+    },
+    {
+      "id": "s05",
+      "stage": "BRIDGE",
+      "type": "single-choice",
+      "title": "From the Review to Unit 2",
+      "question": "The games you have just compared belong mainly to which category?",
+      "options": [
+        "Computer games",
+        "Board games",
+        "Outdoor games",
+        "Card games"
+      ],
+      "answer": "Computer games"
+    },
+    {
+      "id": "s06",
+      "stage": "SPEAKING",
+      "type": "poll-response",
+      "title": "What Do You Think?",
+      "prompt": "Computer games are anti-social and violent, and their users are mindless nerds."
+    },
+    {
+      "id": "s07",
+      "stage": "IDEAS",
+      "type": "categorise",
+      "title": "Advantages or Disadvantages?"
+    },
+    {
+      "id": "s08",
+      "stage": "IDEAS",
+      "type": "idea-chain",
+      "title": "Develop the Idea"
+    },
+    {
+      "id": "s09",
+      "stage": "SPEAKING",
+      "type": "multi-select-response",
+      "title": "What Makes a Good Game?"
+    },
+    {
+      "id": "s10",
+      "stage": "READING",
+      "type": "strategy-reveal",
+      "title": "Scan, Don’t Read Everything"
+    },
+    {
+      "id": "s11",
+      "stage": "READING",
+      "type": "matching",
+      "title": "Scan the Four Reviews"
+    },
+    {
+      "id": "s12",
+      "stage": "READING",
+      "type": "evidence",
+      "title": "Evidence Hunt"
+    },
+    {
+      "id": "s13",
+      "stage": "READING",
+      "type": "matching",
+      "title": "Match Players to Reviews"
+    },
+    {
+      "id": "s14",
+      "stage": "READING",
+      "type": "categorise-tabs",
+      "title": "Good Points / Bad Points"
+    },
+    {
+      "id": "s15",
+      "stage": "IDEAS",
+      "type": "single-choice",
+      "title": "Which Support Is Stronger?"
+    },
+    {
+      "id": "s16",
+      "stage": "VOCABULARY",
+      "type": "matching",
+      "title": "Collocation Builder"
+    },
+    {
+      "id": "s17",
+      "stage": "LANGUAGE",
+      "type": "mixed",
+      "title": "Adverbs in Context"
+    },
+    {
+      "id": "s18",
+      "stage": "HOMEWORK",
+      "type": "assignment",
+      "title": "Homework"
+    },
+    {
+      "id": "s19",
+      "stage": "END",
+      "type": "end-screen",
+      "title": "Thank You"
+    }
+  ],
+  "screenCount": 19,
+  "designRules": [
+    "large readable type",
+    "flat warm off-white canvas",
+    "more deep-green activity boxes",
+    "two-pane independent scroll for source-heavy screens",
+    "same control placement across screens"
+  ],
+  "interactionRules": [
+    "Check evaluates current screen",
+    "Reset restores current activity",
+    "Teacher reveal is item-by-item",
+    "Student Submit logs response",
+    "score denominator includes unanswered items"
+  ]
+}

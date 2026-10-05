@@ -94,7 +94,36 @@ export default async function handler(req, res) {
       });
     }
 
-    res.setHeader('Allow', ['GET', 'POST']);
+    if (req.method === 'PATCH') {
+      const { classId, className, courseId, academicYear, status } = req.body || {};
+
+      if (!classId) {
+        return res.status(400).json({ ok: false, error: 'classId is required' });
+      }
+
+      const allowedStatus = status == null || ['active', 'archived'].includes(status);
+      if (!allowedStatus) {
+        return res.status(400).json({ ok: false, error: 'Invalid class status' });
+      }
+
+      const rows = await sql`
+        UPDATE classes
+        SET
+          class_name = COALESCE(${className || null}, class_name),
+          course_id = COALESCE(${courseId ?? null}, course_id),
+          academic_year = COALESCE(${academicYear ?? null}, academic_year),
+          status = COALESCE(${status || null}, status),
+          updated_at = NOW()
+        WHERE class_id = ${classId}
+        RETURNING
+          class_id, teacher_id, class_name, course_id, academic_year, status, created_at, updated_at
+      `;
+
+      if (!rows.length) return res.status(404).json({ ok: false, error: 'Class not found' });
+      return res.status(200).json({ ok: true, class: rows[0] });
+    }
+
+    res.setHeader('Allow', ['GET', 'POST', 'PATCH']);
 
     return res.status(405).json({
       ok: false,

@@ -5,44 +5,123 @@
   "courseLabel": "Objective First B2",
   "unitLabel": "Unit 2",
   "lessonNumber": "U2.1",
-  "title": "U2.1 — Golden Authoring Test",
-  "status": "draft-template",
+  "title": "U2.1 — The Virtual World",
+  "status": "source-interactive-ready",
   "deliveryPolicy": {
     "id": "practice"
   },
   "theme": {
-    "preset": "E-LEAP Classic",
+    "preset": "VMMU Military Green",
     "fontFamily": "Poppins",
-    "titleSize": 36,
-    "bodySize": 18,
-    "textColor": "#173f38",
-    "accentColor": "#0d7d6d",
-    "backgroundColor": "#ffffff",
+    "titleSize": 40,
+    "bodySize": 22,
+    "textColor": "#183E31",
+    "accentColor": "#2F6B4F",
+    "backgroundColor": "#F5F8F5",
     "density": "standard"
   },
   "metadata": {
-    "purpose": "Golden Authoring Test",
-    "contentStatus": "awaiting-source-content",
-    "cefr": "B2"
+    "purpose": "Golden source-based interactive lesson",
+    "contentStatus": "source-aligned",
+    "cefr": "B2",
+    "sourcePolicy": "Keep book content; change delivery format only to increase interaction."
   },
   "screens": [
     {
-      "id": "u2-1-screen-001",
-      "stage": "Lead-in",
-      "title": "U2.1",
-      "instruction": "Add the approved source content for U2.1 here.",
-      "layout": "standard",
-      "blocks": [
-        {
-          "id": "u2-1-block-001",
-          "type": "text",
-          "content": {
-            "text": "Golden Authoring Test scaffold — replace with approved U2.1 content.",
-            "role": "body"
-          },
-          "style": {}
-        }
-      ]
+      "id": "s01",
+      "type": "cover",
+      "title": "The Virtual World"
+    },
+    {
+      "id": "s02",
+      "type": "lucky-wheel",
+      "title": "Checking the Previous Lesson",
+      "items": 8
+    },
+    {
+      "id": "s03",
+      "type": "mixed-challenge",
+      "title": "Comparative Challenge 1–4"
+    },
+    {
+      "id": "s04",
+      "type": "mixed-challenge",
+      "title": "Comparative Challenge 5–8"
+    },
+    {
+      "id": "s05",
+      "type": "single-choice",
+      "title": "From the Review to Unit 2"
+    },
+    {
+      "id": "s06",
+      "type": "split-source-poll-response",
+      "title": "Speaking 1 · How far do you agree?"
+    },
+    {
+      "id": "s07",
+      "type": "split-source-categorise",
+      "title": "Speaking 2 · Good things or disadvantages?"
+    },
+    {
+      "id": "s08",
+      "type": "split-source-idea-chain",
+      "title": "Develop the Idea"
+    },
+    {
+      "id": "s09",
+      "type": "split-source-multi-select",
+      "title": "Speaking 3 · What makes a good game?"
+    },
+    {
+      "id": "s10",
+      "type": "split-source-strategy-reveal",
+      "title": "Exam Spot · Skimming and Scanning"
+    },
+    {
+      "id": "s11",
+      "type": "tabbed-source-matching",
+      "title": "Reading 4 · Scan the Four Reviews"
+    },
+    {
+      "id": "s12",
+      "type": "tabbed-source-evidence",
+      "title": "Reading 4 · Evidence Hunt"
+    },
+    {
+      "id": "s13",
+      "type": "tabbed-source-group-task",
+      "title": "Reading 5 · Skim and Evaluate"
+    },
+    {
+      "id": "s14",
+      "type": "categorise",
+      "title": "Good Points / Bad Points"
+    },
+    {
+      "id": "s15",
+      "type": "split-source-matching",
+      "title": "Vocabulary 6 · Collocations"
+    },
+    {
+      "id": "s16",
+      "type": "split-source-mixed",
+      "title": "Grammar Extra · -ly Adverbs"
+    },
+    {
+      "id": "s17",
+      "type": "split-source-error-correction",
+      "title": "Corpus Spot · Adverb Spelling"
+    },
+    {
+      "id": "s18",
+      "type": "assignment",
+      "title": "Homework"
+    },
+    {
+      "id": "s19",
+      "type": "end-screen",
+      "title": "Thank You"
     }
   ],
   "authoringPath": "../studio/index.html"
