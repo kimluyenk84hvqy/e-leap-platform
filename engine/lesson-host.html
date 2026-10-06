@@ -76,6 +76,39 @@ try{
   const sink=new LocalEventSink();
   const eventContext=()=>{const c=context();return {mode:c.mode==='presentation'?'presentation':(role==='student'?'self-study':role),role:c.role,classId:c.classId,sessionId:c.sessionId,participantId:c.participantId,studentId:c.studentId,joinCode:c.joinCode}};
   const remoteSessionId=context().sessionId;
+  // R4 RC2 · Teacher Pace / Follow Teacher.
+  // Uses the existing events table so no database migration is required.
+  let classSyncTimer=null,lastPublishedActivity=null,lastAppliedTeacherActivity=null,lastPaceState=true;
+  const getFrameApi=()=>{try{return frame.contentWindow?.ELEAP_LESSON_HOST_API||null}catch(_){return null}};
+  const parseMeta=(row)=>{let m=row?.metadata||{};if(typeof m==='string'){try{m=JSON.parse(m)}catch{m={}}}return m||{}};
+  const publishTeacherActivity=async()=>{
+    if(!remoteSessionId||!['teacher','admin'].includes(role))return;
+    const follow=localStorage.getItem(`e-leap-r4-follow-teacher:${remoteSessionId}`)!=='0';
+    if(!follow)return;
+    const activityId=unifiedControls?._inspect?.()?.activityId||getFrameApi()?.getActivityState?.()?.activityId||null;
+    if(!activityId||activityId===lastPublishedActivity)return;
+    lastPublishedActivity=activityId;
+    try{await fetch('../api/research/events',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:remoteSessionId,classId:context().classId,lessonId:id,activityId,eventType:'class.activity.changed',metadata:{locked:true,source:'teacher-pace'}})})}catch(err){console.warn('Teacher pace publish failed',err)}
+  };
+  const applyStudentTeacherPace=async()=>{
+    if(!remoteSessionId||role!=='student')return;
+    try{
+      const r=await fetch(`../api/research/events?sessionId=${encodeURIComponent(remoteSessionId)}`,{cache:'no-store'});if(!r.ok)return;const d=await r.json();const rows=d.events||[];
+      const pace=rows.filter(x=>x.event_type==='class.pace.changed').at(-1);const pm=parseMeta(pace);const locked=pace?pm.locked!==false:true;lastPaceState=locked;
+      const api=getFrameApi();api?.setNavigationLocked?.(locked);
+      document.documentElement.dataset.eleapFollowTeacher=locked?'1':'0';
+      const bannerId='eleapFollowTeacherBanner';let banner=document.getElementById(bannerId);if(!banner){banner=document.createElement('div');banner.id=bannerId;banner.style.cssText='position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:45;padding:7px 12px;border-radius:999px;background:#173f38;color:#fff;font:700 12px system-ui;box-shadow:0 8px 22px #0002;display:none';document.body.appendChild(banner);}banner.textContent=locked?'Following teacher screen':'Student pace';banner.style.display=locked?'block':'none';
+      if(!locked)return;
+      const act=rows.filter(x=>x.event_type==='class.activity.changed'&&x.activity_id).at(-1);const activityId=act?.activity_id||null;
+      if(activityId&&activityId!==lastAppliedTeacherActivity){const ok=api?.goToActivity?.(activityId);if(ok!==false)lastAppliedTeacherActivity=activityId;}
+    }catch(err){console.warn('Student teacher-pace sync failed',err)}
+  };
+  if(remoteSessionId){
+    if(['teacher','admin'].includes(role)){publishTeacherActivity();classSyncTimer=setInterval(publishTeacherActivity,700);}
+    if(role==='student'){applyStudentTeacherPace();classSyncTimer=setInterval(applyStudentTeacherPace,900);}
+    window.addEventListener('pagehide',()=>clearInterval(classSyncTimer),{once:true});
+  }
+
   const postRemoteEvent=async(evt)=>{
     if(!remoteSessionId||role!=='student')return;
     const answer=evt?.payload?.response??null;

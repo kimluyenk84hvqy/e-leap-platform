@@ -1,6 +1,6 @@
 
 const screens=[...document.querySelectorAll('.screen')];
-let current=0;
+let current=0,teacherPaceLocked=false;
 const prev=document.getElementById('prevBtn'), next=document.getElementById('nextBtn');
 const counter=document.getElementById('counter'), bar=document.getElementById('progressBar');
 function stopMedia(){document.querySelectorAll('audio,video').forEach(m=>m.pause())}
@@ -9,10 +9,11 @@ function showScreen(i){
   screens.forEach((s,idx)=>s.classList.toggle('active',idx===current));
   counter.textContent=`${current+1} / ${screens.length}`;
   bar.style.width=`${((current+1)/screens.length)*100}%`;
-  prev.disabled=current===0; next.disabled=current===screens.length-1;
+  prev.disabled=teacherPaceLocked||current===0; next.disabled=teacherPaceLocked||current===screens.length-1;
 }
-prev.onclick=()=>showScreen(current-1); next.onclick=()=>showScreen(current+1);
-document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')showScreen(current+1);if(e.key==='ArrowLeft')showScreen(current-1)});
+prev.onclick=()=>{if(!teacherPaceLocked)showScreen(current-1)}; next.onclick=()=>{if(!teacherPaceLocked)showScreen(current+1)};
+document.addEventListener('keydown',e=>{if(teacherPaceLocked)return;if(e.key==='ArrowRight')showScreen(current+1);if(e.key==='ArrowLeft')showScreen(current-1)});
+window.ELEAP_NAV_API={goToScreen(n){showScreen(Math.max(0,Number(n)-1));return true},setLocked(locked){teacherPaceLocked=!!locked;showScreen(current);return true}};
 
 // Poll
 document.querySelectorAll('.poll-btn').forEach(b=>b.onclick=()=>{

@@ -10,7 +10,7 @@ const __eleapNormalizeMode=(requested)=>{
   if(!__eleapCanTeach)return 'student';
   return requested==='presentation'?'presentation':'teacher';
 };
-let i=0,mode=__eleapLockedMode||'student',lastNonPresentationMode=(__eleapHosted&&__eleapCanTeach)?'teacher':'student',timerInt=null;
+let i=0,mode=__eleapLockedMode||'student',lastNonPresentationMode=(__eleapHosted&&__eleapCanTeach)?'teacher':'student',timerInt=null,teacherPaceLocked=false;
 const videoRoundState={round:0,answers:Array(6).fill(''),submitted:Array(6).fill(false)};
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
@@ -1988,6 +1988,7 @@ window.ELEAP_LESSON_MODE_API={
 };
 
 $('#prev').onclick=()=>{
+  if(teacherPaceLocked)return;
 
   document
     .querySelectorAll('video,audio')
@@ -2005,6 +2006,7 @@ $('#prev').onclick=()=>{
 };
 
 $('#next').onclick=()=>{
+  if(teacherPaceLocked)return;
 
   document
     .querySelectorAll('video,audio')
@@ -2020,6 +2022,8 @@ $('#next').onclick=()=>{
     render();
   }
 };
+
+window.ELEAP_NAV_API={goToScreen(n){const next=Math.max(1,Math.min(L.activities.length,Number(n)||1));i=next-1;render();return true},setLocked(locked){teacherPaceLocked=!!locked;const p=$('#prev'),n=$('#next');if(p)p.disabled=teacherPaceLocked||i===0;if(n)n.disabled=teacherPaceLocked||i===L.activities.length-1;return true}};
 
 /* =========================================================
    MODALS

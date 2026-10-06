@@ -1,2 +1,24 @@
-Upload all files and folders inside this patch to the repository root on e-leap-clean-v1.
-Commit: Add Advanced Skills Informal Letter Lesson 1 FINAL
+E-LEAP Classroom RC2 PATCH
+Follow Teacher + Class Response Board
+
+BASELINE REQUIRED
+- E-LEAP_FULL_5_LESSONS_ASSESSMENT_RESEARCH_V1_FINAL (2026-10-05), or repository state containing the same Assessment/Research V1 contract.
+
+UPLOAD / MERGE
+1. Back up current Production / confirm the stable ZIP is stored offline.
+2. Apply this patch preserving paths; overwrite only matching files.
+3. Commit to a NEW PREVIEW branch/commit. Do NOT promote directly to Production.
+4. Deploy Preview and run the acceptance checklist in docs/E-LEAP-CHECKPOINT-REGISTER.md.
+5. Promote only if Follow Teacher, Response Board, existing assessment controls, and all five lessons pass.
+
+WHAT THIS PATCH ADDS
+- Follow Teacher defaults ON for new Live Class sessions.
+- Student Previous/Next are locked while Follow Teacher is ON.
+- Teacher current activity is published through the existing research events API (no DB migration).
+- Students poll the same session and follow the teacher activity.
+- Teacher Live page now has a Class Response Board filtered to the teacher's current activity.
+- Response Board can Hide Names and temporarily show responses from all activities.
+- In-lesson Teacher Responses modal filters to current activity.
+
+ROLLBACK
+- If Preview fails, do not promote. Revert this commit/patch and use the stable 2026-10-05 full ZIP or last Ready Production.

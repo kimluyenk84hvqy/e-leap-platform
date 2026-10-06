@@ -40,6 +40,8 @@
     setMode(mode){allowedLessonMode=(mode==='presentation'&&canTeach)?'presentation':(canTeach?'teacher':'student');publishContext();enforce();return true},
     getMode(){return allowedLessonMode},
     getActivityState(){return activityState()},
+    goToActivity(activityId){const m=String(activityId||'').match(/(?:screen-|s)(\d+)$|activity-(\d+)$/);const n=Number(m?.[1]||m?.[2]||String(activityId||'').match(/(\d+)$/)?.[1]);if(!n)return false;if(window.ELEAP_NAV_API?.goToScreen)return window.ELEAP_NAV_API.goToScreen(n);return false},
+    setNavigationLocked(locked){return window.ELEAP_NAV_API?.setLocked?window.ELEAP_NAV_API.setLocked(!!locked):false},
     command(action){
       if(action==='timer'){if(window.ELEAP_U11_UI?.openTimer){window.ELEAP_U11_UI.openTimer();return true}return clickFirstVisible('#timer,#u11Timer')}
       if(action==='responses'){if(window.ELEAP_U11_UI?.openResponses){window.ELEAP_U11_UI.openResponses();return true}return clickFirstVisible('#responses,#u11Responses')}

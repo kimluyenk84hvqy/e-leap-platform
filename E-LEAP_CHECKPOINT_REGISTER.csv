@@ -1,0 +1,11 @@
+﻿Type,Checkpoint / evidence,Status,Keep / action
+Stable,E-LEAP_FULL_5_LESSONS_ASSESSMENT_RESEARCH_V1_FINAL (1).zip,Full source snapshot 2026-10-05,KEEP OFFLINE – primary rollback
+Stable,E-LEAP_FULL_5_LESSONS_FINAL_2026-10-05(1).zip,Earlier full 5-lesson snapshot,KEEP OFFLINE – secondary rollback
+Security,Vercel Preview commit 16140c2 – Authentication & Access,Errored deployment; security milestone only,KEEP COMMIT/SOURCE HISTORY; deployment may expire
+Assessment,Assessment/Research Data V1 contract + v2 schemas,Present in stable baseline,LOCK CONTRACT; regression-test
+Research,api/research/* + research-data services,Present in stable baseline,KEEP; preserve IDs/data minimisation
+Lesson,U1.1 / U1.2 / U2.1 / U2.2 / Informal Letter L1,5-lesson compatibility baseline,KEEP
+Production,https://e-leap-platform.vercel.app/,Current public Production alias,PUBLIC; promote only after Preview QA
+Production,Vercel project admin,Admin surface,PRIVATE
+Production,GitHub repository,Source of truth,PRIVATE / collaborators only if repo private
+Classroom RC2,Follow Teacher + Class Response Board,Preview candidate in this patch,TEST PREVIEW; do not promote until QA passes
