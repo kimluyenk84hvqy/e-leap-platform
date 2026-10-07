@@ -29,6 +29,11 @@
   });
   const script=document.createElement('script');
   script.src='assets/js/app.js?v=assessment-research-v1-role-lock';
+  script.onload=()=>{
+    const tools=document.createElement('script');
+    tools.src='assets/js/admin-course-tools.js?v=1';
+    document.body.appendChild(tools);
+  };
   document.body.appendChild(script);
 })();
 </script><script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js').catch(()=>{});}</script></body></html>
