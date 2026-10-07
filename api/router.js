@@ -9,8 +9,10 @@ import researchBootstrap from '../server/research/bootstrap.js';
 import researchClasses from '../server/research/classes.js';
 import researchEvents from '../server/research/events.js';
 import researchExport from '../server/research/export.js';
+import researchFeedback from '../server/research/feedback.js';
 import researchGrades from '../server/research/grades.js';
 import researchParticipants from '../server/research/participants.js';
+import researchReport from '../server/research/report.js';
 import researchSessions from '../server/research/sessions.js';
 import researchSubmissions from '../server/research/submissions.js';
 import researchUsers from '../server/research/users.js';
@@ -26,8 +28,10 @@ const ROUTES={
   'research/classes':researchClasses,
   'research/events':researchEvents,
   'research/export':researchExport,
+  'research/feedback':researchFeedback,
   'research/grades':researchGrades,
   'research/participants':researchParticipants,
+  'research/report':researchReport,
   'research/sessions':researchSessions,
   'research/submissions':researchSubmissions,
   'research/users':researchUsers
