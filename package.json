@@ -3,6 +3,7 @@
   "dependencies": {
     "@neondatabase/serverless": "^1.0.0",
     "@vercel/blob": "^2.6.1",
+    "exceljs": "^4.4.0",
     "qrcode": "^1.5.4"
   }
 }
