@@ -5,7 +5,7 @@
  * Contract:
  * - score denominator is TOTAL assessable items, not only answered items.
  * - unanswered items remain distinct from wrong items.
- * - repeated Submit updates the same attempt unless a new attempt is explicitly started.
+ * - every Submit creates a distinct attempt; Check and Reset never create attempts.
  */
 const numberOrNull=v=>Number.isFinite(Number(v))?Number(v):null;
 const clamp=(n,min,max)=>Math.min(max,Math.max(min,n));
@@ -93,15 +93,21 @@ export class AttemptTracker{
   key(activityId){return `${this.resourceId}::${activityId||'activity'}`;}
   state(activityId){
     const k=this.key(activityId);
-    if(!this.memory.has(k))this.memory.set(k,{attemptNo:1,submitCount:0,lastSubmitted:null,bestScore:null,latestScore:null});
+    if(!this.memory.has(k))this.memory.set(k,{attemptNo:0,submitCount:0,lastSubmitted:null,bestScore:null,latestScore:null});
     return this.memory.get(k);
   }
   recordSubmit(activityId,grading){
-    const s=this.state(activityId);s.submitCount++;s.lastSubmitted=new Date().toISOString();s.latestScore=grading?.score??null;
+    const s=this.state(activityId);
+    s.submitCount++;
+    s.attemptNo=s.submitCount;
+    s.lastSubmitted=new Date().toISOString();
+    s.latestScore=grading?.score??null;
     if(grading?.score!=null)s.bestScore=s.bestScore==null?grading.score:Math.max(s.bestScore,grading.score);
     return {...s};
   }
   newAttempt(activityId){
-    const s=this.state(activityId);s.attemptNo++;s.submitCount=0;s.lastSubmitted=null;s.latestScore=null;return {...s};
+    // Kept for compatibility with older callers. A distinct attempt is created by Submit itself.
+    // Calling newAttempt must not create/persist an attempt before a Submit occurs.
+    return {...this.state(activityId)};
   }
 }
