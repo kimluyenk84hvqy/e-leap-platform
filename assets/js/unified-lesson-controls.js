@@ -147,8 +147,6 @@ export class UnifiedLessonControls extends BaseUnifiedLessonControls{
     };
 
     this._syncFollowButton();
-    // A fresh teacher lesson page starts Follow Teacher OFF. Publish that once
-    // so stale state from a previous/reloaded page cannot keep students locked.
     this._postTeacherControl('teacher.follow',{enabled:false});
     this._followTimer=setInterval(()=>this._publishTeacherNavigation(false),650);
   }
@@ -274,12 +272,24 @@ export class UnifiedLessonControls extends BaseUnifiedLessonControls{
     }catch(_){return []}
   }
 
+  async _sessionEvents(){
+    if(!this.sessionId||!['teacher','admin'].includes(this.role))return [];
+    try{
+      const r=await fetch(`/api/research/events?sessionId=${encodeURIComponent(this.sessionId)}`,{
+        credentials:'same-origin',cache:'no-store'
+      });
+      if(!r.ok)return [];
+      const d=await r.json();
+      return Array.isArray(d?.events)?d.events:[];
+    }catch(_){return []}
+  }
+
   async openResponses(){
     if(!this.sessionId||!['teacher','admin'].includes(this.role)){
       return super.openResponses();
     }
 
-    const participants=await this._participants();
+    const [participants,sessionEvents]=await Promise.all([this._participants(),this._sessionEvents()]);
     const submitted=(this.responses||[])
       .filter(x=>x?.eventType==='response.submitted'&&x?.context?.role==='student')
       .slice()
@@ -290,6 +300,13 @@ export class UnifiedLessonControls extends BaseUnifiedLessonControls{
       const pid=String(row?.context?.participantId??row?.context?.studentId??'unknown');
       if(!byParticipant.has(pid))byParticipant.set(pid,[]);
       byParticipant.get(pid).push(row);
+    }
+
+    const activeIds=new Set();
+    for(const row of sessionEvents){
+      const type=String(row?.event_type||'');
+      if(type.startsWith('teacher.'))continue;
+      if(row?.participant_id!=null)activeIds.add(String(row.participant_id));
     }
 
     const people=participants.map(p=>({
@@ -304,6 +321,7 @@ export class UnifiedLessonControls extends BaseUnifiedLessonControls{
     }
 
     const submittedPeople=people.filter(p=>(byParticipant.get(p.id)||[]).length>0).length;
+    const activePeople=people.filter(p=>activeIds.has(p.id)||(byParticipant.get(p.id)||[]).length>0).length;
     const notSubmitted=Math.max(0,people.length-submittedPeople);
     const body=document.getElementById('hostModalBody');
     if(!body)return super.openResponses();
@@ -314,6 +332,8 @@ export class UnifiedLessonControls extends BaseUnifiedLessonControls{
       const scores=rows.map(r=>Number(r?.payload?.score)).filter(Number.isFinite);
       const latestScore=latest?scoreLabel(latest?.payload?.score):'—';
       const bestScore=scores.length?scoreLabel(Math.max(...scores)):'—';
+      const isActive=activeIds.has(person.id)||rows.length>0;
+      const state=rows.length?'Submitted':(isActive?'Active · not submitted':'Joined · not submitted');
       const history=rows.slice().reverse().map(r=>{
         const activity=r.activityId||'activity';
         const attemptNo=rows.filter(x=>(x.activityId||'activity')===activity&&new Date(x.occurredAt||0)<=new Date(r.occurredAt||0)).length;
@@ -323,7 +343,7 @@ export class UnifiedLessonControls extends BaseUnifiedLessonControls{
       return `<article class="host-response-card">
         <div class="host-response-head">
           <b>${esc(person.name)}</b>
-          <span>${rows.length?'Submitted':'Joined · not submitted'}</span>
+          <span>${esc(state)}</span>
           <small>${rows.length?`${rows.length} submit${rows.length===1?'':'s'}`:'0 submits'}</small>
         </div>
         <div class="host-response-score">Latest ${esc(latestScore)} · Best ${esc(bestScore)}${latest?.occurredAt?` · Last ${esc(asTime(latest.occurredAt))}`:''}</div>
@@ -334,6 +354,7 @@ export class UnifiedLessonControls extends BaseUnifiedLessonControls{
     body.innerHTML=`<div class="host-modal-title-row"><div><h2>Responses</h2><p class="host-muted">Participation and every Submit attempt are preserved. Check and Reset do not create attempts.</p></div><span class="host-response-total">${submitted.length} submit${submitted.length===1?'':'s'}</span></div>
       <div class="metric-row" style="margin:14px 0">
         <div class="metric"><b>${people.length}</b><span>Joined</span></div>
+        <div class="metric"><b>${activePeople}</b><span>Active</span></div>
         <div class="metric"><b>${submittedPeople}</b><span>Submitted</span></div>
         <div class="metric"><b>${notSubmitted}</b><span>Not submitted</span></div>
       </div>
