@@ -1,33 +1,46 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>E-LEAP — English Learning, Engagement and Assessment Platform</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="assets/css/styles.css"></head><body>
-<div class="app" data-role="guest"><aside class="sidebar"><div class="brand"><div class="brand-mark">E</div><div><div class="brand-name">E-LEAP</div><div class="brand-sub">English Learning, Engagement<br>and Assessment Platform</div></div></div><nav id="mainNav"></nav><div class="side-bottom"><div class="role-label">SIGNED IN AS</div><div class="role-switch role-switch-4" id="roleState"><button data-role="teacher" disabled>Teacher</button><button data-role="student" disabled>Student</button><button data-role="admin" disabled>Admin</button><button data-role="guest" disabled>Guest</button></div></div></aside>
+<div class="app" data-role="guest"><aside class="sidebar"><div class="brand"><div class="brand-mark">E</div><div><div class="brand-name">E-LEAP</div><div class="brand-sub">English Learning, Engagement<br>and Assessment Platform</div></div></div><nav id="mainNav"></nav><div class="side-bottom"><div class="role-label">PREVIEW AS</div><div class="role-switch role-switch-4" id="roleState"><button data-role="teacher">Teacher</button><button data-role="student">Student</button><button data-role="admin">Admin</button><button data-role="guest">Guest</button></div></div></aside>
 <main><header class="topbar"><div><div class="crumb" id="crumb">E-LEAP / Courses</div><h2 id="pageTitle">Courses</h2></div><div class="top-actions"><button class="btn presentation-toggle" id="presentationToggle" type="button">Presentation</button><button class="icon" title="Search">⌕</button><div class="user"><span>K84</span><b id="roleText">Loading…</b></div></div></header><div id="content" class="content"></div></main></div>
 <script src="engine/shell-engine.js"></script><script src="assets/js/access-control.js"></script><script src="assets/js/shell-governance.js"></script><script src="assets/js/shell-manager.js"></script><script src="assets/js/learning-core.js"></script><script src="assets/js/identity-access.js"></script><script src="assets/js/resource-manager.js"></script>
-<script src="assets/js/operations-ui.js"></script><script src="assets/js/research-class-report-ui.js"></script><script src="assets/js/life-catalog-patch.js?v=catalog-restore-20261009"></script>
+<script src="assets/js/operations-ui.js"></script><script src="assets/js/research-class-report-ui.js"></script><script src="assets/js/life-catalog-patch.js?v=full-catalog-20261009"></script>
 <script>
-(async function bootRoleLockedPlatform(){
+(async function bootPreviewPlatform(){
   const allowed=new Set(['guest','student','teacher','admin']);
-  let role='guest';
+  let authRole='guest';
   try{
     const r=await fetch('/api/auth/me',{credentials:'same-origin',cache:'no-store'});
-    if(r.ok){
-      const d=await r.json();
-      if(allowed.has(d?.user?.role))role=d.user.role;
-    }
-  }catch(_){ role='guest'; }
+    if(r.ok){const d=await r.json();if(allowed.has(d?.user?.role))authRole=d.user.role;}
+  }catch(_){}
+
+  let role=authRole;
   try{
-    localStorage.setItem('e-leap-preview-role',role);
+    const saved=localStorage.getItem('e-leap-preview-role');
+    if(allowed.has(saved))role=saved;
+    else localStorage.setItem('e-leap-preview-role',role);
     if(!['teacher','admin'].includes(role))localStorage.removeItem('e-leap-presentation-mode');
   }catch(_){}
-  document.querySelector('.app')?.setAttribute('data-role',role);
+
+  const app=document.querySelector('.app');
+  app?.setAttribute('data-role',role);
+  const label={guest:'Guest Preview',student:'Student Preview',teacher:'Teacher Preview',admin:'Admin Preview'};
   const roleText=document.getElementById('roleText');
-  if(roleText)roleText.textContent=({guest:'Guest',student:'Student',teacher:'Teacher',admin:'Admin'})[role]||'Guest';
+  if(roleText)roleText.textContent=label[role]||role;
+
   document.querySelectorAll('#roleState [data-role]').forEach(btn=>{
-    btn.disabled=true;
+    btn.disabled=false;
     btn.classList.toggle('active',btn.dataset.role===role);
     btn.setAttribute('aria-pressed',btn.dataset.role===role?'true':'false');
+    btn.onclick=()=>{
+      const next=btn.dataset.role;
+      if(!allowed.has(next))return;
+      localStorage.setItem('e-leap-preview-role',next);
+      if(!['teacher','admin'].includes(next))localStorage.removeItem('e-leap-presentation-mode');
+      location.reload();
+    };
   });
+
   const script=document.createElement('script');
-  script.src='assets/js/app.js?v=assessment-research-v1-role-lock-catalog-restore';
+  script.src='assets/js/app.js?v=classroom-preview-restored-20261009';
   document.body.appendChild(script);
 })();
 </script><script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js').catch(()=>{});}</script></body></html>
