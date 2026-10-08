@@ -5,6 +5,7 @@ import authSetupAdmin from '../server/auth/setup-admin.js';
 import authUsers from '../server/auth/users.js';
 import authStudent from '../server/auth/student.js';
 import authChangePassword from '../server/auth/change-password.js';
+import authRecovery from '../server/auth/recovery.js';
 
 import researchAssignments from '../server/research/assignments.js';
 import researchBootstrap from '../server/research/bootstrap.js';
@@ -30,6 +31,7 @@ const ROUTES={
   'auth/users':authUsers,
   'auth/student':authStudent,
   'auth/change-password':authChangePassword,
+  'auth/recovery':authRecovery,
   'research/assignments':researchAssignments,
   'research/bootstrap':researchBootstrap,
   'research/classes':researchClasses,
