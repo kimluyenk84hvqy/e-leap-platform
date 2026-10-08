@@ -1,6 +1,7 @@
 import { ensureAuthSchema,normalizeStudentId,validStudentId,hashPassword,verifyPassword,createSession,requireSameOrigin,requireAuth,teacherOwnsClass } from '../_auth.js';
 
 const PIN_RE=/^\d{6}$/;
+const QA_STUDENT_ID='TEST001';
 const safeName=v=>String(v||'').trim().replace(/\s+/g,' ').slice(0,120);
 
 export default async function handler(req,res){
@@ -13,7 +14,11 @@ export default async function handler(req,res){
         FROM auth_class_members m LEFT JOIN classes c ON c.class_id::text=m.class_id
         WHERE m.student_user_id=${user.user_id} AND m.status='active'
         ORDER BY m.joined_at DESC`;
-      return res.status(200).json({ok:true,user,memberships});
+      let availableClasses=[];
+      if(normalizeStudentId(user.student_id)===QA_STUDENT_ID){
+        availableClasses=await sql`SELECT class_id,class_name,course_id,academic_year,status FROM classes WHERE status='active' ORDER BY class_name`;
+      }
+      return res.status(200).json({ok:true,user,memberships,qaClassSelector:normalizeStudentId(user.student_id)===QA_STUDENT_ID,availableClasses});
     }
     if(req.method==='POST'){
       if(!requireSameOrigin(req,res))return;
@@ -35,6 +40,8 @@ export default async function handler(req,res){
         user=inserted[0]; created=true;
       }
       if(classId){
+        const cls=await sql`SELECT class_id FROM classes WHERE class_id::text=${classId} AND status='active' LIMIT 1`;
+        if(!cls.length)return res.status(404).json({ok:false,error:'Class not found or inactive.'});
         await sql`INSERT INTO auth_class_members(class_id,student_user_id,status) VALUES(${classId},${user.user_id},'active') ON CONFLICT(class_id,student_user_id) DO UPDATE SET status='active'`;
       }
       await sql`DELETE FROM auth_sessions WHERE expires_at<=NOW()`;
@@ -43,6 +50,17 @@ export default async function handler(req,res){
     }
     if(req.method==='PATCH'){
       if(!requireSameOrigin(req,res))return;
+      const action=String(req.body?.action||'').trim();
+      if(action==='qa-enroll'){
+        const actor=await requireAuth(req,res,['student']); if(!actor)return;
+        if(normalizeStudentId(actor.student_id)!==QA_STUDENT_ID)return res.status(403).json({ok:false,error:'QA class selector is only available to the TEST001 account.'});
+        const classId=String(req.body?.classId||'').trim();
+        if(!classId)return res.status(400).json({ok:false,error:'classId is required'});
+        const cls=await sql`SELECT class_id,class_name,course_id,academic_year FROM classes WHERE class_id::text=${classId} AND status='active' LIMIT 1`;
+        if(!cls.length)return res.status(404).json({ok:false,error:'Class not found or inactive.'});
+        await sql`INSERT INTO auth_class_members(class_id,student_user_id,status) VALUES(${classId},${actor.user_id},'active') ON CONFLICT(class_id,student_user_id) DO UPDATE SET status='active'`;
+        return res.status(200).json({ok:true,class:cls[0],message:`TEST001 can now test ${cls[0].class_name}.`});
+      }
       const actor=await requireAuth(req,res,['teacher','admin']); if(!actor)return;
       const studentId=normalizeStudentId(req.body?.studentId),classId=String(req.body?.classId||'').trim();
       if(!studentId)return res.status(400).json({ok:false,error:'studentId is required'});
