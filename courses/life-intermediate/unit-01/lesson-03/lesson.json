@@ -5,7 +5,7 @@
   "lessonNumber": "3",
   "title": "Lesson 3. U1. E&F – Personal Information + My Local Park",
   "status": "draft",
-  "source": "Life 2nd Edition A2-B1 Student's Book Unit 1E-1F; Track 9 extension",
+  "source": "Life 2nd Edition A2-B1 Student's Book Unit 1E-1F; Track 9 teacher extension",
   "homework": {
     "activityId": "s19",
     "title": "Design and complete a new-student information form",
@@ -36,8 +36,8 @@
     {
       "id": "s03",
       "stage": "CHECKING THE PREVIOUS LESSON",
-      "title": "Doctor Dash",
-      "instruction": "Match each medical problem with suitable advice. Then choose one pair and make a short patient–pharmacist exchange.",
+      "title": "Checking the previous lesson",
+      "instruction": "Complete the advice for each patient. Submit your answers, then compare one exchange with a partner.",
       "type": "review-match",
       "items": [
         {"prompt":"I've got a sore throat.","answer":"Try drinking hot water with honey and lemon."},
@@ -58,23 +58,23 @@
       "id": "s05",
       "stage": "1E · ACTIVITY 1",
       "title": "Forms in everyday life",
-      "instruction": "Look at the four form examples. Type what each form is for. Then discuss: Which kind have you filled in before, and on what occasion?",
+      "instruction": "Look at the four examples. Type what each form is for. After checking, discuss which form you have filled in before and on what occasion.",
       "type": "form-gallery",
       "items": [
-        {"prompt":"Form A","hint":"passport / nationality / place of birth","answer":"Visa application form"},
-        {"prompt":"Form B","hint":"medications / operations / smoking","answer":"Medical form"},
-        {"prompt":"Form C","hint":"course / contact details / emergency contact","answer":"Student registration form"},
-        {"prompt":"Form D","hint":"job / qualifications / work history","answer":"Job application form"}
+        {"prompt":"Form A","hint":"passport · nationality · place of birth","answer":"Visa application form"},
+        {"prompt":"Form B","hint":"medications · operations · smoking","answer":"Medical form"},
+        {"prompt":"Form C","hint":"course · contact details · emergency contact","answer":"Student registration form"},
+        {"prompt":"Form D","hint":"job · qualifications · work history","answer":"Job application form"}
       ]
     },
     {
       "id": "s06",
       "stage": "1E · ACTIVITY 2",
       "title": "What is each form for?",
-      "instruction": "Choose the best answer for each form. Submit before the teacher checks the answers.",
+      "instruction": "Choose the best answer. Submit first; the teacher will review responses before revealing the correct choices.",
       "type": "mcq-set",
       "items": [
-        {"prompt":"A form asks for passport number, nationality and place of birth.","options":["A visa application form","A medical form","A library form"],"answer":"A visa application form"},
+        {"prompt":"A form asks for passport number, nationality and place of birth.","options":["A visa application form","A medical form","A library membership form"],"answer":"A visa application form"},
         {"prompt":"A form asks about smoking, current medications and past operations.","options":["A travel survey","A medical form","A shopping form"],"answer":"A medical form"}
       ]
     },
@@ -82,7 +82,7 @@
       "id": "s07",
       "stage": "1E · ACTIVITY 3a",
       "title": "Information on forms",
-      "instruction": "Drag and drop each heading in the right box and submit your answers.",
+      "instruction": "Drag and drop each heading into the right box and submit your answers.",
       "type": "drag-match",
       "bank": [
         {"key":"A","text":"Marital status"},
@@ -107,11 +107,11 @@
       "id": "s08",
       "stage": "1E · ACTIVITY 3b",
       "title": "Form conventions",
-      "instruction": "Work through the three questions from the Student's Book. Type your answer and submit before checking.",
+      "instruction": "Answer the three Student's Book questions. Submit before the teacher checks each answer.",
       "type": "tab-questions",
       "tabs": [
         {"label":"1 · Abbreviations","items":[{"prompt":"Find abbreviations on the forms. What does DOB mean?","answer":"DOB = Date of birth"}]},
-        {"label":"2 · Titles","items":[{"prompt":"What do Mr, Mrs, Ms and Dr mean or show?","answer":"They are titles used before a person's name."}]},
+        {"label":"2 · Titles","items":[{"prompt":"What do Mr, Mrs, Ms and Dr show on a form?","answer":"They are titles used before a person's name."}]},
         {"label":"3 · Capital letters","items":[{"prompt":"Which form tells you not to use lower-case letters?","answer":"The form that says PLEASE USE CAPITAL LETTERS."}]}
       ]
     },
@@ -119,22 +119,23 @@
       "id": "s09",
       "stage": "LISTENING EXTENSION · TRACK 9",
       "title": "New patient information",
-      "instruction": "The receptionist is collecting information from a new patient. Listen to the conversation and complete the three details.",
+      "instruction": "The receptionist is collecting information from a new patient. Listen to the conversation and complete the details.",
       "type": "listening-tabs",
       "media": {"audio":"PRIVATE_MEDIA/life-intermediate/u01/l03/09-track-09.mp3"},
       "tabs": [
-        {"label":"Identity","items":[{"prompt":"Surname","answer":"Braun"},{"prompt":"Middle initial","answer":"P"},{"prompt":"Date of birth","answer":"7 June 1967"}]},
-        {"label":"Contact","items":[{"prompt":"Address","answer":"21 Carter Street"},{"prompt":"Postcode","answer":"HP12 6RJ"},{"prompt":"Mobile number","answer":"07773 946364"}]},
-        {"label":"Health & exercise","items":[{"prompt":"General health","answer":"Good"},{"prompt":"Running","answer":"Three times a week / about three hours"},{"prompt":"Other activities","answer":"Swimming and walking"}]}
+        {"label":"1–3 · Identity","items":[{"prompt":"1. Surname","answer":"Braun"},{"prompt":"2. Middle initial","answer":"P"},{"prompt":"3. Date of birth","answer":"7 June 1967"}]},
+        {"label":"4–6 · Contact","items":[{"prompt":"4. Address","answer":"21 Carter Street"},{"prompt":"5. Postcode","answer":"HP12 6RJ"},{"prompt":"6. Mobile number","answer":"07773 946364"}]},
+        {"label":"7–9 · Health & exercise","items":[{"prompt":"7. General health","answer":"Good"},{"prompt":"8. Running","answer":"Three times a week / about three hours"},{"prompt":"9. Other activities","answer":"Swimming and walking"}]}
       ]
     },
     {
       "id": "s10",
       "stage": "1E · ACTIVITIES 4–5",
       "title": "Build a new-student form",
-      "instruction": "Drag the information headings you think a new language-school student form needs into the blank form. Submit your design, then add sample details in the smaller spaces. Exchange and check with a partner.",
+      "instruction": "Drag the headings into the blank form, submit your design, then add sample information in the smaller spaces. Exchange forms and check with a partner.",
       "type": "form-builder",
-      "bank": ["Title","First name","Middle name / initial","Surname","Date of birth","Address","Postcode","Telephone","Email","First language","Nationality","Emergency contact"],
+      "bank": ["Title","First name","Middle initial","Surname","Date of birth","Address","Postcode","Telephone","Email","First language","Nationality","Emergency contact"],
+      "required": ["Title","First name","Surname","Date of birth","Address","Telephone","Email","Nationality"],
       "checkQuestions": ["Is the form easy to fill in?","Do you know what to write in each part?","Would you change anything on the form?"]
     },
     {
@@ -143,22 +144,26 @@
       "title": "My local park",
       "subtitle": "Video · Everyday life in an English park",
       "type": "section-cover",
-      "visual": "park"
+      "visual": "park",
+      "photo": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Park-G%C3%BCell.jpg?width=1600",
+      "caption": "Park Güell, Barcelona · public park designed by Antoni Gaudí"
     },
     {
       "id": "s12",
       "stage": "1F · ACTIVITY 1 · BEFORE YOU WATCH",
-      "title": "A place to meet, relax and exercise",
-      "instruction": "Study the park scene and caption. What clues show how people use this place? Then answer the two questions from the book.",
+      "title": "Before you watch",
+      "instruction": "Study the photo and caption. Use the visual clues to discuss the warm-up prompts, then answer the two questions from the Student's Book.",
       "type": "park-leadin",
-      "caption": "A public park: green space for walking, meeting friends, relaxing and exercise.",
+      "photo": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Park-G%C3%BCell.jpg?width=1600",
+      "caption": "Park Güell, Barcelona, is famous for its art and is a great place to meet friends.",
+      "elicitation": ["What can you see in the photo?","What are people doing there?","What makes this place attractive to visitors?"],
       "questions": ["Where is your nearest park?","Why do people like going there?"]
     },
     {
       "id": "s13",
       "stage": "1F · ACTIVITY 2 · KEY VOCABULARY",
       "title": "Words used in the video",
-      "instruction": "Drag and drop each meaning in the right box and submit your answers.",
+      "instruction": "Drag and drop each meaning into the right box and submit your answers.",
       "type": "drag-match",
       "bank": [
         {"key":"A","text":"a region or part of a town"},
@@ -181,7 +186,7 @@
       "id": "s14",
       "stage": "1F · ACTIVITY 3 · WHILE YOU WATCH",
       "title": "Put the scenes in order",
-      "instruction": "Watch the video. Drag a–g into positions 1–7 in the order you see the scenes. Submit before checking.",
+      "instruction": "Watch the video. Put a–g into positions 1–7 in the order you see the scenes. Submit before the teacher reviews the class responses.",
       "type": "video-order",
       "media": {"video":"PRIVATE_MEDIA/life-intermediate/u01/l03/unit-1-my-local-park.mp4"},
       "choices": [
@@ -199,7 +204,7 @@
       "id": "s15",
       "stage": "1F · ACTIVITIES 4–5 · WATCH AGAIN",
       "title": "People in the park",
-      "instruction": "Watch again. Student A completes When do you come to the park? Student B completes Why do you like coming to the park? Share your notes, complete the other column, then use Watch evidence to check.",
+      "instruction": "Watch again. Complete your assigned column, share notes with your partner, complete the other column, then use the evidence clips to check.",
       "type": "video-notes",
       "media": {"video":"PRIVATE_MEDIA/life-intermediate/u01/l03/unit-1-my-local-park.mp4"},
       "rows": [
@@ -215,7 +220,7 @@
       "id": "s16",
       "stage": "1F · ACTIVITIES 6–7 · AFTER YOU WATCH",
       "title": "Guess the person",
-      "instruction": "Student A chooses one person from the video but does not tell Student B. Student B asks the two questions from the video and guesses the person. Then change roles.",
+      "instruction": "Student A chooses one person from the video but does not tell Student B. Student B asks the questions and guesses the person. Then change roles.",
       "type": "roleplay",
       "model": ["B: When do you come to the park?","A: I come here about twice a week.","B: How often do you come?","A: Quite often – usually twice a week."],
       "frames": ["When do you come to the park?","How often do you come?","I come here …","I come about … a week."]
@@ -244,11 +249,11 @@
     },
     {
       "id": "s19",
-      "stage": "HOMEWORK · ACTIVITIES 4–5 EXTENSION",
+      "stage": "HOMEWORK · 1E ACTIVITIES 4–5 EXTENSION",
       "title": "Design your own new-student form",
-      "instruction": "Create a clear new-student form from a completely blank canvas. Decide which headings are necessary and fill in invented/sample information. Do not use sensitive real personal data.",
+      "instruction": "Start with a blank form. Decide which information headings are necessary, write the headings yourself, and add invented/sample details. Do not use sensitive real personal data.",
       "type": "homework-form",
-      "deadlineLabel": "Submit by 8:00 p.m. · 12 Oct 2026",
+      "deadlineLabel": "Suggested deadline: 8:00 p.m. · 12 Oct 2026 · Teacher can change this when assigning",
       "assignment": {"title":"Life U1E Homework · New-student form","activityId":"s19","suggestedDeadline":"2026-10-12T20:00:00+07:00","attemptLimit":1,"latePolicy":"closed","rubricId":"general-100-v1"}
     },
     {
@@ -256,7 +261,8 @@
       "stage": "LESSON COMPLETE",
       "title": "Thank you",
       "subtitle": "See you in the next Life lesson.",
-      "type": "thank-you"
+      "type": "thank-you",
+      "photo": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Park-G%C3%BCell.jpg?width=1600"
     }
   ]
 }
