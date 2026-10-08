@@ -7,16 +7,12 @@
   function guestPolicy(){if(role()!=='guest')return;document.querySelectorAll('#mainNav [data-nav]').forEach(b=>{if(!['courses','skills-lab'].includes(b.dataset.nav))b.remove()});}
   async function learnerShellPolicy(){const r=role();if(!['student','guest'].includes(r))return;const registry=await loadShells(),byId=new Map((registry||[]).map(x=>[String(x.id),x]));document.querySelectorAll('#content .shell-card [data-shell]').forEach(btn=>{const card=btn.closest('.shell-card'),sh=byId.get(String(btn.dataset.shell||''));if(!card||!sh)return;const visible=['published','approved'].includes(String(sh.status||'').toLowerCase());if(!visible)card.hidden=true;});}
   async function studentPolicy(){if(role()!=='student')return;const p=await loadStudent();const title=document.getElementById('pageTitle')?.textContent||'',content=document.getElementById('content');if(!content)return;
-    // Courses are class-scoped for normal learners. TEST001 is the dedicated QA account and may inspect every published course.
     if(title==='Courses'&&p&&!content.querySelector('[data-my-courses-policy]')){
       const qa=String(p?.user?.student_id||'').toUpperCase()==='TEST001';
       const ids=new Set((p.memberships||[]).map(m=>String(m.course_id||'')).filter(Boolean));
-      if(!qa){
-        content.querySelectorAll('.shell-card [data-shell]').forEach(btn=>{const card=btn.closest('.shell-card'),id=String(btn.dataset.shell||'');if(card&&id&&id!=='advanced-skills'&&!ids.has(id))card.hidden=true;});
-      }
+      if(!qa){content.querySelectorAll('.shell-card [data-shell]').forEach(btn=>{const card=btn.closest('.shell-card'),id=String(btn.dataset.shell||'');if(card&&id&&id!=='advanced-skills'&&!ids.has(id))card.hidden=true;});}
       const note=document.createElement('div');note.dataset.myCoursesPolicy='1';note.className='ops-note';note.textContent=qa?'QA access: TEST001 can inspect every published course. Normal students only see courses linked to their active classes.':ids.size?'My Courses shows published courses linked to your active class membership.':'No active course membership yet.';const grid=content.querySelector('.grid');if(grid)grid.before(note);else content.prepend(note);
     }
-    // Skills Lab and Mock Tests are open-learning libraries for signed-in students.
     const activeNav=document.querySelector('#mainNav .nav-btn.active')?.dataset.nav;
     if(OPEN_LIBRARY_NAV.has(activeNav)&&!content.querySelector('[data-open-library-policy]')){
       const note=document.createElement('div');note.dataset.openLibraryPolicy='1';note.className='ops-note';note.textContent=activeNav==='skills-lab'?'Open Learning Library: use any published Skills Lab practice at any time.':'Open Mock Test Library: use any published mock test at any time. Assigned or scheduled mocks may still have class/time/attempt rules.';content.prepend(note);
@@ -24,5 +20,7 @@
   }
   function staffPolicy(){const r=role();if(!['teacher','admin'].includes(r))return;document.querySelectorAll('#mainNav [data-nav]').forEach(b=>{b.dataset.workspaceRole=r});}
   async function apply(){guestPolicy();staffPolicy();await learnerShellPolicy();await studentPolicy();}
+  document.addEventListener('click',e=>{const b=e.target.closest?.('[data-nav="mock-tests"]');if(!b||role()==='guest')return;e.preventDefault();e.stopImmediatePropagation();location.href='mock-tests.html';},true);
+  if(!document.querySelector('script[data-mock-progress-bridge]')){const s=document.createElement('script');s.dataset.mockProgressBridge='1';s.src='assets/js/mock-progress-bridge.js?v=golden-qa-1';document.body.appendChild(s);}
   let busy=false;const obs=new MutationObserver(()=>{if(busy)return;busy=true;setTimeout(async()=>{try{await apply()}finally{busy=false}},80)});obs.observe(document.documentElement,{subtree:true,childList:true});apply();
 })();
