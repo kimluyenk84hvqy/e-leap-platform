@@ -28,6 +28,11 @@
   });
   const script=document.createElement('script');
   script.src='assets/js/app.js?v=assessment-research-v1-role-lock';
+  script.onload=()=>{
+    const patch=document.createElement('script');
+    patch.src='assets/js/life-catalog-patch.js?v=life-u1ef-final';
+    document.body.appendChild(patch);
+  };
   document.body.appendChild(script);
 })();
 </script><script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js').catch(()=>{});}</script></body></html>
