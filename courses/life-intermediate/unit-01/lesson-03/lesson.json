@@ -1,0 +1,331 @@
+{
+  "schemaVersion": "1.2",
+  "version": 1,
+  "id": "life-u01-l03",
+  "courseId": "life-intermediate",
+  "unitId": "unit-01",
+  "lessonNumber": "3.3",
+  "title": "Unit 1E & 1F",
+  "displayTitle": "Personal Information & My Local Park",
+  "status": "DRAFT",
+  "periods": 2,
+  "sourceVersion": "Life A2-B1 2nd Edition · Unit 1E-1F · Class 19A",
+  "visualStandard": {
+    "fontFamily": "Poppins, Arial, sans-serif",
+    "textColor": "#183329",
+    "classroomFontPx": "24-26",
+    "presentationFontPx": 28,
+    "palette": "VMMU Military Green"
+  },
+  "interactionStandard": {
+    "principle": "One dominant teaching purpose per screen; low typing load; item-by-item reveal",
+    "teacher": "Check · Reset · Show answer · Presentation · Timer · Responses · Live Class / QR",
+    "student": "Check · Reset · Submit · Score",
+    "guest": "Check · Reset · Score"
+  },
+  "metadata": {
+    "cefr": "A2-B1",
+    "class": "19A",
+    "sourcePolicy": "Source-aligned. Delivery format simplified for interaction; no off-book role-model task.",
+    "contentFocus": ["Unit 1E Personal Information", "Unit 1F My Local Park"]
+  },
+  "screens": [
+    {
+      "id": "s01",
+      "stage": "LESSON 3.3 · UNIT 1 LIFESTYLE",
+      "title": "PERSONAL INFORMATION & MY LOCAL PARK",
+      "instruction": "Life A2-B1 · Unit 1E + Unit 1F",
+      "type": "cover-modern",
+      "items": ["Writing: filling in a form", "Listening for specific information", "Video: My local park", "Speaking about a familiar place"]
+    },
+    {
+      "id": "s02",
+      "stage": "AIMS OF THE LESSON",
+      "title": "AIMS OF THE LESSON",
+      "instruction": "After the lesson, students will be able to:",
+      "type": "aims-horizontal",
+      "groups": [
+        {
+          "heading": "1. Knowledge",
+          "items": [
+            "Identify common personal-information fields, form conventions and abbreviations.",
+            "Understand key vocabulary used to describe a local park."
+          ]
+        },
+        {
+          "heading": "2. Skills",
+          "items": [
+            "Listen for specific personal details and complete a simple form accurately.",
+            "Watch for sequence and key details.",
+            "Ask and answer simple questions about a local park."
+          ]
+        },
+        {
+          "heading": "3. Attitudes",
+          "items": [
+            "Participate actively in pair and class activities.",
+            "Share personal information appropriately and confidently."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s03",
+      "stage": "CHECKING THE PREVIOUS LESSON",
+      "title": "Medical problem → advice",
+      "instruction": "Choose one problem. Tell your partner one suitable piece of advice. You do not need to talk about your real health.",
+      "type": "quick-choice",
+      "question": "Which situation would you like to practise?",
+      "options": ["a sore throat", "a headache", "a stomach ache", "a runny nose"],
+      "interactionPrompt": "Choose one, then say: ‘I’ve got …’ / ‘You should …’",
+      "responseAfterSelection": {
+        "enabled": false
+      },
+      "presentationExpected": [
+        "I've got a sore throat. — You should drink warm water.",
+        "I've got a headache. — You should rest.",
+        "I've got a stomach ache. — You should take it easy and seek medical advice if it continues.",
+        "I've got a runny nose. — You should rest and drink plenty of water."
+      ]
+    },
+    {
+      "id": "s04",
+      "stage": "UNIT 1E · PERSONAL INFORMATION",
+      "title": "Warm-up · Forms in everyday life",
+      "instruction": "Choose one. Then compare your answer with a partner.",
+      "type": "quick-choice",
+      "question": "Which form have you filled in before?",
+      "options": ["medical form", "visa form", "registration form", "another form"],
+      "interactionPrompt": "Say one piece of information you wrote on it.",
+      "responseAfterSelection": {
+        "enabled": false
+      }
+    },
+    {
+      "id": "s05",
+      "stage": "UNIT 1E · PERSONAL INFORMATION",
+      "title": "Which form is it?",
+      "instruction": "Read the clues. Choose the correct form.",
+      "type": "challenge-cards",
+      "items": [
+        {
+          "question": "It asks for passport number, nationality, place of birth and marital status.",
+          "answer": "A visa application form"
+        },
+        {
+          "question": "It asks about current medications, smoking and details of past surgery.",
+          "answer": "A medical form"
+        }
+      ]
+    },
+    {
+      "id": "s06",
+      "stage": "UNIT 1E · WRITING SKILL",
+      "title": "Match form headings with everyday questions",
+      "instruction": "Work in pairs. Predict each heading, then use Show answer to check one item at a time.",
+      "type": "challenge-cards",
+      "items": [
+        {"question": "Are you married, single or divorced?", "answer": "Marital status"},
+        {"question": "Do you take any pills or medicine?", "answer": "Current medications"},
+        {"question": "How many children do you have?", "answer": "No. of dependents"},
+        {"question": "What country were you born in?", "answer": "Country of origin"},
+        {"question": "What city or town were you born in?", "answer": "Place of birth"},
+        {"question": "Who can we call in your family if you need help?", "answer": "Emergency contact / next of kin"},
+        {"question": "What is the first letter of your middle name?", "answer": "Middle initial"}
+      ]
+    },
+    {
+      "id": "s07",
+      "stage": "UNIT 1E · FORM CONVENTIONS",
+      "title": "Abbreviations and titles",
+      "instruction": "Predict the meaning before revealing each answer.",
+      "type": "challenge-cards",
+      "items": [
+        {"question": "DOB", "answer": "Date of birth"},
+        {"question": "No.", "answer": "Number"},
+        {"question": "e.g.", "answer": "for example"},
+        {"question": "etc.", "answer": "et cetera"},
+        {"question": "Mr / Mrs / Ms / Dr", "answer": "Common titles used before names"},
+        {"question": "PLEASE USE CAPITAL LETTERS", "answer": "Write in uppercase letters"}
+      ]
+    },
+    {
+      "id": "s08",
+      "stage": "UNIT 1E · LISTENING",
+      "title": "Track 9 · Part 1: Identity",
+      "instruction": "Listen once for the situation. Listen again and complete the three details.",
+      "type": "speaker-match",
+      "media": {
+        "audio": "PRIVATE_MEDIA/life-intermediate/u01/l03/09-track-09.mp3"
+      },
+      "example": "The receptionist is collecting information from a new patient.",
+      "items": [
+        {"prompt": "Surname", "answer": "Braun"},
+        {"prompt": "Middle initial", "answer": "P"},
+        {"prompt": "Date of birth", "answer": "7 June 1967"}
+      ]
+    },
+    {
+      "id": "s09",
+      "stage": "UNIT 1E · LISTENING",
+      "title": "Track 9 · Part 2: Contact details",
+      "instruction": "Listen again. Focus only on the address and contact details.",
+      "type": "speaker-match",
+      "media": {
+        "audio": "PRIVATE_MEDIA/life-intermediate/u01/l03/09-track-09.mp3"
+      },
+      "example": "Tip: listen for spelling, numbers and postcode letters carefully.",
+      "items": [
+        {"prompt": "Address", "answer": "21 Carter Street"},
+        {"prompt": "Postcode", "answer": "HP12 6RJ"},
+        {"prompt": "Mobile number", "answer": "07773 946364"}
+      ]
+    },
+    {
+      "id": "s10",
+      "stage": "UNIT 1E · LISTENING",
+      "title": "Track 9 · Part 3: Health and exercise",
+      "instruction": "Listen for key words, not every word.",
+      "type": "speaker-match",
+      "media": {
+        "audio": "PRIVATE_MEDIA/life-intermediate/u01/l03/09-track-09.mp3"
+      },
+      "example": "Focus: general health + how often + how long + other exercise.",
+      "items": [
+        {"prompt": "General health", "answer": "Good"},
+        {"prompt": "Running", "answer": "Three times a week — about three hours"},
+        {"prompt": "Other exercise", "answer": "Swimming sometimes; walking at weekends with friends"}
+      ]
+    },
+    {
+      "id": "s11",
+      "stage": "UNIT 1E · CONTROLLED PRACTICE",
+      "title": "Build a new-student form",
+      "instruction": "Choose the most useful fields for a simple VMMU new-student form. Then compare your choices.",
+      "type": "quick-choice",
+      "question": "Which field is essential on a new-student contact form?",
+      "options": ["Full name", "Favourite film", "Shoe size", "Lucky number"],
+      "interactionPrompt": "After choosing, name three more useful fields from this lesson.",
+      "responseAfterSelection": {
+        "enabled": false
+      },
+      "answer": "Full name",
+      "support": ["Date of birth", "Address", "Telephone number", "Email address", "Nationality", "Emergency contact"]
+    },
+    {
+      "id": "s12",
+      "stage": "UNIT 1F · MY LOCAL PARK",
+      "title": "Before you watch",
+      "instruction": "Think for 20 seconds. Then discuss with a partner.",
+      "type": "questions",
+      "questions": [
+        "Where is your nearest park?",
+        "Why do people like going there?"
+      ]
+    },
+    {
+      "id": "s13",
+      "stage": "UNIT 1F · KEY VOCABULARY",
+      "title": "Park vocabulary",
+      "instruction": "Match the key word or phrase to its meaning. Reveal one answer at a time after your pair has decided.",
+      "type": "challenge-cards",
+      "items": [
+        {"question": "no matter what", "answer": "It isn't important and it doesn't change my decision."},
+        {"question": "pram", "answer": "A four-wheeled vehicle used to move a baby or small child."},
+        {"question": "view", "answer": "What you can see around you."},
+        {"question": "area", "answer": "A region or part of a town."},
+        {"question": "walkway", "answer": "A path or small road only for people."},
+        {"question": "blossom", "answer": "Flowers that grow on trees."}
+      ]
+    },
+    {
+      "id": "s14",
+      "stage": "UNIT 1F · VIDEO",
+      "title": "Watch 1 · Get the general idea",
+      "instruction": "Watch without taking notes. Choose the best summary afterwards.",
+      "type": "quick-choice",
+      "media": {
+        "video": "PRIVATE_MEDIA/life-intermediate/u01/l03/unit-1-my-local-park.mp4"
+      },
+      "question": "What is the video mainly about?",
+      "options": [
+        "How different people use and enjoy a local park",
+        "How to build a new park",
+        "The history of Barcelona",
+        "How to train a dog"
+      ],
+      "answer": "How different people use and enjoy a local park"
+    },
+    {
+      "id": "s15",
+      "stage": "UNIT 1F · VIDEO",
+      "title": "Watch 2 · Put the scenes in order",
+      "instruction": "Watch again. Decide the order. Use Show answer only after everyone has finished.",
+      "type": "challenge-cards",
+      "items": [
+        {"question": "A woman is walking with her dog.", "answer": "1"},
+        {"question": "A man is cycling.", "answer": "2"},
+        {"question": "There's a large house near the park.", "answer": "3"},
+        {"question": "Two people are walking down a path.", "answer": "4"},
+        {"question": "A student is jogging.", "answer": "5"},
+        {"question": "A student is doing pull-ups.", "answer": "6"},
+        {"question": "A tractor is cutting the grass.", "answer": "7"}
+      ]
+    },
+    {
+      "id": "s16",
+      "stage": "UNIT 1F · VIDEO DETAILS",
+      "title": "Watch 3 · People in the park",
+      "instruction": "Work in pairs. Listen for one small detail at a time; do not try to write every sentence.",
+      "type": "challenge-cards",
+      "items": [
+        {"question": "Woman with dog · How often?", "answer": "Very often / every weekend"},
+        {"question": "Man at the high part of the park · When?", "answer": "Every day; on sunny days in his lunch break"},
+        {"question": "Older visitor · Why is the park special?", "answer": "It has happy memories from when the family had children."},
+        {"question": "Young visitor · What does the person sometimes do?", "answer": "Spends time with friends."},
+        {"question": "Jogger · How often?", "answer": "Quite often / about twice a week"},
+        {"question": "Final visitor · What does the person like looking at?", "answer": "Wild flowers and blossom on the trees."}
+      ]
+    },
+    {
+      "id": "s17",
+      "stage": "UNIT 1F · SPEAKING",
+      "title": "Role-play · Guess the person",
+      "instruction": "Student A chooses one person from the video. Student B asks the questions and guesses the person. Then change roles.",
+      "type": "speaking-prompt",
+      "support": [
+        "When do you come to the park?",
+        "How often do you come?",
+        "Why do you like coming here?",
+        "Model: A: I come here about twice a week. B: Do you come here to exercise? A: Yes, I do."
+      ],
+      "recorder": {
+        "enabled": false
+      }
+    },
+    {
+      "id": "s18",
+      "stage": "CONSOLIDATION",
+      "title": "Exit check · Six quick questions",
+      "instruction": "Answer briefly. Use this as a final check, not a test.",
+      "type": "challenge-cards",
+      "items": [
+        {"question": "What does DOB mean?", "answer": "Date of birth"},
+        {"question": "Which heading answers: ‘What city or town were you born in?’", "answer": "Place of birth"},
+        {"question": "What is George's surname?", "answer": "Braun"},
+        {"question": "What does walkway mean?", "answer": "A path or small road only for people"},
+        {"question": "Which scene comes first in the video ordering task?", "answer": "A woman is walking with her dog."},
+        {"question": "Name one question you can ask about someone's park routine.", "answer": "Example: When do you come? / How often do you come? / Why do you like coming here?"}
+      ]
+    },
+    {
+      "id": "s19",
+      "stage": "HOMEWORK",
+      "title": "Homework · Personal information form",
+      "instruction": "Create a simple form for a new student at VMMU. Include 8–10 useful fields from Unit 1E. Do not enter sensitive real information; use invented or sample details if needed.",
+      "type": "assignment",
+      "label": "Required homework",
+      "footer": "Optional extension: write 4–5 sentences about a local park you know."
+    }
+  ]
+}
