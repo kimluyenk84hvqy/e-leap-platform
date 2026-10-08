@@ -2,6 +2,7 @@ import { ensureAuthSchema,normalizeStudentId,validStudentId,hashPassword,verifyP
 
 const PIN_RE=/^\d{6}$/;
 const QA_STUDENT_ID='TEST001';
+const QA_STUDENT_NAME='E-LEAP Test Student';
 const safeName=v=>String(v||'').trim().replace(/\s+/g,' ').slice(0,120);
 
 export default async function handler(req,res){
@@ -32,12 +33,20 @@ export default async function handler(req,res){
         if(!user.password_hash)return res.status(409).json({ok:false,error:'PIN setup is required through a class join.',code:'PIN_SETUP_REQUIRED'});
         if(!verifyPassword(pin,user.password_hash))return res.status(401).json({ok:false,error:'Student ID or PIN is incorrect.'});
       }else{
-        if(!classId)return res.status(404).json({ok:false,error:'Student account not found. Join your class once with its QR/Class Code to create it.',code:'JOIN_FIRST'});
-        if(fullName.length<2)return res.status(400).json({ok:false,error:'Full name is required for first-time setup.'});
-        const cls=await sql`SELECT class_id,class_name FROM classes WHERE class_id::text=${classId} AND status='active' LIMIT 1`;
-        if(!cls.length)return res.status(404).json({ok:false,error:'Class not found or inactive.'});
-        const inserted=await sql`INSERT INTO auth_users(student_id,display_name,role,password_hash) VALUES(${studentId},${fullName},'student',${hashPassword(pin)}) RETURNING user_id,student_id,display_name,role,status`;
-        user=inserted[0]; created=true;
+        // Dedicated QA account recovery path. TEST001 is intentionally allowed to exist without prior class enrollment
+        // so GOLDEN smoke tests can always enter Student mode. The PIN supplied on first successful QA sign-in becomes
+        // the QA account PIN; this exception is hard-restricted to TEST001.
+        if(studentId===QA_STUDENT_ID && !classId){
+          const inserted=await sql`INSERT INTO auth_users(student_id,display_name,role,password_hash) VALUES(${studentId},${QA_STUDENT_NAME},'student',${hashPassword(pin)}) RETURNING user_id,student_id,display_name,role,status`;
+          user=inserted[0]; created=true;
+        }else{
+          if(!classId)return res.status(404).json({ok:false,error:'Student account not found. Join your class once with its QR/Class Code to create it.',code:'JOIN_FIRST'});
+          if(fullName.length<2)return res.status(400).json({ok:false,error:'Full name is required for first-time setup.'});
+          const cls=await sql`SELECT class_id,class_name FROM classes WHERE class_id::text=${classId} AND status='active' LIMIT 1`;
+          if(!cls.length)return res.status(404).json({ok:false,error:'Class not found or inactive.'});
+          const inserted=await sql`INSERT INTO auth_users(student_id,display_name,role,password_hash) VALUES(${studentId},${fullName},'student',${hashPassword(pin)}) RETURNING user_id,student_id,display_name,role,status`;
+          user=inserted[0]; created=true;
+        }
       }
       if(classId){
         const cls=await sql`SELECT class_id FROM classes WHERE class_id::text=${classId} AND status='active' LIMIT 1`;
