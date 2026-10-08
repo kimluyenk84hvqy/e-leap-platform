@@ -6,7 +6,15 @@ export default async function handler(req,res){
     if(req.method==='GET'){
       const assignmentId=req.query?.assignmentId;
       if(user.role==='student'){
-        const rows=assignmentId?await sql`SELECT s.submission_id,s.assignment_id,s.attempt_no,s.status,s.submitted_at,s.graded_at,s.feedback_released_at,s.score,s.max_score,CASE WHEN s.feedback_released_at IS NOT NULL THEN s.feedback ELSE NULL END AS feedback,CASE WHEN s.feedback_released_at IS NOT NULL THEN s.rubric_scores ELSE NULL END AS rubric_scores FROM submissions s WHERE s.assignment_id=${assignmentId} AND s.student_user_id=${user.user_id} ORDER BY s.attempt_no DESC`:await sql`SELECT s.submission_id,s.assignment_id,s.attempt_no,s.status,s.submitted_at,s.graded_at,s.feedback_released_at,s.score,s.max_score,CASE WHEN s.feedback_released_at IS NOT NULL THEN s.feedback ELSE NULL END AS feedback,CASE WHEN s.feedback_released_at IS NOT NULL THEN s.rubric_scores ELSE NULL END AS rubric_scores FROM submissions s WHERE s.student_user_id=${user.user_id} ORDER BY s.submitted_at DESC LIMIT 500`;
+        const projection=sql`SELECT s.submission_id,s.assignment_id,s.attempt_no,s.status,s.submitted_at,s.graded_at,s.feedback_released_at,
+          CASE WHEN s.feedback_released_at IS NOT NULL THEN s.score ELSE NULL END AS score,
+          CASE WHEN s.feedback_released_at IS NOT NULL THEN s.max_score ELSE NULL END AS max_score,
+          CASE WHEN s.feedback_released_at IS NOT NULL THEN s.feedback ELSE NULL END AS feedback,
+          CASE WHEN s.feedback_released_at IS NOT NULL THEN s.rubric_scores ELSE NULL END AS rubric_scores
+          FROM submissions s`;
+        const rows=assignmentId
+          ? await sql`${projection} WHERE s.assignment_id=${assignmentId} AND s.student_user_id=${user.user_id} ORDER BY s.attempt_no DESC`
+          : await sql`${projection} WHERE s.student_user_id=${user.user_id} ORDER BY s.submitted_at DESC LIMIT 500`;
         return res.status(200).json({ok:true,submissions:rows});
       }
       if(!['teacher','admin'].includes(user.role))return res.status(403).json({ok:false,error:'Access denied'});
