@@ -35,7 +35,17 @@
     signOut.onclick=async()=>{signOut.disabled=true;try{await fetch('/api/auth/logout',{method:'POST',credentials:'same-origin'});}finally{try{sessionStorage.removeItem('e-leap-guest-entry');localStorage.removeItem('e-leap-admin-view-role')}catch{}location.replace('signin.html');}};
   }
   const script=document.createElement('script');script.src='assets/js/app.js?v=assessment-research-v1-role-lock-admin-student-preview';
-  script.onload=()=>{const ext=document.createElement('script');ext.src='assets/js/student-portal-tools.js?v=student-pin-v1';document.body.appendChild(ext);const policy=document.createElement('script');policy.src='assets/js/role-shell-policy.js?v=role-shell-v1';document.body.appendChild(policy);const homework=document.createElement('script');homework.src='assets/js/assignment-workflow-upgrade.js?v=homework-deadline-v1';document.body.appendChild(homework);const assignmentBridge=document.createElement('script');assignmentBridge.src='assets/js/assignment-submission-bridge.js?v=assignment-submit-v1';document.body.appendChild(assignmentBridge);};
+  script.onload=()=>{
+    const extras=[
+      ['assets/js/student-portal-tools.js?v=student-pin-v1','studentPortal'],
+      ['assets/js/role-shell-policy.js?v=role-shell-v2','rolePolicy'],
+      ['assets/js/assignment-workflow-upgrade.js?v=homework-deadline-v1','homework'],
+      ['assets/js/assignment-submission-bridge.js?v=assignment-submit-v1','assignmentBridge'],
+      ['assets/js/mock-test-entry.js?v=golden-mock-v1','mockEntry'],
+      ['assets/js/mock-progress-bridge.js?v=golden-mock-progress-v1','mockProgress']
+    ];
+    extras.forEach(([src])=>{const s=document.createElement('script');s.src=src;document.body.appendChild(s);});
+  };
   document.body.appendChild(script);
 })();
 </script><script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js').catch(()=>{});}</script></body></html>
