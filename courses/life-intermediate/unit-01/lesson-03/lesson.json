@@ -58,7 +58,7 @@
       "id": "s05",
       "stage": "1E · ACTIVITY 1",
       "title": "Forms in everyday life",
-      "instruction": "Look at the four examples. Type what each form is for. After checking, discuss which form you have filled in before and on what occasion.",
+      "instruction": "Look at the four forms. Type what each form is for and submit. After checking, discuss which form you have filled in before and on what occasion.",
       "type": "form-gallery",
       "items": [
         {"prompt":"Form A","hint":"passport · nationality · place of birth","answer":"Visa application form"},
@@ -71,7 +71,7 @@
       "id": "s06",
       "stage": "1E · ACTIVITY 2",
       "title": "What is each form for?",
-      "instruction": "Choose the best answer. Submit first; the teacher will review responses before revealing the correct choices.",
+      "instruction": "Choose the best answer and submit. The teacher reviews Responses before revealing the correct option.",
       "type": "mcq-set",
       "items": [
         {"prompt":"A form asks for passport number, nationality and place of birth.","options":["A visa application form","A medical form","A library membership form"],"answer":"A visa application form"},
@@ -107,7 +107,7 @@
       "id": "s08",
       "stage": "1E · ACTIVITY 3b",
       "title": "Form conventions",
-      "instruction": "Answer the three Student's Book questions. Submit before the teacher checks each answer.",
+      "instruction": "Work through the three questions from the Student's Book. Type your answer and submit before the teacher checks it.",
       "type": "tab-questions",
       "tabs": [
         {"label":"1 · Abbreviations","items":[{"prompt":"Find abbreviations on the forms. What does DOB mean?","answer":"DOB = Date of birth"}]},
@@ -119,7 +119,7 @@
       "id": "s09",
       "stage": "LISTENING EXTENSION · TRACK 9",
       "title": "New patient information",
-      "instruction": "The receptionist is collecting information from a new patient. Listen to the conversation and complete the details.",
+      "instruction": "The receptionist is collecting information from a new patient. Listen to the conversation and complete the three details in each section.",
       "type": "listening-tabs",
       "media": {"audio":"PRIVATE_MEDIA/life-intermediate/u01/l03/09-track-09.mp3"},
       "tabs": [
@@ -132,7 +132,7 @@
       "id": "s10",
       "stage": "1E · ACTIVITIES 4–5",
       "title": "Build a new-student form",
-      "instruction": "Drag the headings into the blank form, submit your design, then add sample information in the smaller spaces. Exchange forms and check with a partner.",
+      "instruction": "Drag the information headings into the blank form and submit your design. Then type sample information in the smaller spaces and exchange forms with a partner.",
       "type": "form-builder",
       "bank": ["Title","First name","Middle initial","Surname","Date of birth","Address","Postcode","Telephone","Email","First language","Nationality","Emergency contact"],
       "required": ["Title","First name","Surname","Date of birth","Address","Telephone","Email","Nationality"],
@@ -142,21 +142,21 @@
       "id": "s11",
       "stage": "UNIT 1F",
       "title": "My local park",
-      "subtitle": "Video · Everyday life in an English park",
+      "subtitle": "Video · Everyday life in a park",
       "type": "section-cover",
       "visual": "park",
-      "photo": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Park-G%C3%BCell.jpg?width=1600",
+      "photo": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Park%20G%C3%BCell%20-%20Barcelona%20%287727988634%29.jpg?width=1600",
       "caption": "Park Güell, Barcelona · public park designed by Antoni Gaudí"
     },
     {
       "id": "s12",
       "stage": "1F · ACTIVITY 1 · BEFORE YOU WATCH",
       "title": "Before you watch",
-      "instruction": "Study the photo and caption. Use the visual clues to discuss the warm-up prompts, then answer the two questions from the Student's Book.",
+      "instruction": "Look at the park photo and caption. Discuss the visual clues, then answer the two Student's Book questions.",
       "type": "park-leadin",
-      "photo": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Park-G%C3%BCell.jpg?width=1600",
-      "caption": "Park Güell, Barcelona, is famous for its art and is a great place to meet friends.",
-      "elicitation": ["What can you see in the photo?","What are people doing there?","What makes this place attractive to visitors?"],
+      "photo": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Park%20G%C3%BCell%20-%20Barcelona%20%287727988634%29.jpg?width=1600",
+      "caption": "Park Güell, Barcelona · a public park and a popular place to meet friends.",
+      "elicitation": ["What kind of place is this?","What can people do here?","What details make the place attractive?"],
       "questions": ["Where is your nearest park?","Why do people like going there?"]
     },
     {
@@ -186,7 +186,7 @@
       "id": "s14",
       "stage": "1F · ACTIVITY 3 · WHILE YOU WATCH",
       "title": "Put the scenes in order",
-      "instruction": "Watch the video. Put a–g into positions 1–7 in the order you see the scenes. Submit before the teacher reviews the class responses.",
+      "instruction": "Watch the video. Drag a–g into positions 1–7 in the order you see the scenes, then submit your answers.",
       "type": "video-order",
       "media": {"video":"PRIVATE_MEDIA/life-intermediate/u01/l03/unit-1-my-local-park.mp4"},
       "choices": [
@@ -204,7 +204,7 @@
       "id": "s15",
       "stage": "1F · ACTIVITIES 4–5 · WATCH AGAIN",
       "title": "People in the park",
-      "instruction": "Watch again. Complete your assigned column, share notes with your partner, complete the other column, then use the evidence clips to check.",
+      "instruction": "Watch again. Student A completes the first column and Student B completes the second. Share your notes, complete the other column, then use Play evidence to check each visitor.",
       "type": "video-notes",
       "media": {"video":"PRIVATE_MEDIA/life-intermediate/u01/l03/unit-1-my-local-park.mp4"},
       "rows": [
@@ -220,10 +220,10 @@
       "id": "s16",
       "stage": "1F · ACTIVITIES 6–7 · AFTER YOU WATCH",
       "title": "Guess the person",
-      "instruction": "Student A chooses one person from the video but does not tell Student B. Student B asks the questions and guesses the person. Then change roles.",
+      "instruction": "Student A chooses one person from the video but does not tell Student B. Student B asks the two questions from the video and guesses the person. Then change roles.",
       "type": "roleplay",
-      "model": ["B: When do you come to the park?","A: I come here about twice a week.","B: How often do you come?","A: Quite often – usually twice a week."],
-      "frames": ["When do you come to the park?","How often do you come?","I come here …","I come about … a week."]
+      "model": ["B: When do you come to the park?","A: I come to the park every weekend.","B: How often do you come?","A: Very often."],
+      "frames": ["When do you come to the park?","How often do you come?","I come to the park …","I come here about … a week."]
     },
     {
       "id": "s17",
@@ -251,9 +251,10 @@
       "id": "s19",
       "stage": "HOMEWORK · 1E ACTIVITIES 4–5 EXTENSION",
       "title": "Design your own new-student form",
-      "instruction": "Start with a blank form. Decide which information headings are necessary, write the headings yourself, and add invented/sample details. Do not use sensitive real personal data.",
+      "instruction": "Start with a completely blank form. Write the information headings you think a new-student form needs and add invented/sample details in each field. Do not use sensitive real personal data.",
       "type": "homework-form",
-      "deadlineLabel": "Suggested deadline: 8:00 p.m. · 12 Oct 2026 · Teacher can change this when assigning",
+      "deadlineLabel": "Deadline: 8:00 p.m. · 12 Oct 2026",
+      "markingNote": "Teacher marks the submitted form in Submissions / Marking Center, then releases the score and feedback to the student.",
       "assignment": {"title":"Life U1E Homework · New-student form","activityId":"s19","suggestedDeadline":"2026-10-12T20:00:00+07:00","attemptLimit":1,"latePolicy":"closed","rubricId":"general-100-v1"}
     },
     {
@@ -262,7 +263,7 @@
       "title": "Thank you",
       "subtitle": "See you in the next Life lesson.",
       "type": "thank-you",
-      "photo": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Park-G%C3%BCell.jpg?width=1600"
+      "photo": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Park%20G%C3%BCell%20-%20Barcelona%20%287727988634%29.jpg?width=1600"
     }
   ]
 }
