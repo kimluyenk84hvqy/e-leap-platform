@@ -20,6 +20,22 @@
     localStorage.setItem('e-leap-preview-role',role);
     if(!['teacher','admin'].includes(role))localStorage.removeItem('e-leap-presentation-mode');
   }catch(_){}
+  try{
+    const sr=await fetch('/api/research/shells',{credentials:'same-origin',cache:'no-store'});
+    if(sr.ok){
+      const sd=await sr.json();
+      window.ELEAPShellManager?.hydrate?.(sd.shells||[]);
+      if(role==='admin'&&!(sd.shells||[]).length){
+        try{
+          const local=JSON.parse(localStorage.getItem('e-leap-shell-overrides-v2')||'{}');
+          if(Array.isArray(local.shells)&&local.shells.length){
+            const up=await fetch('/api/research/shells',{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({shells:local.shells})});
+            if(up.ok)window.ELEAPShellManager?.hydrate?.(local.shells);
+          }
+        }catch(_){}
+      }
+    }
+  }catch(e){console.warn('Shared shell catalog unavailable; using local/static fallback.',e)}
   document.querySelector('.app')?.setAttribute('data-role',role);
   const label=({guest:'Guest',student:'Student',teacher:'Teacher',admin:'Administrator'})[role]||role;
   const roleText=document.getElementById('roleText');
@@ -39,7 +55,7 @@
     signOut.onclick=async()=>{signOut.disabled=true;try{await fetch('/api/auth/logout',{method:'POST',credentials:'same-origin'});}finally{location.reload();}};
   }
   const script=document.createElement('script');
-  script.src='assets/js/app.js?v=assessment-research-v1-role-lock-auth-entry-course-shells-student-pin-role-policy';
+  script.src='assets/js/app.js?v=assessment-research-v1-role-lock-auth-entry-course-shells-student-pin-role-policy-shared-shells';
   script.onload=()=>{
     const ext=document.createElement('script');ext.src='assets/js/student-portal-tools.js?v=student-pin-v1';document.body.appendChild(ext);
     const policy=document.createElement('script');policy.src='assets/js/role-shell-policy.js?v=role-shell-v1';document.body.appendChild(policy);
