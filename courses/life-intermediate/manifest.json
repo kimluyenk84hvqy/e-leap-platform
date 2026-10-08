@@ -1,0 +1,33 @@
+{
+  "package": "ELEAP_LIFE_LESSON_3_3_U1EF",
+  "lessonId": "life-u01-l03",
+  "lessonNumber": "3.3",
+  "screenCount": 19,
+  "files": [
+    {
+      "path": "QA_CHECKLIST.md",
+      "bytes": 1331,
+      "sha256": "e9d2192b1ac9e8f7f21fdcf266bf95aeb1a82c2bde813eaab12d2b23ab291dcb"
+    },
+    {
+      "path": "README_UPLOAD.md",
+      "bytes": 1659,
+      "sha256": "d967a6c821cdf0afda132f0d20df51b6608ceaa097d3e6322a9dcbf36ec0a0de"
+    },
+    {
+      "path": "courses/life-intermediate/unit-01/lesson-03/lesson.json",
+      "bytes": 14349,
+      "sha256": "1e58c472a28dfe7fc1ebe11b6fa313b4886ee745852a6de38f2e14604163f234"
+    },
+    {
+      "path": "media-private/life-intermediate/u01/l03/09-track-09.mp3",
+      "bytes": 4525579,
+      "sha256": "1ff26f56ac048835c44d4052c5438be33c52e7e7624708deb545815eefe3b0b3"
+    },
+    {
+      "path": "media-private/life-intermediate/u01/l03/unit-1-my-local-park.mp4",
+      "bytes": 12598702,
+      "sha256": "5babf693a47a135d1ae410ef764f42c69687ecf97e1696cab6a513e04cdddd84"
+    }
+  ]
+}
