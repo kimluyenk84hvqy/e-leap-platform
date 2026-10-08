@@ -1,31 +1,28 @@
 {
   "courseId": "life-intermediate",
-  "themeName": "Life Green",
+  "themeName": "Life Ocean-Mint Projector",
   "fontFamily": "Poppins, Arial, sans-serif",
   "background": "#DCEFE7",
-  "primary": "#0F5C4D",
-  "primaryStrong": "#0D5145",
-  "text": "#102F4F",
-  "textSecondary": "#294D66",
-  "accents": {
-    "teal": "#1E9A8A",
-    "yellow": "#F5B942",
-    "coral": "#E85D5D",
-    "purple": "#6E5BD6"
+  "primary": "#0B624F",
+  "primaryStrong": "#064B3F",
+  "text": "#081B33",
+  "textSecondary": "#12304D",
+  "projectorTypography": {
+    "bodyPx": "28-32",
+    "instructionPx": "25-31",
+    "activityQuestionPx": "25-31",
+    "headingPx": "42-66",
+    "coverPx": "50-82"
   },
-  "answers": {
-    "background": "#FFF2BF",
-    "border": "#E3A82E",
-    "text": "#703F00",
-    "correctBackground": "#D9F3DF",
-    "correctBorder": "#21824B",
-    "correctText": "#145132"
-  },
+  "accents": {"teal":"#1A9C8B","yellow":"#FFD45C","coral":"#EF6B63","purple":"#7767D8","blue":"#215B91"},
+  "answers": {"background":"#FFF0A8","border":"#D99D1C","text":"#422B00","correctBackground":"#AEE9BD","correctBorder":"#18894B","correctText":"#064023"},
   "rules": [
-    "Use this theme consistently across all Life Pre-Intermediate/Intermediate lessons unless a future course-level override is approved.",
-    "Use high-contrast dark-blue instructional text for projector readability.",
-    "Use accent colours for activity type, answer state and emphasis; do not make every element monochrome green.",
-    "Use the platform default Poppins font and responsive type sizing.",
-    "Answers must appear inside the relevant activity box or by highlighting the correct option, never as detached text below an activity."
+    "Use this theme consistently across all Life lessons unless a future course-level override is approved.",
+    "All essential reading text uses near-black dark blue for large-room projector readability.",
+    "Use accent colours for activity type, answer state, diagrams and illustration; never make an entire lesson monochrome green.",
+    "Use the platform default Poppins font.",
+    "Projector view is the typography baseline; mobile layouts reflow rather than shrinking essential text excessively.",
+    "Answers appear inside their activity box or by highlighting the correct option, never as detached answer text below a task.",
+    "Student Book activity numbering stays visible on every source-derived task screen."
   ]
 }
