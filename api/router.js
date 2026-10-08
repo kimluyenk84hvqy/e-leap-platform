@@ -3,6 +3,7 @@ import authLogout from '../server/auth/logout.js';
 import authMe from '../server/auth/me.js';
 import authSetupAdmin from '../server/auth/setup-admin.js';
 import authUsers from '../server/auth/users.js';
+import authStudent from '../server/auth/student.js';
 
 import researchAssignments from '../server/research/assignments.js';
 import researchBootstrap from '../server/research/bootstrap.js';
@@ -24,6 +25,7 @@ const ROUTES={
   'auth/me':authMe,
   'auth/setup-admin':authSetupAdmin,
   'auth/users':authUsers,
+  'auth/student':authStudent,
   'research/assignments':researchAssignments,
   'research/bootstrap':researchBootstrap,
   'research/classes':researchClasses,
