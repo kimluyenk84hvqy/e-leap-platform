@@ -2,7 +2,7 @@
 <div class="app" data-role="guest"><aside class="sidebar"><div class="brand"><div class="brand-mark">E</div><div><div class="brand-name">E-LEAP</div><div class="brand-sub">English Learning, Engagement<br>and Assessment Platform</div></div></div><nav id="mainNav"></nav><div class="side-bottom"><div class="role-label">SIGNED IN AS</div><div class="role-switch role-switch-4" id="roleState"><button data-role="teacher" disabled>Teacher</button><button data-role="student" disabled>Student</button><button data-role="admin" disabled>Admin</button><button data-role="guest" disabled>Guest</button></div></div></aside>
 <main><header class="topbar"><div><div class="crumb" id="crumb">E-LEAP / Courses</div><h2 id="pageTitle">Courses</h2></div><div class="top-actions"><button class="btn presentation-toggle" id="presentationToggle" type="button">Presentation</button><button class="icon" title="Search">⌕</button><div class="user"><span>K84</span><b id="roleText">Loading…</b></div></div></header><div id="content" class="content"></div></main></div>
 <script src="engine/shell-engine.js"></script><script src="assets/js/access-control.js"></script><script src="assets/js/shell-governance.js"></script><script src="assets/js/shell-manager.js"></script><script src="assets/js/learning-core.js"></script><script src="assets/js/identity-access.js"></script><script src="assets/js/resource-manager.js"></script>
-<script src="assets/js/operations-ui.js"></script><script src="assets/js/research-class-report-ui.js"></script>
+<script src="assets/js/operations-ui.js"></script><script src="assets/js/research-class-report-ui.js"></script><script src="assets/js/life-catalog-patch.js?v=catalog-restore-20261009"></script>
 <script>
 (async function bootRoleLockedPlatform(){
   const allowed=new Set(['guest','student','teacher','admin']);
@@ -27,12 +27,7 @@
     btn.setAttribute('aria-pressed',btn.dataset.role===role?'true':'false');
   });
   const script=document.createElement('script');
-  script.src='assets/js/app.js?v=assessment-research-v1-role-lock';
-  script.onload=()=>{
-    const patch=document.createElement('script');
-    patch.src='assets/js/life-catalog-patch.js?v=life-u1ef-final';
-    document.body.appendChild(patch);
-  };
+  script.src='assets/js/app.js?v=assessment-research-v1-role-lock-catalog-restore';
   document.body.appendChild(script);
 })();
 </script><script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js').catch(()=>{});}</script></body></html>
