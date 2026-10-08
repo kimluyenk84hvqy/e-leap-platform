@@ -1,0 +1,5 @@
+E-LEAP PRE-GOLDEN RECOVERY SNAPSHOT
+Date: 2026-10-08
+Purpose: trigger recovery packaging for CORE PRE-GOLDEN, LIVE CONTENT LATEST and RESTORE KIT.
+Database snapshot: E-LEAP PRE-GOLDEN 2026-10-08
+Status: PRE-GOLDEN, not final GOLDEN 1.0.
