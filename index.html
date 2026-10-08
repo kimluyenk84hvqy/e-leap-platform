@@ -14,6 +14,7 @@
       if(allowed.has(d?.user?.role)){role=d.user.role;user=d.user;}
     }
   }catch(_){ role='guest'; }
+  if(user?.must_change_password && role==='teacher' && !location.pathname.endsWith('/change-password.html')){location.replace('change-password.html');return;}
   window.ELEAPCurrentUser=user;
   try{
     localStorage.setItem('e-leap-preview-role',role);
@@ -37,8 +38,11 @@
     signOut.onclick=async()=>{signOut.disabled=true;try{await fetch('/api/auth/logout',{method:'POST',credentials:'same-origin'});}finally{location.reload();}};
   }
   const script=document.createElement('script');
-  script.src='assets/js/app.js?v=assessment-research-v1-role-lock-auth-entry-course-shells-student-pin';
-  script.onload=()=>{const ext=document.createElement('script');ext.src='assets/js/student-portal-tools.js?v=student-pin-v1';document.body.appendChild(ext);};
+  script.src='assets/js/app.js?v=assessment-research-v1-role-lock-auth-entry-course-shells-student-pin-role-policy';
+  script.onload=()=>{
+    const ext=document.createElement('script');ext.src='assets/js/student-portal-tools.js?v=student-pin-v1';document.body.appendChild(ext);
+    const policy=document.createElement('script');policy.src='assets/js/role-shell-policy.js?v=role-shell-v1';document.body.appendChild(policy);
+  };
   document.body.appendChild(script);
 })();
 </script><script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js').catch(()=>{});}</script></body></html>
