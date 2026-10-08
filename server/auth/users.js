@@ -22,8 +22,16 @@ export default async function handler(req,res){
     if(req.method==='PATCH'){
       if(!requireSameOrigin(req,res))return;
       const userId=String(req.body?.userId||'').trim();
+      const action=String(req.body?.action||'reset-teacher-password').trim();
+      if(!userId)return res.status(400).json({ok:false,error:'userId is required'});
+      if(action==='reset-student-pin'){
+        const rows=await sql`UPDATE auth_users SET password_hash=NULL,updated_at=NOW() WHERE user_id=${userId} AND role='student' RETURNING user_id,student_id,display_name,role`;
+        if(!rows.length)return res.status(404).json({ok:false,error:'Student not found'});
+        await sql`DELETE FROM auth_sessions WHERE user_id=${userId}`;
+        return res.status(200).json({ok:true,user:rows[0],message:'Student PIN reset. Student must create a new PIN through class join.'});
+      }
       const password=String(req.body?.password||'');
-      if(!userId||password.length<10)return res.status(400).json({ok:false,error:'userId and a temporary password of at least 10 characters are required'});
+      if(password.length<10)return res.status(400).json({ok:false,error:'Temporary password must be at least 10 characters'});
       const rows=await sql`UPDATE auth_users SET password_hash=${hashPassword(password)},must_change_password=TRUE,updated_at=NOW() WHERE user_id=${userId} AND role='teacher' RETURNING user_id,email,display_name,role,must_change_password`;
       if(!rows.length)return res.status(404).json({ok:false,error:'Teacher not found'});
       await sql`DELETE FROM auth_sessions WHERE user_id=${userId}`;
