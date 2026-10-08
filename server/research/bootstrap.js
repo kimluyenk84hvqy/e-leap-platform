@@ -1,5 +1,5 @@
 import { getResearchDb,researchDbAvailable } from '../_research-db.js';
-import { ensureAuthSchema,requireAuth,requireSameOrigin } from '../_auth.js';
+import { ensureAuthSchema,getAuth,requireAuth,requireSameOrigin } from '../_auth.js';
 export default async function handler(req,res){
   if(!['GET','POST'].includes(req.method)){res.setHeader('Allow',['GET','POST']);return res.status(405).json({ok:false,error:'Method not allowed'});}
   if(!researchDbAvailable())return res.status(503).json({ok:false,error:'Live database is not configured',code:'DB_NOT_CONFIGURED'});
@@ -10,7 +10,15 @@ export default async function handler(req,res){
     if(!requireSameOrigin(req,res))return;
     const sql=await ensureAuthSchema();
     const admins=await sql`SELECT COUNT(*)::int AS n FROM auth_users WHERE role='admin'`;
-    if(Number(admins[0]?.n||0)>0){const user=await requireAuth(req,res,['admin']);if(!user)return;}
+    if(Number(admins[0]?.n||0)>0){
+      const user=await getAuth(req);
+      if(!user)return res.status(401).json({ok:false,error:'Authentication required',code:'AUTH_REQUIRED'});
+      // Teacher/Student POST calls are readiness checks only. Schema bootstrap remains Admin-only.
+      if(user.role!=='admin'){
+        await sql`SELECT 1`;
+        return res.status(200).json({ok:true,ready:true,assessmentResearchVersion:'1.1',authAccessVersion:'1.0',mode:'readiness'});
+      }
+    }
     await sql`CREATE TABLE IF NOT EXISTS classes (class_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),teacher_id UUID NOT NULL,class_name TEXT NOT NULL,course_id TEXT,academic_year TEXT,status TEXT NOT NULL DEFAULT 'active',created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())`;
     await sql`CREATE TABLE IF NOT EXISTS sessions (session_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),class_id UUID NOT NULL,teacher_id UUID NOT NULL,lesson_id TEXT NOT NULL,join_code TEXT NOT NULL UNIQUE,status TEXT NOT NULL DEFAULT 'active',started_at TIMESTAMPTZ,ended_at TIMESTAMPTZ,created_at TIMESTAMPTZ NOT NULL DEFAULT NOW())`;
     await sql`CREATE TABLE IF NOT EXISTS participants (participant_id BIGSERIAL PRIMARY KEY,session_id UUID NOT NULL,student_user_id UUID,participant_code TEXT,display_name TEXT,joined_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),left_at TIMESTAMPTZ)`;
