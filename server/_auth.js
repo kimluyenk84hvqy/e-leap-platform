@@ -7,7 +7,12 @@ const SESSION_DAYS=14;
 function b64url(buf){ return Buffer.from(buf).toString('base64url'); }
 function sha256(v){ return createHash('sha256').update(String(v)).digest('hex'); }
 export function normalizeEmail(v){ return String(v||'').trim().toLowerCase(); }
-export function normalizeStudentId(v){ return String(v||'').trim().toUpperCase().replace(/\s+/g,''); }
+// Student IDs are identity keys, so separators/case must never create a second account.
+// CK1.51.094, ck1-51-094 and "CK1 51 094" all normalize to CK151094.
+export function normalizeStudentId(v){
+  return String(v||'').trim().toUpperCase().normalize('NFKC').replace(/[^A-Z0-9]/g,'');
+}
+export function validStudentId(v){ const id=normalizeStudentId(v); return id.length>=4 && id.length<=40 && /[A-Z]/.test(id) && /\d/.test(id); }
 
 export function hashPassword(password){
   const value=String(password||'');
