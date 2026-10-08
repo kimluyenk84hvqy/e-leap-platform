@@ -142,13 +142,26 @@ html[data-eleap-mode="presentation"] .eleap-actions{justify-content:flex-end}
   html[data-eleap-role="admin"] .unified-controls button,
   html[data-eleap-role="admin"] .unified-controls a{width:auto;min-width:max-content;justify-content:center}
   .unified-controls .dock-toggle,.unified-controls .dock-label{display:none!important}
+
+  /* Student controls must never require a horizontal swipe to find Submit. */
+  html[data-eleap-role="student"] .unified-controls{
+    display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px!important;
+    overflow:visible!important;max-height:none!important;padding:7px!important;
+  }
+  html[data-eleap-role="student"] .unified-controls .unified-group{display:contents!important}
+  html[data-eleap-role="student"] .unified-controls .unified-group+.unified-group{border:0!important;padding:0!important}
+  html[data-eleap-role="student"] .unified-controls button{width:100%!important;min-width:0!important;padding:0 5px!important;justify-content:center!important;white-space:nowrap!important}
+  html[data-eleap-role="student"] .unified-controls #hostSubmitBtn{display:inline-flex!important;visibility:visible!important;grid-column:auto;background:var(--eleap-control-accent)!important;color:#fff!important;border-color:var(--eleap-control-accent)!important;font-weight:900!important}
+  html[data-eleap-role="student"] .unified-controls .host-score-pill{display:inline-flex!important;justify-content:center!important;min-width:0!important;padding:0 6px!important;margin:0!important}
+  html[data-eleap-role="student"] .unified-controls .host-practice-pill{display:none!important}
 }
 
 @media(max-width:560px){
   html[data-eleap-role="student"] .unified-controls,
   html[data-eleap-role="guest"] .unified-controls{gap:5px;padding:6px}
   html[data-eleap-role="student"] .unified-controls button,
-  html[data-eleap-role="guest"] .unified-controls button{padding:0 9px;font-size:11px;min-height:38px}
+  html[data-eleap-role="guest"] .unified-controls button{padding:0 7px;font-size:11px;min-height:38px}
   .unified-controls .host-practice-pill{display:none!important}
-  .unified-controls .host-score-pill{font-size:10px;padding:0 8px}
+  .unified-controls .host-score-pill{font-size:10px;padding:0 6px}
+  html[data-eleap-role="student"] .unified-controls{grid-template-columns:repeat(4,minmax(0,1fr))!important}
 }
