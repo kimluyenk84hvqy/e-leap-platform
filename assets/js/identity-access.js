@@ -56,4 +56,12 @@
     s.dataset.eleapSessionTimeout='1';
     document.head.appendChild(s);
   }
+
+  // Account security entry: signed-in Admin/Teacher/Student may change their own password/PIN.
+  if(!document.querySelector('script[data-eleap-account-security]')){
+    const s=document.createElement('script');
+    s.src='assets/js/account-security-entry.js?v=golden-account-security-v1';
+    s.dataset.eleapAccountSecurity='1';
+    document.head.appendChild(s);
+  }
 })();
