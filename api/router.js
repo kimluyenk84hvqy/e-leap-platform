@@ -14,6 +14,7 @@ import researchExport from '../server/research/export.js';
 import researchFeedback from '../server/research/feedback.js';
 import researchGrades from '../server/research/grades.js';
 import researchMarking from '../server/research/marking.js';
+import researchMockTests from '../server/research/mock-tests.js';
 import researchParticipants from '../server/research/participants.js';
 import researchReport from '../server/research/report.js';
 import researchSessions from '../server/research/sessions.js';
@@ -37,6 +38,7 @@ const ROUTES={
   'research/feedback':researchFeedback,
   'research/grades':researchGrades,
   'research/marking':researchMarking,
+  'research/mock-tests':researchMockTests,
   'research/participants':researchParticipants,
   'research/report':researchReport,
   'research/sessions':researchSessions,
