@@ -77,3 +77,23 @@ html[data-eleap-hosted="1"][data-eleap-role="student"] .nav #prev,
 html[data-eleap-hosted="1"][data-eleap-role="guest"] .nav #prev{grid-column:1;justify-self:start}
 html[data-eleap-hosted="1"][data-eleap-role="student"] .nav #next,
 html[data-eleap-hosted="1"][data-eleap-role="guest"] .nav #next{grid-column:3;justify-self:end}
+
+/* Mobile classroom reliability pass — keep video, questions and answer boxes in one natural scroll. */
+@media(max-width:700px){
+  .lesson-shell{grid-template-rows:52px minmax(0,1fr) 108px}
+  .topbar{padding:7px 12px;min-height:52px;gap:8px}.course-lockup b{font-size:13px;margin-right:0}.progress{font-size:12px;gap:6px}.progress>div{width:64px}
+  .slide{padding:14px 12px 28px;overscroll-behavior:contain}.slide h2{font-size:30px;line-height:1.08;margin:6px 0 10px}.lead{font-size:17px;line-height:1.35;margin-bottom:10px}.section-tag{font-size:11px}
+  .video-layout,.video-focus{display:grid;grid-template-columns:1fr;gap:10px}
+  .video-card,.video-card.large{padding:7px;border-radius:12px}
+  .video-card video,.video-focus .video-card video{width:100%;height:auto!important;min-height:0!important;max-height:34dvh!important;aspect-ratio:16/9;object-fit:contain;background:#101413;border-radius:8px}
+  .video-status{min-height:24px;padding:5px 2px 0;font-size:12px;line-height:1.3}
+  .task-pane,.watch-task{max-height:none!important;overflow:visible;padding:10px 11px;border-radius:12px}
+  .prompt-card{grid-template-columns:28px minmax(0,1fr);gap:8px;padding:9px 10px;margin:2px 0 5px}.prompt-card b{width:24px;height:24px;font-size:12px}.prompt-card span{font-size:16px;line-height:1.28}
+  .line-input,.response{font-size:16px;padding:9px 10px}.response{min-height:64px;margin-bottom:9px}
+  .segment-nav{gap:5px;margin-top:6px}.segment-nav button{font-size:12px;padding:6px 8px}
+  html[data-eleap-hosted="1"][data-eleap-role="student"] .nav,html[data-eleap-hosted="1"][data-eleap-role="guest"] .nav{padding:8px 10px 54px;min-height:108px}
+}
+@media(max-width:430px){
+  .video-card video,.video-focus .video-card video{max-height:30dvh!important}
+  .slide h2{font-size:27px}.lead{font-size:16px}.prompt-card span{font-size:15px}.response{min-height:58px}
+}
