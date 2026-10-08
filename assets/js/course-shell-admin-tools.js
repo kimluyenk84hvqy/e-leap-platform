@@ -1,5 +1,6 @@
 /* E-LEAP: safe course-shell extension + Admin course creation tools.
  * Keeps Objective PET B1 visible without intercepting window.fetch.
+ * Keeps the first Life Intermediate unit/lesson shells persistent across sessions.
  * Adds an Admin-only "+ Add Course Shell" action on the Courses home.
  */
 (function installCourseShellAdminTools(){
@@ -10,10 +11,23 @@
     {id:'objective-pet-b1-u01-l02',parentId:'objective-pet-b1-u01',name:'U1.2',type:'lesson',order:2,status:'hidden'}
   ];
 
+  const BUILTIN_LIFE=[
+    {id:'life-u01',parentId:'life-intermediate',name:'Unit 1 · Lifestyle',type:'unit',order:1,status:'published'},
+    {id:'life-u01-l01',parentId:'life-u01',name:'Lesson 1. U1. A&B · How well do you sleep? + The secrets of a long life',type:'lesson',order:1,status:'published'},
+    {id:'life-u01-l02',parentId:'life-u01',name:"Lesson 2. U1. C&D · Nature is good for you + At the doctor's",type:'lesson',order:2,status:'published'},
+    {id:'life-u01-l03',parentId:'life-u01',name:'Lesson 3. U1. E&F · Personal Information + My Local Park',type:'lesson',order:3,status:'published'}
+  ];
+
   function mergeBuiltins(shells){
     const out=Array.isArray(shells)?shells:[];
     const ids=new Set(out.map(x=>x?.id));
-    for(const x of BUILTIN_B1){ if(!ids.has(x.id)){ out.push(structuredClone(x)); ids.add(x.id); } }
+    for(const x of [...BUILTIN_B1,...BUILTIN_LIFE]){
+      if(!ids.has(x.id)){out.push(structuredClone(x));ids.add(x.id);}
+      else {
+        const i=out.findIndex(y=>y?.id===x.id);
+        if(i>=0)out[i]={...out[i],...x,id:out[i].id};
+      }
+    }
     return out;
   }
 
