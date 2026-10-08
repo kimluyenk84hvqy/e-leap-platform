@@ -10,7 +10,7 @@ export default async function handler(req,res){
     if(expectedRole && !['admin','teacher'].includes(expectedRole))return res.status(400).json({ok:false,error:'Invalid sign-in role'});
     const attempts=await sql`SELECT * FROM auth_login_attempts WHERE login_key=${email} LIMIT 1`;
     if(attempts[0]?.locked_until && new Date(attempts[0].locked_until).getTime()>Date.now())return res.status(429).json({ok:false,error:'Too many failed attempts. Try again later.'});
-    const rows=await sql`SELECT user_id,email,student_id,display_name,role,status,password_hash FROM auth_users WHERE email=${email} LIMIT 1`;
+    const rows=await sql`SELECT user_id,email,student_id,display_name,role,status,password_hash,must_change_password FROM auth_users WHERE email=${email} LIMIT 1`;
     const u=rows[0],valid=Boolean(u&&u.status==='active'&&u.password_hash&&verifyPassword(password,u.password_hash));
     if(!valid){
       await sql`INSERT INTO auth_login_attempts(login_key,failures,window_started_at,locked_until) VALUES(${email},1,NOW(),NULL)
