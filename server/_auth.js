@@ -64,7 +64,7 @@ export async function getAuth(req){
   if(!token)return null;
   const sql=getResearchDb();
   const rows=await sql`
-    SELECT u.user_id,u.email,u.student_id,u.display_name,u.role,u.status,s.expires_at
+    SELECT u.user_id,u.email,u.student_id,u.display_name,u.role,u.status,u.must_change_password,s.expires_at
     FROM auth_sessions s JOIN auth_users u ON u.user_id=s.user_id
     WHERE s.token_hash=${sha256(token)} AND s.expires_at>NOW() AND u.status='active'
     LIMIT 1`;
@@ -112,10 +112,12 @@ export async function ensureAuthSchema(){
     display_name TEXT NOT NULL,
     role TEXT NOT NULL CHECK(role IN ('admin','teacher','student')),
     password_hash TEXT,
+    must_change_password BOOLEAN NOT NULL DEFAULT FALSE,
     status TEXT NOT NULL DEFAULT 'active',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
   )`;
+  await sql`ALTER TABLE auth_users ADD COLUMN IF NOT EXISTS must_change_password BOOLEAN NOT NULL DEFAULT FALSE`;
   await sql`CREATE TABLE IF NOT EXISTS auth_sessions (
     session_auth_id BIGSERIAL PRIMARY KEY,
     token_hash TEXT UNIQUE NOT NULL,
