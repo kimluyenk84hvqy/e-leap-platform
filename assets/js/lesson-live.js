@@ -21,10 +21,43 @@
     return parseInt(counter, 10) || 1;
   }
 
+  function currentLessonId(){
+    return cfg.LESSON_ID || document.documentElement.dataset.lessonId || document.body?.dataset.lessonId || new URLSearchParams(location.search).get("lesson") || "";
+  }
+
+  function currentClassId(){
+    return new URLSearchParams(location.search).get("classId") || state.session?.class_id || "";
+  }
+
   function studentUrl(code){
     const u = new URL("student.html", location.href);
     u.searchParams.set("code", code);
+    const lessonId = currentLessonId();
+    const classId = currentClassId();
+    if(lessonId) u.searchParams.set("lesson", lessonId);
+    if(classId) u.searchParams.set("classId", classId);
     return u.toString();
+  }
+
+  function internalQrUrl(text){
+    const u = new URL("/api/qr", location.origin);
+    u.searchParams.set("text", text);
+    return u.toString();
+  }
+
+  function externalQrFallback(text, size=220){
+    return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&margin=0&data=${encodeURIComponent(text)}`;
+  }
+
+  function setQr(img, text, size=220){
+    if(!img) return;
+    img.dataset.qrFallbackUsed = "0";
+    img.onerror = () => {
+      if(img.dataset.qrFallbackUsed === "1") return;
+      img.dataset.qrFallbackUsed = "1";
+      img.src = externalQrFallback(text, size);
+    };
+    img.src = internalQrUrl(text);
   }
 
   function setModal(open){
@@ -33,7 +66,6 @@
     modal.hidden = !open;
     document.body.classList.toggle("lesson-live-modal-open", open);
   }
-
 
   function persistentPanel(){
     return $("#lessonPersistentJoinPanel");
@@ -51,8 +83,7 @@
     if(!panel) return;
 
     $("#lessonPersistentCode").textContent = state.session.join_code;
-    $("#lessonPersistentQr").src =
-      `https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=0&data=${encodeURIComponent(studentUrl(state.session.join_code))}`;
+    setQr($("#lessonPersistentQr"), studentUrl(state.session.join_code), 180);
 
     const joined = $("#lessonLiveJoinedCount")?.textContent || "0";
     $("#lessonPersistentJoined").textContent = joined;
@@ -162,8 +193,7 @@
     $("#lessonLiveCreateView").hidden = true;
     $("#lessonLiveSessionView").hidden = false;
     $("#lessonLiveJoinCode").textContent = state.session.join_code;
-    $("#lessonLiveQr").src =
-      `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=0&data=${encodeURIComponent(studentUrl(state.session.join_code))}`;
+    setQr($("#lessonLiveQr"), studentUrl(state.session.join_code), 220);
     refreshClassState();
     refreshJoinedCount();
   }
@@ -210,13 +240,20 @@
   }
 
   function openWall(){
-    window.open("teacher-live.html", "_blank");
+    const u = new URL("teacher-live.html", location.href);
+    const lessonId = currentLessonId();
+    const classId = currentClassId();
+    if(lessonId) u.searchParams.set("lesson", lessonId);
+    if(classId) u.searchParams.set("classId", classId);
+    if(state.session?.join_code) u.searchParams.set("code", state.session.join_code);
+    window.open(u.toString(), "_blank");
   }
 
   async function copyStudentLink(){
     if(!state.session) return;
     await navigator.clipboard.writeText(studentUrl(state.session.join_code));
     const b = $("#lessonLiveCopyLink");
+    if(!b) return;
     const old = b.textContent;
     b.textContent = "Copied";
     setTimeout(()=>b.textContent=old, 1000);
