@@ -12,16 +12,22 @@ export default async function handler(req,res){
       const assignmentId=req.query?.assignmentId;
       if(user.role==='student'){
         const rows=assignmentId
-          ? await sql`SELECT s.submission_id,s.assignment_id,s.attempt_no,s.status,s.submitted_at,s.graded_at,s.feedback_released_at,
-              a.title,a.class_id,a.resource_id,a.activity_id,
+          ? await sql`SELECT s.submission_id,s.assignment_id,s.attempt_no,
+              CASE WHEN s.feedback_released_at IS NOT NULL THEN 'feedback-released' ELSE 'submitted' END AS status,
+              s.submitted_at,
+              CASE WHEN s.feedback_released_at IS NOT NULL THEN s.graded_at ELSE NULL END AS graded_at,
+              s.feedback_released_at,a.title,a.class_id,a.resource_id,a.activity_id,
               CASE WHEN s.feedback_released_at IS NOT NULL THEN s.score ELSE NULL END AS score,
               CASE WHEN s.feedback_released_at IS NOT NULL THEN s.max_score ELSE NULL END AS max_score,
               CASE WHEN s.feedback_released_at IS NOT NULL THEN s.feedback ELSE NULL END AS feedback,
               CASE WHEN s.feedback_released_at IS NOT NULL THEN s.rubric_scores ELSE NULL END AS rubric_scores
               FROM submissions s JOIN assignments a ON a.assignment_id=s.assignment_id
               WHERE s.assignment_id=${assignmentId} AND s.student_user_id=${user.user_id} ORDER BY s.attempt_no DESC`
-          : await sql`SELECT s.submission_id,s.assignment_id,s.attempt_no,s.status,s.submitted_at,s.graded_at,s.feedback_released_at,
-              a.title,a.class_id,a.resource_id,a.activity_id,
+          : await sql`SELECT s.submission_id,s.assignment_id,s.attempt_no,
+              CASE WHEN s.feedback_released_at IS NOT NULL THEN 'feedback-released' ELSE 'submitted' END AS status,
+              s.submitted_at,
+              CASE WHEN s.feedback_released_at IS NOT NULL THEN s.graded_at ELSE NULL END AS graded_at,
+              s.feedback_released_at,a.title,a.class_id,a.resource_id,a.activity_id,
               CASE WHEN s.feedback_released_at IS NOT NULL THEN s.score ELSE NULL END AS score,
               CASE WHEN s.feedback_released_at IS NOT NULL THEN s.max_score ELSE NULL END AS max_score,
               CASE WHEN s.feedback_released_at IS NOT NULL THEN s.feedback ELSE NULL END AS feedback,
