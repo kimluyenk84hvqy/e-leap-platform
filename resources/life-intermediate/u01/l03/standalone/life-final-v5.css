@@ -1,0 +1,21 @@
+/* Life Lesson 3 final projector/mobile pass */
+:root{--v5-ink:#021326;--v5-blue:#08233f;--v5-purple:#6748cf;--v5-purple-soft:#efeaff;--v5-answer:#ffe27a;--v5-answer-border:#b87400}
+html,body{color:var(--v5-ink)!important}
+.screen{max-width:1720px!important}
+.screen h2{font-size:clamp(58px,5.6vw,88px)!important;color:var(--v5-ink)!important;font-weight:950!important}
+.instruction{font-size:clamp(30px,2.35vw,40px)!important;color:var(--v5-blue)!important;font-weight:850!important;line-height:1.32!important}
+.q,.card-q,.match-prompt span,.scene-copy span,.visitor-row label,.tab-question,.discussion-card{font-size:clamp(28px,2.08vw,36px)!important;color:var(--v5-ink)!important;line-height:1.3!important}
+.response-input,.drop-value,.inline-correct{font-size:clamp(27px,2vw,35px)!important;color:var(--v5-ink)!important}
+.response-box,.drop-box{min-height:80px!important;border:3px solid #69869d!important}
+.response-box.answer-mode,.drop-box.answer-mode{background:var(--v5-answer)!important;border-color:var(--v5-answer-border)!important;overflow:hidden!important}
+.response-box.answer-mode .inline-correct,.drop-box.answer-mode .inline-correct{width:100%!important;padding:17px 20px!important;margin:0!important;background:transparent!important}
+.answer-source{display:none!important}
+.review-card{grid-template-columns:minmax(300px,.72fr) minmax(52vw,1.28fr)!important}.long-response{width:100%!important;min-width:52vw!important}
+.unit-mega{font-size:clamp(132px,15vw,236px)!important;line-height:.74!important}.section-hero h1{font-size:clamp(96px,9.5vw,154px)!important}
+.match-row{gap:8px!important;padding:7px 11px!important}.match-rows{gap:6px!important}.response-hint{font-size:14px!important;color:#71808d!important;font-weight:650!important}
+.builder-field{background:var(--v5-purple-soft)!important;border-color:var(--v5-purple)!important}.builder-field:nth-child(n){background:var(--v5-purple-soft)!important}.builder-field .drop-box{border-color:#826dd7!important}
+.video-split{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:18px!important}.big-video video{width:100%!important;aspect-ratio:16/9!important;height:auto!important;max-height:72vh!important;object-fit:contain!important}.video-task-scroll{max-height:72vh!important;overflow:auto!important}.scene-row{gap:9px!important}.visitor-row{gap:8px!important}
+.park-photo.real-photo{min-height:610px!important}.park-photo.real-photo img{min-height:610px!important;object-fit:cover!important}.park-photo figcaption{font-size:18px!important}
+.blank-homework-form{max-width:1320px!important}.blank-form-row input{min-height:66px!important;font-size:23px!important}.deadline-banner{font-size:clamp(28px,2.2vw,36px)!important}
+@media(max-width:1000px){.review-card{grid-template-columns:1fr!important}.long-response{min-width:0!important}.video-split{grid-template-columns:1fr!important}.video-task-scroll{max-height:none!important}.unit-mega{font-size:clamp(86px,16vw,138px)!important}.section-hero h1{font-size:clamp(66px,12vw,102px)!important}.park-photo.real-photo,.park-photo.real-photo img{min-height:420px!important}}
+@media(max-width:600px){.screen h2{font-size:39px!important}.instruction{font-size:22px!important}.q,.card-q,.match-prompt span,.scene-copy span,.visitor-row label,.tab-question,.discussion-card{font-size:20px!important}.response-input,.drop-value,.inline-correct{font-size:20px!important}.response-box,.drop-box{min-height:64px!important}.unit-mega{font-size:70px!important}.section-hero h1{font-size:58px!important}.park-photo.real-photo,.park-photo.real-photo img{min-height:320px!important}.video-task-scroll{max-height:none!important}}
