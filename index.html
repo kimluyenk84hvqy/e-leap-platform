@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>E-LEAP — English Learning, Engagement and Assessment Platform</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="assets/css/styles.css"><style>.auth-entry{margin-top:10px;width:100%;border:1px solid #8eb7ad;background:#fff;color:#164e45;border-radius:8px;padding:9px 10px;font-weight:800;cursor:pointer}.auth-entry[hidden]{display:none}.auth-hint{font-size:10px;line-height:1.45;color:#b8d5ce;margin-top:8px}.user button{border:0;background:transparent;color:#1f4d3a;font:inherit;font-weight:800;cursor:pointer;padding:0}.identity-card{border:1px solid rgba(255,255,255,.16);border-radius:10px;padding:10px;margin-top:6px}.identity-name{font-weight:800;color:#fff;font-size:12px;line-height:1.35}.identity-role{font-size:10px;color:#b8d5ce;text-transform:uppercase;letter-spacing:.08em;margin-top:3px}</style></head><body>
-<div class="app" data-role="guest"><aside class="sidebar"><div class="brand"><div class="brand-mark">E</div><div><div class="brand-name">E-LEAP</div><div class="brand-sub">English Learning, Engagement<br>and Assessment Platform</div></div></div><nav id="mainNav"></nav><div class="side-bottom"><div class="role-label">SIGNED IN AS</div><div class="identity-card"><div class="identity-name" id="identityName">Guest</div><div class="identity-role" id="identityRole">Guest</div></div><button class="auth-entry" id="manageUsersBtn" type="button" hidden>Manage users</button><button class="auth-entry" id="signInBtn" type="button" hidden>Sign in</button><button class="auth-entry" id="signOutBtn" type="button" hidden>Sign out</button><div class="auth-hint" id="authHint"></div></div></aside>
+<div class="app" data-role="guest"><aside class="sidebar"><div class="brand"><div class="brand-mark">E</div><div><div class="brand-name">E-LEAP</div><div class="brand-sub">English Learning, Engagement<br>and Assessment Platform</div></div></div><nav id="mainNav"></nav><div class="side-bottom"><div class="role-label">SIGNED IN AS</div><div class="identity-card"><div class="identity-name" id="identityName">Guest</div><div class="identity-role" id="identityRole">Guest</div></div><button class="auth-entry" id="manageUsersBtn" type="button" hidden>Manage users</button><button class="auth-entry" id="signInBtn" type="button" hidden>Choose role / Sign in</button><button class="auth-entry" id="signOutBtn" type="button" hidden>Sign out</button><div class="auth-hint" id="authHint"></div></div></aside>
 <main><header class="topbar"><div><div class="crumb" id="crumb">E-LEAP / Courses</div><h2 id="pageTitle">Courses</h2></div><div class="top-actions"><button class="btn presentation-toggle" id="presentationToggle" type="button">Presentation</button><button class="icon" title="Search">⌕</button><div class="user"><span>K84</span><b id="roleText">Loading…</b></div></div></header><div id="content" class="content"></div></main></div>
 <script src="engine/shell-engine.js"></script><script src="assets/js/access-control.js"></script><script src="assets/js/shell-governance.js"></script><script src="assets/js/shell-manager.js"></script><script src="assets/js/learning-core.js"></script><script src="assets/js/identity-access.js"></script><script src="assets/js/resource-manager.js"></script>
 <script src="assets/js/operations-ui.js"></script><script src="assets/js/research-class-report-ui.js"></script><script src="assets/js/marking-center-entry.js"></script><script src="assets/js/course-shell-admin-tools.js"></script>
@@ -9,59 +9,28 @@
   let role='guest',user=null;
   try{
     const r=await fetch('/api/auth/me',{credentials:'same-origin',cache:'no-store'});
-    if(r.ok){
-      const d=await r.json();
-      if(allowed.has(d?.user?.role)){role=d.user.role;user=d.user;}
-    }
-  }catch(_){ role='guest'; }
+    if(r.ok){const d=await r.json();if(allowed.has(d?.user?.role)){role=d.user.role;user=d.user;}}
+  }catch(_){role='guest';}
+  let explicitGuest=false;try{explicitGuest=sessionStorage.getItem('e-leap-guest-entry')==='1'}catch{}
+  if(!user&&!explicitGuest){const next=encodeURIComponent(location.pathname+location.search+location.hash);location.replace(`signin.html?next=${next}`);return;}
   if(user?.must_change_password && role==='teacher' && !location.pathname.endsWith('/change-password.html')){location.replace('change-password.html');return;}
   window.ELEAPCurrentUser=user;
-  try{
-    localStorage.setItem('e-leap-preview-role',role);
-    if(!['teacher','admin'].includes(role))localStorage.removeItem('e-leap-presentation-mode');
-  }catch(_){}
-  try{
-    const sr=await fetch('/api/research/shells',{credentials:'same-origin',cache:'no-store'});
-    if(sr.ok){
-      const sd=await sr.json();
-      window.ELEAPShellManager?.hydrate?.(sd.shells||[]);
-      if(role==='admin'&&!(sd.shells||[]).length){
-        try{
-          const local=JSON.parse(localStorage.getItem('e-leap-shell-overrides-v2')||'{}');
-          if(Array.isArray(local.shells)&&local.shells.length){
-            const up=await fetch('/api/research/shells',{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({shells:local.shells})});
-            if(up.ok)window.ELEAPShellManager?.hydrate?.(local.shells);
-          }
-        }catch(_){}
-      }
-    }
-  }catch(e){console.warn('Shared shell catalog unavailable; using local/static fallback.',e)}
+  try{localStorage.setItem('e-leap-preview-role',role);if(!['teacher','admin'].includes(role))localStorage.removeItem('e-leap-presentation-mode');}catch(_){}
   document.querySelector('.app')?.setAttribute('data-role',role);
   const label=({guest:'Guest',student:'Student',teacher:'Teacher',admin:'Administrator'})[role]||role;
-  const roleText=document.getElementById('roleText');
-  if(roleText)roleText.textContent=user?.display_name||label;
-  const identityName=document.getElementById('identityName'),identityRole=document.getElementById('identityRole');
-  if(identityName)identityName.textContent=user?.display_name||'Guest';
-  if(identityRole)identityRole.textContent=label;
+  const roleText=document.getElementById('roleText');if(roleText)roleText.textContent=user?.display_name||label;
+  const identityName=document.getElementById('identityName'),identityRole=document.getElementById('identityRole');if(identityName)identityName.textContent=user?.display_name||'Guest';if(identityRole)identityRole.textContent=label;
   const signIn=document.getElementById('signInBtn'),signOut=document.getElementById('signOutBtn'),hint=document.getElementById('authHint'),manageUsers=document.getElementById('manageUsersBtn');
   if(role==='admin'){manageUsers.hidden=false;manageUsers.onclick=()=>location.href='admin-users.html';}
   if(role==='guest'){
-    signIn.hidden=false;
-    hint.textContent='Public practice only. Sign in for saved learning, teaching or administration.';
-    signIn.onclick=()=>{const next=encodeURIComponent(location.pathname+location.search+location.hash);location.href=`signin.html?next=${next}`;};
+    signIn.hidden=false;hint.textContent='Guest mode: public practice only. Choose a role to sign in for saved learning, teaching or administration.';
+    signIn.onclick=()=>{try{sessionStorage.removeItem('e-leap-guest-entry')}catch{}const next=encodeURIComponent(location.pathname+location.search+location.hash);location.href=`signin.html?next=${next}`;};
   }else{
-    signOut.hidden=false;
-    hint.textContent=role==='student'?'Your Student ID and learning record are protected by your private PIN.':'Permissions are verified by the server.';
-    signOut.onclick=async()=>{signOut.disabled=true;try{await fetch('/api/auth/logout',{method:'POST',credentials:'same-origin'});}finally{location.reload();}};
+    signOut.hidden=false;hint.textContent=role==='student'?'Your Student ID and learning record are protected by your private PIN.':'Permissions are verified by the server.';
+    signOut.onclick=async()=>{signOut.disabled=true;try{await fetch('/api/auth/logout',{method:'POST',credentials:'same-origin'});}finally{try{sessionStorage.removeItem('e-leap-guest-entry')}catch{}location.replace('signin.html');}};
   }
-  const script=document.createElement('script');
-  script.src='assets/js/app.js?v=assessment-research-v1-role-lock-auth-entry-course-shells-student-pin-role-policy-shared-shells';
-  script.onload=()=>{
-    const ext=document.createElement('script');ext.src='assets/js/student-portal-tools.js?v=student-pin-v1';document.body.appendChild(ext);
-    const policy=document.createElement('script');policy.src='assets/js/role-shell-policy.js?v=role-shell-v1';document.body.appendChild(policy);
-    const homework=document.createElement('script');homework.src='assets/js/assignment-workflow-upgrade.js?v=homework-deadline-v1';document.body.appendChild(homework);
-    const assignmentBridge=document.createElement('script');assignmentBridge.src='assets/js/assignment-submission-bridge.js?v=assignment-submit-v1';document.body.appendChild(assignmentBridge);
-  };
+  const script=document.createElement('script');script.src='assets/js/app.js?v=assessment-research-v1-role-lock-auth-entry-course-shells-student-pin-role-policy';
+  script.onload=()=>{const ext=document.createElement('script');ext.src='assets/js/student-portal-tools.js?v=student-pin-v1';document.body.appendChild(ext);const policy=document.createElement('script');policy.src='assets/js/role-shell-policy.js?v=role-shell-v1';document.body.appendChild(policy);const homework=document.createElement('script');homework.src='assets/js/assignment-workflow-upgrade.js?v=homework-deadline-v1';document.body.appendChild(homework);const assignmentBridge=document.createElement('script');assignmentBridge.src='assets/js/assignment-submission-bridge.js?v=assignment-submit-v1';document.body.appendChild(assignmentBridge);};
   document.body.appendChild(script);
 })();
 </script><script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js').catch(()=>{});}</script></body></html>
