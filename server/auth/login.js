@@ -20,12 +20,13 @@ export default async function handler(req,res){
           locked_until=CASE WHEN (CASE WHEN auth_login_attempts.window_started_at < NOW()-INTERVAL '15 minutes' THEN 1 ELSE auth_login_attempts.failures+1 END) >= ${MAX_FAILURES} THEN NOW()+INTERVAL '15 minutes' ELSE NULL END`;
       return res.status(401).json({ok:false,error:'Invalid email or password'});
     }
-    if(expectedRole && u.role!==expectedRole)return res.status(403).json({ok:false,error:`This account is assigned as ${u.role}, not ${expectedRole}.`});
+    const adminTeacherPreview=u.role==='admin'&&expectedRole==='teacher';
+    if(expectedRole && u.role!==expectedRole && !adminTeacherPreview)return res.status(403).json({ok:false,error:`This account is assigned as ${u.role}, not ${expectedRole}.`});
     if(!['admin','teacher'].includes(u.role))return res.status(403).json({ok:false,error:'Students sign in with Student ID and PIN.'});
     await sql`DELETE FROM auth_login_attempts WHERE login_key=${email}`;
     await sql`DELETE FROM auth_sessions WHERE expires_at<=NOW()`;
     await createSession(res,u.user_id);
     const {password_hash,...user}=u;
-    return res.status(200).json({ok:true,user});
+    return res.status(200).json({ok:true,user,viewRole:adminTeacherPreview?'teacher':u.role});
   }catch(e){console.error('login failed',e);return res.status(500).json({ok:false,error:'Login failed'});}
 }
