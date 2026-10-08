@@ -48,4 +48,12 @@
     write(d);return d.teacherGrants.at(-1);
   }
   window.ELEAPIdentity={read,write,role,context,currentLearner,ensurePreviewAccount,grantTeacher,isPreview:true};
+
+  // Shared-computer safety: authenticated roles auto sign out after 90 minutes of inactivity.
+  if(!document.querySelector('script[data-eleap-session-timeout]')){
+    const s=document.createElement('script');
+    s.src='assets/js/session-timeout.js?v=golden-idle-90m-v1';
+    s.dataset.eleapSessionTimeout='1';
+    document.head.appendChild(s);
+  }
 })();
