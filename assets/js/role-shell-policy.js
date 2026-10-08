@@ -7,11 +7,14 @@
   function guestPolicy(){if(role()!=='guest')return;document.querySelectorAll('#mainNav [data-nav]').forEach(b=>{if(!['courses','skills-lab'].includes(b.dataset.nav))b.remove()});}
   async function learnerShellPolicy(){const r=role();if(!['student','guest'].includes(r))return;const registry=await loadShells(),byId=new Map((registry||[]).map(x=>[String(x.id),x]));document.querySelectorAll('#content .shell-card [data-shell]').forEach(btn=>{const card=btn.closest('.shell-card'),sh=byId.get(String(btn.dataset.shell||''));if(!card||!sh)return;const visible=['published','approved'].includes(String(sh.status||'').toLowerCase());if(!visible)card.hidden=true;});}
   async function studentPolicy(){if(role()!=='student')return;const p=await loadStudent();const title=document.getElementById('pageTitle')?.textContent||'',content=document.getElementById('content');if(!content)return;
-    // Courses are class-scoped: a normal learner sees only published courses linked to active memberships.
+    // Courses are class-scoped for normal learners. TEST001 is the dedicated QA account and may inspect every published course.
     if(title==='Courses'&&p&&!content.querySelector('[data-my-courses-policy]')){
+      const qa=String(p?.user?.student_id||'').toUpperCase()==='TEST001';
       const ids=new Set((p.memberships||[]).map(m=>String(m.course_id||'')).filter(Boolean));
-      content.querySelectorAll('.shell-card [data-shell]').forEach(btn=>{const card=btn.closest('.shell-card'),id=String(btn.dataset.shell||'');if(card&&id&&id!=='advanced-skills'&&!ids.has(id))card.hidden=true;});
-      const note=document.createElement('div');note.dataset.myCoursesPolicy='1';note.className='ops-note';note.textContent=ids.size?'My Courses shows published courses linked to your active class membership.':'No active course membership yet.';const grid=content.querySelector('.grid');if(grid)grid.before(note);else content.prepend(note);
+      if(!qa){
+        content.querySelectorAll('.shell-card [data-shell]').forEach(btn=>{const card=btn.closest('.shell-card'),id=String(btn.dataset.shell||'');if(card&&id&&id!=='advanced-skills'&&!ids.has(id))card.hidden=true;});
+      }
+      const note=document.createElement('div');note.dataset.myCoursesPolicy='1';note.className='ops-note';note.textContent=qa?'QA access: TEST001 can inspect every published course. Normal students only see courses linked to their active classes.':ids.size?'My Courses shows published courses linked to your active class membership.':'No active course membership yet.';const grid=content.querySelector('.grid');if(grid)grid.before(note);else content.prepend(note);
     }
     // Skills Lab and Mock Tests are open-learning libraries for signed-in students.
     const activeNav=document.querySelector('#mainNav .nav-btn.active')?.dataset.nav;
