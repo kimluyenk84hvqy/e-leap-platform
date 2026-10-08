@@ -7,28 +7,9 @@
       "type": "interactive-lesson",
       "version": "APPROVED",
       "status": "approved",
-      "source": {
-        "kind": "lesson-data",
-        "path": "resources/objective-first-b2/u01/l01/lesson.json",
-        "standaloneUrl": "resources/objective-first-b2/u01/l01/standalone/index.html",
-        "package": "E-LEAP-Objective-First-B2-U1.1-FINAL-v2"
-      },
-      "capabilities": [
-        "classroom",
-        "self-study",
-        "presentation",
-        "responses",
-        "progress"
-      ],
-      "copyright": {
-        "reviewStatus": "pending-audit",
-        "trafficLight": "amber",
-        "owner": null,
-        "license": null,
-        "attributionRequired": null,
-        "usageScope": "private-until-cleared",
-        "evidence": null
-      }
+      "source": {"kind":"lesson-data","path":"resources/objective-first-b2/u01/l01/lesson.json","standaloneUrl":"resources/objective-first-b2/u01/l01/standalone/index.html","package":"E-LEAP-Objective-First-B2-U1.1-FINAL-v2"},
+      "capabilities": ["classroom","self-study","presentation","responses","progress"],
+      "copyright": {"reviewStatus":"pending-audit","trafficLight":"amber","owner":null,"license":null,"attributionRequired":null,"usageScope":"private-until-cleared","evidence":null}
     },
     {
       "id": "res-objective-first-b2-u01-l02",
@@ -36,28 +17,9 @@
       "type": "interactive-lesson",
       "version": "U1.2 FINAL v20 E-LEAP MASTER",
       "status": "approved",
-      "source": {
-        "kind": "lesson-data",
-        "path": "resources/objective-first-b2/u01/l02/lesson.json",
-        "standaloneUrl": "resources/objective-first-b2/u01/l02/standalone/index.html",
-        "package": "E-LEAP_Objective_First_B2_U1.2_FINAL_v20_ELEAP_MASTER"
-      },
-      "capabilities": [
-        "classroom",
-        "self-study",
-        "presentation",
-        "responses",
-        "progress"
-      ],
-      "copyright": {
-        "reviewStatus": "pending-audit",
-        "trafficLight": "amber",
-        "owner": null,
-        "license": null,
-        "attributionRequired": null,
-        "usageScope": "private-until-cleared",
-        "evidence": null
-      }
+      "source": {"kind":"lesson-data","path":"resources/objective-first-b2/u01/l02/lesson.json","standaloneUrl":"resources/objective-first-b2/u01/l02/standalone/index.html","package":"E-LEAP_Objective_First_B2_U1.2_FINAL_v20_ELEAP_MASTER"},
+      "capabilities": ["classroom","self-study","presentation","responses","progress"],
+      "copyright": {"reviewStatus":"pending-audit","trafficLight":"amber","owner":null,"license":null,"attributionRequired":null,"usageScope":"private-until-cleared","evidence":null}
     },
     {
       "id": "res-objective-first-b2-u02-l01",
@@ -65,24 +27,9 @@
       "type": "interactive-lesson",
       "version": "GOLDEN PREVIEW 0.1",
       "status": "draft",
-      "source": {
-        "kind": "lesson-data",
-        "path": "resources/objective-first-b2/u02/l01/lesson.json",
-        "standaloneUrl": "resources/objective-first-b2/u02/l01/standalone/index.html",
-        "package": "E-LEAP-U2.1-GOLDEN-PREVIEW"
-      },
-      "capabilities": [
-        "classroom",
-        "self-study",
-        "presentation",
-        "responses",
-        "progress"
-      ],
-      "copyright": {
-        "reviewStatus": "private-course-material",
-        "trafficLight": "amber",
-        "usageScope": "private-until-cleared"
-      }
+      "source": {"kind":"lesson-data","path":"resources/objective-first-b2/u02/l01/lesson.json","standaloneUrl":"resources/objective-first-b2/u02/l01/standalone/index.html","package":"E-LEAP-U2.1-GOLDEN-PREVIEW"},
+      "capabilities": ["classroom","self-study","presentation","responses","progress"],
+      "copyright": {"reviewStatus":"private-course-material","trafficLight":"amber","usageScope":"private-until-cleared"}
     },
     {
       "id": "res-objective-first-b2-u02-l02",
@@ -90,24 +37,19 @@
       "type": "interactive-lesson",
       "version": "SOURCE INTERACTIVE 0.2",
       "status": "draft",
-      "source": {
-        "kind": "lesson-data",
-        "path": "resources/objective-first-b2/u02/l02/lesson.json",
-        "standaloneUrl": "resources/objective-first-b2/u02/l02/standalone/index.html",
-        "package": "E-LEAP-U2.2-INTERACTIVE-READY"
-      },
-      "capabilities": [
-        "classroom",
-        "self-study",
-        "presentation",
-        "responses",
-        "progress"
-      ],
-      "copyright": {
-        "reviewStatus": "private-course-material",
-        "trafficLight": "amber",
-        "usageScope": "private-until-cleared"
-      }
+      "source": {"kind":"lesson-data","path":"resources/objective-first-b2/u02/l02/lesson.json","standaloneUrl":"resources/objective-first-b2/u02/l02/standalone/index.html","package":"E-LEAP-U2.2-INTERACTIVE-READY"},
+      "capabilities": ["classroom","self-study","presentation","responses","progress"],
+      "copyright": {"reviewStatus":"private-course-material","trafficLight":"amber","usageScope":"private-until-cleared"}
+    },
+    {
+      "id": "res-life-intermediate-u01-l03",
+      "name": "Life Unit 1E–1F · Personal Information & My Local Park",
+      "type": "interactive-lesson",
+      "version": "FINAL CANDIDATE 2026-10-09",
+      "status": "draft",
+      "source": {"kind":"lesson-data","path":"resources/life-intermediate/u01/l03/lesson.json","standaloneUrl":"resources/life-intermediate/u01/l03/standalone/index.html","package":"E-LEAP-Life-A2-B1-U1E-U1F-FINAL"},
+      "capabilities": ["classroom","self-study","presentation","responses","progress"],
+      "copyright": {"reviewStatus":"source-material-user-provided","trafficLight":"amber","usageScope":"private-educational-use","evidence":"User-provided UNIT1 E+F Pre LIFE presentation and Life A2-B1 source pages."}
     },
     {
       "id": "res-adv-writing-letter-email-writing-informal-l01",
@@ -115,65 +57,17 @@
       "type": "interactive-lesson",
       "version": "FINAL-v1.2.0",
       "status": "approved",
-      "source": {
-        "kind": "lesson-data",
-        "path": "resources/advanced-skills/writing/letter-email/informal/l01/lesson.json",
-        "standaloneUrl": "resources/advanced-skills/writing/letter-email/informal/l01/standalone/index.html",
-        "package": "E-LEAP-Academic-Skills-Informal-Letter-L1-FINAL-v1.2.0"
-      },
-      "capabilities": [
-        "classroom",
-        "self-study",
-        "presentation",
-        "responses",
-        "progress"
-      ],
-      "copyright": {
-        "reviewStatus": "source-material-user-provided",
-        "trafficLight": "amber",
-        "owner": null,
-        "license": null,
-        "attributionRequired": null,
-        "usageScope": "private-educational-use",
-        "evidence": "User-provided PPT and Cambridge Objective First Writing Folder source pages."
-      }
+      "source": {"kind":"lesson-data","path":"resources/advanced-skills/writing/letter-email/informal/l01/lesson.json","standaloneUrl":"resources/advanced-skills/writing/letter-email/informal/l01/standalone/index.html","package":"E-LEAP-Academic-Skills-Informal-Letter-L1-FINAL-v1.2.0"},
+      "capabilities": ["classroom","self-study","presentation","responses","progress"],
+      "copyright": {"reviewStatus":"source-material-user-provided","trafficLight":"amber","owner":null,"license":null,"attributionRequired":null,"usageScope":"private-educational-use","evidence":"User-provided PPT and Cambridge Objective First Writing Folder source pages."}
     }
   ],
   "placements": [
-    {
-      "id": "placement-u01-l01",
-      "resourceId": "res-objective-first-b2-u01-l01",
-      "shellId": "objective-first-b2-u01-l01",
-      "order": 1,
-      "status": "active"
-    },
-    {
-      "id": "placement-u01-l02",
-      "resourceId": "res-objective-first-b2-u01-l02",
-      "shellId": "objective-first-b2-u01-l02",
-      "order": 1,
-      "status": "active"
-    },
-    {
-      "id": "placement-u02-l01",
-      "resourceId": "res-objective-first-b2-u02-l01",
-      "shellId": "objective-first-b2-u02-l01",
-      "order": 1,
-      "status": "active"
-    },
-    {
-      "id": "placement-u02-l02",
-      "resourceId": "res-objective-first-b2-u02-l02",
-      "shellId": "objective-first-b2-u02-l02",
-      "order": 1,
-      "status": "active"
-    },
-    {
-      "id": "placement-adv-writing-letter-email-writing-informal-l01",
-      "resourceId": "res-adv-writing-letter-email-writing-informal-l01",
-      "shellId": "adv-writing-letter-email-writing-informal-l01",
-      "order": 1,
-      "status": "active"
-    }
+    {"id":"placement-u01-l01","resourceId":"res-objective-first-b2-u01-l01","shellId":"objective-first-b2-u01-l01","order":1,"status":"active"},
+    {"id":"placement-u01-l02","resourceId":"res-objective-first-b2-u01-l02","shellId":"objective-first-b2-u01-l02","order":1,"status":"active"},
+    {"id":"placement-u02-l01","resourceId":"res-objective-first-b2-u02-l01","shellId":"objective-first-b2-u02-l01","order":1,"status":"active"},
+    {"id":"placement-u02-l02","resourceId":"res-objective-first-b2-u02-l02","shellId":"objective-first-b2-u02-l02","order":1,"status":"active"},
+    {"id":"placement-life-u01-l03","resourceId":"res-life-intermediate-u01-l03","shellId":"life-u01-l03","order":1,"status":"active"},
+    {"id":"placement-adv-writing-letter-email-writing-informal-l01","resourceId":"res-adv-writing-letter-email-writing-informal-l01","shellId":"adv-writing-letter-email-writing-informal-l01","order":1,"status":"active"}
   ]
 }
