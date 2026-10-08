@@ -14,7 +14,7 @@ const errors=[
  ['As soon as you are playing this game, you realise the graphics are tremendous.','Incorrect','As soon as you play this game, you realise the graphics are tremendous.'],
  ["My neighbour gives me access to his wifi this week but I’m planning to install my own on Monday.",'Incorrect',"My neighbour is giving me access to his wifi this week but I’m planning to install my own on Monday."],
  ['When you visit the website, you are getting a choice of free downloadable applications.','Incorrect','When you visit the website, you get a choice of free downloadable applications.'],
- ["Once I find a useful site, I’m bookmarking it for future reference.",'Incorrect','Once I find a useful site, I bookmark it for future reference.']
+ ["Once I find a useful site, I’m bookmarking it for future reference.",'Incorrect',"Once I find a useful site, I bookmark it for future reference."]
 ];
 function renderED(){const e=errors[edIndex];$('#edCounter').textContent=`Sentence ${edIndex+1} / ${errors.length}`;$('#errorDetective').innerHTML=`<div class="round-card" data-answer="${e[1]}" data-correction="${e[2].replace(/&/g,'&amp;').replace(/"/g,'&quot;')}"><p>${e[0]}</p><div class="round-options"><button data-v="Correct">Correct</button><button data-v="Incorrect">Incorrect</button></div><input class="line-input" id="edCorrection" placeholder="If incorrect, type the corrected sentence"></div>`;$$('.round-options button',$('#errorDetective')).forEach(b=>b.onclick=()=>{$$('.round-options button',$('#errorDetective')).forEach(x=>x.classList.remove('selected'));b.classList.add('selected')})}
 renderED(); $('#edPrev').onclick=()=>{edIndex=Math.max(0,edIndex-1);renderED()}; $('#edNext').onclick=()=>{edIndex=Math.min(errors.length-1,edIndex+1);renderED()};
@@ -48,4 +48,16 @@ function caps(){const s=$(`.slide[data-slide="${current}"]`),auto=isAssessable(s
 $('#localCheck').onclick=check;$('#localReset').onclick=reset;$('#localReveal').onclick=reveal;
 window.ELEAP_LESSON_HOST_API={getMode(){return document.documentElement.dataset.eleapMode||'student'},setMode(m){document.documentElement.dataset.eleapMode=m;return true},getActivityState(){return {activityId:`u22-s${String(current).padStart(2,'0')}`,response:snapshot(),assessment:lastAssessment,capabilities:caps()}},command(a){const key=String(a||'').toLowerCase().replace(/[_\s]/g,'-');if(key==='check')return check();if(key==='reset')return reset();if(['reveal','show-answer','showanswer'].includes(key))return reveal();if(key==='submit')return submit();return false}};
 const p=new URLSearchParams(location.search);if(p.get('eleapHosted')==='1'){document.documentElement.dataset.eleapHosted='1';document.documentElement.dataset.eleapRole=p.get('eleapRole')||'guest';document.documentElement.dataset.eleapMode=p.get('eleapMode')||'normal'}show(1);
+})();
+
+/* Mobile/media recovery layer: never leave a learner with a silent blank video. */
+(()=>{
+  const videos=[...document.querySelectorAll('video[data-video-key]')];
+  videos.forEach(v=>{
+    const key=v.dataset.videoKey,status=document.querySelector(`[data-video-status="${key}"]`);let timer=null;
+    const clear=()=>{if(timer){clearTimeout(timer);timer=null}const old=status?.querySelector?.('[data-video-retry]');if(old)old.remove()};
+    const retry=()=>{if(!status)return;let b=status.querySelector('[data-video-retry]');if(!b){b=document.createElement('button');b.type='button';b.dataset.videoRetry='1';b.textContent='Retry video';b.style.cssText='margin-left:8px;border:1px solid currentColor;background:#fff;color:inherit;border-radius:7px;padding:5px 9px;font-weight:800';b.onclick=()=>{b.disabled=true;status.classList.remove('error');status.firstChild&&(status.firstChild.textContent='Retrying video… ');try{v.load()}catch{}setTimeout(()=>{b.disabled=false},1200)};status.append(' ',b)}};
+    const arm=()=>{clearTimeout(timer);timer=setTimeout(()=>{if(v.readyState<1){status&&status.classList.add('error');if(status&&!status.textContent.trim())status.textContent='Video is taking longer than expected.';retry()}},7000)};
+    v.addEventListener('loadstart',arm);v.addEventListener('loadedmetadata',clear);v.addEventListener('canplay',clear);v.addEventListener('stalled',()=>{status&&status.classList.add('error');retry()});v.addEventListener('error',()=>setTimeout(retry,80));v.setAttribute('playsinline','');v.setAttribute('webkit-playsinline','');arm();
+  });
 })();
