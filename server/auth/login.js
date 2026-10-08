@@ -5,8 +5,9 @@ export default async function handler(req,res){
   if(!requireSameOrigin(req,res))return;
   try{
     const sql=await ensureAuthSchema();
-    const email=normalizeEmail(req.body?.email),password=String(req.body?.password||'');
+    const email=normalizeEmail(req.body?.email),password=String(req.body?.password||''),expectedRole=String(req.body?.expectedRole||'').trim();
     if(!email||!password)return res.status(400).json({ok:false,error:'Email and password are required'});
+    if(expectedRole && !['admin','teacher'].includes(expectedRole))return res.status(400).json({ok:false,error:'Invalid sign-in role'});
     const attempts=await sql`SELECT * FROM auth_login_attempts WHERE login_key=${email} LIMIT 1`;
     if(attempts[0]?.locked_until && new Date(attempts[0].locked_until).getTime()>Date.now())return res.status(429).json({ok:false,error:'Too many failed attempts. Try again later.'});
     const rows=await sql`SELECT user_id,email,student_id,display_name,role,status,password_hash FROM auth_users WHERE email=${email} LIMIT 1`;
@@ -19,6 +20,8 @@ export default async function handler(req,res){
           locked_until=CASE WHEN (CASE WHEN auth_login_attempts.window_started_at < NOW()-INTERVAL '15 minutes' THEN 1 ELSE auth_login_attempts.failures+1 END) >= ${MAX_FAILURES} THEN NOW()+INTERVAL '15 minutes' ELSE NULL END`;
       return res.status(401).json({ok:false,error:'Invalid email or password'});
     }
+    if(expectedRole && u.role!==expectedRole)return res.status(403).json({ok:false,error:`This account is assigned as ${u.role}, not ${expectedRole}.`});
+    if(!['admin','teacher'].includes(u.role))return res.status(403).json({ok:false,error:'Students sign in with Student ID and PIN.'});
     await sql`DELETE FROM auth_login_attempts WHERE login_key=${email}`;
     await sql`DELETE FROM auth_sessions WHERE expires_at<=NOW()`;
     await createSession(res,u.user_id);
