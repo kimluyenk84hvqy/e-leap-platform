@@ -1,0 +1,33 @@
+window.LESSON={
+  id:'life-intermediate-u01-l03',
+  resourceId:'res-life-intermediate-u01-l03',
+  courseId:'life-intermediate',
+  unitId:'unit-01',
+  lessonNumber:'1E–1F',
+  title:'Personal Information & My Local Park',
+  courseLabel:'Life A2–B1 · Unit 1 Lifestyle',
+  source:'UNIT1 E+F Pre LIFE .pptx',
+  deadline:'2026-10-12T20:00:00+07:00',
+  activities:[
+    {id:'s01',stage:'UNIT 1 · LIFESTYLE',title:'Personal Information & My Local Park',type:'cover'},
+    {id:'s02',stage:'AIMS OF THE LESSON',title:'Aims of the lesson',type:'aims'},
+    {id:'s03',stage:'CHECKING THE PREVIOUS LESSON',title:'Checking the previous lesson',type:'long-response',prompt:'Describe one health problem you have had or are suffering from. Explain the symptoms and what you did about it.'},
+    {id:'s04',stage:'UNIT 1E',title:'Personal information',type:'section-cover'},
+    {id:'s05',stage:'WRITING · FILLING IN A FORM',title:'What information goes on a form?',type:'discussion',prompt:'Discuss the questions, then submit one short response.'},
+    {id:'s06',stage:'WRITING · EXERCISE 2',title:'What is each form for?',type:'forms-identify',expected:['medical form','visa application form']},
+    {id:'s07',stage:'WRITING SKILL · INFORMATION ON FORMS',title:'Match the questions with the form headings',type:'drag-match',expected:['marital status','current medications','no. of dependents','country of origin','place of birth','contact details of person in case of emergency','middle initial']},
+    {id:'s08',stage:'WRITING SKILL · FORM LANGUAGE',title:'Understand common form language',type:'grouped-form-language',expected:['date of birth','number','for example','et cetera','title used before a man’s name','title used before a married woman’s name','title used before a woman’s name when marital status is unknown','doctor','capital letters','lower-case letters','first letter of your middle name']},
+    {id:'s09',stage:'LANGUAGE SUPPORT',title:'Personal information questions',type:'support-video'},
+    {id:'s10',stage:'WRITING · FORM DESIGN',title:'Design a form for new students at VMMU',type:'form-builder'},
+    {id:'s11',stage:'UNIT 1F',title:'My local park',type:'section-cover-park'},
+    {id:'s12',stage:'BEFORE YOU WATCH',title:'A park worth visiting',type:'park-elicitation'},
+    {id:'s13',stage:'BEFORE YOU WATCH · KEY VOCABULARY',title:'Match the park vocabulary',type:'drag-vocab',expected:['d','b','e','a','f','c']},
+    {id:'s14',stage:'WHILE YOU WATCH · ACTIVITY 1',title:'What do you see first?',type:'video-order',expected:['2','1','5','3','4','6','7'],video:'/api/media?pathname=life-intermediate/u01/l03/assets/media/my-local-park.mp4'},
+    {id:'s15',stage:'WHILE YOU WATCH · ACTIVITY 2',title:'Complete the park notes',type:'video-notes',video:'/api/media?pathname=life-intermediate/u01/l03/assets/media/my-local-park.mp4'},
+    {id:'s16',stage:'AFTER YOU WATCH',title:'Guess the person',type:'role-play'},
+    {id:'s17',stage:'AFTER YOU WATCH',title:'Talk about a role model',type:'role-model'},
+    {id:'s18',stage:'CONSOLIDATION',title:'What can you do now?',type:'consolidation'},
+    {id:'s19',stage:'HOMEWORK',title:'Create and write your own response',type:'productive-homework',prompt:'Write a short paragraph about a person you admire. Include the personal details you think are relevant and explain why you admire this person.',deadline:'2026-10-12T20:00:00+07:00'},
+    {id:'s20',stage:'END OF LESSON',title:'Unit 1E & 1F complete',type:'end'}
+  ]
+};
