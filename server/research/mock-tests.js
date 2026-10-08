@@ -1,5 +1,5 @@
 import { getResearchDb } from '../_research-db.js';
-import { requireAuth,requireSameOrigin } from '../_auth.js';
+import { requireAuth,requireSameOrigin,ensureResearchStaffUser } from '../_auth.js';
 
 const QA_MOCK={
   id:'golden-qa-mock-001',
@@ -42,6 +42,22 @@ function scoreAuto(answers={}){
   return score;
 }
 
+async function teacherCanMarkStudent(sql,user,studentUserId){
+  if(user.role==='admin')return true;
+  if(user.role!=='teacher')return false;
+  const teacherResearchId=await ensureResearchStaffUser(sql,user);
+  const rows=await sql`
+    SELECT 1
+    FROM classes c
+    JOIN auth_class_members m ON m.class_id::text=c.class_id::text
+    WHERE c.teacher_id=${teacherResearchId}
+      AND m.student_user_id=${studentUserId}
+      AND m.status='active'
+      AND c.status='active'
+    LIMIT 1`;
+  return Boolean(rows.length);
+}
+
 export default async function handler(req,res){
   try{
     const sql=getResearchDb();
@@ -60,7 +76,16 @@ export default async function handler(req,res){
         return res.status(200).json({ok:true,mock:QA_MOCK,attempts:rows});
       }
       if(!['teacher','admin'].includes(user.role))return res.status(403).json({ok:false,error:'Access denied'});
-      const rows=await sql`SELECT * FROM mock_attempts ORDER BY submitted_at DESC LIMIT 500`;
+      const rows=user.role==='admin'
+        ? await sql`SELECT * FROM mock_attempts ORDER BY submitted_at DESC LIMIT 500`
+        : await sql`
+            SELECT DISTINCT ma.*
+            FROM mock_attempts ma
+            JOIN auth_class_members m ON m.student_user_id=ma.student_user_id AND m.status='active'
+            JOIN classes c ON c.class_id::text=m.class_id::text
+            JOIN users ru ON ru.user_id=c.teacher_id
+            WHERE ru.external_auth_id=${String(user.user_id)} AND c.status='active'
+            ORDER BY ma.submitted_at DESC LIMIT 500`;
       return res.status(200).json({ok:true,mock:QA_MOCK,attempts:rows});
     }
     if(req.method==='POST'){
@@ -78,11 +103,13 @@ export default async function handler(req,res){
       if(!['teacher','admin'].includes(user.role))return res.status(403).json({ok:false,error:'Teacher or admin required'});
       const {attemptId,writingScore,speakingScore,feedback='',releaseFeedback=false}=req.body||{};
       if(!attemptId)return res.status(400).json({ok:false,error:'attemptId is required'});
+      const current=await sql`SELECT * FROM mock_attempts WHERE attempt_id=${attemptId} LIMIT 1`;
+      if(!current.length)return res.status(404).json({ok:false,error:'Mock attempt not found'});
+      if(!await teacherCanMarkStudent(sql,user,current[0].student_user_id))return res.status(403).json({ok:false,error:'Mock attempt access denied'});
       const ws=Number(writingScore),ss=Number(speakingScore);
       if(!Number.isFinite(ws)||ws<0||ws>10||!Number.isFinite(ss)||ss<0||ss>10)return res.status(400).json({ok:false,error:'Writing and speaking scores must each be 0–10'});
       const status=releaseFeedback?'feedback-released':'graded';
       const rows=await sql`UPDATE mock_attempts SET writing_score=${ws},speaking_score=${ss},feedback=${String(feedback||'').slice(0,20000)},status=${status},grader_id=${user.user_id},graded_at=NOW(),feedback_released_at=CASE WHEN ${releaseFeedback} THEN NOW() ELSE feedback_released_at END WHERE attempt_id=${attemptId} RETURNING *`;
-      if(!rows.length)return res.status(404).json({ok:false,error:'Mock attempt not found'});
       return res.status(200).json({ok:true,attempt:rows[0]});
     }
     res.setHeader('Allow',['GET','POST','PATCH']);return res.status(405).json({ok:false,error:'Method not allowed'});
