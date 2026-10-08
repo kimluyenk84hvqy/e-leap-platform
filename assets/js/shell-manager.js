@@ -1,8 +1,28 @@
-/* E-LEAP Shell Manager — R2 governance-aware local preview adapter. */
+/* E-LEAP Shell Manager — governance-aware local cache + server persistence. */
 window.ELEAPShellManager={
  key:'e-leap-shell-overrides-v2',
- load(base){let s=structuredClone(base);try{const o=JSON.parse(localStorage.getItem(this.key)||'{}');if(o.shells)s=o.shells}catch{}return s},
- save(shells){localStorage.setItem(this.key,JSON.stringify({shells,updatedAt:new Date().toISOString()}));},
+ serverShells:null,
+ merge(base,overrides){
+  const out=structuredClone(Array.isArray(base)?base:[]),byId=new Map(out.map((x,i)=>[String(x?.id),i]));
+  for(const raw of Array.isArray(overrides)?overrides:[]){
+   if(!raw?.id)continue;const x=structuredClone(raw),id=String(x.id),i=byId.get(id);
+   if(i==null){byId.set(id,out.length);out.push(x)}else out[i]={...out[i],...x,id:out[i].id};
+  }
+  return out;
+ },
+ hydrate(shells){this.serverShells=Array.isArray(shells)?structuredClone(shells):[];},
+ load(base){
+  let s=structuredClone(base);
+  try{const o=JSON.parse(localStorage.getItem(this.key)||'{}');if(Array.isArray(o.shells))s=this.merge(s,o.shells)}catch{}
+  if(Array.isArray(this.serverShells)&&this.serverShells.length)s=this.merge(s,this.serverShells);
+  return s;
+ },
+ save(shells){
+  const payload={shells,updatedAt:new Date().toISOString()};
+  localStorage.setItem(this.key,JSON.stringify(payload));
+  const role=window.ELEAPAccess?.role?.()||localStorage.getItem('e-leap-preview-role');
+  if(role==='admin')fetch('/api/research/shells',{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({shells})}).then(async r=>{if(!r.ok){let d={};try{d=await r.json()}catch{}throw new Error(d.error||`Shell sync failed (${r.status})`)}this.serverShells=structuredClone(shells)}).catch(e=>console.warn('Shell server sync deferred; local copy retained.',e));
+ },
  slug(name){return String(name).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')},
  before(x,reason){window.ELEAPGovernance?.snapshot?.(x,reason)}, log(action,x,meta){window.ELEAPGovernance?.audit?.(action,x,meta)},
  assertEditable(x){if(!x)throw new Error('Shell not found.');if(window.ELEAPGovernance?.isLocked?.(x))throw new Error('This shell is locked. Unlock it before editing.');if(window.ELEAPGovernance?.isProtected?.(x)&&window.ELEAPAccess?.role?.()!=='admin')throw new Error('This system shell is protected.')},
@@ -12,7 +32,7 @@ window.ELEAPShellManager={
  reorder(shells,id,delta){const x=shells.find(x=>x.id===id);this.assertEditable(x);const sib=shells.filter(y=>y.parentId===x.parentId&&y.status!=='archived').sort((a,b)=>(a.order||0)-(b.order||0));const i=sib.findIndex(y=>y.id===id),j=Math.max(0,Math.min(sib.length-1,i+delta));if(i===j)return;this.before(x,'reorder');[sib[i].order,sib[j].order]=[sib[j].order,sib[i].order];this.save(shells);this.log('reorder',x,{delta})},
  status(shells,id,status){const x=shells.find(x=>x.id===id);if(!x)return;this.assertEditable(x);this.before(x,`status:${status}`);const oldStatus=x.status;x.status=status;this.save(shells);this.log(status,x,{oldStatus,newStatus:status})},
  lock(shells,id,on=true){const x=shells.find(x=>x.id===id);if(!x)return;if(window.ELEAPAccess?.role?.()!=='admin'&&!window.ELEAPAccess?.can?.('govern:content',x))throw new Error('Not permitted.');this.before(x,on?'lock':'unlock');x.locked=!!on;this.save(shells);this.log(on?'lock':'unlock',x)},
- duplicate(shells,id){const src=shells.find(x=>x.id===id);this.assertEditable(src);const original=[...shells];const cloneNode=(node,parentId,top=False)=>{const nid=`custom-${this.slug(node.name)}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,6)}`;const c={...structuredClone(node),id:nid,parentId,name:node.name+(top?' Copy':''),status:'draft',locked:false,custom:true,createdAt:new Date().toISOString()};shells.push(c);original.filter(x=>x.parentId===node.id).forEach(ch=>cloneNode(ch,nid,false));return c};const c=cloneNode(src,src.parentId,true);this.save(shells);this.log('duplicate',c,{sourceId:id});return c.id},
+ duplicate(shells,id){const src=shells.find(x=>x.id===id);this.assertEditable(src);const original=[...shells];const cloneNode=(node,parentId,top=false)=>{const nid=`custom-${this.slug(node.name)}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,6)}`;const c={...structuredClone(node),id:nid,parentId,name:node.name+(top?' Copy':''),status:'draft',locked:false,custom:true,createdAt:new Date().toISOString()};shells.push(c);original.filter(x=>x.parentId===node.id).forEach(ch=>cloneNode(ch,nid,false));return c};const c=cloneNode(src,src.parentId,true);this.save(shells);this.log('duplicate',c,{sourceId:id});return c.id},
  restoreVersion(shells,id,index=0){const x=shells.find(x=>x.id===id),h=window.ELEAPGovernance?.history?.(id)||[],v=h[index];if(!x||!v)throw new Error('Version not found.');this.assertEditable(x);this.before(x,'restore-version');const keep={id:x.id};Object.assign(x,structuredClone(v.snapshot),keep);this.save(shells);this.log('restore-version',x,{versionAt:v.at})},
  reset(){localStorage.removeItem(this.key)}
 };
