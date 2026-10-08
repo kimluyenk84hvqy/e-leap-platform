@@ -17,6 +17,7 @@ on:
       - 'assets/media/**'
       - 'assets/lessons/**'
       - 'docs/GOLDEN_ACCESS_POLICY.md'
+      - 'docs/GOLDEN_AI_MARKING_POLICY.md'
   schedule:
     - cron: '20 18 * * *'
 
@@ -37,7 +38,7 @@ jobs:
           TS="$(date -u +'%Y-%m-%dT%H-%M-%SZ')"
           SHA="${GITHUB_SHA}"
           mkdir -p recovery/live-content
-          for p in data lessons content assets/media assets/lessons docs/GOLDEN_ACCESS_POLICY.md; do
+          for p in data lessons content assets/media assets/lessons docs/GOLDEN_ACCESS_POLICY.md docs/GOLDEN_AI_MARKING_POLICY.md; do
             if [ -e "$p" ]; then
               mkdir -p "recovery/live-content/$(dirname "$p")"
               cp -R "$p" "recovery/live-content/$p"
@@ -64,14 +65,14 @@ jobs:
           retention-days: 30
           if-no-files-found: error
 
-  core-candidate:
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.include_core == true }}
+  core-pre-golden:
+    if: ${{ github.event_name != 'schedule' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
-      - name: Build Core candidate
+      - name: Build PRE-GOLDEN Core snapshot
         shell: bash
         run: |
           set -euo pipefail
@@ -91,18 +92,57 @@ jobs:
             --exclude '*.pem'
           cat > recovery/core/GOLDEN_RELEASE_MANIFEST.json <<EOF
           {
-            "package": "ELEAP_CORE_GOLDEN_CANDIDATE",
+            "package": "ELEAP_CORE_PRE_GOLDEN",
             "created_at_utc": "$TS",
             "commit_sha": "${GITHUB_SHA}",
             "branch": "${GITHUB_REF_NAME}",
-            "warning": "Promote to GOLDEN only after final functional, schema and dependency gates pass"
+            "status": "PRE-GOLDEN RECOVERY SNAPSHOT",
+            "warning": "Not the final GOLDEN 1.0. Promote only after AI-assisted marking and four-role runtime smoke tests pass."
           }
           EOF
           (cd recovery/core && find . -type f ! -name SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS.txt)
-          (cd recovery && zip -qr "ELEAP_CORE_GOLDEN_CANDIDATE_${TS}.zip" core)
+          (cd recovery && zip -qr "ELEAP_CORE_PRE_GOLDEN_${TS}.zip" core)
       - uses: actions/upload-artifact@v4
         with:
-          name: ELEAP_CORE_GOLDEN_CANDIDATE
-          path: recovery/ELEAP_CORE_GOLDEN_CANDIDATE_*.zip
+          name: ELEAP_CORE_PRE_GOLDEN
+          path: recovery/ELEAP_CORE_PRE_GOLDEN_*.zip
+          retention-days: 90
+          if-no-files-found: error
+
+  restore-kit:
+    if: ${{ github.event_name != 'schedule' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Build restore kit
+        shell: bash
+        run: |
+          set -euo pipefail
+          TS="$(date -u +'%Y-%m-%dT%H-%M-%SZ')"
+          mkdir -p recovery/restore-kit/docs
+          cp -R docs/* recovery/restore-kit/docs/ 2>/dev/null || true
+          cat > recovery/restore-kit/README_FIRST.txt <<EOF
+          E-LEAP PRE-GOLDEN RECOVERY SNAPSHOT
+          Created: $TS
+          Commit: ${GITHUB_SHA}
+          Branch: ${GITHUB_REF_NAME}
+
+          Restore order:
+          1. Restore CORE PRE-GOLDEN source.
+          2. Restore LIVE CONTENT LATEST.
+          3. Restore Neon database from the separately recorded PRE-GOLDEN snapshot.
+          4. Restore media/private storage dependencies and environment variables from the deployment console. Do not store secrets in this ZIP.
+          5. Deploy and run Admin / Teacher / Student(TEST001) / Guest smoke tests.
+
+          This is a recovery snapshot, not final GOLDEN 1.0.
+          EOF
+          (cd recovery/restore-kit && find . -type f ! -name SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS.txt)
+          (cd recovery && zip -qr "ELEAP_RESTORE_KIT_PRE_GOLDEN_${TS}.zip" restore-kit)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ELEAP_RESTORE_KIT_PRE_GOLDEN
+          path: recovery/ELEAP_RESTORE_KIT_PRE_GOLDEN_*.zip
           retention-days: 90
           if-no-files-found: error
