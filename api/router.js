@@ -17,6 +17,7 @@ import researchMarking from '../server/research/marking.js';
 import researchParticipants from '../server/research/participants.js';
 import researchReport from '../server/research/report.js';
 import researchSessions from '../server/research/sessions.js';
+import researchShells from '../server/research/shells.js';
 import researchSubmissions from '../server/research/submissions.js';
 import researchUsers from '../server/research/users.js';
 
@@ -39,6 +40,7 @@ const ROUTES={
   'research/participants':researchParticipants,
   'research/report':researchReport,
   'research/sessions':researchSessions,
+  'research/shells':researchShells,
   'research/submissions':researchSubmissions,
   'research/users':researchUsers
 };
