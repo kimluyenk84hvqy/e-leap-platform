@@ -87,10 +87,31 @@ export function requireSameOrigin(req,res){
   if(origin===`${proto}://${host}`)return true;
   res.status(403).json({ok:false,error:'Cross-origin request blocked',code:'CSRF_BLOCKED'}); return false;
 }
+
+// The research/live schema predates auth_users and still references users.user_id.
+// Keep the authenticated identity authoritative, but create/reuse a linked research user
+// so legacy FK-backed classes/sessions continue to work during the stabilization period.
+export async function ensureResearchStaffUser(sql,user){
+  if(!user || !['teacher','admin'].includes(user.role)) return null;
+  const externalAuthId=String(user.user_id);
+  let rows=await sql`SELECT user_id FROM users WHERE external_auth_id=${externalAuthId} LIMIT 1`;
+  if(rows.length)return rows[0].user_id;
+  if(user.email){
+    rows=await sql`SELECT user_id FROM users WHERE lower(email)=lower(${user.email}) LIMIT 1`;
+    if(rows.length){
+      await sql`UPDATE users SET external_auth_id=COALESCE(external_auth_id,${externalAuthId}),display_name=${user.display_name||user.email},role=${user.role==='admin'?'admin':'teacher'},is_active=TRUE,updated_at=NOW() WHERE user_id=${rows[0].user_id}`;
+      return rows[0].user_id;
+    }
+  }
+  const inserted=await sql`INSERT INTO users(external_auth_id,email,display_name,role,is_active) VALUES(${externalAuthId},${user.email||null},${user.display_name||user.email||'E-LEAP Staff'},${user.role==='admin'?'admin':'teacher'},TRUE) RETURNING user_id`;
+  return inserted[0].user_id;
+}
+
 export async function teacherOwnsClass(sql,user,classId){
   if(user.role==='admin')return true;
   if(user.role!=='teacher')return false;
-  const r=await sql`SELECT 1 FROM classes WHERE class_id=${classId} AND teacher_id=${user.user_id} LIMIT 1`;
+  const researchUserId=await ensureResearchStaffUser(sql,user);
+  const r=await sql`SELECT 1 FROM classes WHERE class_id=${classId} AND teacher_id=${researchUserId} LIMIT 1`;
   return Boolean(r.length);
 }
 export async function studentInClass(sql,user,classId){
