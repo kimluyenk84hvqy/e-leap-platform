@@ -1,43 +1,44 @@
 (()=>{
 'use strict';
-const RESOURCE_ID='res-life-intermediate-u01-l03';
-const CARD_ID='life-intermediate-live-card';
 
-function injectLifeCard(){
-  const content=document.getElementById('content');
-  const pageTitle=document.getElementById('pageTitle');
-  if(!content||pageTitle?.textContent?.trim()!=='Courses')return;
-  if(document.getElementById(CARD_ID))return;
+/*
+  Catalog compatibility patch only.
+  It does NOT draw cards or change the Courses layout.
+  It only restores/adds shell data before the normal E-LEAP app renders it.
+*/
+const nativeFetch=window.fetch.bind(window);
+window.fetch=async function(input,init){
+  const response=await nativeFetch(input,init);
+  const url=typeof input==='string'?input:(input?.url||'');
+  if(!/data\/shells\.json(?:\?|$)/.test(url)) return response;
 
-  const headings=[...content.querySelectorAll('.section-title h3')];
-  const coursebooksHeading=headings.find(h=>h.textContent.trim()==='Coursebooks');
-  if(!coursebooksHeading)return;
-  const section=coursebooksHeading.closest('.section-title');
-  const grid=section?.nextElementSibling;
-  if(!grid?.classList?.contains('grid'))return;
+  try{
+    const data=await response.clone().json();
+    if(!Array.isArray(data?.shells)) return response;
+    const shells=data.shells;
+    const byId=id=>shells.find(x=>x.id===id);
+    const add=x=>{if(!byId(x.id))shells.push(x)};
 
-  const card=document.createElement('div');
-  card.id=CARD_ID;
-  card.className='card shell-card';
-  card.innerHTML=`
-    <button class="card-open" type="button" aria-label="Open Life Intermediate Unit 1E and 1F">
-      <h3>Life Intermediate</h3>
-      <div class="gov-status"><span class="status-badge status-published">PUBLISHED</span></div>
-      <small style="display:block;margin-top:8px;color:#60756e;font-weight:700">Unit 1E–1F · Personal Information &amp; My Local Park</small>
-      <span class="arrow">→</span>
-    </button>`;
-  card.querySelector('button').addEventListener('click',()=>{
-    location.href=`engine/lesson-host.html?resource=${encodeURIComponent(RESOURCE_ID)}`;
-  });
-  grid.appendChild(card);
-}
+    const life=byId('life-intermediate');
+    if(life) life.status='published';
+    else add({id:'life-intermediate',parentId:'coursebooks',name:'Life Intermediate',type:'course',order:3,status:'published'});
 
-let timer=null;
-const observer=new MutationObserver(()=>{
-  clearTimeout(timer);
-  timer=setTimeout(injectLifeCard,30);
-});
-observer.observe(document.documentElement,{childList:true,subtree:true});
-window.addEventListener('load',injectLifeCard);
-setTimeout(injectLifeCard,100);
+    add({id:'life-intermediate-u01',parentId:'life-intermediate',name:'Unit 1 · Lifestyle',type:'unit',order:1,status:'published'});
+    add({id:'life-u01-l03',parentId:'life-intermediate-u01',name:'Unit 1E & 1F · Personal Information & My Local Park',type:'lesson',order:3,status:'approved'});
+
+    /* Restore the B1 course that existed in the earlier E-LEAP catalog. */
+    add({id:'objectives-b1',parentId:'coursebooks',name:'Objectives B1 · Objective PET',type:'course',order:1,status:'published'});
+    add({id:'objectives-b1-u01',parentId:'objectives-b1',name:'Unit 1 · A Question of Sport',type:'unit',order:1,status:'published'});
+
+    const b2=byId('objective-first-b2');
+    if(b2) b2.order=2;
+    const lifeCourse=byId('life-intermediate');
+    if(lifeCourse) lifeCourse.order=3;
+
+    const body=JSON.stringify(data);
+    return new Response(body,{status:response.status,statusText:response.statusText,headers:{'Content-Type':'application/json; charset=utf-8'}});
+  }catch(_){
+    return response;
+  }
+};
 })();
