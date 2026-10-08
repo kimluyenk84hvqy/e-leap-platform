@@ -6,23 +6,23 @@
   "units": [
     {
       "id": "unit-01",
-      "title": "Unit 1",
+      "title": "Unit 1. Lifestyle",
       "status": "shell-ready",
       "lessons": [
         {
           "id": "life-u01-l01",
-          "title": "Lesson 1.1",
+          "title": "Lesson 1. U1. A&B – How well do you sleep? + The secrets of a long life",
           "status": "shell-ready"
         },
         {
           "id": "life-u01-l02",
-          "title": "Lesson 1.2",
+          "title": "Lesson 2. U1. C&D – Nature is good for you + At the doctor's",
           "status": "shell-ready"
         },
         {
           "id": "life-u01-l03",
-          "title": "Lesson 1.3",
-          "status": "shell-ready"
+          "title": "Lesson 3. U1. E&F – Personal Information + My Local Park",
+          "status": "draft"
         }
       ]
     },
@@ -31,21 +31,9 @@
       "title": "Unit 2",
       "status": "shell-ready",
       "lessons": [
-        {
-          "id": "life-u02-l01",
-          "title": "Lesson 2.1",
-          "status": "shell-ready"
-        },
-        {
-          "id": "life-u02-l02",
-          "title": "Lesson 2.2",
-          "status": "shell-ready"
-        },
-        {
-          "id": "life-u02-l03",
-          "title": "Lesson 2.3",
-          "status": "shell-ready"
-        }
+        {"id": "life-u02-l01", "title": "Lesson 2.1", "status": "shell-ready"},
+        {"id": "life-u02-l02", "title": "Lesson 2.2", "status": "shell-ready"},
+        {"id": "life-u02-l03", "title": "Lesson 2.3", "status": "shell-ready"}
       ]
     },
     {
@@ -53,21 +41,9 @@
       "title": "Unit 3",
       "status": "shell-ready",
       "lessons": [
-        {
-          "id": "life-u03-l01",
-          "title": "Lesson 3.1",
-          "status": "shell-ready"
-        },
-        {
-          "id": "life-u03-l02",
-          "title": "Lesson 3.2",
-          "status": "shell-ready"
-        },
-        {
-          "id": "life-u03-l03",
-          "title": "Lesson 3.3",
-          "status": "shell-ready"
-        }
+        {"id": "life-u03-l01", "title": "Lesson 3.1", "status": "shell-ready"},
+        {"id": "life-u03-l02", "title": "Lesson 3.2", "status": "shell-ready"},
+        {"id": "life-u03-l03", "title": "Lesson 3.3", "status": "shell-ready"}
       ]
     },
     {
@@ -75,21 +51,9 @@
       "title": "Unit 4",
       "status": "shell-ready",
       "lessons": [
-        {
-          "id": "life-u04-l01",
-          "title": "Lesson 4.1",
-          "status": "shell-ready"
-        },
-        {
-          "id": "life-u04-l02",
-          "title": "Lesson 4.2",
-          "status": "shell-ready"
-        },
-        {
-          "id": "life-u04-l03",
-          "title": "Lesson 4.3",
-          "status": "shell-ready"
-        }
+        {"id": "life-u04-l01", "title": "Lesson 4.1", "status": "shell-ready"},
+        {"id": "life-u04-l02", "title": "Lesson 4.2", "status": "shell-ready"},
+        {"id": "life-u04-l03", "title": "Lesson 4.3", "status": "shell-ready"}
       ]
     },
     {
@@ -97,21 +61,9 @@
       "title": "Unit 5",
       "status": "shell-ready",
       "lessons": [
-        {
-          "id": "life-u05-l01",
-          "title": "Lesson 5.1",
-          "status": "shell-ready"
-        },
-        {
-          "id": "life-u05-l02",
-          "title": "Lesson 5.2",
-          "status": "shell-ready"
-        },
-        {
-          "id": "life-u05-l03",
-          "title": "Lesson 5.3",
-          "status": "shell-ready"
-        }
+        {"id": "life-u05-l01", "title": "Lesson 5.1", "status": "shell-ready"},
+        {"id": "life-u05-l02", "title": "Lesson 5.2", "status": "shell-ready"},
+        {"id": "life-u05-l03", "title": "Lesson 5.3", "status": "shell-ready"}
       ]
     },
     {
@@ -119,21 +71,9 @@
       "title": "Unit 6",
       "status": "shell-ready",
       "lessons": [
-        {
-          "id": "life-u06-l01",
-          "title": "Lesson 6.1",
-          "status": "shell-ready"
-        },
-        {
-          "id": "life-u06-l02",
-          "title": "Lesson 6.2",
-          "status": "shell-ready"
-        },
-        {
-          "id": "life-u06-l03",
-          "title": "Lesson 6.3",
-          "status": "shell-ready"
-        }
+        {"id": "life-u06-l01", "title": "Lesson 6.1", "status": "shell-ready"},
+        {"id": "life-u06-l02", "title": "Lesson 6.2", "status": "shell-ready"},
+        {"id": "life-u06-l03", "title": "Lesson 6.3", "status": "shell-ready"}
       ]
     },
     {
@@ -141,21 +81,9 @@
       "title": "Unit 7",
       "status": "shell-ready",
       "lessons": [
-        {
-          "id": "life-u07-l01",
-          "title": "Lesson 7.1",
-          "status": "shell-ready"
-        },
-        {
-          "id": "life-u07-l02",
-          "title": "Lesson 7.2",
-          "status": "shell-ready"
-        },
-        {
-          "id": "life-u07-l03",
-          "title": "Lesson 7.3",
-          "status": "shell-ready"
-        }
+        {"id": "life-u07-l01", "title": "Lesson 7.1", "status": "shell-ready"},
+        {"id": "life-u07-l02", "title": "Lesson 7.2", "status": "shell-ready"},
+        {"id": "life-u07-l03", "title": "Lesson 7.3", "status": "shell-ready"}
       ]
     },
     {
@@ -163,21 +91,9 @@
       "title": "Unit 8",
       "status": "shell-ready",
       "lessons": [
-        {
-          "id": "life-u08-l01",
-          "title": "Lesson 8.1",
-          "status": "shell-ready"
-        },
-        {
-          "id": "life-u08-l02",
-          "title": "Lesson 8.2",
-          "status": "shell-ready"
-        },
-        {
-          "id": "life-u08-l03",
-          "title": "Lesson 8.3",
-          "status": "shell-ready"
-        }
+        {"id": "life-u08-l01", "title": "Lesson 8.1", "status": "shell-ready"},
+        {"id": "life-u08-l02", "title": "Lesson 8.2", "status": "shell-ready"},
+        {"id": "life-u08-l03", "title": "Lesson 8.3", "status": "shell-ready"}
       ]
     },
     {
@@ -185,21 +101,9 @@
       "title": "Unit 9",
       "status": "shell-ready",
       "lessons": [
-        {
-          "id": "life-u09-l01",
-          "title": "Lesson 9.1",
-          "status": "shell-ready"
-        },
-        {
-          "id": "life-u09-l02",
-          "title": "Lesson 9.2",
-          "status": "shell-ready"
-        },
-        {
-          "id": "life-u09-l03",
-          "title": "Lesson 9.3",
-          "status": "shell-ready"
-        }
+        {"id": "life-u09-l01", "title": "Lesson 9.1", "status": "shell-ready"},
+        {"id": "life-u09-l02", "title": "Lesson 9.2", "status": "shell-ready"},
+        {"id": "life-u09-l03", "title": "Lesson 9.3", "status": "shell-ready"}
       ]
     },
     {
@@ -207,21 +111,9 @@
       "title": "Unit 10",
       "status": "shell-ready",
       "lessons": [
-        {
-          "id": "life-u10-l01",
-          "title": "Lesson 10.1",
-          "status": "shell-ready"
-        },
-        {
-          "id": "life-u10-l02",
-          "title": "Lesson 10.2",
-          "status": "shell-ready"
-        },
-        {
-          "id": "life-u10-l03",
-          "title": "Lesson 10.3",
-          "status": "shell-ready"
-        }
+        {"id": "life-u10-l01", "title": "Lesson 10.1", "status": "shell-ready"},
+        {"id": "life-u10-l02", "title": "Lesson 10.2", "status": "shell-ready"},
+        {"id": "life-u10-l03", "title": "Lesson 10.3", "status": "shell-ready"}
       ]
     },
     {
@@ -229,21 +121,9 @@
       "title": "Unit 11",
       "status": "shell-ready",
       "lessons": [
-        {
-          "id": "life-u11-l01",
-          "title": "Lesson 11.1",
-          "status": "shell-ready"
-        },
-        {
-          "id": "life-u11-l02",
-          "title": "Lesson 11.2",
-          "status": "shell-ready"
-        },
-        {
-          "id": "life-u11-l03",
-          "title": "Lesson 11.3",
-          "status": "shell-ready"
-        }
+        {"id": "life-u11-l01", "title": "Lesson 11.1", "status": "shell-ready"},
+        {"id": "life-u11-l02", "title": "Lesson 11.2", "status": "shell-ready"},
+        {"id": "life-u11-l03", "title": "Lesson 11.3", "status": "shell-ready"}
       ]
     },
     {
@@ -251,23 +131,11 @@
       "title": "Unit 12",
       "status": "shell-ready",
       "lessons": [
-        {
-          "id": "life-u12-l01",
-          "title": "Lesson 12.1",
-          "status": "shell-ready"
-        },
-        {
-          "id": "life-u12-l02",
-          "title": "Lesson 12.2",
-          "status": "shell-ready"
-        },
-        {
-          "id": "life-u12-l03",
-          "title": "Lesson 12.3",
-          "status": "shell-ready"
-        }
+        {"id": "life-u12-l01", "title": "Lesson 12.1", "status": "shell-ready"},
+        {"id": "life-u12-l02", "title": "Lesson 12.2", "status": "shell-ready"},
+        {"id": "life-u12-l03", "title": "Lesson 12.3", "status": "shell-ready"}
       ]
     }
   ],
-  "rule": "Full 12-unit course shell; three lesson shells per unit. Content titles are not invented."
+  "rule": "Full 12-unit course shell; three lesson shells per unit. Unit 1 titles are source-aligned."
 }
