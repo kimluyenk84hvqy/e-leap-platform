@@ -26,7 +26,22 @@ async function resolveClass(name,lessonId){
   const courseId=lessonId.startsWith('res-life-')?'life-intermediate':lessonId.startsWith('res-adv-')?'advanced-skills':'objective-first-b2';
   return (await R4Live.createClass({className:name,courseId,academicYear:'2026-2027'})).class;
 }
-$('#start').onclick=async()=>{const lessonId=$('#lesson').value,className=$('#className').value.trim();$('#setupStatus').textContent='Creating…';try{if(!className)throw new Error('Type the class name.');if(!lessonId)throw new Error('Choose a lesson.');currentClass=await resolveClass(className,lessonId);session=(await R4Live.createSession({classId:currentClass.class_id,lessonId,status:'active'})).session;showLive()}catch(e){$('#setupStatus').textContent='Create failed: '+(e.detail||e.message||'Unknown error')}};
+$('#start').onclick=async()=>{
+  const lessonId=$('#lesson').value,className=$('#className').value.trim();
+  $('#setupStatus').textContent='Preparing Live Class…';
+  try{
+    if(!className)throw new Error('Type the class name.');
+    if(!lessonId)throw new Error('Choose a lesson.');
+    await R4Live.bootstrap();
+    $('#setupStatus').textContent='Creating class and session…';
+    currentClass=await resolveClass(className,lessonId);
+    session=(await R4Live.createSession({classId:currentClass.class_id,lessonId,status:'active'})).session;
+    showLive();
+  }catch(e){
+    console.error('Live Session create failed',e);
+    $('#setupStatus').textContent='Create failed: '+(e.detail||e.message||'Unknown error');
+  }
+};
 function joinUrl(){return`${location.origin}${location.pathname.replace(/teacher-live\.html$/,'student-access.html')}?code=${encodeURIComponent(session.join_code)}`}
 function showLive(){$('#setup').classList.add('hidden');['#live','#peoplePanel','#responsesPanel'].forEach(s=>$(s).classList.remove('hidden'));$('#joinCode').textContent=session.join_code;$('#classLabel').textContent=currentClass.class_name;$('#lessonLabel').textContent=$('#lesson').selectedOptions[0]?.textContent||session.lesson_id;$('#sessionStatus').textContent='Live';const text=joinUrl();$('#qr').dataset.fallback='0';$('#qr').onerror=()=>{if($('#qr').dataset.fallback==='1')return;$('#qr').dataset.fallback='1';$('#qr').src=`https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=0&data=${encodeURIComponent(text)}`};$('#qr').src=`/api/qr?text=${encodeURIComponent(text)}`;$('#openLesson').href=`engine/lesson-host.html?resource=${encodeURIComponent(session.lesson_id)}&sessionId=${encodeURIComponent(session.session_id)}&classId=${encodeURIComponent(session.class_id)}&joinCode=${encodeURIComponent(session.join_code)}`;refresh();poll=setInterval(refresh,1500)}
 $('#copyLink').onclick=async()=>{await navigator.clipboard.writeText(joinUrl());$('#copyLink').textContent='Copied ✓';setTimeout(()=>$('#copyLink').textContent='Copy Join Link',1000)};$('#end').onclick=async()=>{if(!session)return;await R4Live.updateSession({sessionId:session.session_id,status:'ended'});clearInterval(poll);$('#sessionStatus').textContent='Ended';$('#end').disabled=true};
