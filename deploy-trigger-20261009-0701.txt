@@ -1,0 +1,2 @@
+Trigger preview deployment after Live Class bootstrap fix.
+Commit dependency: teacher-live bootstraps DB before class/session creation.
