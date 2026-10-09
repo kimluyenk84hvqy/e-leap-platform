@@ -1,0 +1,29 @@
+{
+  "id": "life-intermediate-u01-l03",
+  "resourceId": "res-life-intermediate-u01-l03",
+  "courseId": "life-intermediate",
+  "unitId": "unit-01",
+  "lessonNumber": "1E-1F",
+  "title": "Personal Information & My Local Park",
+  "displayTitle": "Unit 1E & 1F",
+  "status": "final-candidate",
+  "periods": 4,
+  "sourceVersion": "UNIT1 E+F Pre LIFE",
+  "interactionStandard": {
+    "studentSubmit": "submit into live Responses / assignment system",
+    "teacherReview": "review student responses before answer reveal",
+    "presentationReveal": "in-place only; no extra answer panel",
+    "classJoin": "free-text class name plus QR/session code"
+  },
+  "media": {
+    "localParkVideo": "life-intermediate/u01/l03/assets/media/my-local-park.mp4",
+    "private": true
+  },
+  "homework": {
+    "activityId": "s19",
+    "deadline": "2026-10-12T20:00:00+07:00",
+    "rubricId": "writing-core-v1",
+    "maxScore": 10,
+    "feedbackRelease": "teacher-controlled"
+  }
+}
