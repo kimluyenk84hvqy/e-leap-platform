@@ -1,0 +1,27 @@
+{
+  "source": "Life A2-B1 2nd Edition pp.17-19 + UNIT1 E+F Pre LIFE.pptx",
+  "policy": "No source activity may be removed. Activities may be enhanced or split, but every textbook/PPT task must remain traceable.",
+  "unit1e": [
+    {"source":"Exercise 1","task":"Discuss forms students fill in and information they write","activityId":"s05","status":"covered"},
+    {"source":"Exercise 2","task":"Look at two forms and identify what each is for","activityId":"s06","status":"covered"},
+    {"source":"Exercise 3a","task":"Match questions 1-7 with headings on the forms","activityId":"s07","status":"covered"},
+    {"source":"Exercise 3b.1","task":"Find abbreviations and explain meanings","activityId":"s08","status":"covered"},
+    {"source":"Exercise 3b.2","task":"Explain Mr, Mrs, Ms and Dr","activityId":"s08","status":"covered"},
+    {"source":"Exercise 3b.3","task":"Identify which form requires capital letters","activityId":"s08","status":"covered"},
+    {"source":"Exercise 4","task":"Design a form for new students","activityId":"s10","status":"covered"},
+    {"source":"Exercise 5","task":"Exchange forms and peer review using three questions","activityId":"s10p","status":"restored"},
+    {"source":"PPT homework","task":"Write a form for new students at VMMU","activityId":"s10h","status":"restored"}
+  ],
+  "unit1f": [
+    {"source":"Exercise 1","task":"Look at photo/caption and discuss nearest park / why people like it","activityId":"s12","status":"covered"},
+    {"source":"Exercise 2","task":"Match six key vocabulary items to definitions a-f","activityId":"s13","status":"covered"},
+    {"source":"Exercise 3","task":"Watch and number a-g in order","activityId":"s14","status":"covered"},
+    {"source":"Exercise 4","task":"Student A completes column 1; Student B completes column 2","activityId":"s15","status":"restored"},
+    {"source":"Exercise 5","task":"Share notes, complete other column, watch again and check","activityId":"s15p","status":"restored"},
+    {"source":"Exercise 6","task":"Role play: choose a person, ask two questions, guess","activityId":"s16","status":"covered"},
+    {"source":"Exercise 7","task":"Change roles and repeat","activityId":"s16r","status":"restored"},
+    {"source":"PPT extension","task":"Talk about a role model","activityId":"s17","status":"covered"},
+    {"source":"PPT consolidation","task":"Review vocabulary, Wh-questions, listening, writing and speaking","activityId":"s18","status":"covered"},
+    {"source":"PPT homework","task":"Write a short paragraph describing a person you admire","activityId":"s19","status":"covered"}
+  ]
+}
