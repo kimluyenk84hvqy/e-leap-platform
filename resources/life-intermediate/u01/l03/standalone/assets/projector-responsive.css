@@ -1,0 +1,98 @@
+:root{
+  --slide-body:clamp(20px,1.35vw,30px);
+  --slide-small:clamp(15px,1vw,21px);
+  --slide-heading:clamp(42px,4.2vw,72px);
+  --slide-subheading:clamp(25px,2.2vw,38px);
+}
+
+/* Large-room readability */
+body{font-size:var(--slide-body)}
+.brand strong{font-size:clamp(24px,1.8vw,34px)}
+.brand span{font-size:clamp(16px,1.15vw,22px)}
+.modebar button,.footer button,.small-btn,.submit,.group-tabs button,.teacher-homework-actions button{font-size:clamp(16px,1.05vw,22px);min-height:46px;padding:.65em 1em}
+.modebar span,.counter,.status{font-size:clamp(15px,1vw,20px)}
+.side-title{font-size:clamp(15px,1vw,19px)}
+.side nav button{font-size:clamp(15px,.95vw,19px);line-height:1.25}
+.eyebrow{font-size:clamp(15px,1.05vw,21px)}
+h1{font-size:var(--slide-heading);line-height:1.02}
+.instruction{font-size:clamp(21px,1.55vw,30px);line-height:1.38;max-width:1250px}
+.card{padding:clamp(20px,1.5vw,30px)}
+.card h2,.card h3,.scroll-panel h3,.role-card h3,.rubric h3{font-size:var(--slide-subheading);line-height:1.15}
+.question,.drop-question,.check-item,.aim-card ul,.discussion-box textarea,.identify-row input,.form-language-row,.role-card,.rubric,.order-row,.note-row,.student-form,.form-line{font-size:var(--slide-body)}
+.long-response,.homework-shell textarea,.role-card textarea,.form-field textarea,.form-field>input,.form-language-row input,.order-row input,.note-row input,.dropzone input{font-size:clamp(20px,1.4vw,28px)}
+.response-shell .hint,.drop-help,.video-fallback,.evidence,.photo-caption{font-size:var(--slide-small);line-height:1.35}
+.drag-chip{font-size:clamp(18px,1.25vw,25px);padding:.65em .8em}
+.dropzone{min-height:clamp(58px,4vw,78px)}
+.form-title-drop{min-height:clamp(46px,3.2vw,62px)}
+.elicitation button{font-size:clamp(20px,1.45vw,28px);padding:.75em .9em}
+.cover-copy p,.end-screen p{font-size:clamp(30px,2.6vw,46px)}
+.aim-card h3{font-size:clamp(28px,2.2vw,40px)}
+.rubric-grid{font-size:clamp(18px,1.2vw,24px)}
+
+/* Use screen area more effectively on classroom displays */
+@media (min-width:1280px){
+  .topbar{min-height:72px;padding:0 30px}
+  .app{grid-template-rows:72px 1fr}
+  .workspace{grid-template-columns:clamp(250px,17vw,320px) minmax(0,1fr);min-height:calc(100vh - 72px)}
+  .lesson{max-height:calc(100vh - 72px)}
+  .lesson-head{padding:26px 34px 10px}
+  .content{padding:16px 34px 28px}
+  .grid-2{gap:26px}.grid-3{gap:20px}
+  .forms-preview{gap:24px}
+  .video-task{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:24px;height:min(69vh,760px)}
+}
+
+/* Projector / full-HD classroom display */
+@media (min-width:1600px){
+  .workspace{grid-template-columns:300px minmax(0,1fr)}
+  .content{padding-left:42px;padding-right:42px}
+  .lesson-head{padding-left:42px;padding-right:42px}
+  .cover,.park-cover,.end-screen{min-height:69vh}
+  .photo-card,.photo-card img{min-height:500px}
+  .long-response{max-width:1200px;min-height:240px}
+}
+
+/* Tablet: simplify columns but keep text comfortably large */
+@media (max-width:1100px){
+  .workspace{grid-template-columns:1fr}
+  .side{display:none}
+  .lesson{max-height:none;min-height:calc(100vh - 64px)}
+  .grid-3{grid-template-columns:1fr}
+  .forms-preview,.form-builder,.homework-shell,.cover,.park-cover,.end-screen{grid-template-columns:1fr}
+  .video-task{grid-template-columns:1fr;height:auto}
+  .scroll-panel{max-height:none}
+  .instruction{font-size:clamp(19px,2.3vw,26px)}
+  .content{padding-bottom:100px}
+  .footer{position:sticky;bottom:0;z-index:30}
+}
+
+/* Phone: stack everything and enlarge tap targets */
+@media (max-width:700px){
+  .topbar{min-height:64px;height:auto;padding:8px 10px;align-items:flex-start;flex-wrap:wrap}
+  .brand span{display:none}
+  .modebar{width:100%;overflow-x:auto;padding-bottom:2px}
+  .modebar button{white-space:nowrap;min-height:44px}
+  .lesson-head{padding:16px 14px 6px;display:block}
+  .counter{display:inline-block;margin-top:8px}
+  .content{padding:10px 12px 96px}
+  .grid-2,.grid-3,.drag-layout,.drop-row,.forms-preview,.form-builder,.homework-shell,.student-form,.checklist,.end-screen,.cover,.park-cover{grid-template-columns:1fr}
+  .form-language-row{grid-template-columns:42px 1fr}.form-language-row input{grid-column:1/-1}
+  .note-row{grid-template-columns:1fr}.note-row .evidence{grid-column:1}
+  .order-row{grid-template-columns:30px 1fr 72px}
+  .photo-card,.photo-card img{min-height:280px}
+  h1{font-size:clamp(34px,10vw,48px)}
+  .instruction,.question,.drop-question{font-size:clamp(18px,5vw,23px)}
+  .long-response,.homework-shell textarea{min-height:170px}
+}
+
+/* Short-height projector/laptop: reduce vertical waste, not text size */
+@media (min-width:1000px) and (max-height:760px){
+  .lesson-head{padding-top:12px}
+  .content{padding-top:8px;padding-bottom:12px}
+  .card{padding:16px 20px}
+  .question-list{gap:8px}
+  .question{padding:10px 14px}
+  .cover,.park-cover,.end-screen{min-height:56vh}
+  .photo-card,.photo-card img{min-height:330px}
+  .video-task{height:min(62vh,560px)}
+}
