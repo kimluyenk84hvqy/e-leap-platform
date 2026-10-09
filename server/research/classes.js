@@ -15,7 +15,10 @@ export default async function handler(req,res){
     if(req.method==='POST'){
       if(!requireSameOrigin(req,res))return; if(!['teacher','admin'].includes(user.role))return res.status(403).json({ok:false,error:'Teacher or admin required'});
       const {className,courseId=null,academicYear=null}=req.body||{}; if(!String(className||'').trim())return res.status(400).json({ok:false,error:'className is required'});
-      const teacherId=await ensureResearchStaffUser(sql,user);
+      // Admin classes can safely use the authenticated UUID directly. This avoids forcing
+      // Admin through the legacy research-users bridge, which may reject the admin role.
+      const teacherId=user.role==='admin'?user.user_id:await ensureResearchStaffUser(sql,user);
+      if(!teacherId)return res.status(500).json({ok:false,error:'Unable to resolve teacher identity'});
       const rows=await sql`INSERT INTO classes(teacher_id,class_name,course_id,academic_year) VALUES(${teacherId},${String(className).trim().slice(0,160)},${courseId},${academicYear}) RETURNING *`;
       return res.status(201).json({ok:true,class:rows[0]});
     }
