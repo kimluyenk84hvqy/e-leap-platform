@@ -3,7 +3,7 @@
  *
  * Keeps the locked Role Control Contract intact while adding:
  * - server-session role verification (localStorage is never final authority)
- * - Follow Teacher + student navigation lock for an active live session
+ * - automatic Follow Teacher + student navigation lock for an active live session
  * - teacher Responses summary with participation + multi-attempt history
  *
  * Live Class / QR creation code is intentionally NOT modified here.
@@ -24,7 +24,7 @@ export class UnifiedLessonControls extends BaseUnifiedLessonControls{
     super(opts);
     const q=new URLSearchParams(location.search);
     this.sessionId=q.get('sessionId')||null;
-    this.followEnabled=false;
+    this.followEnabled=Boolean(this.sessionId&&['teacher','admin'].includes(this.role));
     this._lastTeacherScreen=null;
     this._studentFollowState=false;
     this._studentNavGuard=null;
@@ -130,32 +130,29 @@ export class UnifiedLessonControls extends BaseUnifiedLessonControls{
     const group=this.dock?.querySelector?.('.unified-classroom');
     if(!group||group.querySelector('#hostFollowTeacherBtn'))return;
 
+    this.followEnabled=true;
     const btn=document.createElement('button');
     btn.id='hostFollowTeacherBtn';
     btn.type='button';
-    btn.textContent='Follow Teacher · OFF';
-    btn.title='When ON, students follow the teacher screen and lesson navigation is locked.';
+    btn.textContent='Follow Teacher · ON';
+    btn.title='Live class: student slides automatically follow the teacher and student slide navigation is locked.';
+    btn.disabled=true;
     const live=group.querySelector('#hostLiveBtn');
     group.insertBefore(btn,live||null);
     this.followBtn=btn;
 
-    btn.onclick=async()=>{
-      this.followEnabled=!this.followEnabled;
-      this._syncFollowButton();
-      await this._postTeacherControl('teacher.follow',{enabled:this.followEnabled});
-      if(this.followEnabled)await this._publishTeacherNavigation(true);
-    };
-
     this._syncFollowButton();
-    this._postTeacherControl('teacher.follow',{enabled:false});
+    this._postTeacherControl('teacher.follow',{enabled:true})
+      .then(()=>this._publishTeacherNavigation(true));
     this._followTimer=setInterval(()=>this._publishTeacherNavigation(false),650);
   }
 
   _syncFollowButton(){
     if(!this.followBtn)return;
-    this.followBtn.textContent=`Follow Teacher · ${this.followEnabled?'ON':'OFF'}`;
-    this.followBtn.classList.toggle('is-active',this.followEnabled);
-    this.followBtn.setAttribute('aria-pressed',this.followEnabled?'true':'false');
+    this.followBtn.textContent='Follow Teacher · ON';
+    this.followBtn.classList.add('is-active');
+    this.followBtn.setAttribute('aria-pressed','true');
+    this.followBtn.disabled=true;
     this.followBtn.hidden=Boolean(this.presentation);
   }
 
@@ -176,12 +173,12 @@ export class UnifiedLessonControls extends BaseUnifiedLessonControls{
       pill=document.createElement('span');
       pill.id='hostFollowStatus';
       pill.className='host-practice-pill';
-      pill.textContent='Free navigation';
+      pill.textContent='Waiting for teacher…';
       this.dock?.querySelector?.('.unified-activity')?.appendChild(pill);
     }
     this.followStatus=pill;
     this._pollTeacherControl();
-    this._controlPoll=setInterval(()=>this._pollTeacherControl(),1800);
+    this._controlPoll=setInterval(()=>this._pollTeacherControl(),900);
   }
 
   async _pollTeacherControl(){
@@ -195,7 +192,7 @@ export class UnifiedLessonControls extends BaseUnifiedLessonControls{
       const follow=Boolean(c.followEnabled&&c.screenNumber);
       this._studentFollowState=follow;
       this._setStudentNavigationLock(follow);
-      if(this.followStatus)this.followStatus.textContent=follow?'Following teacher · locked':'Free navigation';
+      if(this.followStatus)this.followStatus.textContent=follow?'Following teacher · locked':'Waiting for teacher…';
       if(follow)await this._goToTeacherScreen(Number(c.screenNumber));
     }catch(_){}
   }
