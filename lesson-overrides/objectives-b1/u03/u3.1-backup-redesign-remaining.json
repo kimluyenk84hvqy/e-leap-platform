@@ -1,0 +1,125 @@
+{
+  "schemaVersion": "eleap.backup-redesign.v1",
+  "courseId": "objectives-b1",
+  "unitId": "u03",
+  "lessonId": "obj-b1-u03-l01",
+  "status": "REVIEW",
+  "screens": [
+    {
+      "screen": 11,
+      "sourceActivityId": "obj-b1-u03-l01-grammar-spot-01",
+      "title": "Discover the Rule",
+      "layout": "clean split-screen comparison with one large example on each side: USUALLY vs NOW",
+      "visualAid": "deep-green USUALLY panel and restrained lime NOW panel; no decorative stock image",
+      "studentAction": "compare the two examples and choose the correct rule",
+      "teacherAction": "collect class prediction, then reveal the two rules in place",
+      "answers": [
+        "Use the present simple to talk about what we usually do.",
+        "Use the present continuous to talk about what we are doing now / around the present."
+      ],
+      "presentationRule": "reveal one rule at a time"
+    },
+    {
+      "screen": 12,
+      "sourceActivityId": "obj-b1-u03-l01-language-a02",
+      "title": "Sonia · Usually vs This Week",
+      "layout": "Sonia portrait/identity card centred between two large timeline zones; avoid tiny table",
+      "usualItems": [
+        "cycle to school",
+        "do lessons all day",
+        "study at home in the evening",
+        "play volleyball after school",
+        "not wear her best skirt every day"
+      ],
+      "thisWeekItems": [
+        "not go to school",
+        "not do any homework",
+        "work in a hotel",
+        "have meals with her colleagues",
+        "speak French with hotel guests"
+      ],
+      "studentAction": "drag each activity into USUALLY or THIS WEEK, then build one sentence at a time",
+      "teacherAction": "Responses first; Check classification; Show answer reveals completed sentence in the same row",
+      "fit": "maximum five rows visible at once; no scrolling"
+    },
+    {
+      "screen": 13,
+      "sourceActivityId": "obj-b1-u03-l01-language-a03",
+      "title": "Sonia Calls Granny",
+      "layout": "phone-call interface with two speech columns and large inline answer boxes",
+      "verbBank": ["do","look forward to","work","not go","start","get up","like","help","not work","understand","prefer","stay"],
+      "sourceCorrections": [
+        "I'm not going to school this week.",
+        "Blank labels are sequential."
+      ],
+      "studentAction": "complete the conversation inline, then listen and check",
+      "teacherAction": "Show answer fills each blank in its original speech bubble; Responses remain available",
+      "media": "media/audio/obj-b1-u03-language-a03-audio.mp3",
+      "presentationRule": "show dialogue in two balanced chunks rather than one dense screen"
+    },
+    {
+      "screen": 14,
+      "sourceActivityId": "obj-b1-u03-l01-state-verbs",
+      "title": "State Verbs · Repair the Sentence",
+      "layout": "one incorrect sentence at a time, large type, with a correction field and STATE/ACTION decision chip",
+      "targetVerbs": ["believe","know","like","think","understand","want"],
+      "studentAction": "correct the sentence and classify the key verb",
+      "teacherAction": "review Responses, then reveal correction and short rule in place",
+      "answers": [
+        "I don't believe you can fly a plane.",
+        "I like them very much.",
+        "We think this CD is very expensive.",
+        "Do you want some coffee?",
+        "I don't know your number.",
+        "I don't understand what she's saying.",
+        "I don't like it."
+      ],
+      "visualPolicy": "no generic job photo; use typographic grammar focus"
+    },
+    {
+      "screen": 15,
+      "sourceActivityId": "obj-b1-u03-l01-short-answers-match",
+      "title": "Match Questions & Short Answers",
+      "layout": "two-column matching board with four pairs per Part; large cards and strong spacing",
+      "partPolicy": "Part 1 = first 4 pairs; Part 2 = last 4 pairs",
+      "studentAction": "match each question to its short-answer pattern",
+      "teacherAction": "matched pairs lock after Check; Show answer completes unmatched pairs",
+      "responseBoard": "record final pair mapping for each student"
+    },
+    {
+      "screen": 16,
+      "sourceActivityId": "obj-b1-u03-l01-short-answers-speaking",
+      "title": "Ask, Answer & Check",
+      "layout": "large rotating prompt card + 30–45 second round timer; minimal visual clutter",
+      "modelFrames": [
+        "Do you play volleyball? — Yes, I do.",
+        "Are we speaking Italian? — No, we aren't."
+      ],
+      "studentAction": "ask one prompt, answer naturally, then mark peer accuracy",
+      "teacherAction": "Timer + Responses for quick reflection; no fake auto-score for speaking",
+      "interactionUpgrade": "rotate prompts instead of displaying all questions at once"
+    },
+    {
+      "screen": 17,
+      "sourceActivityId": "obj-b1-u03-l01-exit",
+      "title": "Quick Exit Check",
+      "layout": "five compact challenge cards revealed one by one",
+      "coverage": ["job vocabulary","present simple","present continuous","state verbs","short answers"],
+      "studentAction": "complete one final mixed response per target area",
+      "teacherAction": "Responses summary first; Show answer/model only after class review",
+      "visualPolicy": "text-led with small purposeful icons only; no repeated photo wall"
+    }
+  ],
+  "globalRules": {
+    "teacherControls": ["Check","Reset","Show answer","Presentation","Timer","Responses","Live Class / QR"],
+    "studentControls": ["Check","Reset","Submit","Score"],
+    "showAnswerInPlace": true,
+    "responseBoardAllAnswerableSlides": true,
+    "liveClassQrAllSlides": true,
+    "noVerticalScroll": true,
+    "classroomBodyPxMin": 28,
+    "activityPromptPxMin": 36,
+    "avoidRepeatedImageSets": true,
+    "visualDirection": "modern, premium, natural-light photography only when image materially supports the task"
+  }
+}
