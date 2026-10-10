@@ -1,0 +1,174 @@
+{
+  "schemaVersion": "eleap.backup-redesign.v1",
+  "courseId": "objectives-b1",
+  "unitId": "u03",
+  "lessonId": "obj-b1-u03-l02",
+  "status": "REVIEW",
+  "designSystem": {
+    "primary": "#1F5A45",
+    "accent": "#A8C83E",
+    "background": "#F7F4EA",
+    "surface": "#FFFDF7",
+    "text": "#26322C",
+    "visualDirection": "modern, premium, restrained colour, natural realistic photography when pedagogically useful",
+    "classroomBodyPxMin": 28,
+    "activityPromptPxMin": 36,
+    "noVerticalScroll": true
+  },
+  "screens": [
+    {
+      "screen": 1,
+      "sourceActivityId": "obj-b1-u03-l02-pron-a01",
+      "title": "Pronunciation · Listen & Order",
+      "layout": "four large word clusters in a 2×2 grid with one compact number field per word",
+      "wordSets": [["cat","cart","cut"],["bag","bug"],["carry","curry"],["match","March","much"]],
+      "answers": [{"cat":3,"cart":2,"cut":1},{"bag":1,"bug":2},{"carry":2,"curry":1},{"match":1,"March":3,"much":2}],
+      "media": "media/audio/obj-b1-u03-pron-a01-audio.mp3",
+      "studentAction": "listen and number the words",
+      "teacherAction": "Check Responses, replay, then Show answer in each number field",
+      "visualAid": "large waveform and current sound focus; no tiny table"
+    },
+    {
+      "screen": 2,
+      "sourceActivityId": "obj-b1-u03-l02-pron-a02",
+      "title": "Listen Again & Repeat",
+      "layout": "single sound-focus card with segmented waveform, large Replay control and speaking cue",
+      "studentAction": "listen, replay and repeat",
+      "teacherAction": "control pacing and replay; no fabricated transcript",
+      "media": "media/audio/obj-b1-u03-pron-a02-audio.mp3",
+      "sourcePolicy": "Use the source recording only; do not invent printed sentences"
+    },
+    {
+      "screen": 3,
+      "sourceActivityId": "obj-b1-u03-l02-pron-a03",
+      "title": "Sound Sort",
+      "layout": "three large sound zones /æ/ · /ɑː/ · /ʌ/ with draggable word chips",
+      "words": ["does","doesn't","can","can't","must","mustn't","are","aren't"],
+      "studentAction": "listen, repeat, then drag each word to the sound zone",
+      "teacherAction": "Responses/Check first, then reveal correct grouping",
+      "visualPolicy": "strong typographic phonics design; no decorative photos"
+    },
+    {
+      "screen": 4,
+      "sourceActivityId": "obj-b1-u03-l02-differences",
+      "title": "Find the Differences",
+      "layout": "15-second original-scene memory view → changed scene → numbered hotspots",
+      "model": "The photographer isn't taking a photo of the model now; he's taking a photo of the thief.",
+      "studentAction": "identify one changed person at a time and type or say the contrast",
+      "teacherAction": "Timer, Responses, then character-by-character Show answer",
+      "answers": [
+        "The model isn't standing by the fountain; she's talking to the journalist.",
+        "The artist isn't painting a picture; she's showing a child the picture.",
+        "The journalist isn't writing in his notebook; he's talking to the model.",
+        "The bank guard isn't standing near the door of the bank; he's having a cup of coffee.",
+        "The photographer isn't taking a photo of the model; he's taking a photo of the thief.",
+        "The police officer isn't sitting in his car; he is running after the woman with the bag."
+      ],
+      "visualRule": "use two distinct realistic scenes, not the repeated seven-job photo wall"
+    },
+    {
+      "screen": 5,
+      "sourceActivityId": "obj-b1-u03-l02-mystery-job",
+      "title": "What's My Job? · Live Mystery",
+      "layout": "secret job card for Teacher/selected learner + large clue cards + whole-class QR response strip",
+      "questionBanks": {
+        "currentActivity": ["Are you making something?","Are you mending something?","Are you opening a door?","Are you answering a telephone?"],
+        "jobRoutine": ["Do you make things?","Do you talk to other people?","Do you work indoors?","Do you use special equipment?"]
+      },
+      "answerFrames": ["Yes, I am.","No, I'm not.","Yes, I do.","No, I don't.","Sometimes."],
+      "studentAction": "ask yes/no questions and submit one final job guess through QR/Responses",
+      "teacherAction": "run one mystery round at a time; reveal only after guesses are collected",
+      "cognitiveLevel": "infer from evidence + distinguish NOW vs ROUTINE"
+    },
+    {
+      "screen": 6,
+      "sourceActivityId": "obj-b1-u03-l02-speaking-a01",
+      "title": "Tom · Match Questions & Answers",
+      "layout": "large photo zone + seven question chips + seven draggable answer cards; split 4+3 if required for readability",
+      "questions": ["Where is he?","What does he look like?","What is he wearing?","What kind of person is he?","What is he doing?","How do you feel about doing this kind of thing?","Why?"],
+      "answers": ["He's outside his house.","He's tall and he's got short fair hair.","He's wearing white shorts and a red T-shirt.","He's a friendly person.","He's painting something.","I wouldn't like to do this.","Because I don't like the smell of paint."],
+      "studentAction": "match questions to answers",
+      "teacherAction": "Check first; Show answer reveals matched cards and then the seven-part speaking framework",
+      "visualRule": "one strong natural photo, not multiple oversized photos"
+    },
+    {
+      "screen": 7,
+      "sourceActivityId": "obj-b1-u03-l02-speaking-a02",
+      "title": "Describe the Young Woman",
+      "layout": "one full-height workplace photo at controlled size + seven large prompt chips + one response panel",
+      "questions": ["Where is she?","What does she look like?","What is she wearing?","What kind of person is she?","What is she doing?","How do you feel about doing this kind of thing?","Why?"],
+      "model": ["She's in an office.","She's slim and she's got long, wavy hair.","She's wearing a green dress.","She's hard-working / untidy.","She's reading an email and eating a sandwich.","I wouldn't like to do this.","Because I don't like office work. It's boring."],
+      "studentAction": "plan from chips, speak, then submit a brief self-check or text summary",
+      "teacherAction": "listen/read Responses and reveal the model only after production",
+      "visualRule": "photo must be natural, contemporary and different from previous job images"
+    },
+    {
+      "screen": 8,
+      "sourceActivityId": "obj-b1-u03-l02-speaking-a03",
+      "title": "Memory Recall Challenge",
+      "layout": "seven numbered empty slots arranged as a speaking-framework arc; one prompt appears at a time",
+      "targetQuestions": ["Where is he/she?","What does he/she look like?","What is he/she wearing?","What kind of person is he/she?","What is he/she doing?","How do you feel about doing this kind of thing?","Why?"],
+      "studentAction": "reconstruct the seven questions from memory",
+      "teacherAction": "collect Responses, then Show answer one slot at a time",
+      "visualPolicy": "text-led memory task; no unnecessary photograph"
+    },
+    {
+      "screen": 9,
+      "sourceActivityId": "obj-b1-u03-l02-speaking-a04",
+      "title": "Photograph A / Photograph B",
+      "layout": "two balanced photo cards with Part A / Part B tabs and a persistent seven-item peer checklist",
+      "peerChecklist": ["Where?","Appearance?","Clothes?","Personality?","Current action?","Feeling?","Reason?"],
+      "studentAction": "Student A speaks for 60–90 seconds; Student B ticks heard content, then swap",
+      "teacherAction": "Timer + Responses for peer checklist; model language optional, not compulsory",
+      "visualRule": "two genuinely different natural photos; no repeated crop or mirrored duplicate"
+    },
+    {
+      "screen": 10,
+      "sourceActivityId": "obj-b1-u03-l02-reading-a01",
+      "title": "Tom · Reading Part 5",
+      "layout": "one sentence at a time with four large option cards; after Check, rejected distractors fade sequentially",
+      "items": [
+        {"prompt":"Tom is ____.","options":["tall","long","high","great"],"answer":"tall"},
+        {"prompt":"Tom ____ wearing a T-shirt.","options":["do","does","is","be"],"answer":"is"},
+        {"prompt":"Tom ____ a tin of yellow paint.","options":["has","got","wants","uses"],"answer":"wants"}
+      ],
+      "studentAction": "choose the best answer and optionally mark one rejected distractor",
+      "teacherAction": "Check Responses, discuss elimination, then Show answer",
+      "strategy": "If you are not sure which word is correct, decide which words are wrong, and why."
+    },
+    {
+      "screen": 11,
+      "sourceActivityId": "obj-b1-u03-l02-reading-a02",
+      "title": "Irena · Reading Part 5",
+      "layout": "reuse the same clean exam component, but with new content and no decorative photo",
+      "items": [
+        {"prompt":"Irena ____ got a tidy desk.","options":["isn't","hasn't","doesn't","aren't"],"answer":"hasn't"},
+        {"prompt":"Irena usually ____ a sandwich for lunch.","options":["eats","eating","have","having"],"answer":"eats"},
+        {"prompt":"Irena's a ____.","options":["hairdresser","shop assistant","nurse","secretary"],"answer":"secretary"}
+      ],
+      "studentAction": "choose and justify by elimination",
+      "teacherAction": "Check first, then Show answer and reasoning cue in place"
+    },
+    {
+      "screen": 12,
+      "sourceActivityId": "obj-b1-u03-l02-unit-exit",
+      "title": "Unit 3 Exit Challenge · Job City",
+      "layout": "one coherent realistic Job City visual with airport, office, shop, garage, studio and bank zones; reveal one challenge at a time",
+      "coverage": ["jobs","present simple","present continuous","short answers","pronunciation","speaking framework","Reading Part 5 strategy"],
+      "studentAction": "complete mixed hotspot, tense, short-answer and speaking challenges",
+      "teacherAction": "Responses summary + selective Show answer after each challenge",
+      "visualRule": "single integrated scene replaces repeated disconnected stock pictures"
+    }
+  ],
+  "globalRules": {
+    "teacherControls": ["Check","Reset","Show answer","Presentation","Timer","Responses","Live Class / QR"],
+    "studentControls": ["Check","Reset","Submit","Score"],
+    "showAnswerInPlace": true,
+    "responseBoardAllAnswerableSlides": true,
+    "liveClassQrAllSlides": true,
+    "noVerticalScroll": true,
+    "presentationUsesOneTaskAtATime": true,
+    "avoidRepeatedImageSets": true,
+    "openSpeakingNotAutoScored": true
+  }
+}
