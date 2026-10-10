@@ -1,0 +1,148 @@
+{
+  "schemaVersion": "eleap.backup-redesign.v1",
+  "courseId": "objectives-b1",
+  "unitId": "u03",
+  "lessonId": "obj-b1-u03-l01",
+  "status": "REVIEW",
+  "designSystem": {
+    "primary": "#1F5A45",
+    "accent": "#A8C83E",
+    "background": "#F7F4EA",
+    "surface": "#FFFDF7",
+    "text": "#26322C",
+    "visualDirection": "modern, premium, natural-light realistic workplace photography, restrained colour, adult-learner appropriate",
+    "classroomBodyPxMin": 28,
+    "activityPromptPxMin": 36,
+    "noVerticalScroll": true,
+    "avoidRepeatedImageSets": true
+  },
+  "sharedControls": {
+    "teacher": ["Check", "Reset", "Show answer", "Presentation", "Timer", "Responses", "Live Class / QR"],
+    "student": ["Check", "Reset", "Submit", "Score"],
+    "guest": ["Check", "Reset", "Score"],
+    "presentation": ["Show answer", "Reset", "Exit Presentation"],
+    "responseBoardAllAnswerableSlides": true,
+    "showAnswerAllAnswerableSlides": true,
+    "showAnswerInPlace": true,
+    "liveClassQrAllSlides": true
+  },
+  "screens": [
+    {
+      "screen": 3,
+      "sourceActivityId": "obj-b1-u03-l01-intro-a01",
+      "title": "Listen & Match the Jobs",
+      "layout": "7 numbered natural-photo job cards with compact answer field directly below each card",
+      "jobs": ["shop assistant", "flight attendant", "car salesman", "website designer", "hairdresser", "mechanic", "engineer"],
+      "mediaRule": "replace oversized or mismatched imagery with distinct realistic workplace scenes that correspond to the seven audio speakers",
+      "studentAction": "listen and type/match in the box below each numbered picture",
+      "teacherAction": "inspect Responses first, then reveal the answer inside the same corresponding box",
+      "responseGranularity": "one response per numbered picture",
+      "fit": "all active items must fit desktop presentation without scrolling"
+    },
+    {
+      "screen": 4,
+      "sourceActivityId": "obj-b1-u03-l01-intro-a02",
+      "title": "Name the Jobs",
+      "layout": "new visual arrangement; do not simply repeat Screen 3 as a static copy",
+      "studentAction": "type the occupation under each visual cue",
+      "teacherAction": "Show answer reveals correct occupation in each field",
+      "interactionUpgrade": "use visual detail crops / workplace clue panels so recognition is not identical to Screen 3"
+    },
+    {
+      "screen": 5,
+      "sourceActivityId": "obj-b1-u03-l01-intro-a03",
+      "title": "What Are They Doing?",
+      "partTabs": {
+        "part1": {
+          "count": 4,
+          "items": [
+            "The shop assistant is tidying some clothes.",
+            "The flight attendant is bringing the pilots some food.",
+            "The salesman is working at his computer.",
+            "The mechanic is having a break."
+          ]
+        },
+        "part2": {
+          "count": 3,
+          "items": [
+            "The website designer is plugging in her computer.",
+            "The hairdresser is holding a mirror.",
+            "The engineer is looking at a plan."
+          ]
+        }
+      },
+      "layout": "Part 1 shows 4 numbered pictures + 4 boxes on one screen; Part 2 shows 3 numbered pictures + 3 boxes on one screen",
+      "studentAction": "type one sentence directly under each picture",
+      "teacherAction": "Show answer fills each corresponding box in place",
+      "rule": "Part 1 and Part 2 must never duplicate the same items"
+    },
+    {
+      "screen": 6,
+      "sourceActivityId": "obj-b1-u03-l01-intro-a04",
+      "title": "Would You Like This Job?",
+      "visualAid": "one elegant decision board with three large selectable job cards and concise reason prompts",
+      "font": "substantially larger than current build",
+      "studentAction": "choose one job and give one reason",
+      "teacherAction": "collect Responses and optionally reveal model language, not a single fixed opinion",
+      "modelFrames": ["I'd like to be a ... because ...", "I wouldn't like to be a ... because ..."]
+    },
+    {
+      "screen": 7,
+      "sourceActivityId": "obj-b1-u03-l01-listening-a01",
+      "title": "Who Works Here? · Clue Challenge",
+      "replaces": "simple tick-the-job repetition",
+      "type": "clue-inference",
+      "prompt": "Study the scene. Use two visual clues to infer a person's job and justify your choice.",
+      "studentAction": "select a person, type the job, then type one short clue-based justification",
+      "teacherAction": "review Response Board, discuss alternative predictions, reveal likely/source-supported jobs only after discussion",
+      "cognitiveLevel": "infer + justify"
+    },
+    {
+      "screen": 8,
+      "sourceActivityId": "obj-b1-u03-l01-listening-a02",
+      "title": "Listen for Gist",
+      "layout": "audio waveform + two very large answer fields; no oversized repeated picture wall",
+      "answers": ["He is a security officer in a shopping mall.", "He is talking to a police officer."],
+      "studentAction": "type two short answers",
+      "teacherAction": "Responses first, then Show answer in the same two fields"
+    },
+    {
+      "screen": 9,
+      "sourceActivityId": "obj-b1-u03-l01-listening-a03",
+      "title": "Listen for Detail",
+      "answers": ["artist", "photographer", "model", "journalist", "bank guard"],
+      "layout": "fresh five-person mall evidence strip; smaller visual tiles and numbered response boxes",
+      "partPolicy": "if split is needed, use 3 items in Part 1 and 2 items in Part 2; never repeat an item",
+      "studentAction": "listen and enter the five job names",
+      "teacherAction": "check Response Board before in-place reveal"
+    },
+    {
+      "screen": 10,
+      "sourceActivityId": "obj-b1-u03-l01-language-a01",
+      "title": "Present Simple or Present Continuous?",
+      "visualPolicy": "remove repeated job picture set",
+      "layout": "text-first, one sentence card at a time with large type and one answer field",
+      "pacing": "teacher advances item-by-item; cumulative reveal may remain visible after each reveal",
+      "font": "large classroom presentation size",
+      "studentAction": "complete the current sentence and optionally choose USUAL or NOW as reason",
+      "teacherAction": "inspect Responses, Check, then Show answer for the current sentence"
+    }
+  ],
+  "media": {
+    "rule": "media should resolve through the shared platform media layer; avoid redundant repository payload",
+    "newVisualSetRequired": true,
+    "visualSetNotes": "natural contemporary workplaces, no cartoon aesthetic, no repeated generic stock set, each picture numbered where used for response"
+  },
+  "qualityGate": [
+    "classroom-ready",
+    "no vertical scrolling",
+    "large readable typography",
+    "natural visually coherent media",
+    "response board connected",
+    "teacher show-answer in place",
+    "student answer fields in task context",
+    "QR/live controls retained",
+    "no role-contract regression",
+    "suitable as reusable master template"
+  ]
+}
