@@ -1,0 +1,23 @@
+name: Build U3 Offline Backup
+on:
+  push:
+    branches:
+      - objectives-b1-u3-backup-redesign-20261010
+    paths:
+      - 'offline-backup/objectives-b1-u3/**'
+      - '.github/workflows/build-u3-offline-backup.yml'
+  workflow_dispatch:
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build standalone ZIP
+        run: |
+          cd offline-backup
+          zip -r ELEAP_Objectives_B1_U3_OFFLINE_BACKUP_MASTER.zip objectives-b1-u3
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ELEAP_Objectives_B1_U3_OFFLINE_BACKUP_MASTER
+          path: offline-backup/ELEAP_Objectives_B1_U3_OFFLINE_BACKUP_MASTER.zip
+          if-no-files-found: error
