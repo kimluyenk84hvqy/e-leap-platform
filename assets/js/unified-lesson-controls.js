@@ -173,10 +173,12 @@ export class UnifiedLessonControls extends BaseUnifiedLessonControls{
       pill=document.createElement('span');
       pill.id='hostFollowStatus';
       pill.className='host-practice-pill';
-      pill.textContent='Waiting for teacher…';
+      pill.textContent='Waiting for teacher · locked';
       this.dock?.querySelector?.('.unified-activity')?.appendChild(pill);
     }
     this.followStatus=pill;
+    this._studentFollowState=true;
+    this._setStudentNavigationLock(true);
     this._pollTeacherControl();
     this._controlPoll=setInterval(()=>this._pollTeacherControl(),900);
   }
@@ -189,11 +191,11 @@ export class UnifiedLessonControls extends BaseUnifiedLessonControls{
       if(!r.ok)return;
       const d=await r.json();
       const c=d?.control||{};
-      const follow=Boolean(c.followEnabled&&c.screenNumber);
-      this._studentFollowState=follow;
-      this._setStudentNavigationLock(follow);
-      if(this.followStatus)this.followStatus.textContent=follow?'Following teacher · locked':'Waiting for teacher…';
-      if(follow)await this._goToTeacherScreen(Number(c.screenNumber));
+      const target=Number(c.screenNumber);
+      this._studentFollowState=true;
+      this._setStudentNavigationLock(true);
+      if(this.followStatus)this.followStatus.textContent=Number.isFinite(target)&&target>0?'Following teacher · locked':'Waiting for teacher · locked';
+      if(Number.isFinite(target)&&target>0)await this._goToTeacherScreen(target);
     }catch(_){}
   }
 
