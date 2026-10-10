@@ -1,0 +1,18 @@
+{
+  "version":"2026-10-10",
+  "audio":[
+    {"assetId":"obj-b1-u03-intro-a01-audio","path":"media/audio/obj-b1-u03-intro-a01-audio.mp3","required":true},
+    {"assetId":"obj-b1-u03-listening-a02-audio","path":"media/audio/obj-b1-u03-listening-a02-audio.mp3","required":true},
+    {"assetId":"obj-b1-u03-language-a03-audio","path":"media/audio/obj-b1-u03-language-a03-audio.mp3","required":true},
+    {"assetId":"obj-b1-u03-pron-a01-audio","path":"media/audio/obj-b1-u03-pron-a01-audio.mp3","required":true},
+    {"assetId":"obj-b1-u03-pron-a02-audio","path":"media/audio/obj-b1-u03-pron-a02-audio.mp3","required":true}
+  ],
+  "images":[
+    "media/images/job-01-shop-assistant.jpg","media/images/job-02-flight-attendant.jpg","media/images/job-03-car-salesman.jpg","media/images/job-04-website-designer.jpg","media/images/job-05-hairdresser.jpg","media/images/job-06-mechanic.jpg","media/images/job-07-engineer.jpg",
+    "media/images/clue-01-shop.jpg","media/images/clue-02-aircraft.jpg","media/images/clue-03-showroom.jpg","media/images/clue-04-web.jpg","media/images/clue-05-salon.jpg","media/images/clue-06-garage.jpg","media/images/clue-07-plan.jpg",
+    "media/images/action-01-shop.jpg","media/images/action-02-flight.jpg","media/images/action-03-salesman.jpg","media/images/action-04-mechanic.jpg","media/images/action-05-web-designer.jpg","media/images/action-06-hairdresser.jpg","media/images/action-07-engineer.jpg",
+    "media/images/mall-original.jpg","media/images/mall-changed.jpg","media/images/tom.jpg","media/images/young-woman-office.jpg","media/images/photo-a.jpg","media/images/photo-b.jpg","media/images/job-city.jpg"
+  ],
+  "policy":"All visual assets should be natural, contemporary, adult-learner appropriate, correctly matched to the task, and not duplicated across consecutive screens unless the learning design explicitly requires comparison or memory recall.",
+  "fallback":"If a local image is missing, the offline runtime displays a neutral visual placeholder instead of breaking the lesson. Missing audio remains visibly controllable but must be restored before the package is called fully media-complete."
+}
