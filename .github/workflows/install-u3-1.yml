@@ -4,7 +4,7 @@ on:
   push:
     branches: ["u3-1-final"]
     paths:
-      - "packages/u3-1-online.zip.part-*"
+      - "packages/u3-1-online.zip"
   workflow_dispatch:
 
 permissions:
@@ -19,16 +19,15 @@ jobs:
         with:
           ref: u3-1-final
 
-      - name: Rebuild package archive
+      - name: Verify U3.1 package
         run: |
-          cat packages/u3-1-online.zip.part-* > /tmp/u3-1-online.zip
-          unzip -t /tmp/u3-1-online.zip
+          unzip -t packages/u3-1-online.zip
 
       - name: Install Unit 3.1 into canonical route
         run: |
           rm -rf courses/b1/unit-03/lesson-3-1
           mkdir -p courses/b1/unit-03/lesson-3-1
-          unzip -oq /tmp/u3-1-online.zip -d courses/b1/unit-03/lesson-3-1
+          unzip -oq packages/u3-1-online.zip -d courses/b1/unit-03/lesson-3-1
           find courses/b1/unit-03/lesson-3-1 -name '__MACOSX' -type d -prune -exec rm -rf {} + || true
 
       - name: Commit generated lesson files
