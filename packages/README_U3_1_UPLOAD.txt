@@ -1,0 +1,1 @@
+Temporary package chunks for installing locked Unit 3.1 on branch u3-1-final. Generated lesson files are installed into courses/b1/unit-03/lesson-3-1 by GitHub Actions. Package chunks can be removed after merge if desired.

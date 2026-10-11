@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#17324d">
+<title>U3.1 MASTER RC2</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="eyebrow">E-LEAP · UNIT 3.1 · MASTER RC2</div>
+    <h1 id="screenTitle">Unit 3 · What’s your job?</h1>
+  </div>
+  <div class="top-actions">
+    <label class="role-label">QA Role
+      <select id="roleSelect">
+        <option value="student">Student</option>
+        <option value="teacher">Teacher</option>
+        <option value="admin">Admin</option>
+        <option value="guest">Guest</option>
+        <option value="presentation">Presentation</option>
+      </select>
+    </label>
+    <span id="netBadge" class="badge">ONLINE</span>
+    <button id="viewBtn" class="icon-btn" title="Change layout">▣</button>
+    <button id="qrBtn" class="icon-btn" title="Live Class / QR">⌁</button>
+    <button id="responsesBtn" class="icon-btn" title="Responses Board">▤</button>
+    <button id="menuBtn" class="icon-btn" title="Open lesson map">☰</button>
+  </div>
+</header>
+
+<aside id="drawer" class="drawer">
+  <div class="drawer-head"><strong>Lesson Map</strong><button id="closeDrawer">×</button></div>
+  <div id="navList" class="nav-list"></div>
+</aside>
+
+<main>
+  <div id="progressWrap" class="progress-wrap"><div id="progressBar" class="progress-bar"></div></div>
+  <section id="stage" class="stage"></section>
+</main>
+
+<footer class="lesson-footer">
+  <button id="prevBtn">← Previous</button>
+  <div class="counter"><span id="screenCounter"></span></div>
+  <button id="nextBtn" class="primary">Next →</button>
+</footer>
+
+
+<div id="viewPanel" class="floating-panel hidden">
+  <div class="panel-head"><strong>Layout</strong><button data-close="viewPanel">×</button></div>
+  <p>Choose the classroom view. Auto adapts to the current screen.</p>
+  <div class="view-options">
+    <button data-view="auto" class="active">Auto</button>
+    <button data-view="projector">Projector</button>
+    <button data-view="compact">Compact</button>
+  </div>
+</div>
+
+<div id="qrPanel" class="floating-panel qr-panel hidden">
+  <div class="panel-head"><strong>Live Class / QR</strong><button data-close="qrPanel">×</button></div>
+  <div id="qrHosted">
+    <p>Students scan this code to open the lesson on their device.</p>
+    <img id="qrImage" class="qr-image" alt="Lesson QR code">
+    <div class="link-box" id="shareUrl"></div>
+    <div class="row">
+      <button id="copyLinkBtn">Copy link</button>
+      <button id="openLinkBtn">Open link</button>
+    </div>
+    <p class="note">This QR is generated only from a real hosted lesson URL and opens Student role directly.</p>
+  </div>
+  <div id="qrLocal" class="hidden">
+    <div class="empty-state">
+      <strong>Open with Local Live Class to use QR.</strong>
+      <p>Do not double-click <b>index.html</b> for QR testing. On Mac, run <b>START_LIVE_CLASS_MAC.command</b>. On Windows, run <b>START_LIVE_CLASS_WINDOWS.bat</b>. Keep teacher and student devices on the same Wi‑Fi. Then click <b>Live Class / QR</b>.</p>
+    </div>
+  </div>
+</div>
+
+<div id="responsesBoard" class="board-overlay hidden">
+  <div class="board-shell">
+    <div class="board-top">
+      <div>
+        <div class="eyebrow">TEACHER / ADMIN</div>
+        <h2>Responses Board</h2>
+      </div>
+      <div class="row">
+        <button id="refreshResponses">Refresh</button>
+        <button id="exportResponses">Export JSON</button>
+        <button data-close="responsesBoard">Close</button>
+      </div>
+    </div>
+    <div class="board-summary">
+      <div class="metric"><span id="metricSubmissions">0</span><small>Submissions</small></div>
+      <div class="metric"><span id="metricActivities">0</span><small>Activities</small></div>
+      <div class="metric"><span id="metricAvg">—</span><small>Avg. score</small></div>
+    </div>
+    <div class="board-tools">
+      <label>Activity
+        <select id="responseFilter"><option value="all">All activities</option></select>
+      </label>
+      <label class="search-wrap">Search
+        <input id="responseSearch" placeholder="activity / response">
+      </label>
+    </div>
+    <div id="responseCards" class="response-cards"></div>
+    <div id="emptyResponses" class="empty-state hidden">
+      <strong>No responses yet.</strong>
+      <p>Student submissions will appear here. RC1.2 stores QA responses locally in this browser; the production E-LEAP backend will replace this store for multi-device live aggregation.</p>
+    </div>
+  </div>
+</div>
+
+<div id="timerPanel" class="floating-panel hidden">
+  <strong>Timer</strong>
+  <div id="timerValue">02:00</div>
+  <div class="row"><button data-min="1">1 min</button><button data-min="2">2 min</button><button data-min="3">3 min</button><button id="timerStop">Stop</button></div>
+</div>
+
+<div id="platformPanel" class="floating-panel hidden">
+  <strong id="platformTitle">Platform control</strong>
+  <p>This control belongs to the shared E-LEAP shell in production. RC1 keeps a non-destructive QA placeholder only.</p>
+  <button id="closePlatform">Close</button>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
