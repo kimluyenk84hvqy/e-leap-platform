@@ -1,24 +1,42 @@
 import { getResearchDb } from '../_research-db.js';
-import { requireAuth,requireSameOrigin,normalizeStudentId,createSession,teacherOwnsClass,hashPassword,verifyPassword } from '../_auth.js';
+import { getAuth,requireAuth,requireSameOrigin,normalizeStudentId,createSession,teacherOwnsClass,hashPassword,verifyPassword } from '../_auth.js';
 export default async function handler(req,res){
   try{
     const sql=getResearchDb();
     if(req.method==='POST'){
       if(!requireSameOrigin(req,res))return;
-      const joinCode=String(req.body?.joinCode||'').trim().toUpperCase(),studentId=normalizeStudentId(req.body?.studentId||req.body?.participantCode),displayName=String(req.body?.displayName||'Student').trim().slice(0,160),pin=String(req.body?.pin||'');
-      if(!joinCode||!studentId||!pin)return res.status(400).json({ok:false,error:'joinCode, studentId and PIN are required'});
-      if(pin.length<6)return res.status(400).json({ok:false,error:'Student PIN must be at least 6 characters'});
-      const s=await sql`SELECT * FROM sessions WHERE join_code=${joinCode} AND status='active' LIMIT 1`; if(!s.length)return res.status(404).json({ok:false,error:'Join code is invalid or session has ended'});
-      let u=await sql`SELECT * FROM auth_users WHERE student_id=${studentId} AND role='student' LIMIT 1`;
-      if(!u.length){u=await sql`INSERT INTO auth_users(student_id,display_name,role,password_hash) VALUES(${studentId},${displayName},'student',${hashPassword(pin)}) RETURNING *`;}
-      else{
-        if(!u[0].password_hash||!verifyPassword(pin,u[0].password_hash))return res.status(401).json({ok:false,error:'Student ID or PIN is incorrect'});
-        if(displayName&&u[0].display_name!==displayName)u=await sql`UPDATE auth_users SET display_name=${displayName},updated_at=NOW() WHERE user_id=${u[0].user_id} RETURNING *`;
+      const joinCode=String(req.body?.joinCode||'').trim().toUpperCase();
+      if(!joinCode)return res.status(400).json({ok:false,error:'joinCode is required'});
+      const s=await sql`SELECT * FROM sessions WHERE join_code=${joinCode} AND status='active' LIMIT 1`;
+      if(!s.length)return res.status(404).json({ok:false,error:'Join code is invalid or session has ended'});
+
+      // If a Student is already signed in to E-LEAP, the authenticated session is the identity proof.
+      // Do not require the student to re-enter Student ID / PIN just to join a live session.
+      const signedIn=await getAuth(req);
+      let u,studentId,displayName;
+      if(signedIn?.role==='student'){
+        studentId=normalizeStudentId(signedIn.student_id);
+        displayName=String(signedIn.display_name||studentId||'Student').trim().slice(0,160);
+        u=await sql`SELECT * FROM auth_users WHERE user_id=${signedIn.user_id} AND role='student' AND status='active' LIMIT 1`;
+        if(!u.length)return res.status(403).json({ok:false,error:'Student account is not active'});
+      }else{
+        studentId=normalizeStudentId(req.body?.studentId||req.body?.participantCode);
+        displayName=String(req.body?.displayName||'Student').trim().slice(0,160);
+        const pin=String(req.body?.pin||'');
+        if(!studentId||!pin)return res.status(400).json({ok:false,error:'studentId and PIN are required'});
+        if(pin.length<6)return res.status(400).json({ok:false,error:'Student PIN must be at least 6 characters'});
+        u=await sql`SELECT * FROM auth_users WHERE student_id=${studentId} AND role='student' LIMIT 1`;
+        if(!u.length){u=await sql`INSERT INTO auth_users(student_id,display_name,role,password_hash) VALUES(${studentId},${displayName},'student',${hashPassword(pin)}) RETURNING *`;}
+        else{
+          if(!u[0].password_hash||!verifyPassword(pin,u[0].password_hash))return res.status(401).json({ok:false,error:'Student ID or PIN is incorrect'});
+          if(displayName&&u[0].display_name!==displayName)u=await sql`UPDATE auth_users SET display_name=${displayName},updated_at=NOW() WHERE user_id=${u[0].user_id} RETURNING *`;
+        }
       }
+
       await sql`INSERT INTO auth_class_members(class_id,student_user_id,status) VALUES(${String(s[0].class_id)},${u[0].user_id},'active') ON CONFLICT(class_id,student_user_id) DO UPDATE SET status='active'`;
       let p=await sql`SELECT * FROM participants WHERE session_id=${s[0].session_id} AND student_user_id=${u[0].user_id} LIMIT 1`;
       if(!p.length)p=await sql`INSERT INTO participants(session_id,student_user_id,participant_code,display_name) VALUES(${s[0].session_id},${u[0].user_id},${studentId},${displayName}) RETURNING *`;
-      await createSession(res,u[0].user_id);
+      if(!signedIn)await createSession(res,u[0].user_id);
       return res.status(201).json({ok:true,participant:p[0],session:{session_id:s[0].session_id,class_id:s[0].class_id,lesson_id:s[0].lesson_id,status:s[0].status},user:{user_id:u[0].user_id,student_id:u[0].student_id,display_name:u[0].display_name,role:'student'}});
     }
     if(req.method==='GET'){
