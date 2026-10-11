@@ -1,0 +1,39 @@
+name: Install U3.1 package
+
+on:
+  push:
+    branches: ["u3-1-final"]
+    paths:
+      - "packages/u3-1-online.zip"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: u3-1-final
+
+      - name: Install Unit 3.1 into canonical route
+        run: |
+          rm -rf courses/b1/unit-03/lesson-3-1
+          mkdir -p courses/b1/unit-03/lesson-3-1
+          unzip -oq packages/u3-1-online.zip -d courses/b1/unit-03/lesson-3-1
+          find courses/b1/unit-03/lesson-3-1 -name '__MACOSX' -type d -prune -exec rm -rf {} + || true
+
+      - name: Commit generated lesson files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add courses/b1/unit-03/lesson-3-1
+          if git diff --cached --quiet; then
+            echo "No generated changes."
+          else
+            git commit -m "Install locked Unit 3.1 lesson package"
+            git push origin HEAD:u3-1-final
+          fi
