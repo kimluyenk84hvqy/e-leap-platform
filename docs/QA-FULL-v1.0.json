@@ -1,0 +1,17 @@
+{
+  "release": "E-LEAP Production FULL v1.0 \u2014 Clean Replacement",
+  "json": "PASS",
+  "javascriptSyntax": "PASS",
+  "runtimeLegacyMetadata": "PASS",
+  "largeShells": [
+    "Courses",
+    "Skills Lab",
+    "Assignments",
+    "Mock Tests",
+    "Progress"
+  ],
+  "lifeStructure": "12 units \u00d7 3 lesson shells",
+  "goldenReferences": 2,
+  "copyrightGate": "AMBER/private-until-cleared",
+  "heavyMedia": "externalized"
+}

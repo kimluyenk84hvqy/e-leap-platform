@@ -1,0 +1,37 @@
+E-LEAP STABLE PRODUCTION LINKS
+Production platform: https://e-leap-platform.vercel.app/
+
+DIRECT LESSON LINKS (open the lesson host)
+1. U1.1 · Fashion Matters
+https://e-leap-platform.vercel.app/engine/lesson-host.html?resource=res-objective-first-b2-u01-l01
+
+2. U1.2 · Fashion Matters
+https://e-leap-platform.vercel.app/engine/lesson-host.html?resource=res-objective-first-b2-u01-l02
+
+3. U2.1 · The Virtual World
+https://e-leap-platform.vercel.app/engine/lesson-host.html?resource=res-objective-first-b2-u02-l01
+
+4. U2.2 · Review of Present Tenses
+https://e-leap-platform.vercel.app/engine/lesson-host.html?resource=res-objective-first-b2-u02-l02
+
+5. Academic Skills · Informal Email / Letter Writing · Lesson 1
+https://e-leap-platform.vercel.app/engine/lesson-host.html?resource=res-adv-writing-letter-email-writing-informal-l01
+
+START LIVE CLASS LINKS (preselect the lesson, then choose/create class and create session)
+1. U1.1
+https://e-leap-platform.vercel.app/teacher-live.html?lesson=res-objective-first-b2-u01-l01
+
+2. U1.2
+https://e-leap-platform.vercel.app/teacher-live.html?lesson=res-objective-first-b2-u01-l02
+
+3. U2.1
+https://e-leap-platform.vercel.app/teacher-live.html?lesson=res-objective-first-b2-u02-l01
+
+4. U2.2
+https://e-leap-platform.vercel.app/teacher-live.html?lesson=res-objective-first-b2-u02-l02
+
+5. Informal Letter Lesson 1
+https://e-leap-platform.vercel.app/teacher-live.html?lesson=res-adv-writing-letter-email-writing-informal-l01
+
+IMPORTANT
+These are stable production-domain URLs. They become the current final build after the full source is deployed to Production. Preview deployment URLs are intentionally not used here because they change with every Vercel deployment.

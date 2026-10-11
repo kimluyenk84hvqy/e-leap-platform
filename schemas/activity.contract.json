@@ -1,0 +1,20 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://e-leap.local/schemas/activity.contract.json",
+  "title":"E-LEAP Native Activity Contract v1.0",
+  "type":"object",
+  "required":["id","type","prompt","submission"],
+  "properties":{
+    "id":{"type":"string","minLength":1},
+    "type":{"enum":["choose","type","record"]},
+    "title":{"type":"string"},
+    "prompt":{"type":"string","minLength":1},
+    "options":{"type":"array","items":{"type":"object","required":["id","label"],"properties":{"id":{"type":"string"},"label":{"type":"string"}}}},
+    "placeholder":{"type":"string"},
+    "submission":{"type":"object","required":["required","attemptPolicy"],"properties":{"required":{"type":"boolean"},"attemptPolicy":{"enum":["single","multiple"]},"allowDraft":{"type":"boolean"}}},
+    "grading":{"type":"object","properties":{"mode":{"enum":["none","auto","teacher","ai-assisted","hybrid"]},"correctOptionId":{"type":["string","null"]},"rubricId":{"type":["string","null"]}}},
+    "metadata":{"type":"object"}
+  },
+  "allOf":[{"if":{"properties":{"type":{"const":"choose"}}},"then":{"required":["options"]}}],
+  "additionalProperties":true
+}

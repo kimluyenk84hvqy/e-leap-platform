@@ -1,0 +1,13 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "title":"E-LEAP Server Assignment v2",
+  "type":"object",
+  "required":["assignmentId","title","classId","resourceId","status"],
+  "properties":{
+    "assignmentId":{"type":"string"},"teacherId":{"type":"string"},"classId":{"type":"string"},
+    "resourceId":{"type":"string"},"activityId":{"type":["string","null"]},"title":{"type":"string"},
+    "prompt":{"type":["string","null"]},"rubricId":{"type":["string","null"]},"deadline":{"type":["string","null"]},
+    "attemptLimit":{"type":["integer","null"]},"latePolicy":{"enum":["closed","allow-late","teacher-approval"]},
+    "status":{"enum":["draft","active","closed","archived"]}
+  }
+}

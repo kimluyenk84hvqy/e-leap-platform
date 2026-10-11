@@ -1,0 +1,52 @@
+{
+  "id": "e-leap-vmmu-template-pack-v1",
+  "version": "1.0",
+  "status": "locked",
+  "font": "Poppins",
+  "brand": {
+    "institution": "VIETNAM MILITARY MEDICAL UNIVERSITY",
+    "faculty": "FACULTY OF FOREIGN LANGUAGES",
+    "palette": {
+      "deep": "#1F4D3A",
+      "fresh": "#2F6B4F",
+      "accent": "#4F8A67",
+      "soft": "#DDEBE3",
+      "surface": "#F7FAF8",
+      "text": "#183329"
+    }
+  },
+  "templates": [
+    "cover",
+    "aims",
+    "section",
+    "leadin",
+    "vocabulary",
+    "grammar",
+    "controlled",
+    "listening",
+    "video",
+    "interactiveVideo",
+    "reading",
+    "speaking",
+    "writing",
+    "consolidation",
+    "homework",
+    "closing"
+  ],
+  "layouts": [
+    "hero",
+    "standard",
+    "media-left",
+    "media-right",
+    "media-40-60",
+    "media-50-50",
+    "three-cards",
+    "full-media",
+    "question-options",
+    "two-column",
+    "reading-split",
+    "speaking-prompt"
+  ],
+  "revealPolicy": "item-by-item",
+  "goldenAuthoringTest": "U2.1"
+}

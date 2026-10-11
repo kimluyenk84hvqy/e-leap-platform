@@ -1,6 +1,58 @@
 {
+  "id": "medical-english",
   "title": "Medical English",
   "level": "ESP",
-  "status": "planned",
-  "units": []
+  "status": "shell-ready",
+  "units": [
+    {
+      "id": "unit-01",
+      "title": "Unit 1",
+      "status": "shell-ready",
+      "deliveryMode": "configurable",
+      "selfStudyTracking": true
+    },
+    {
+      "id": "unit-02",
+      "title": "Unit 2",
+      "status": "shell-ready",
+      "deliveryMode": "configurable",
+      "selfStudyTracking": true
+    },
+    {
+      "id": "unit-03",
+      "title": "Unit 3",
+      "status": "shell-ready",
+      "deliveryMode": "configurable",
+      "selfStudyTracking": true
+    },
+    {
+      "id": "unit-04",
+      "title": "Unit 4",
+      "status": "shell-ready",
+      "deliveryMode": "configurable",
+      "selfStudyTracking": true
+    },
+    {
+      "id": "unit-05",
+      "title": "Unit 5",
+      "status": "shell-ready",
+      "deliveryMode": "configurable",
+      "selfStudyTracking": true
+    },
+    {
+      "id": "unit-06",
+      "title": "Unit 6",
+      "status": "shell-ready",
+      "deliveryMode": "configurable",
+      "selfStudyTracking": true
+    },
+    {
+      "id": "unit-07",
+      "title": "Unit 7",
+      "status": "shell-ready",
+      "deliveryMode": "configurable",
+      "selfStudyTracking": true
+    }
+  ],
+  "rule": "Unit shells include teacher-led and self-study capable delivery. Exact content titles come only from approved course sources."
 }

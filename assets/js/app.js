@@ -1,92 +1,109 @@
+const $=(s,c=document)=>c.querySelector(s);const $$=(s,c=document)=>[...c.querySelectorAll(s)];
+const app=$('.app'),content=$('#content'),nav=$('#mainNav');
+let role=window.ELEAPAccess?.role?.()||localStorage.getItem('e-leap-preview-role')||'teacher',route=['courses'],shellCache=null,resourceBase=null;
+const NAV=[['courses','▦','Courses'],['skills-lab','◫','Skills Lab'],['assignments','✓','Assignments'],['mock-tests','◉','Mock Tests'],['progress','↗','Progress'],['classes','◎','Classes'],['submissions','✎','Submissions']];
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+async function getJSON(p){const r=await fetch(p,{cache:'no-store'});if(!r.ok)throw new Error(`${p}: ${r.status}`);return r.json()}
 
-const $=(s,c=document)=>c.querySelector(s);
-const $$=(s,c=document)=>[...c.querySelectorAll(s)];
-const app=$(".app");
-let role="teacher";
-const meta={
-  courses:["Courses","Programmes, classes and lessons"],
-  skills:["Skills Lab","Focused practice by skill"],
-  assignments:["Assignments","Submit, grade and return work"],
-  mock:["Mock Tests","Four-skill assessment"],
-  progress:["Progress","Completion, performance and engagement"]
-};
-
-function showView(id){
-  $$(".view").forEach(v=>v.classList.remove("active"));
-  $("#"+id)?.classList.add("active");
-  const m=meta[id]||[id.replaceAll("-"," "),""];
-  $("#topTitle").textContent=m[0];
-  $("#topSub").textContent=m[1];
-  $$(".nav-item").forEach(b=>b.classList.toggle("active",b.dataset.view===id));
-  window.scrollTo({top:0,behavior:"smooth"});
+async function liveReq(path,options={}){const r=await fetch(`/api/research${path}`,{credentials:'same-origin',...options,headers:{'Content-Type':'application/json',...(options.headers||{})}});let d=null;try{d=await r.json()}catch{}if(!r.ok)throw new Error(d?.error||`Live request failed (${r.status})`);return d}
+function liveTeacher(){const k='e-leap-r4-teacher';let p=null;try{p=JSON.parse(localStorage.getItem(k)||'null')}catch{}if(!p){p={teacherId:`teacher-${crypto.randomUUID?.()||Date.now()}`,name:'Teacher'};localStorage.setItem(k,JSON.stringify(p))}return p}
+function go(r){route=r;render()}
+function renderNav(){nav.innerHTML='<div class="nav-group-label">WORKSPACE</div>'+NAV.filter(([id])=>!window.ELEAPAccess||ELEAPAccess.navAllowed(id)).map(([id,ic,n])=>`<button class="nav-btn ${route[0]===id?'active':''}" data-nav="${id}"><span class="nav-icon">${ic}</span>${role==='student'&&id==='submissions'?'Feedback':n}</button>`).join('');$$('[data-nav]',nav).forEach(b=>b.onclick=()=>go([b.dataset.nav]))}
+function setHeader(title,crumb=[]){$('#pageTitle').textContent=title;$('#crumb').textContent=['E-LEAP',...crumb].join(' / ');renderNav()}
+function hero(title,eyebrow=''){return `<div class="hero">${eyebrow?`<div class="kicker">${esc(eyebrow)}</div>`:''}<h1>${esc(title)}</h1></div>`}
+async function shellData(force=false){if(!shellCache||force){const d=await getJSON('data/shells.json');d.shells=ELEAPShellManager.load(d.shells);shellCache=d}return shellCache}
+async function resources(){if(!resourceBase)resourceBase=await getJSON('data/resources.json');return resourceBase}
+function children(id){return shellCache.shells.filter(x=>x.parentId===id&&x.status!=='archived'&&((role==='teacher'||role==='admin')||x.status!=='hidden')&&(role!=='guest'||x.status==='published'||x.status==='approved')).sort((a,b)=>(a.order||0)-(b.order||0))}
+function shellById(id){return shellCache.shells.find(x=>x.id===id)}
+function childTypeFor(cur){const m={course:['unit','Unit'],unit:['lesson','Lesson'],lesson:['module','Sub-shell'],skill:['core-module','Module'],'core-module':['teaching-topic','Topic'],'teaching-topic':['lesson','BG / Lesson'],track:['module','Module'],level:['configurable-collection','Question / Task Type'],'configurable-collection':['practice-set','Practice Set'],'exam-part':['practice-set','Practice Set'],domain:['topic','Topic'],'exam-pathway':['module','Module'],'pathway-hub':['exam-pathway','Exam Pathway'],'large-shell':['collection','Shell'],collection:['module','Shell'],'workflow-shell':['module','Item']};return m[cur.type]||['module','Sub-shell']}
+function addLabel(cur){const [,label]=childTypeFor(cur);return `+ Add ${label}`}
+function shellCard(x){const can=window.ELEAPAccess?.can?.('govern:content',x);return `<div class="card shell-card"><button class="card-open" data-shell="${esc(x.id)}"><h3>${esc(x.name)}</h3><div class="gov-status">${window.ELEAPGovernance?.statusBadge?.(x)||''}</div><span class="arrow">→</span></button>${can?`<button class="shell-menu" data-manage="${esc(x.id)}" aria-label="Manage ${esc(x.name)}">•••</button>`:''}</div>`}
+function contextualToolbar(cur){if(!window.ELEAPAccess?.can?.('govern:content',cur))return '';const resourceOk=['lesson','teaching-topic','practice-set','assignment','mock-test','exam-part','module'].includes(cur.type);return `<div class="context-toolbar"><button class="btn primary" data-add="${esc(cur.id)}">${esc(addLabel(cur))}</button>${resourceOk?`<button class="btn" data-resource-add="${esc(cur.id)}">+ Add Resource</button>`:''}${cur.id!=='e-leap-root'?`<button class="btn quiet" data-selfmanage="${esc(cur.id)}">Manage</button>`:''}</div>`}
+function manage(id){const d=shellCache.shells,x=shellById(id);if(!x||!window.ELEAPAccess?.can?.('govern:content',x))return;const protectedShell=window.ELEAPGovernance?.isProtected?.(x);const safe=(fn)=>{try{fn()}catch(e){alert(e.message)}};const actions={};
+if(!protectedShell)actions['Rename']=()=>ELEAPOps.modal('Rename',`<label class="field">Name<input id="mName" value="${esc(x.name)}"></label>`,m=>{const n=$('#mName',m).value.trim();if(!n)return false;safe(()=>ELEAPShellManager.rename(d,id,n));render()});
+actions[addLabel(x).replace('+ ','')]=()=>addChild(id);
+if(!protectedShell)actions['Move']=()=>{const opts=d.filter(y=>y.id!==id&&y.status!=='archived'&&window.ELEAPGovernance?.compatible?.(x,y,d));ELEAPOps.modal('Move',`<label class="field">Move to<select id="mParent">${opts.map(y=>`<option value="${y.id}" ${y.id===x.parentId?'selected':''}>${esc(y.name)}</option>`).join('')}</select></label>`,m=>{safe(()=>ELEAPShellManager.move(d,id,$('#mParent',m).value));render()})};
+if(!protectedShell){actions['Move Up']=()=>{safe(()=>ELEAPShellManager.reorder(d,id,-1));render()};actions['Move Down']=()=>{safe(()=>ELEAPShellManager.reorder(d,id,1));render()};actions['Duplicate']=()=>{safe(()=>ELEAPShellManager.duplicate(d,id));render()};}
+if(!protectedShell&&window.ELEAPAccess?.can?.('govern:publish',x))actions[x.status==='draft'?'Publish':x.status==='hidden'?'Unhide':'Hide']=()=>{const next=x.status==='draft'?'published':x.status==='hidden'?'published':'hidden';safe(()=>ELEAPShellManager.status(d,id,next));render()};
+if(!protectedShell)actions[x.locked?'Unlock':'Lock']=()=>{safe(()=>ELEAPShellManager.lock(d,id,!x.locked));render()};
+if(!protectedShell)actions['Version History']=()=>showVersionHistory(id);
+if(!protectedShell&&x.status!=='archived')actions['Archive']=()=>{const refs=window.ELEAPGovernance?.impact?.(x)||[];const msg=refs.length?`<div class="impact-warning"><b>Impact check</b><br>${refs.map(esc).join('<br>')}<br><br>Archive keeps historical data and IDs.</div>`:`<div class="ops-note">No active local references found. Archive keeps IDs, submissions and history.</div>`;ELEAPOps.confirm('Archive shell',msg,'Archive',()=>{safe(()=>ELEAPShellManager.status(d,id,'archived'));render()})};
+ELEAPOps.shellMenu(x,actions)}
+function showVersionHistory(id){const x=shellById(id),h=window.ELEAPGovernance?.history?.(id)||[];const modal=ELEAPOps.modal(`Version History: ${esc(x?.name||id)}`,h.length?`<div class="version-list">${h.map((v,n)=>`<div class="version-row"><div><b>${esc(v.reason)}</b><small>${esc(v.at)} · ${esc(v.actor?.role||'')}</small></div><button class="btn" data-restore-version="${n}">Restore</button></div>`).join('')}</div>`:'<div class="empty-simple">No previous versions yet.</div>',()=>false);modal.querySelector('[data-save]').style.display='none';modal.querySelectorAll('[data-restore-version]').forEach(b=>b.onclick=()=>{try{ELEAPShellManager.restoreVersion(shellCache.shells,id,Number(b.dataset.restoreVersion));modal.remove();render()}catch(e){alert(e.message)}})}
+function addChild(parentId){const cur=shellById(parentId),[type,label]=childTypeFor(cur);if(!window.ELEAPAccess?.can?.('govern:content',cur))return;ELEAPOps.modal(`Add ${label}`,`<label class="field">${label} name<input id="sName" autofocus></label>`,m=>{const n=$('#sName',m).value.trim();if(!n)return false;try{ELEAPShellManager.add(shellCache.shells,parentId,n,type)}catch(e){alert(e.message);return false}render()})}
+function addResource(shellId){const sh=shellById(shellId);if(!window.ELEAPAccess?.can?.('govern:content',sh))return;ELEAPOps.modal('Add Resource',`<label class="field">Title<input id="rTitle"></label><label class="field">Type<select id="rType"><option value="interactive-lesson">Interactive Lesson</option><option value="interactive-activity">Interactive Activity</option><option value="file">File</option><option value="link">Approved Link</option><option value="reuse">Reuse Existing Resource</option></select></label><label class="field">Choose file<input id="rFile" type="file"></label><label class="field">Link / reference<input id="rSource"></label>`,m=>{const t=$('#rTitle',m).value.trim();if(!t)return false;const f=$('#rFile',m).files?.[0];const src=f?f.name:$('#rSource',m).value.trim();ELEAPResourceManager.add(shellId,t,$('#rType',m).value,src);render()})}
+async function resourceForShell(shellId){const r=await resources();const p=r.placements?.find(x=>x.shellId===shellId&&x.status==='active');return p?r.resources.find(x=>x.id===p.resourceId):null}
+function localResources(shellId){return ELEAPResourceManager.forShell(shellId)}
+function bindShellActions(){$$('[data-shell]',content).forEach(b=>b.onclick=async()=>{const res=await resourceForShell(b.dataset.shell);const sh=shellById(b.dataset.shell);if(res&&sh?.type==='lesson')location.href=`engine/lesson-host.html?resource=${encodeURIComponent(res.id)}`;else go(['shell',b.dataset.shell])});$$('[data-manage]',content).forEach(b=>b.onclick=e=>{e.stopPropagation();manage(b.dataset.manage)});$$('[data-selfmanage]',content).forEach(b=>b.onclick=()=>manage(b.dataset.selfmanage));$$('[data-add]',content).forEach(b=>b.onclick=()=>addChild(b.dataset.add));$$('[data-resource-add]',content).forEach(b=>b.onclick=()=>addResource(b.dataset.resourceAdd))}
+async function shellPage(id){await shellData();const cur=shellById(id);if(!cur)return;const kids=children(id),parent=shellById(cur.parentId),baseRes=await resourceForShell(id),localRes=localResources(id);setHeader(cur.name,[parent?.name].filter(Boolean));content.innerHTML=(parent?`<button class="back" id="back">← ${esc(parent.name)}</button>`:'')+hero(cur.name)+contextualToolbar(cur)+(kids.length?`<div class="grid compact-grid">${kids.map(shellCard).join('')}</div>`:'')+(baseRes||localRes.length?`<div class="resource-list simple-list">${baseRes?`<button class="resource-item clickable" id="openBase"><b>${esc(baseRes.name)}</b><small>Interactive Lesson</small></button>`:''}${localRes.map(r=>`<div class="resource-item"><b>${esc(r.title)}</b><small>${esc(r.type)}</small></div>`).join('')}</div>`:'')+(!kids.length&&!baseRes&&!localRes.length?`<div class="empty-simple">No content yet.</div>`:'');if(parent)$('#back').onclick=()=>parent.id==='e-leap-root'?go([id]):go(['shell',parent.id]);if(baseRes&&$('#openBase'))$('#openBase').onclick=()=>location.href=`engine/lesson-host.html?resource=${encodeURIComponent(baseRes.id)}`;bindShellActions()}
+async function coursesHome(){await shellData();setHeader('Courses',['Courses']);const books=children('coursebooks'),adv=shellById('advanced-skills');content.innerHTML=hero('Courses')+`<div class="section-title"><h3>Coursebooks</h3></div><div class="grid compact-grid">${books.map(shellCard).join('')}</div><div class="section-title"><h3>Advanced Skills</h3></div><div class="grid compact-grid">${shellCard(adv)}</div>`;bindShellActions()}
+function currentLearner(){const d=ELEAPLearningCore.read();const key=localStorage.getItem('e-leap-student-preview-key');return d.learners.find(x=>x.learnerKey===key)||d.learners[0]||null}
+function ensureStudentIdentity(next){const d=ELEAPLearningCore.read(),l=currentLearner();if(l)return next(l);ELEAPOps.modal('Student profile',`<label class="field">Student ID<input id="sid" autocomplete="off"></label><label class="field">Full name<input id="fn" autocomplete="name"></label><label class="field">Student group<select id="sg"><option value="undergraduate">Undergraduate</option><option value="postgraduate">Postgraduate</option></select></label><label class="field">Gender<select id="gender"><option value="male">Male</option><option value="female">Female</option></select></label><label class="field checkline"><input type="checkbox" id="consent"> I agree that my de-identified learning data may be used for research.</label>`,m=>{const sid=$('#sid',m).value.trim(),fn=$('#fn',m).value.trim();if(!sid||!fn)return false;let learner=d.learners.find(x=>String(x.studentId).toLowerCase()===sid.toLowerCase());if(!learner)learner=ELEAPLearningCore.createLearner(sid,fn,{studentGroup:$('#sg',m).value,gender:$('#gender',m).value,researchConsent:$('#consent',m).checked});localStorage.setItem('e-leap-student-preview-key',learner.learnerKey);next(learner)})}
+async function classesPage(){
+  setHeader((role==='teacher'||role==='admin')?'Classes':'My Classes',['Classes']);
+  const local=ELEAPLearningCore.read(),learners=local.learners||[],mem=local.memberships||[];
+  if(role==='student'){
+    const classes=(local.classes||[]).filter(c=>c.status!=='archived'),l=currentLearner();
+    content.innerHTML=hero('My Classes')+`<div class="context-toolbar"><button class="btn primary" id="joinLiveClass">Join Live Class</button></div>`+(l?`<div class="simple-list">${mem.filter(m=>m.learnerKey===l.learnerKey&&m.status==='active').map(m=>{const c=classes.find(x=>x.classId===m.classId);return c?`<div class="resource-item"><b>${esc(c.className)}</b><small>Class code ${esc(c.classCode)}</small></div>`:''}).join('')||'<div class="empty-simple">No class enrollment yet.</div>'}</div>`:`<div class="empty-simple">Set a Student Preview profile to view classes.<br><button class="btn primary" id="setStudent">Set Student Profile</button></div>`);
+    if($('#joinLiveClass'))$('#joinLiveClass').onclick=()=>location.href='join.html';if($('#setStudent'))$('#setStudent').onclick=()=>ensureStudentIdentity(()=>render());return;
+  }
+  const teacher=liveTeacher();
+  content.innerHTML=hero('Classes')+`<div class="class-live-status" id="classLiveStatus">Connecting to Live Class service…</div>`;
+  let rows=[];
+  try{await liveReq('/bootstrap',{method:'POST',body:'{}'});const d=await liveReq(`/classes?teacherId=${encodeURIComponent(teacher.teacherId)}`);rows=d.classes||[]}
+  catch(e){content.innerHTML=hero('Classes')+`<div class="empty-simple"><b>Live Classes need the Research DB connection.</b><br>${esc(e.message)}<br><br>Once the Vercel database environment variable is connected, class creation, QR and live responses work across devices.</div><div class="context-toolbar"><button class="btn" id="openLiveSetup">Open Live Setup</button></div>`;$('#openLiveSetup').onclick=()=>location.href='teacher-live.html';return}
+  const active=rows.filter(c=>c.status!=='archived'),archived=rows.filter(c=>c.status==='archived');
+  const card=c=>`<div class="class-card live-class-card"><div><h3>${esc(c.class_name)}</h3><small>${esc(c.course_id||'Objective First B2')} ${c.academic_year?`· ${esc(c.academic_year)}`:''}</small></div><div class="toolbar class-actions-row"><button class="btn primary" data-live="${c.class_id}">Start Live</button><button class="btn" data-rename="${c.class_id}">Rename</button><button class="btn quiet" data-archive="${c.class_id}">${c.status==='archived'?'Restore':'Archive'}</button></div></div>`;
+  content.innerHTML=hero('Classes')+`<div class="context-toolbar"><button class="btn primary" id="newClass">+ Create Class</button><button class="btn" id="startLiveSession">Live Class / QR</button></div><div class="class-live-status ready">Live Class service ready · QR and join codes are generated from the same class store.</div><div class="section-title"><h3>Active Classes</h3></div><div class="class-grid">${active.map(card).join('')||'<div class="empty-simple">No active classes yet.</div>'}</div>${archived.length?`<div class="section-title"><h3>Archived Classes</h3></div><div class="class-grid archived-grid">${archived.map(card).join('')}</div>`:''}`;
+  $('#startLiveSession').onclick=()=>location.href='teacher-live.html';
+  $('#newClass').onclick=()=>ELEAPOps.modal('Create Class',`<label class="field">Class name<input id="cName" autofocus></label><label class="field">Academic year<input id="cYear" value="2026-2027"></label>`,async m=>{const n=$('#cName',m).value.trim();if(!n)return false;try{await liveReq('/classes',{method:'POST',body:JSON.stringify({teacherId:teacher.teacherId,className:n,courseId:'objective-first-b2',academicYear:$('#cYear',m).value.trim()})});render();}catch(e){alert(e.message)}return true});
+  $$('[data-live]',content).forEach(b=>b.onclick=()=>location.href=`teacher-live.html?classId=${encodeURIComponent(b.dataset.live)}`);
+  $$('[data-rename]',content).forEach(b=>{const c=rows.find(x=>String(x.class_id)===String(b.dataset.rename));b.onclick=()=>ELEAPOps.modal('Rename Class',`<label class="field">Class name<input id="cRename" value="${esc(c?.class_name||'')}"></label>`,async m=>{const n=$('#cRename',m).value.trim();if(!n)return false;try{await liveReq('/classes',{method:'PATCH',body:JSON.stringify({classId:b.dataset.rename,className:n})});render()}catch(e){alert(e.message)}return true})});
+  $$('[data-archive]',content).forEach(b=>{const c=rows.find(x=>String(x.class_id)===String(b.dataset.archive));b.onclick=async()=>{const next=c?.status==='archived'?'active':'archived';if(next==='archived'&&!confirm(`Archive ${c?.class_name||'this class'}?`))return;try{await liveReq('/classes',{method:'PATCH',body:JSON.stringify({classId:b.dataset.archive,status:next})});render()}catch(e){alert(e.message)}}});
 }
-$$(".nav-item").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.view)));
-
-function applyRole(){
-  app.dataset.role=role;
-  $("#roleText").textContent=role==="teacher"?"Teacher":"Student";
-  $("#progressTitle").textContent=role==="teacher"?"Class progress":"My progress";
-  $$(".role-btn").forEach(b=>b.classList.toggle("active",b.dataset.role===role));
+async function assessmentBootstrap(){try{await liveReq('/bootstrap',{method:'POST',body:'{}'});return true}catch(e){console.error(e);return false}}
+async function loadRubrics(){try{return (await getJSON('data/rubrics.json')).rubrics||[]}catch{return []}}
+function rubricFields(rubric,scores={}){if(!rubric?.criteria?.length)return `<label class="field">Score<input id="score" type="number" min="0" max="${rubric?.maxScore||100}" value=""></label>`;return rubric.criteria.map(c=>`<label class="field">${esc(c.label)} <small>0–${c.max}</small><input class="rubric-score" data-criterion="${esc(c.id)}" type="number" min="0" max="${c.max}" step="0.5" value="${scores?.[c.id]??''}"></label>`).join('')}
+async function assignmentsPage(){
+  setHeader((role==='teacher'||role==='admin')?'Assignments':'My Assignments',['Assignments']);
+  if(!(await assessmentBootstrap())){content.innerHTML=hero(role==='student'?'My Assignments':'Assignments')+`<div class="empty-simple"><b>Assessment + Research Data v1 needs the Research DB connection.</b><br>Classes may still work locally, but server-side homework and marking are unavailable until the database is connected.</div>`;return}
+  if(role==='student'){
+    const l=currentLearner();if(!l){content.innerHTML=hero('My Assignments')+`<div class="empty-simple">Set a Student Preview profile to view server assignments.<br><button class="btn primary" id="setStudent">Set Student Profile</button></div>`;$('#setStudent').onclick=()=>ensureStudentIdentity(()=>render());return}
+    let asgs=[],subs=[];try{asgs=(await liveReq(`/assignments?studentCode=${encodeURIComponent(l.studentId)}`)).assignments||[];subs=(await liveReq(`/submissions?studentCode=${encodeURIComponent(l.studentId)}`)).submissions||[]}catch(e){content.innerHTML=hero('My Assignments')+`<div class="empty-simple">${esc(e.message)}</div>`;return}
+    content.innerHTML=hero('My Assignments')+`<div class="simple-list">${asgs.map(a=>{const attempts=subs.filter(s=>String(s.assignment_id)===String(a.assignment_id));const latest=attempts[0]||null;const limit=a.attempt_limit==null?null:Number(a.attempt_limit);const canSubmit=limit==null||attempts.length<limit;return `<div class="assignment-card"><div><h3>${esc(a.title)}</h3><small>${a.deadline?`Due ${esc(new Date(a.deadline).toLocaleString())} · `:''}${latest?`${esc(latest.status)} · Attempt ${attempts.length}${limit?`/${limit}`:''}`:'Not submitted'}</small>${a.prompt?`<div class="ops-note">${esc(a.prompt)}</div>`:''}</div>${canSubmit?`<button class="btn primary" data-do="${a.assignment_id}">${latest?'Submit another attempt':'Open'}</button>`:'<span class="pill">Attempt limit reached</span>'}</div>`}).join('')||'<div class="empty-simple">No active assignments. Join a Live Class at least once so E-LEAP can associate your Student ID with the class.</div>'}</div>`;
+    $$('[data-do]',content).forEach(b=>b.onclick=()=>{const a=asgs.find(x=>String(x.assignment_id)===String(b.dataset.do));ELEAPOps.modal(a.title,`${a.prompt?`<div class="response-box">${esc(a.prompt)}</div>`:''}<label class="field">Your response<textarea id="resp" rows="10" placeholder="Write your response here"></textarea></label>`,async m=>{const response=$('#resp',m).value.trim();if(!response)return false;try{await liveReq('/submissions',{method:'POST',body:JSON.stringify({assignmentId:a.assignment_id,studentCode:l.studentId,studentName:l.fullName,response:{kind:'text',value:response},metadata:{source:'platform-assignment',researchConsent:Boolean(l.researchConsent),studentGroup:l.studentGroup||null,gender:l.gender||null}})});render();return true}catch(e){alert(e.message);return false}})});return
+  }
+  const teacher=liveTeacher();let classes=[],asgs=[];try{classes=(await liveReq(`/classes?teacherId=${encodeURIComponent(teacher.teacherId)}`)).classes||[];asgs=(await liveReq(`/assignments?teacherId=${encodeURIComponent(teacher.teacherId)}`)).assignments||[]}catch(e){content.innerHTML=hero('Assignments')+`<div class="empty-simple">${esc(e.message)}</div>`;return}
+  const rubrics=await loadRubrics();
+  content.innerHTML=hero('Assignments')+`<div class="context-toolbar"><button class="btn primary" id="newAssignment">+ New Assignment</button><a class="btn" href="/api/research/export?kind=submissions&format=csv&teacherId=${encodeURIComponent(teacher.teacherId)}">Export submissions CSV</a><a class="btn" href="/api/research/export?kind=events&format=csv&teacherId=${encodeURIComponent(teacher.teacherId)}">Export research events CSV</a></div><div class="simple-list">${asgs.map(a=>`<div class="assignment-card"><div><h3>${esc(a.title)}</h3><small>${esc(classes.find(c=>String(c.class_id)===String(a.class_id))?.class_name||'Class')} · ${esc(a.resource_id)} · ${esc(a.rubric_id||'general')}</small></div><span class="pill">${esc(a.status)}</span></div>`).join('')||'<div class="empty-simple">No server assignments yet.</div>'}</div>`;
+  $('#newAssignment').onclick=()=>ELEAPOps.modal('New Assignment',`<label class="field">Title<input id="aTitle"></label><label class="field">Class<select id="aClass">${classes.filter(c=>c.status!=='archived').map(c=>`<option value="${c.class_id}">${esc(c.class_name)}</option>`).join('')}</select></label><label class="field">Lesson / Resource ID<input id="aResource" placeholder="e.g. res-adv-writing-letter-email-writing-informal-l01"></label><label class="field">Activity ID (optional)<input id="aActivity" placeholder="e.g. final-writing"></label><label class="field">Task / Homework prompt<textarea id="aPrompt" rows="5"></textarea></label><label class="field">Rubric<select id="aRubric">${rubrics.map(r=>`<option value="${r.id}">${esc(r.name)}</option>`).join('')}</select></label><label class="field">Deadline<input id="aDeadline" type="datetime-local"></label><label class="field">Attempt limit<input id="aLimit" type="number" min="1" placeholder="Unlimited"></label>`,async m=>{if(!classes.length){alert('Create a server class first.');return false}const title=$('#aTitle',m).value.trim(),resourceId=$('#aResource',m).value.trim();if(!title||!resourceId)return false;try{await liveReq('/assignments',{method:'POST',body:JSON.stringify({teacherId:teacher.teacherId,classId:$('#aClass',m).value,resourceId,activityId:$('#aActivity',m).value.trim()||null,title,prompt:$('#aPrompt',m).value.trim()||null,rubricId:$('#aRubric',m).value,deadline:$('#aDeadline',m).value?new Date($('#aDeadline',m).value).toISOString():null,attemptLimit:$('#aLimit',m).value?Number($('#aLimit',m).value):null,latePolicy:'allow-late',status:'active'})});render();return true}catch(e){alert(e.message);return false}})
 }
-$$(".role-btn").forEach(b=>b.addEventListener("click",()=>{role=b.dataset.role;applyRole()}));
-applyRole();
-
-const courses={
- objective:{title:"Objective First B2",level:"B2 COURSE",desc:"Exam-oriented English with classroom delivery and self-study.",units:"12",classes:"3",current:"U2 · L3"},
- life:{title:"Life Intermediate",level:"INTERMEDIATE COURSE",desc:"General English with communicative lessons, practice and tracked progress.",units:"12",classes:"2",current:"U4 · L1"},
- pharmacy:{title:"English for Pharmacy",level:"ESP PROGRAMME",desc:"English for Specific Purposes for pharmacy learners.",units:"8",classes:"1",current:"U1 · L1"},
- medical:{title:"Medical English",level:"ESP PROGRAMME",desc:"English for Specific Purposes for medical learners.",units:"8",classes:"1",current:"U1 · L1"}
-};
-$$(".open-course").forEach(b=>b.addEventListener("click",()=>{
-  const c=courses[b.dataset.course];
-  $("#courseTitle").textContent=c.title;
-  $("#courseLevel").textContent=c.level;
-  $("#courseDesc").textContent=c.desc;
-  $("#summaryUnits").textContent=c.units;
-  $("#summaryClasses").textContent=c.classes;
-  $("#summaryCurrent").textContent=c.current;
-  showView("course-detail");
-}));
-
-$("#backToCourses").addEventListener("click",()=>showView("courses"));
-$("#backToCourse").addEventListener("click",()=>showView("course-detail"));
-$("#backToUnit").addEventListener("click",()=>showView("unit-detail"));
-$("#backToClasses").addEventListener("click",()=>showView("course-detail"));
-$("#backToClass").addEventListener("click",()=>showView("class-detail"));
-$(".open-unit").addEventListener("click",()=>showView("unit-detail"));
-$(".open-lesson").addEventListener("click",()=>showView("lesson"));
-$(".open-class").addEventListener("click",()=>showView("class-detail"));
-$(".open-student").addEventListener("click",()=>showView("student-profile"));
-
-$$("[data-course-tab]").forEach(b=>b.addEventListener("click",()=>{
-  $$(".course-panel").forEach(p=>p.classList.remove("active"));
-  $$("[data-course-tab]").forEach(x=>x.classList.remove("active"));
-  b.classList.add("active");
-  $(`[data-course-panel="${b.dataset.courseTab}"]`)?.classList.add("active");
-}));
-$$("[data-class-tab]").forEach(b=>b.addEventListener("click",()=>{
-  $$(".class-panel").forEach(p=>p.classList.remove("active"));
-  $$("[data-class-tab]").forEach(x=>x.classList.remove("active"));
-  b.classList.add("active");
-  $(`[data-class-panel="${b.dataset.classTab}"]`)?.classList.add("active");
-}));
-$$("[data-assignment-tab]").forEach(b=>b.addEventListener("click",()=>{
-  $$(".assignment-panel").forEach(p=>p.classList.remove("active"));
-  $$("[data-assignment-tab]").forEach(x=>x.classList.remove("active"));
-  b.classList.add("active");
-  $(`[data-assignment-panel="${b.dataset.assignmentTab}"]`)?.classList.add("active");
-}));
-$$(".lesson-mode").forEach(b=>b.addEventListener("click",()=>{
-  $$(".lesson-mode").forEach(x=>x.classList.remove("active"));
-  b.classList.add("active");
-}));
-$$(".stage").forEach(b=>b.addEventListener("click",()=>{
-  $$(".stage").forEach(x=>x.classList.remove("active"));
-  b.classList.add("active");
-}));
-
-function openClassroom(){ $("#classroom").classList.add("active"); }
-["courseStartClass","startClassBtn","classStartBtn"].forEach(id=>$("#"+id)?.addEventListener("click",openClassroom));
-$("#exitClassroom").addEventListener("click",()=>$("#classroom").classList.remove("active"));
-
-$("#courseOpenLesson")?.addEventListener("click",()=>showView("lesson"));
+async function submissionsPage(){
+  setHeader((role==='teacher'||role==='admin')?'Submissions & Marking':'My Feedback',['Submissions']);
+  if(!(await assessmentBootstrap())){content.innerHTML=hero('Submissions')+`<div class="empty-simple">Research DB unavailable.</div>`;return}
+  const rubrics=await loadRubrics();
+  if(role==='student'){
+    const l=currentLearner();if(!l){content.innerHTML=hero('My Feedback')+`<div class="empty-simple">Set your Student Profile first.</div>`;return}
+    let subs=[];try{subs=(await liveReq(`/submissions?studentCode=${encodeURIComponent(l.studentId)}`)).submissions||[]}catch(e){content.innerHTML=hero('My Feedback')+`<div class="empty-simple">${esc(e.message)}</div>`;return}
+    content.innerHTML=hero('My Feedback')+`<div class="simple-list">${subs.map(s=>`<div class="resource-item"><b>${esc(s.title||s.activity_id||'Submission')}</b><small>${s.status==='feedback-released'?`Score: ${esc(s.score??'—')}/${esc(s.max_score??'—')} · ${esc(s.feedback||'')}`:s.status==='graded'?'Marked · feedback not released yet':'Awaiting review'}</small></div>`).join('')||'<div class="empty-simple">No submissions yet.</div>'}</div>`;return
+  }
+  const teacher=liveTeacher();let subs=[];try{subs=(await liveReq(`/submissions?teacherId=${encodeURIComponent(teacher.teacherId)}`)).submissions||[]}catch(e){content.innerHTML=hero('Submissions & Marking')+`<div class="empty-simple">${esc(e.message)}</div>`;return}
+  content.innerHTML=hero('Submissions & Marking')+`<div class="context-toolbar"><a class="btn" href="/api/research/export?kind=submissions&format=csv&teacherId=${encodeURIComponent(teacher.teacherId)}">Export CSV</a></div><div class="simple-list">${subs.map(s=>`<div class="assignment-card"><div><h3>${esc(s.title||s.activity_id||'Submission')}</h3><small>${esc(s.student_name||s.student_code)} · Attempt ${esc(s.attempt_no)} · ${esc(s.status)}</small></div><button class="btn" data-review="${s.submission_id}">Review</button></div>`).join('')||'<div class="empty-simple">No server submissions yet.</div>'}</div>`;
+  $$('[data-review]',content).forEach(b=>b.onclick=()=>{const s=subs.find(x=>String(x.submission_id)===String(b.dataset.review)),rubric=rubrics.find(r=>r.id===s.rubric_id)||rubrics.find(r=>r.id==='general-100-v1');const response=typeof s.response==='object'?(s.response.value??JSON.stringify(s.response,null,2)):s.response;ELEAPOps.modal('Review Submission',`<div class="response-box" style="white-space:pre-wrap">${esc(response||'No response')}</div><div class="section-title"><h3>${esc(rubric?.name||'Marking')}</h3></div>${rubricFields(rubric,s.rubric_scores||{})}<label class="field">Feedback<textarea id="fb" rows="6">${esc(s.feedback||'')}</textarea></label><label class="field checkline"><input type="checkbox" id="release" ${s.status==='feedback-released'?'checked':''}> Release score and feedback to student</label>`,async m=>{const scores={};$$('.rubric-score',m).forEach(i=>{if(i.value!=='')scores[i.dataset.criterion]=Number(i.value)});let score=null,maxScore=rubric?.maxScore||100;if(!rubric?.criteria?.length){const i=$('#score',m);score=i&&i.value!==''?Number(i.value):null}else score=Object.values(scores).reduce((a,v)=>a+Number(v||0),0);try{await liveReq('/grades',{method:'POST',body:JSON.stringify({submissionId:s.submission_id,graderId:teacher.teacherId,score,maxScore,feedback:$('#fb',m).value,rubricScores:rubric?.criteria?.length?scores:null,releaseFeedback:$('#release',m).checked})});render();return true}catch(e){alert(e.message);return false}})})
+}
+async function progressPage(){
+  setHeader((role==='teacher'||role==='admin')?'Progress & Research':'My Progress',['Progress']);
+  if(!(await assessmentBootstrap())){content.innerHTML=hero('Progress')+`<div class="empty-simple">Research DB unavailable.</div>`;return}
+  if(role==='student'){const l=currentLearner();if(!l){content.innerHTML=hero('My Progress')+`<div class="empty-simple">Set your Student Profile first.</div>`;return}let subs=[];try{subs=(await liveReq(`/submissions?studentCode=${encodeURIComponent(l.studentId)}`)).submissions||[]}catch{}const graded=subs.filter(s=>['graded','feedback-released'].includes(s.status));const pct=graded.filter(s=>s.score!=null&&s.max_score).map(s=>100*Number(s.score)/Number(s.max_score));const avg=pct.length?Math.round(pct.reduce((a,b)=>a+b,0)/pct.length):null;content.innerHTML=hero('My Progress')+`<div class="metric-grid"><div class="metric"><b>${subs.length}</b><span>Submissions</span></div><div class="metric"><b>${graded.length}</b><span>Marked</span></div><div class="metric"><b>${avg??'—'}</b><span>Average %</span></div></div>`;return}
+  const teacher=liveTeacher();let asgs=[],subs=[];try{asgs=(await liveReq(`/assignments?teacherId=${encodeURIComponent(teacher.teacherId)}`)).assignments||[];subs=(await liveReq(`/submissions?teacherId=${encodeURIComponent(teacher.teacherId)}`)).submissions||[]}catch{}content.innerHTML=hero('Progress & Research')+`<div class="metric-grid"><div class="metric"><b>${asgs.length}</b><span>Assignments</span></div><div class="metric"><b>${subs.length}</b><span>Submissions</span></div><div class="metric"><b>${subs.filter(s=>['graded','feedback-released'].includes(s.status)).length}</b><span>Marked</span></div><div class="metric"><b>${subs.filter(s=>s.status==='feedback-released').length}</b><span>Feedback released</span></div></div><div class="context-toolbar"><a class="btn" href="/api/research/export?kind=submissions&format=csv&teacherId=${encodeURIComponent(teacher.teacherId)}">Download submissions dataset</a><a class="btn" href="/api/research/export?kind=events&format=csv&teacherId=${encodeURIComponent(teacher.teacherId)}">Download event log</a></div>`
+}
+async function render(){
+  role=window.ELEAPAccess?.role?.()||role;
+  const presentation=window.ELEAPAccess?.mode?.()==='presentation';
+  app.className='app role-'+role+(presentation?' mode-presentation':'');
+  document.querySelectorAll('.role-switch button').forEach(b=>b.classList.toggle('active',b.dataset.role===role));
+  $('#roleText').textContent=window.ELEAPAccess?.label?.()||role;
+  const pt=$('#presentationToggle');if(pt){pt.style.display=['teacher','admin'].includes(role)?'inline-flex':'none';pt.textContent=presentation?'Exit Presentation':'Presentation';pt.onclick=()=>{ELEAPAccess.setPresentation(!presentation);render()}}
+  try{await shellData();if(route[0]==='courses')await coursesHome();else if(route[0]==='classes')await classesPage();else if(route[0]==='assignments')await assignmentsPage();else if(route[0]==='submissions')await submissionsPage();else if(route[0]==='progress')await progressPage();else if(route[0]==='shell')await shellPage(route[1]);else await shellPage(route[0])}catch(e){console.error(e);content.innerHTML=`<div class="empty-simple">${esc(e.message)}</div>`}
+}
+document.querySelectorAll('.role-switch button').forEach(b=>b.onclick=()=>{window.ELEAPAccess?.setRole?.(b.dataset.role);role=b.dataset.role;route=['courses'];render()});render();

@@ -1,0 +1,8593 @@
+
+:root{
+  --green:#0b4b3e; --green2:#176e5c; --sage:#dcece6; --sage2:#eff6f3;
+  --bg:#f4f7f5; --ink:#183a31; --muted:#667a73; --line:#d9e3df; --white:#fff;
+  --answer:#0f6a57; --answer-bg:#e6f2ee;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+.app{min-height:100vh;display:grid;grid-template-rows:76px 1fr 72px}
+.topbar,.footer{background:white;border-color:var(--line);display:flex;align-items:center;padding:0 28px}
+.topbar{justify-content:space-between;border-bottom:1px solid var(--line)}
+.eyebrow,.stage-label{font-size:14px;letter-spacing:.1em;font-weight:900;color:var(--green2)}
+.course-title{font-size:24px;font-weight:900;margin-top:3px}
+.review-badge{font-size:12px;font-weight:900;letter-spacing:.08em;border:1px solid var(--green2);color:var(--green2);padding:8px 10px;border-radius:8px}
+main{position:relative;overflow:hidden}
+.screen{display:none;min-height:calc(100vh - 148px);padding:34px 44px 28px;max-width:1500px;margin:auto}
+.screen.active{display:block}
+h1,h2{font-family:Georgia,"Times New Roman",serif;color:#103f34;margin:6px 0 12px}
+h1{font-size:60px;line-height:1.02}
+h2{font-size:44px;line-height:1.08}
+h3{font-size:28px;margin:0 0 10px}
+.instruction{font-size:27px;line-height:1.45;color:#405a52;margin:0 0 20px;max-width:1250px}
+.screen-grid{display:grid;gap:30px;align-items:center}
+.hero-grid{grid-template-columns:1.05fr .95fr}
+.hero-img{width:100%;max-height:500px;object-fit:cover;border-radius:14px}
+.poll-card,.support-box,.question-card,.reveal-panel,.audio-block,.mini-task,.meaning-box,.hint-box,.homework-card{background:white;border:1px solid var(--line);border-radius:12px}
+.poll-card{padding:18px 20px}.poll-title{font-size:24px;font-weight:800}.poll-options{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}.poll-btn,.timer-btn,.support-toggle,.hint-btn{border:1px solid var(--green2);background:white;color:var(--green2);border-radius:9px;padding:10px 14px;font-weight:800}.poll-btn.selected{background:var(--green2);color:white}.poll-result{font-size:18px;color:var(--muted)}
+.timer-row{display:flex;align-items:center;gap:14px;margin-bottom:16px}.timer-row #timerDisplay{font-size:32px;font-weight:900;color:var(--green2)}
+.question-stack{display:grid;gap:10px}.question-card{padding:14px 16px}.question-line{display:flex;gap:12px;align-items:flex-start;font-size:26px;line-height:1.35}.question-line span{display:grid;place-items:center;min-width:38px;height:38px;background:var(--sage);border-radius:8px;font-weight:900}.support-toggle{margin-top:10px;font-size:16px}.support{margin-top:8px;padding:10px 12px;background:var(--sage2);border-radius:8px;font-size:20px}.hidden{display:none!important}
+.media-layout{display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:start}video{width:100%;max-height:490px;background:#000;border-radius:12px}
+.layer-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.layer-card{min-height:120px;border:1px solid var(--line);background:white;border-radius:12px;font-size:26px;font-weight:900;color:var(--green2);padding:16px;text-align:left}.layer-card.revealed{background:var(--answer-bg);color:var(--answer)}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 16px}.tab{border:1px solid var(--line);background:white;border-radius:8px;padding:10px 14px;font-size:18px;font-weight:800;color:var(--ink)}.tab.active{background:var(--green);color:white}
+.vocab-panel{display:flex;flex-wrap:wrap;gap:10px;background:white;border:1px solid var(--line);border-radius:12px;padding:20px;min-height:130px}.vocab-panel span{font-size:24px;padding:8px 12px;background:#f0f5f2;border-radius:7px}.mini-task{margin-top:14px;padding:14px;font-size:21px;font-weight:700}
+.photo-layout,.listening-layout,.advice-layout{display:grid;grid-template-columns:1.25fr .75fr;gap:24px;align-items:start}.image-wrap{position:relative}.image-wrap>img,.listening-layout>img{width:100%;max-height:520px;object-fit:contain;border-radius:10px;background:white}.hotspot{position:absolute;border:2px solid white;background:var(--green2);color:white;border-radius:999px;font-weight:900;padding:6px 8px}.hs1{left:12%;top:24%}.hs2{left:27%;top:37%}.hs3{left:65%;top:18%}.hs4{left:75%;top:47%}.hotspot-info{position:absolute;left:3%;right:3%;bottom:3%;background:rgba(255,255,255,.95);border-radius:8px;padding:10px 12px;font-size:18px;font-weight:700}
+.support-box{padding:18px}.support-box p{font-size:22px;line-height:1.4;margin:8px 0}.support-box small{font-size:17px;color:var(--muted)}
+.audio-block{padding:12px 14px;margin-bottom:10px;display:grid;gap:8px;font-size:19px}audio{width:100%}.speaker-match{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}.speaker-match>div{background:white;border:1px solid var(--line);border-radius:9px;padding:11px 12px;font-size:22px;display:flex;justify-content:space-between;align-items:center}.blank-reveal,.inline-blank{border:1px dashed #93aaa1;background:#fff;color:#52665f;border-radius:7px;min-width:66px;padding:6px 10px;font-weight:800}.blank-reveal.revealed,.inline-blank.revealed{border:1px solid #9ac8b8;background:var(--answer-bg);color:var(--answer);animation:answerIn .22s ease-out}
+@keyframes answerIn{from{opacity:0;transform:translateY(-7px)}to{opacity:1;transform:translateY(0)}}
+.confidence{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}.confidence span{font-size:18px;font-weight:800}.confidence button{border:1px solid var(--line);background:white;border-radius:8px;padding:8px 11px}.confidence button.selected{background:var(--sage);border-color:#9ac8b8}.confidence.big{justify-content:center;margin-top:18px}.confidence.big button{font-size:22px;min-width:46px}
+.transcript{background:white;border:1px solid var(--line);border-radius:12px;padding:22px;font-size:25px;line-height:1.55}.phrasal-click{color:var(--green2);font-weight:900;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:4px}.meaning-box{margin-top:12px;padding:12px 14px;font-size:20px;color:var(--muted)}
+.question-mini{background:#f4f7f5;border-radius:8px;padding:10px 12px;margin-bottom:7px;font-size:21px}.hint-row{display:flex;gap:8px;margin:10px 0}.hint-box{min-height:44px;padding:10px 12px;color:var(--muted)}.rule-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.rule-card{border:1px solid var(--line);background:white;border-radius:9px;padding:12px;font-size:21px;font-weight:800}.answer{margin-top:10px;background:var(--answer-bg);color:var(--answer);border-radius:10px;padding:14px;font-size:20px;line-height:1.45}
+.exercise7{display:grid;grid-template-columns:.85fr 1.15fr;gap:18px}.check-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;background:white;border:1px solid var(--line);border-radius:10px;padding:14px;margin-top:10px}.check-grid label{font-size:20px}.match-table{display:grid;gap:7px}.match-table>div{display:grid;grid-template-columns:170px 1fr;gap:10px;align-items:center;background:white;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:18px}
+.go-bank{font-size:23px;font-weight:900;background:var(--sage);border-radius:9px;padding:11px 14px;margin-bottom:12px}.gap-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.gap-grid>div{background:white;border:1px solid var(--line);border-radius:9px;padding:11px 13px;font-size:20px;line-height:1.5}
+.letter{background:white;border:1px solid var(--line);border-radius:12px;padding:16px 20px;max-height:500px;overflow:auto}.letter p{font-size:21px;line-height:1.5;margin:7px 0}.big-prompt{font:700 34px/1.35 Georgia,"Times New Roman",serif;background:white;border:1px solid var(--line);border-left:5px solid var(--green2);border-radius:12px;padding:22px}
+.challenge-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.challenge-card{min-height:150px;border:1px solid var(--line);background:white;border-radius:12px;padding:18px;text-align:left;font-size:24px;font-weight:800;color:var(--ink)}.challenge-card.flipped{background:var(--answer-bg);color:var(--answer)}
+.exit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.exit-grid>div{background:white;border:1px solid var(--line);border-radius:10px;padding:14px}.exit-grid b{font-size:20px}.exit-grid textarea{width:100%;min-height:110px;margin-top:8px;border:1px solid var(--line);border-radius:8px;padding:10px;font-size:18px}
+.homework-card{padding:24px;max-width:1000px}.homework-checks{display:grid;grid-template-columns:1fr 1fr;gap:12px}.homework-checks span{background:#f0f5f2;border-radius:8px;padding:12px;font-size:20px}
+.footer{justify-content:space-between;border-top:1px solid var(--line)}.footer button{border:1px solid var(--line);background:white;color:var(--green);border-radius:9px;padding:10px 15px;font-size:18px;font-weight:900}.progress-wrap{display:flex;align-items:center;gap:12px}.progress{width:240px;height:7px;background:#e6ece9;border-radius:10px;overflow:hidden}.progress i{display:block;height:100%;background:var(--green2);width:6.67%}#counter{font-size:14px;font-weight:900;color:var(--muted)}
+@media(max-width:900px){
+ .screen{padding:24px 18px 90px;overflow:auto}.app{grid-template-rows:70px 1fr 66px}
+ h1{font-size:43px}h2{font-size:34px}.instruction{font-size:22px}
+ .hero-grid,.media-layout,.photo-layout,.listening-layout,.advice-layout,.exercise7{grid-template-columns:1fr}
+ .gap-grid,.challenge-grid,.exit-grid,.homework-checks{grid-template-columns:1fr}
+ .progress{width:110px}.topbar{padding:0 14px}.footer{padding:0 12px}.layer-grid{grid-template-columns:1fr}
+}
+
+
+/* ===== FINAL CANDIDATE: projection-safe multi-accent visual system ===== */
+:root{
+  --navy:#173a5e;
+  --navy-bg:#eef3f8;
+  --amber:#a86200;
+  --amber-bg:#fff4df;
+  --plum:#6f315c;
+  --plum-bg:#f7edf4;
+  --teal:#0f6a57;
+  --teal-bg:#e7f3ef;
+  --review:#5b4b83;
+  --review-bg:#f1eef8;
+  --homework:#7b4a1f;
+  --homework-bg:#f8f0e8;
+  --text-strong:#132f28;
+  --text-body:#2d4740;
+}
+body{color:var(--text-strong)}
+.instruction{color:var(--text-body);font-weight:650}
+.screen{
+  position:relative;
+}
+.screen::before{
+  content:"";
+  position:absolute;
+  top:28px;
+  left:18px;
+  width:7px;
+  height:56px;
+  border-radius:7px;
+  background:var(--screen-accent,var(--green2));
+}
+.screen .stage-label{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 10px;
+  border-radius:8px;
+  background:var(--screen-soft,var(--sage2));
+  color:var(--screen-accent,var(--green2));
+}
+.screen h2,.screen h1{
+  color:var(--screen-accent,var(--green));
+  text-shadow:0 0 0 transparent;
+}
+.accent-speaking{--screen-accent:var(--amber);--screen-soft:var(--amber-bg)}
+.accent-listening{--screen-accent:var(--navy);--screen-soft:var(--navy-bg)}
+.accent-vocab{--screen-accent:var(--plum);--screen-soft:var(--plum-bg)}
+.accent-language{--screen-accent:var(--teal);--screen-soft:var(--teal-bg)}
+.accent-review{--screen-accent:var(--review);--screen-soft:var(--review-bg)}
+.accent-homework{--screen-accent:var(--homework);--screen-soft:var(--homework-bg)}
+.question-line,.gap-grid>div,.letter p,.transcript,.match-table>div,.candidate-grid label{
+  color:#17352d;
+  font-weight:600;
+}
+.support-box,.prompt-box,.question-card,.reveal-panel,.audio-block,.mini-task,.meaning-box,.hint-box,.homework-card,.letter,.transcript,.match-col,.ex7-step{
+  box-shadow:0 2px 8px rgba(12,45,37,.06);
+}
+.blank-reveal.revealed,.inline-blank.revealed{
+  background:#dff0ea;
+  color:#075c49;
+  border-color:#74ad99;
+  font-weight:900;
+}
+.ex7-step{
+  background:white;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:16px;
+  margin-bottom:14px;
+}
+.step-title{
+  font-size:22px;
+  font-weight:900;
+  margin-bottom:12px;
+  color:var(--plum);
+}
+.step-title span{
+  display:inline-block;
+  margin-right:8px;
+  padding:4px 8px;
+  border-radius:7px;
+  background:var(--plum-bg);
+  color:var(--plum);
+  font-size:14px;
+}
+.candidate-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-top:12px;
+}
+.candidate-grid label{
+  background:#fafbfa;
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:9px 10px;
+  font-size:19px;
+}
+.check-selection,.reset-match{
+  margin-top:10px;
+  border:1px solid var(--plum);
+  background:white;
+  color:var(--plum);
+  border-radius:8px;
+  padding:9px 12px;
+  font-weight:800;
+}
+.selection-feedback{
+  margin-top:9px;
+  min-height:24px;
+  font-size:18px;
+  font-weight:800;
+}
+.matching-board{
+  display:grid;
+  grid-template-columns:.9fr 1.4fr;
+  gap:14px;
+}
+.match-col{
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:10px;
+  background:#fff;
+  display:grid;
+  gap:7px;
+}
+.match-heading{
+  font-weight:900;
+  color:var(--plum);
+  font-size:20px;
+  margin-bottom:3px;
+}
+.match-item,.definition-item{
+  border:1px solid var(--line);
+  background:white;
+  color:#17352d;
+  border-radius:8px;
+  padding:9px 10px;
+  text-align:left;
+  font-size:18px;
+  font-weight:700;
+}
+.match-item.selected,.definition-item.selected{
+  border-color:var(--plum);
+  background:var(--plum-bg);
+}
+.match-item.matched,.definition-item.matched{
+  border-color:#77ad98;
+  background:#e8f3ee;
+  color:#075c49;
+}
+.match-item.wrong,.definition-item.wrong{
+  border-color:#bf8e8e;
+  background:#faeeee;
+}
+.match-status{
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:8px;
+  background:#f7f8f7;
+  font-size:18px;
+  font-weight:700;
+  color:#41564f;
+}
+.toolbar-line{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+.mini-controls{
+  display:flex;
+  gap:7px;
+}
+.mini-controls.align-right{
+  justify-content:flex-end;
+  margin-bottom:8px;
+}
+.mini-controls button,.hide-local,.reset-local{
+  border:1px solid var(--line);
+  background:white;
+  color:#27463d;
+  border-radius:8px;
+  padding:8px 10px;
+  font-size:15px;
+  font-weight:800;
+}
+.hs1{left:11%;top:20%}.hs2{left:27%;top:33%}.hs3{left:13%;top:66%}.hs4{left:30%;top:68%}
+.hs5{left:63%;top:16%}.hs6{left:76%;top:40%}.hs7{left:62%;top:66%}.hs8{left:78%;top:69%}
+
+/* stronger projection contrast */
+.question-card,.support-box,.reveal-panel,.audio-block,.mini-task,.meaning-box,.hint-box,.letter,.transcript,.ex7-step,.homework-card{
+  border-color:#c5d0cc;
+}
+.footer button,.tab,.support-toggle,.hint-btn,.poll-btn{
+  font-weight:900;
+}
+@media(max-width:900px){
+  .candidate-grid{grid-template-columns:1fr 1fr}
+  .matching-board{grid-template-columns:1fr}
+  .toolbar-line{display:block}
+  .mini-controls{margin-top:8px}
+}
+
+/* ===== FINAL visual refinement: projection-safe, no pale purple ===== */
+:root{
+  --forest:#123c32;
+  --forest-2:#0b5847;
+  --navy-strong:#123a63;
+  --navy-soft:#eaf1f7;
+  --burgundy:#6b2f3a;
+  --burgundy-soft:#f8ecee;
+  --amber-strong:#8a5600;
+  --amber-soft:#fff2d8;
+  --teal-strong:#075f4d;
+  --teal-soft:#e4f2ed;
+  --charcoal:#1e2f2a;
+  --slate:#40524c;
+}
+body{color:var(--charcoal)}
+.instruction{color:#263c35;font-weight:700}
+.accent-speaking{--screen-accent:var(--amber-strong);--screen-soft:var(--amber-soft)}
+.accent-listening{--screen-accent:var(--navy-strong);--screen-soft:var(--navy-soft)}
+.accent-vocab{--screen-accent:var(--burgundy);--screen-soft:var(--burgundy-soft)}
+.accent-language{--screen-accent:var(--teal-strong);--screen-soft:var(--teal-soft)}
+.accent-review{--screen-accent:var(--navy-strong);--screen-soft:var(--navy-soft)}
+.accent-homework{--screen-accent:var(--forest);--screen-soft:#eaf2ef}
+.screen h1,.screen h2{font-weight:800}
+.question-line,.gap-grid>div,.letter p,.transcript,.candidate-item,.match-item,.definition-item{
+  color:#172d26;font-weight:650;
+}
+.stage-label{font-weight:900}
+.discovery-stack{display:grid;gap:10px}
+.discovery-card{
+  border:1px solid #bfcac6;
+  background:#fff;
+  border-radius:11px;
+  padding:14px 15px;
+  text-align:left;
+  color:#17332a;
+  display:grid;
+  grid-template-columns:38px 1fr auto;
+  gap:10px;
+  align-items:center;
+  font-size:21px;
+  font-weight:800;
+}
+.discovery-card span{
+  display:grid;place-items:center;width:36px;height:36px;border-radius:8px;
+  background:var(--teal-soft);color:var(--teal-strong);font-weight:900
+}
+.discovery-card small{font-size:14px;color:#4b5f58;font-weight:800}
+.discovery-card.revealed{
+  display:block;background:var(--teal-soft);color:var(--teal-strong);
+  border-color:#85b7a6;animation:answerIn .22s ease-out;
+}
+.candidate-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.candidate-item{
+  display:grid;grid-template-columns:1fr auto;gap:7px;align-items:center;
+  background:#fff;border:1px solid #c7d1cd;border-radius:8px;padding:8px 9px;
+}
+.candidate-item label{font-size:18px;font-weight:700}
+.item-check{
+  border:1px solid #9eaaa5;background:#fff;color:#2f4840;border-radius:7px;
+  padding:6px 8px;font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.03em
+}
+.item-check.heard{background:#e4f2ed;color:#075f4d;border-color:#7caf9d}
+.item-check.not-heard{background:#f4eeee;color:#7a3b3b;border-color:#c7a0a0}
+.poll-title,.step-title,.match-heading{color:var(--charcoal)}
+.match-item,.definition-item{font-weight:750}
+.hotspot{box-shadow:0 1px 4px rgba(0,0,0,.22)}
+@media(max-width:900px){.candidate-grid{grid-template-columns:1fr 1fr}}
+
+/* ===== FINAL v2: Exercise 7 projection readability ===== */
+.screen[data-screen="9"] .instruction{
+  font-size:30px;
+  line-height:1.42;
+  max-width:1320px;
+}
+.screen[data-screen="9"] .step-title{
+  font-size:26px;
+}
+.screen[data-screen="9"] .candidate-grid{
+  gap:10px;
+}
+.screen[data-screen="9"] .candidate-item{
+  padding:10px 12px;
+}
+.screen[data-screen="9"] .candidate-item label{
+  font-size:22px;
+  line-height:1.25;
+}
+.screen[data-screen="9"] .item-check{
+  font-size:14px;
+  padding:7px 9px;
+}
+.screen[data-screen="9"] .match-heading{
+  font-size:24px;
+}
+.screen[data-screen="9"] .match-item,
+.screen[data-screen="9"] .definition-item{
+  font-size:21px;
+  line-height:1.28;
+  padding:10px 12px;
+}
+.screen[data-screen="9"] .matching-board{
+  gap:18px;
+}
+.screen[data-screen="9"] .match-status{
+  font-size:20px;
+}
+.screen[data-screen="9"] .reset-match{
+  font-size:16px;
+}
+@media (min-width:1200px){
+  .screen[data-screen="9"]{
+    padding-top:26px;
+  }
+  .screen[data-screen="9"] h2{
+    margin-bottom:8px;
+  }
+  .screen[data-screen="9"] .instruction{
+    margin-bottom:12px;
+  }
+  .screen[data-screen="9"] .ex7-step{
+    padding:14px 16px;
+    margin-bottom:10px;
+  }
+}
+
+/* ===== Thank you screen ===== */
+.thankyou-screen{
+  min-height:calc(100vh - 220px);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+.thankyou-screen h1{
+  font-size:84px;
+  margin:14px 0 18px;
+  color:var(--forest);
+}
+.thankyou-sub{
+  font-size:32px;
+  line-height:1.4;
+  color:var(--charcoal);
+  font-weight:650;
+}
+.thankyou-line{
+  width:180px;
+  height:6px;
+  border-radius:999px;
+  background:var(--amber-strong);
+  margin:18px 0 20px;
+}
+.thankyou-note{
+  font-size:28px;
+  color:var(--navy-strong);
+  font-weight:800;
+}
+
+/* =========================================================
+   E-LEAP Responsive Classroom Standard v1.0
+   Golden Reference retrofit: U1.1
+   One lesson package; layout adapts automatically by viewport.
+   ========================================================= */
+:root{
+  --eleap-touch:44px;
+  --eleap-mobile-font:18px;
+}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+img,video,audio,svg{max-width:100%}
+button,input,textarea,select{min-height:var(--eleap-touch)}
+button{touch-action:manipulation}
+input,textarea,select{max-width:100%}
+
+/* Desktop / projector: preserve the approved slide-like composition. */
+@media (min-width:1100px){
+  .screen.active{height:calc(100vh - 148px);overflow:auto}
+  .screen-grid,.media-layout,.photo-layout,.listening-layout,.advice-layout,.exercise7{min-width:0}
+  .screen-grid>* ,.media-layout>* ,.photo-layout>* ,.listening-layout>* ,.advice-layout>* ,.exercise7>*{min-width:0}
+}
+
+/* Tablet / small laptop: one coherent activity, reduced chrome. */
+@media (max-width:900px){
+  .app{grid-template-rows:auto 1fr auto}
+  .topbar{min-height:64px;height:auto;padding:10px 14px;gap:10px;flex-wrap:wrap}
+  .course-title{font-size:20px}
+  .eyebrow,.stage-label{font-size:12px}
+  .review-badge{padding:6px 8px}
+  main{overflow:visible}
+  .screen{min-height:calc(100dvh - 130px);padding:20px 16px 92px;overflow:visible}
+  h1{font-size:40px}h2{font-size:32px}h3{font-size:24px}
+  .instruction{font-size:21px;line-height:1.4}
+  .question-line,.transcript,.big-prompt{font-size:21px}
+  .support-box p,.speaker-match>div,.vocab-panel span,.rule-card,.gap-grid>div{font-size:19px}
+  .footer{position:sticky;bottom:0;z-index:30;min-height:64px;height:auto;padding:8px 12px;gap:8px;box-shadow:0 -8px 24px rgba(18,63,52,.08)}
+  .footer button{min-height:44px;padding:9px 13px;font-size:16px}
+  .progress-wrap{min-width:0;flex:1;justify-content:center}.progress{width:min(34vw,160px)}
+  .letter{max-height:none}
+}
+
+/* Phone: content becomes a single vertical reading/interaction flow. */
+@media (max-width:640px){
+  body{background:#f4f7f5}
+  .topbar{padding:8px 10px}
+  .topbar>div:first-child{min-width:0;flex:1}
+  .course-title{font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .eyebrow{font-size:10px}.review-badge{font-size:10px}
+  .screen{padding:16px 12px 88px;min-height:calc(100dvh - 118px)}
+  h1{font-size:34px;line-height:1.06}h2{font-size:28px;line-height:1.12}h3{font-size:22px}
+  .instruction{font-size:18px;line-height:1.42;margin-bottom:14px;padding:10px 12px}
+  .hero-grid,.media-layout,.photo-layout,.listening-layout,.advice-layout,.exercise7,
+  .layer-grid,.speaker-match,.rule-grid,.check-grid,.gap-grid,.challenge-grid,.exit-grid,.homework-checks{grid-template-columns:1fr!important}
+  .hero-img,.image-wrap>img,.listening-layout>img,video{max-height:none;height:auto}
+  .question-card,.poll-card,.support-box,.audio-block,.mini-task,.meaning-box,.hint-box,.homework-card{padding:12px}
+  .question-line,.transcript,.big-prompt,.support-box p,.speaker-match>div,.vocab-panel span,.rule-card,.gap-grid>div,.letter p{font-size:18px;line-height:1.45}
+  .question-line span{min-width:32px;height:32px}
+  .poll-options,.tabs,.hint-row,.confidence{gap:8px}
+  .poll-btn,.timer-btn,.support-toggle,.hint-btn,.tab,.confidence button{min-height:44px;padding:10px 12px}
+  .match-table>div{grid-template-columns:1fr;font-size:17px}
+  .blank-reveal,.inline-blank{min-width:54px}
+  .footer{min-height:58px;padding:7px 8px}.footer button{font-size:14px;padding:8px 10px}
+  .progress-wrap{gap:6px}.progress{width:90px}#counter{font-size:12px}
+}
+
+@media (max-width:390px){
+  .review-badge{display:none}
+  .progress{display:none}
+  .footer{justify-content:space-between}
+}
+
+/* =========================================================
+   E-LEAP U1.1 RESPONSIVE FIT PASS v2.1
+   Golden Reference — Objective First B2 U1.1
+   MEDIA-FIRST / Device-aware / Projector-safe / Embedded-safe
+
+   Principle:
+   - Preserve readable image/video size.
+   - Reduce chrome and spacing before shrinking media.
+   - Allow controlled screen scrolling when needed.
+   ========================================================= */
+
+
+/* =========================================================
+   1. GLOBAL SAFETY
+   ========================================================= */
+
+html,
+body{
+  width:100%;
+  max-width:100%;
+  min-height:100%;
+  overflow-x:hidden;
+}
+
+html{
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+
+body{
+  min-height:100dvh;
+}
+
+.app{
+  width:100%;
+  min-height:100dvh;
+}
+
+img,
+video,
+audio,
+svg{
+  max-width:100%;
+}
+
+.screen,
+.screen-grid,
+.hero-grid,
+.media-layout,
+.photo-layout,
+.listening-layout,
+.advice-layout,
+.exercise7,
+.matching-board{
+  min-width:0;
+}
+
+.screen-grid>*,
+.hero-grid>*,
+.media-layout>*,
+.photo-layout>*,
+.listening-layout>*,
+.advice-layout>*,
+.exercise7>*,
+.matching-board>*{
+  min-width:0;
+}
+
+button,
+input,
+textarea,
+select{
+  max-width:100%;
+  min-height:44px;
+}
+
+button{
+  touch-action:manipulation;
+}
+
+
+/* =========================================================
+   2. STANDARD DESKTOP / LAPTOP
+   ========================================================= */
+
+@media (min-width:1100px){
+
+  .app{
+    height:100dvh!important;
+    min-height:0!important;
+
+    grid-template-rows:
+      64px
+      minmax(0,1fr)
+      56px!important;
+  }
+
+  .topbar{
+    min-height:64px!important;
+    height:64px!important;
+    padding:0 clamp(18px,2vw,28px)!important;
+  }
+
+  .course-title{
+    font-size:clamp(20px,1.7vw,24px)!important;
+  }
+
+  .eyebrow,
+  .stage-label{
+    font-size:clamp(11px,1vw,13px)!important;
+  }
+
+  .review-badge{
+    font-size:11px!important;
+    padding:6px 9px!important;
+  }
+
+  main{
+    height:100%!important;
+    min-height:0!important;
+    overflow:hidden!important;
+  }
+
+  .screen,
+  .screen.active{
+    width:100%!important;
+    max-width:1500px!important;
+    height:100%!important;
+    min-height:0!important;
+
+    padding:
+      clamp(16px,2vh,26px)
+      clamp(24px,3vw,42px)
+      clamp(12px,1.8vh,20px)!important;
+
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+  }
+
+  .screen::before{
+    top:clamp(16px,2vh,26px)!important;
+  }
+
+  h1{
+    font-size:clamp(42px,4vw,58px)!important;
+    line-height:1.02!important;
+    margin:4px 0 8px!important;
+  }
+
+  h2{
+    font-size:clamp(32px,3vw,42px)!important;
+    line-height:1.06!important;
+    margin:4px 0 8px!important;
+  }
+
+  h3{
+    font-size:clamp(22px,2vw,28px)!important;
+  }
+
+  .instruction{
+    font-size:clamp(20px,1.8vw,25px)!important;
+    line-height:1.34!important;
+    margin-bottom:clamp(9px,1.3vh,15px)!important;
+  }
+
+  .footer{
+    height:56px!important;
+    min-height:56px!important;
+    padding:0 clamp(16px,2vw,28px)!important;
+  }
+
+  .footer button{
+    min-height:38px!important;
+    padding:7px 12px!important;
+    font-size:15px!important;
+  }
+
+  .progress{
+    width:clamp(150px,16vw,225px)!important;
+  }
+
+
+  /* =======================================================
+     3. TYPOGRAPHY / CARDS
+     ======================================================= */
+
+  .question-line{
+    font-size:clamp(20px,1.8vw,25px)!important;
+    line-height:1.32!important;
+  }
+
+  .support-box p,
+  .speaker-match>div,
+  .vocab-panel span,
+  .rule-card,
+  .gap-grid>div,
+  .letter p,
+  .transcript{
+    font-size:clamp(18px,1.55vw,22px)!important;
+    line-height:1.4!important;
+  }
+
+  .question-card{
+    padding:12px 14px!important;
+  }
+
+  .poll-card,
+  .support-box,
+  .audio-block,
+  .mini-task,
+  .meaning-box,
+  .hint-box{
+    padding:13px!important;
+  }
+
+  .tabs{
+    margin:8px 0 11px!important;
+  }
+
+  .tab{
+    font-size:16px!important;
+    padding:8px 12px!important;
+  }
+
+
+  /* =======================================================
+     4. HERO / COVER
+     MEDIA-FIRST
+     ======================================================= */
+
+  .hero-grid{
+    grid-template-columns:
+      minmax(0,1.02fr)
+      minmax(0,.98fr)!important;
+
+    gap:clamp(18px,2vw,28px)!important;
+    align-items:center!important;
+  }
+
+  .hero-img{
+    width:100%!important;
+
+    height:
+      clamp(350px,55dvh,560px)!important;
+
+    max-height:none!important;
+
+    object-fit:cover!important;
+  }
+
+
+  /* =======================================================
+     5. VIDEO / MEDIA
+     MEDIA-FIRST
+     ======================================================= */
+
+  .media-layout{
+    grid-template-columns:
+      minmax(0,1.12fr)
+      minmax(270px,.88fr)!important;
+
+    gap:20px!important;
+    align-items:start!important;
+  }
+
+  .media-layout video,
+  video{
+    width:100%!important;
+
+    height:
+      clamp(350px,52dvh,520px)!important;
+
+    max-height:none!important;
+
+    object-fit:contain!important;
+
+    background:#000!important;
+  }
+
+  .layer-grid{
+    gap:8px!important;
+  }
+
+  .layer-card{
+    min-height:96px!important;
+    padding:13px!important;
+
+    font-size:
+      clamp(20px,1.8vw,25px)!important;
+  }
+
+
+  /* =======================================================
+     6. PHOTO / HOTSPOT / LISTENING
+     MEDIA-FIRST
+     ======================================================= */
+
+  .photo-layout,
+  .listening-layout,
+  .advice-layout{
+    grid-template-columns:
+      minmax(0,1.2fr)
+      minmax(280px,.8fr)!important;
+
+    gap:20px!important;
+    align-items:start!important;
+  }
+
+  .image-wrap>img,
+  .listening-layout>img{
+    width:100%!important;
+
+    height:
+      clamp(330px,52dvh,540px)!important;
+
+    max-height:none!important;
+
+    object-fit:contain!important;
+  }
+
+  .hotspot{
+    font-size:14px!important;
+    padding:5px 7px!important;
+  }
+
+  .hotspot-info{
+    font-size:16px!important;
+  }
+
+
+  /* =======================================================
+     7. AUDIO / LISTENING SUPPORT
+     ======================================================= */
+
+  .audio-block{
+    margin-bottom:8px!important;
+
+    font-size:
+      clamp(17px,1.4vw,19px)!important;
+  }
+
+  .speaker-match{
+    gap:7px!important;
+    margin:9px 0!important;
+  }
+
+  .speaker-match>div{
+    padding:9px 10px!important;
+  }
+
+  .confidence{
+    margin-top:8px!important;
+  }
+
+
+  /* =======================================================
+     8. TRANSCRIPT / LANGUAGE
+     ======================================================= */
+
+  .transcript{
+    max-height:
+      calc(100dvh - 245px)!important;
+
+    overflow:auto!important;
+    padding:16px!important;
+  }
+
+  .meaning-box{
+    margin-top:8px!important;
+  }
+
+  .rule-grid{
+    gap:7px!important;
+  }
+
+
+  /* =======================================================
+     9. EXERCISE 7 / SCREEN 9
+     ======================================================= */
+
+  .screen[data-screen="9"]{
+    padding-top:14px!important;
+  }
+
+  .screen[data-screen="9"] h2{
+    font-size:
+      clamp(30px,2.8vw,39px)!important;
+
+    margin-bottom:5px!important;
+  }
+
+  .screen[data-screen="9"] .instruction{
+    font-size:
+      clamp(19px,1.65vw,23px)!important;
+
+    line-height:1.31!important;
+
+    margin-bottom:7px!important;
+  }
+
+  .screen[data-screen="9"] .ex7-step{
+    padding:10px 12px!important;
+    margin-bottom:7px!important;
+  }
+
+  .screen[data-screen="9"] .step-title{
+    font-size:
+      clamp(20px,1.65vw,23px)!important;
+
+    margin-bottom:7px!important;
+  }
+
+  .screen[data-screen="9"] .candidate-grid{
+    grid-template-columns:
+      repeat(3,minmax(0,1fr))!important;
+
+    gap:7px!important;
+  }
+
+  .screen[data-screen="9"] .candidate-item{
+    padding:7px 9px!important;
+  }
+
+  .screen[data-screen="9"] .candidate-item label{
+    font-size:
+      clamp(17px,1.35vw,20px)!important;
+
+    line-height:1.22!important;
+  }
+
+  .screen[data-screen="9"] .item-check{
+    min-height:34px!important;
+    font-size:12px!important;
+    padding:5px 7px!important;
+  }
+
+  .screen[data-screen="9"] .matching-board{
+    grid-template-columns:
+      minmax(230px,.9fr)
+      minmax(0,1.4fr)!important;
+
+    gap:12px!important;
+  }
+
+  .screen[data-screen="9"] .match-item,
+  .screen[data-screen="9"] .definition-item{
+    font-size:
+      clamp(17px,1.35vw,20px)!important;
+
+    line-height:1.24!important;
+
+    padding:8px 10px!important;
+  }
+
+  .screen[data-screen="9"] .match-heading{
+    font-size:
+      clamp(19px,1.5vw,22px)!important;
+  }
+
+  .screen[data-screen="9"] .match-status{
+    font-size:
+      clamp(16px,1.25vw,19px)!important;
+
+    padding:8px 10px!important;
+  }
+
+
+  /* =======================================================
+     10. GAP / MATCH / LETTER
+     ======================================================= */
+
+  .gap-grid{
+    gap:8px!important;
+  }
+
+  .gap-grid>div{
+    padding:9px 11px!important;
+  }
+
+  .match-table{
+    gap:6px!important;
+  }
+
+  .match-table>div{
+    grid-template-columns:
+      minmax(130px,160px)
+      minmax(0,1fr)!important;
+
+    padding:7px 9px!important;
+
+    font-size:
+      clamp(16px,1.3vw,18px)!important;
+  }
+
+  .letter{
+    max-height:
+      calc(100dvh - 245px)!important;
+
+    overflow:auto!important;
+
+    padding:14px 18px!important;
+  }
+
+  .big-prompt{
+    font-size:
+      clamp(26px,2.5vw,33px)!important;
+
+    padding:17px!important;
+  }
+
+
+  /* =======================================================
+     11. CHALLENGE / EXIT / HOMEWORK
+     ======================================================= */
+
+  .challenge-grid{
+    gap:10px!important;
+  }
+
+  .challenge-card{
+    min-height:120px!important;
+    padding:15px!important;
+
+    font-size:
+      clamp(20px,1.7vw,23px)!important;
+  }
+
+  .exit-grid{
+    gap:10px!important;
+  }
+
+  .exit-grid>div{
+    padding:11px!important;
+  }
+
+  .exit-grid textarea{
+    min-height:80px!important;
+  }
+
+  .homework-card{
+    padding:18px!important;
+    max-width:min(100%,1000px)!important;
+  }
+
+  .homework-checks{
+    gap:9px!important;
+  }
+
+  .homework-checks span{
+    padding:9px!important;
+
+    font-size:
+      clamp(17px,1.45vw,20px)!important;
+  }
+
+
+  /* =======================================================
+     12. THANK YOU
+     ======================================================= */
+
+  .thankyou-screen{
+    min-height:100%!important;
+    height:100%!important;
+  }
+
+  .thankyou-screen h1{
+    font-size:
+      clamp(58px,6vw,82px)!important;
+
+    margin:8px 0 13px!important;
+  }
+
+  .thankyou-sub{
+    font-size:
+      clamp(23px,2.5vw,31px)!important;
+  }
+
+  .thankyou-note{
+    font-size:
+      clamp(20px,2vw,27px)!important;
+  }
+}
+
+
+/* =========================================================
+   13. LARGE DESKTOP / PROJECTOR
+   ========================================================= */
+
+@media (min-width:1400px){
+
+  .app{
+    grid-template-rows:
+      68px
+      minmax(0,1fr)
+      60px!important;
+  }
+
+  .screen{
+    padding:
+      22px
+      42px
+      18px!important;
+  }
+
+  .instruction{
+    font-size:24px!important;
+  }
+
+  .hero-img{
+    height:
+      clamp(420px,58dvh,620px)!important;
+  }
+
+  .media-layout video,
+  video{
+    height:
+      clamp(430px,58dvh,640px)!important;
+  }
+
+  .image-wrap>img,
+  .listening-layout>img{
+    height:
+      clamp(410px,58dvh,620px)!important;
+  }
+}
+
+
+/* =========================================================
+   14. SMALL LAPTOP / TABLET LANDSCAPE
+   ========================================================= */
+
+@media (min-width:768px) and (max-width:1099px){
+
+  .app{
+    grid-template-rows:
+      auto
+      minmax(0,1fr)
+      auto!important;
+
+    min-height:100dvh!important;
+  }
+
+  .topbar{
+    min-height:60px!important;
+    padding:8px 13px!important;
+  }
+
+  .course-title{
+    font-size:19px!important;
+  }
+
+  main{
+    overflow:visible!important;
+  }
+
+  .screen,
+  .screen.active{
+    min-height:
+      calc(100dvh - 124px)!important;
+
+    height:auto!important;
+
+    padding:
+      18px
+      16px
+      78px!important;
+
+    overflow:visible!important;
+  }
+
+  h1{
+    font-size:40px!important;
+  }
+
+  h2{
+    font-size:32px!important;
+  }
+
+  .instruction{
+    font-size:20px!important;
+  }
+
+  .hero-grid,
+  .media-layout,
+  .photo-layout,
+  .listening-layout,
+  .advice-layout{
+    grid-template-columns:
+      minmax(0,1fr)
+      minmax(250px,.9fr)!important;
+
+    gap:16px!important;
+  }
+
+  .hero-img,
+  .image-wrap>img,
+  .listening-layout>img{
+    width:100%!important;
+    height:auto!important;
+    max-height:none!important;
+  }
+
+  video{
+    width:100%!important;
+    height:auto!important;
+    max-height:none!important;
+  }
+
+  .exercise7{
+    grid-template-columns:1fr!important;
+  }
+
+  .screen[data-screen="9"] .matching-board{
+    grid-template-columns:
+      1fr
+      1.3fr!important;
+  }
+
+  .screen[data-screen="9"] .candidate-grid{
+    grid-template-columns:
+      repeat(2,minmax(0,1fr))!important;
+  }
+
+  .footer{
+    position:sticky!important;
+    bottom:0!important;
+    z-index:30!important;
+
+    min-height:60px!important;
+
+    padding:7px 12px!important;
+
+    box-shadow:
+      0
+      -8px
+      24px
+      rgba(18,63,52,.08)!important;
+  }
+}
+
+
+/* =========================================================
+   15. TABLET PORTRAIT / PHONE
+   ========================================================= */
+
+@media (max-width:767px){
+
+  .app{
+    display:grid!important;
+
+    grid-template-rows:
+      auto
+      1fr
+      auto!important;
+
+    min-height:100dvh!important;
+  }
+
+  .topbar{
+    min-height:54px!important;
+
+    padding:
+      7px
+      10px!important;
+
+    gap:7px!important;
+  }
+
+  .topbar>div:first-child{
+    min-width:0!important;
+    flex:1!important;
+  }
+
+  .course-title{
+    font-size:17px!important;
+
+    white-space:nowrap!important;
+
+    overflow:hidden!important;
+
+    text-overflow:ellipsis!important;
+  }
+
+  .eyebrow{
+    font-size:10px!important;
+  }
+
+  .review-badge{
+    font-size:9px!important;
+    padding:5px 6px!important;
+  }
+
+  main{
+    overflow:visible!important;
+  }
+
+  .screen,
+  .screen.active{
+    min-height:
+      calc(100dvh - 112px)!important;
+
+    height:auto!important;
+
+    padding:
+      14px
+      11px
+      80px!important;
+
+    overflow:visible!important;
+  }
+
+  .screen::before{
+    width:4px!important;
+    height:44px!important;
+    left:4px!important;
+    top:15px!important;
+  }
+
+  h1{
+    font-size:33px!important;
+    line-height:1.05!important;
+  }
+
+  h2{
+    font-size:27px!important;
+    line-height:1.1!important;
+  }
+
+  h3{
+    font-size:21px!important;
+  }
+
+  .instruction{
+    font-size:18px!important;
+    line-height:1.4!important;
+    margin-bottom:12px!important;
+  }
+
+  .hero-grid,
+  .media-layout,
+  .photo-layout,
+  .listening-layout,
+  .advice-layout,
+  .exercise7,
+  .layer-grid,
+  .speaker-match,
+  .rule-grid,
+  .check-grid,
+  .gap-grid,
+  .challenge-grid,
+  .exit-grid,
+  .homework-checks,
+  .matching-board,
+  .candidate-grid{
+    grid-template-columns:1fr!important;
+  }
+
+  .hero-img,
+  .image-wrap>img,
+  .listening-layout>img,
+  video{
+    width:100%!important;
+    height:auto!important;
+    max-height:none!important;
+    object-fit:contain!important;
+  }
+
+  .question-line,
+  .transcript,
+  .big-prompt,
+  .support-box p,
+  .speaker-match>div,
+  .vocab-panel span,
+  .rule-card,
+  .gap-grid>div,
+  .letter p{
+    font-size:18px!important;
+    line-height:1.43!important;
+  }
+
+  .question-card,
+  .poll-card,
+  .support-box,
+  .audio-block,
+  .mini-task,
+  .meaning-box,
+  .hint-box,
+  .homework-card{
+    padding:11px!important;
+  }
+
+  .poll-options,
+  .tabs,
+  .hint-row,
+  .confidence{
+    gap:7px!important;
+  }
+
+  .poll-btn,
+  .timer-btn,
+  .support-toggle,
+  .hint-btn,
+  .tab,
+  .confidence button{
+    min-height:44px!important;
+    padding:9px 11px!important;
+  }
+
+  .screen[data-screen="9"] .candidate-grid{
+    grid-template-columns:1fr!important;
+  }
+
+  .screen[data-screen="9"] .matching-board{
+    grid-template-columns:1fr!important;
+  }
+
+  .match-table>div{
+    grid-template-columns:1fr!important;
+  }
+
+  .letter{
+    max-height:none!important;
+  }
+
+  .footer{
+    position:sticky!important;
+    bottom:0!important;
+    z-index:30!important;
+
+    min-height:58px!important;
+    height:auto!important;
+
+    padding:6px 8px!important;
+  }
+
+  .footer button{
+    font-size:13px!important;
+    padding:7px 9px!important;
+  }
+
+  .progress-wrap{
+    gap:6px!important;
+  }
+
+  .progress{
+    width:80px!important;
+  }
+
+  #counter{
+    font-size:11px!important;
+  }
+
+  .thankyou-screen h1{
+    font-size:52px!important;
+  }
+
+  .thankyou-sub{
+    font-size:22px!important;
+  }
+
+  .thankyou-note{
+    font-size:19px!important;
+  }
+}
+
+
+/* =========================================================
+   16. SHORT LAPTOP / EMBEDDED HOST
+   MEDIA-FIRST:
+   shrink chrome and spacing before shrinking media.
+   ========================================================= */
+
+@media (min-width:1100px) and (max-height:820px){
+
+  .app{
+    grid-template-rows:
+      54px
+      minmax(0,1fr)
+      48px!important;
+  }
+
+  .topbar{
+    min-height:54px!important;
+    height:54px!important;
+  }
+
+  .course-title{
+    font-size:19px!important;
+  }
+
+  .review-badge{
+    padding:4px 7px!important;
+  }
+
+  .screen{
+    padding:
+      10px
+      26px
+      8px!important;
+
+    overflow-y:auto!important;
+  }
+
+  .screen::before{
+    top:11px!important;
+    height:42px!important;
+  }
+
+  h1{
+    font-size:40px!important;
+    margin:2px 0 5px!important;
+  }
+
+  h2{
+    font-size:30px!important;
+    margin:2px 0 5px!important;
+  }
+
+  h3{
+    font-size:21px!important;
+  }
+
+  .instruction{
+    font-size:18px!important;
+    line-height:1.28!important;
+    margin-bottom:6px!important;
+  }
+
+  .question-line{
+    font-size:19px!important;
+  }
+
+  .question-card{
+    padding:8px 10px!important;
+  }
+
+  .support-box p,
+  .speaker-match>div,
+  .vocab-panel span,
+  .rule-card,
+  .gap-grid>div,
+  .letter p,
+  .transcript{
+    font-size:17px!important;
+  }
+
+
+  /* IMPORTANT:
+     Media remains visibly large on short laptop screens.
+     Controlled scrolling is preferred over tiny media.
+  */
+
+  .hero-img{
+    height:
+      clamp(320px,50dvh,440px)!important;
+
+    max-height:none!important;
+  }
+
+  .media-layout video,
+  video{
+    height:
+      clamp(330px,50dvh,450px)!important;
+
+    max-height:none!important;
+  }
+
+  .image-wrap>img,
+  .listening-layout>img{
+    height:
+      clamp(310px,48dvh,440px)!important;
+
+    max-height:none!important;
+  }
+
+  .layer-card{
+    min-height:78px!important;
+    font-size:19px!important;
+    padding:9px 11px!important;
+  }
+
+  .transcript{
+    max-height:
+      calc(100dvh - 205px)!important;
+
+    padding:12px!important;
+  }
+
+  .letter{
+    max-height:
+      calc(100dvh - 205px)!important;
+  }
+
+  .screen[data-screen="9"]{
+    padding-top:7px!important;
+  }
+
+  .screen[data-screen="9"] h2{
+    font-size:28px!important;
+  }
+
+  .screen[data-screen="9"] .instruction{
+    font-size:18px!important;
+    margin-bottom:4px!important;
+  }
+
+  .screen[data-screen="9"] .ex7-step{
+    padding:7px 9px!important;
+    margin-bottom:5px!important;
+  }
+
+  .screen[data-screen="9"] .step-title{
+    font-size:18px!important;
+    margin-bottom:4px!important;
+  }
+
+  .screen[data-screen="9"] .candidate-item label,
+  .screen[data-screen="9"] .match-item,
+  .screen[data-screen="9"] .definition-item{
+    font-size:16px!important;
+  }
+
+  .footer{
+    height:48px!important;
+    min-height:48px!important;
+  }
+
+  .footer button{
+    min-height:34px!important;
+    padding:5px 9px!important;
+    font-size:14px!important;
+  }
+
+  .thankyou-screen h1{
+    font-size:56px!important;
+  }
+}
+
+
+/* =========================================================
+   17. VERY SMALL PHONE
+   ========================================================= */
+
+@media (max-width:390px){
+
+  .review-badge{
+    display:none!important;
+  }
+
+  .progress{
+    display:none!important;
+  }
+
+  .footer{
+    justify-content:space-between!important;
+  }
+
+  .course-title{
+    font-size:15px!important;
+  }
+}
+
+/* =========================================================
+   E-LEAP U1.1 v2.2 — DESKTOP ZERO-SCROLL CORRECTION
+   Keep media large, remove unnecessary vertical chrome.
+   ========================================================= */
+
+@media (min-width:1100px){
+
+  /* Smaller fixed chrome */
+  .app{
+    grid-template-rows:
+      48px
+      minmax(0,1fr)
+      44px!important;
+  }
+
+  .topbar{
+    height:48px!important;
+    min-height:48px!important;
+    padding:0 20px!important;
+  }
+
+  .course-title{
+    font-size:19px!important;
+    margin-top:1px!important;
+  }
+
+  .eyebrow{
+    font-size:10px!important;
+  }
+
+  .review-badge{
+    font-size:10px!important;
+    padding:4px 7px!important;
+  }
+
+  .footer{
+    height:44px!important;
+    min-height:44px!important;
+    padding:0 18px!important;
+  }
+
+  .footer button{
+    min-height:32px!important;
+    padding:4px 10px!important;
+    font-size:14px!important;
+  }
+
+  .progress{
+    height:6px!important;
+  }
+
+  #counter{
+    font-size:12px!important;
+  }
+
+
+  /* Active screen should fit the remaining viewport */
+  main{
+    height:calc(100dvh - 92px)!important;
+    min-height:0!important;
+    overflow:hidden!important;
+  }
+
+  .screen,
+  .screen.active{
+    height:100%!important;
+    min-height:0!important;
+
+    padding:
+      7px
+      28px
+      6px!important;
+
+    overflow:hidden!important;
+  }
+
+  .screen::before{
+    top:8px!important;
+    height:40px!important;
+  }
+
+
+  /* Compact screen headings */
+  .stage-label{
+    font-size:10px!important;
+    padding:4px 8px!important;
+  }
+
+  h1{
+    font-size:40px!important;
+    line-height:1!important;
+    margin:2px 0 5px!important;
+  }
+
+  h2{
+    font-size:30px!important;
+    line-height:1.04!important;
+    margin:2px 0 5px!important;
+  }
+
+  h3{
+    font-size:21px!important;
+    margin-bottom:5px!important;
+  }
+
+  .instruction{
+    font-size:18px!important;
+    line-height:1.25!important;
+    margin:0 0 6px!important;
+  }
+
+
+  /* Reduce vertical gaps, not media */
+  .screen-grid,
+  .hero-grid,
+  .media-layout,
+  .photo-layout,
+  .listening-layout,
+  .advice-layout{
+    gap:14px!important;
+  }
+
+  .question-stack{
+    gap:6px!important;
+  }
+
+  .question-card{
+    padding:7px 10px!important;
+  }
+
+  .question-line{
+    font-size:18px!important;
+    line-height:1.24!important;
+    gap:8px!important;
+  }
+
+  .question-line span{
+    min-width:30px!important;
+    width:30px!important;
+    height:30px!important;
+  }
+
+  .poll-card,
+  .support-box,
+  .audio-block,
+  .mini-task,
+  .meaning-box,
+  .hint-box{
+    padding:9px 11px!important;
+  }
+
+  .poll-options{
+    margin:7px 0!important;
+  }
+
+  .tabs{
+    margin:5px 0 7px!important;
+  }
+
+  .tab{
+    min-height:34px!important;
+    padding:5px 9px!important;
+    font-size:14px!important;
+  }
+
+
+  /* =======================================================
+     MEDIA: keep large enough for classroom use
+     ======================================================= */
+
+  .hero-img{
+    height:clamp(310px,52dvh,500px)!important;
+    max-height:none!important;
+    object-fit:contain!important;
+  }
+
+  .media-layout video,
+  video{
+    height:clamp(320px,52dvh,500px)!important;
+    max-height:none!important;
+    object-fit:contain!important;
+  }
+
+  .image-wrap>img,
+  .listening-layout>img{
+    height:clamp(310px,51dvh,500px)!important;
+    max-height:none!important;
+    object-fit:contain!important;
+  }
+
+
+  /* Right-side support content */
+  .support-box p{
+    font-size:17px!important;
+    line-height:1.28!important;
+    margin:5px 0!important;
+  }
+
+  .support-box small{
+    font-size:14px!important;
+  }
+
+  .audio-block{
+    margin-bottom:5px!important;
+    gap:4px!important;
+    font-size:16px!important;
+  }
+
+  .speaker-match{
+    gap:5px!important;
+    margin:6px 0!important;
+  }
+
+  .speaker-match>div{
+    padding:6px 8px!important;
+    font-size:17px!important;
+  }
+
+  .confidence{
+    margin-top:5px!important;
+  }
+
+  .confidence button{
+    min-height:34px!important;
+    padding:5px 8px!important;
+  }
+
+
+  /* Transcript / text-heavy screens */
+  .transcript{
+    font-size:18px!important;
+    line-height:1.34!important;
+    padding:11px 13px!important;
+
+    max-height:
+      calc(100dvh - 160px)!important;
+  }
+
+  .meaning-box{
+    margin-top:5px!important;
+    padding:7px 10px!important;
+    font-size:17px!important;
+  }
+
+  .rule-grid{
+    gap:5px!important;
+    margin-top:6px!important;
+  }
+
+  .rule-card{
+    padding:7px 9px!important;
+    font-size:17px!important;
+  }
+
+
+  /* =======================================================
+     SCREEN 9 — dense activity
+     ======================================================= */
+
+  .screen[data-screen="9"]{
+    padding-top:4px!important;
+  }
+
+  .screen[data-screen="9"] h2{
+    font-size:27px!important;
+    margin:1px 0 3px!important;
+  }
+
+  .screen[data-screen="9"] .instruction{
+    font-size:16px!important;
+    line-height:1.2!important;
+    margin-bottom:4px!important;
+  }
+
+  .screen[data-screen="9"] .ex7-step{
+    padding:6px 8px!important;
+    margin-bottom:4px!important;
+  }
+
+  .screen[data-screen="9"] .step-title{
+    font-size:17px!important;
+    margin-bottom:4px!important;
+  }
+
+  .screen[data-screen="9"] .candidate-grid{
+    gap:4px!important;
+  }
+
+  .screen[data-screen="9"] .candidate-item{
+    padding:5px 7px!important;
+  }
+
+  .screen[data-screen="9"] .candidate-item label{
+    font-size:15px!important;
+    line-height:1.16!important;
+  }
+
+  .screen[data-screen="9"] .item-check{
+    min-height:29px!important;
+    font-size:10px!important;
+    padding:3px 5px!important;
+  }
+
+  .screen[data-screen="9"] .matching-board{
+    gap:7px!important;
+  }
+
+  .screen[data-screen="9"] .match-col{
+    padding:6px!important;
+    gap:4px!important;
+  }
+
+  .screen[data-screen="9"] .match-heading{
+    font-size:16px!important;
+    margin-bottom:2px!important;
+  }
+
+  .screen[data-screen="9"] .match-item,
+  .screen[data-screen="9"] .definition-item{
+    font-size:14px!important;
+    line-height:1.16!important;
+    padding:5px 7px!important;
+  }
+
+  .screen[data-screen="9"] .match-status{
+    margin-top:5px!important;
+    padding:5px 7px!important;
+    font-size:14px!important;
+  }
+
+
+  /* Gap fill / matching / letter */
+  .go-bank{
+    font-size:18px!important;
+    padding:7px 10px!important;
+    margin-bottom:6px!important;
+  }
+
+  .gap-grid{
+    gap:5px!important;
+  }
+
+  .gap-grid>div{
+    padding:6px 9px!important;
+    font-size:17px!important;
+    line-height:1.3!important;
+  }
+
+  .match-table{
+    gap:4px!important;
+  }
+
+  .match-table>div{
+    padding:5px 8px!important;
+    font-size:15px!important;
+  }
+
+  .letter{
+    padding:9px 13px!important;
+    max-height:calc(100dvh - 155px)!important;
+  }
+
+  .letter p{
+    font-size:17px!important;
+    line-height:1.32!important;
+    margin:4px 0!important;
+  }
+
+  .big-prompt{
+    font-size:24px!important;
+    line-height:1.25!important;
+    padding:12px!important;
+  }
+
+
+  /* Challenge / exit / homework */
+  .challenge-grid{
+    gap:7px!important;
+  }
+
+  .challenge-card{
+    min-height:95px!important;
+    padding:10px!important;
+    font-size:18px!important;
+  }
+
+  .exit-grid{
+    gap:7px!important;
+  }
+
+  .exit-grid>div{
+    padding:8px!important;
+  }
+
+  .exit-grid textarea{
+    min-height:62px!important;
+    margin-top:5px!important;
+  }
+
+  .homework-card{
+    padding:12px!important;
+  }
+
+  .homework-checks{
+    gap:6px!important;
+  }
+
+  .homework-checks span{
+    padding:7px!important;
+    font-size:17px!important;
+  }
+
+
+  /* Thank-you fits without scrolling */
+  .thankyou-screen{
+    height:100%!important;
+    min-height:0!important;
+  }
+
+  .thankyou-screen h1{
+    font-size:58px!important;
+    margin:5px 0 8px!important;
+  }
+
+  .thankyou-sub{
+    font-size:23px!important;
+  }
+
+  .thankyou-line{
+    margin:10px 0!important;
+  }
+
+  .thankyou-note{
+    font-size:20px!important;
+  }
+}
+
+
+/* =========================================================
+   SHORT LAPTOP / EMBEDDED HOST
+   ========================================================= */
+
+@media (min-width:1100px) and (max-height:760px){
+
+  .app{
+    grid-template-rows:
+      44px
+      minmax(0,1fr)
+      40px!important;
+  }
+
+  main{
+    height:calc(100dvh - 84px)!important;
+  }
+
+  .topbar{
+    height:44px!important;
+    min-height:44px!important;
+  }
+
+  .footer{
+    height:40px!important;
+    min-height:40px!important;
+  }
+
+  .screen,
+  .screen.active{
+    padding:
+      5px
+      24px
+      4px!important;
+  }
+
+  h1{
+    font-size:36px!important;
+  }
+
+  h2{
+    font-size:27px!important;
+  }
+
+  .instruction{
+    font-size:17px!important;
+    margin-bottom:4px!important;
+  }
+
+  .hero-img{
+    height:clamp(290px,50dvh,400px)!important;
+  }
+
+  .media-layout video,
+  video{
+    height:clamp(300px,50dvh,410px)!important;
+  }
+
+  .image-wrap>img,
+  .listening-layout>img{
+    height:clamp(290px,49dvh,400px)!important;
+  }
+}
+
+/* =========================================================
+   E-LEAP U1.1 — MASTER UI ALIGNMENT PASS v3.0
+   Match U1.2 visual family
+   Large-screen classroom fit
+   Media-first
+   Screen 9 two-step interaction
+   Restored Thank You screen
+   ========================================================= */
+
+
+/* =========================================================
+   GLOBAL E-LEAP SHELL
+   ========================================================= */
+
+:root{
+  --u11-green:#123f3a;
+  --u11-green2:#1e6a5c;
+  --u11-mint:#e5f5ef;
+  --u11-cream:#fffdf8;
+  --u11-gold:#f2c45e;
+  --u11-coral:#e66f61;
+  --u11-line:#d6e3de;
+  --u11-ink:#132f28;
+  --u11-muted:#60706c;
+}
+
+html,
+body{
+  width:100%;
+  height:100%;
+  overflow:hidden!important;
+}
+
+body{
+  font-family:
+    "Avenir Next",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif!important;
+
+  background:
+    radial-gradient(
+      circle at 8% 10%,
+      rgba(242,196,94,.14),
+      transparent 22%
+    ),
+    radial-gradient(
+      circle at 92% 12%,
+      rgba(230,111,97,.10),
+      transparent 20%
+    ),
+    linear-gradient(
+      135deg,
+      #eaf5f0 0%,
+      #fff9ec 54%,
+      #edf5ff 100%
+    )!important;
+
+  color:var(--u11-ink)!important;
+}
+
+.app{
+  width:100%;
+  height:100dvh!important;
+  min-height:0!important;
+
+  display:grid!important;
+
+  grid-template-rows:
+    66px
+    minmax(0,1fr)
+    54px!important;
+}
+
+
+/* =========================================================
+   HEADER — same visual family as U1.2
+   ========================================================= */
+
+.topbar{
+  min-height:66px!important;
+  height:66px!important;
+
+  padding:
+    8px
+    22px!important;
+
+  background:
+    rgba(255,255,255,.96)!important;
+
+  border-bottom:
+    1px solid
+    var(--u11-line)!important;
+
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+
+  gap:16px!important;
+}
+
+.eyebrow{
+  font-size:12px!important;
+  letter-spacing:.08em!important;
+
+  color:
+    var(--u11-green2)!important;
+
+  font-weight:900!important;
+}
+
+.course-title{
+  margin-top:2px!important;
+
+  font-size:23px!important;
+
+  color:
+    var(--u11-green)!important;
+
+  font-weight:850!important;
+}
+
+.u11-top-right{
+  display:flex;
+  align-items:center;
+
+  gap:9px;
+
+  margin-left:auto;
+}
+
+.review-badge{
+  font-size:10px!important;
+
+  padding:
+    5px
+    8px!important;
+
+  border-radius:999px!important;
+
+  background:
+    var(--u11-mint)!important;
+
+  border:
+    1px solid
+    #b8d8cd!important;
+
+  color:
+    var(--u11-green)!important;
+}
+
+.u11-teacher-tools{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.u11-tool-btn{
+  min-height:38px!important;
+
+  padding:
+    7px
+    11px!important;
+
+  border:
+    1px solid
+    var(--u11-line)!important;
+
+  border-radius:11px!important;
+
+  background:#fff!important;
+
+  color:
+    var(--u11-green)!important;
+
+  font-size:14px!important;
+  font-weight:800!important;
+}
+
+.u11-tool-btn:hover{
+  background:
+    var(--u11-green)!important;
+
+  color:#fff!important;
+
+  border-color:
+    var(--u11-green)!important;
+}
+
+
+/* =========================================================
+   MAIN SCREEN
+   ========================================================= */
+
+main{
+  min-height:0!important;
+  height:100%!important;
+
+  overflow:hidden!important;
+
+  padding:
+    10px
+    14px!important;
+}
+
+.screen,
+.screen.active{
+  width:100%!important;
+  max-width:none!important;
+
+  height:100%!important;
+  min-height:0!important;
+
+  margin:0!important;
+
+  padding:
+    clamp(15px,2vh,23px)
+    clamp(22px,2.7vw,40px)
+    clamp(12px,1.7vh,20px)!important;
+
+  overflow:auto!important;
+
+  border:
+    1px solid
+    rgba(30,106,92,.17)!important;
+
+  border-radius:22px!important;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,253,248,.98),
+      rgba(248,253,250,.98)
+    )!important;
+
+  box-shadow:
+    0 18px 50px
+    rgba(18,63,58,.11)!important;
+}
+
+.screen::before{
+  width:5px!important;
+  height:47px!important;
+
+  left:12px!important;
+  top:18px!important;
+}
+
+.stage-label{
+  display:inline-flex!important;
+
+  padding:
+    5px
+    9px!important;
+
+  border-radius:8px!important;
+
+  font-size:11px!important;
+}
+
+h1,
+h2,
+h3{
+  font-family:
+    "Avenir Next",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif!important;
+}
+
+h1{
+  font-size:
+    clamp(44px,4.4vw,64px)!important;
+
+  line-height:1.02!important;
+
+  margin:
+    4px
+    0
+    10px!important;
+}
+
+h2{
+  font-size:
+    clamp(33px,3.2vw,46px)!important;
+
+  line-height:1.06!important;
+
+  margin:
+    4px
+    0
+    9px!important;
+}
+
+h3{
+  font-size:
+    clamp(22px,2vw,29px)!important;
+}
+
+.instruction{
+  max-width:none!important;
+
+  font-size:
+    clamp(20px,1.8vw,26px)!important;
+
+  line-height:1.34!important;
+
+  margin:
+    0
+    0
+    13px!important;
+}
+
+
+/* =========================================================
+   MAKE ORDINARY SCREENS FILL THE AVAILABLE AREA
+   ========================================================= */
+
+.screen-grid{
+  width:100%;
+}
+
+.hero-grid,
+.media-layout,
+.photo-layout,
+.listening-layout,
+.advice-layout{
+  min-height:
+    calc(100% - 10px)!important;
+}
+
+
+/* =========================================================
+   HERO — LARGE, NOT 2/3 SCREEN
+   ========================================================= */
+
+.hero-grid{
+  grid-template-columns:
+    minmax(0,1fr)
+    minmax(0,1.05fr)!important;
+
+  gap:
+    clamp(24px,3vw,44px)!important;
+
+  align-items:center!important;
+}
+
+.hero-img{
+  width:100%!important;
+
+  height:
+    clamp(390px,58dvh,600px)!important;
+
+  max-height:none!important;
+
+  object-fit:cover!important;
+
+  border-radius:18px!important;
+
+  box-shadow:
+    0 15px 36px
+    rgba(18,63,58,.14)!important;
+}
+
+
+/* =========================================================
+   VIDEO — MEDIA FIRST
+   ========================================================= */
+
+.media-layout{
+  grid-template-columns:
+    minmax(0,1.18fr)
+    minmax(310px,.82fr)!important;
+
+  gap:
+    clamp(20px,2.4vw,34px)!important;
+
+  align-items:center!important;
+}
+
+.media-layout video,
+video{
+  width:100%!important;
+
+  height:
+    clamp(390px,57dvh,590px)!important;
+
+  max-height:none!important;
+
+  object-fit:contain!important;
+
+  background:#000!important;
+
+  border-radius:16px!important;
+
+  box-shadow:
+    0 15px 35px
+    rgba(0,0,0,.18)!important;
+}
+
+.layer-grid{
+  gap:11px!important;
+}
+
+.layer-card{
+  min-height:112px!important;
+
+  padding:16px!important;
+
+  font-size:
+    clamp(21px,1.8vw,27px)!important;
+}
+
+
+/* =========================================================
+   PHOTO / HOTSPOT / LISTENING
+   ========================================================= */
+
+.photo-layout,
+.listening-layout{
+  grid-template-columns:
+    minmax(0,1.22fr)
+    minmax(300px,.78fr)!important;
+
+  gap:
+    clamp(20px,2.4vw,34px)!important;
+
+  align-items:center!important;
+}
+
+.image-wrap>img,
+.listening-layout>img{
+  width:100%!important;
+
+  height:
+    clamp(380px,57dvh,590px)!important;
+
+  max-height:none!important;
+
+  object-fit:contain!important;
+
+  border-radius:16px!important;
+
+  background:#fff!important;
+}
+
+.hotspot{
+  font-size:15px!important;
+
+  min-height:36px!important;
+
+  padding:
+    5px
+    8px!important;
+}
+
+.hotspot-info{
+  font-size:17px!important;
+}
+
+.support-box{
+  padding:18px!important;
+}
+
+.support-box p{
+  font-size:
+    clamp(19px,1.55vw,23px)!important;
+
+  line-height:1.4!important;
+}
+
+
+/* =========================================================
+   LISTENING
+   ========================================================= */
+
+.audio-block{
+  padding:
+    11px
+    13px!important;
+
+  margin-bottom:8px!important;
+}
+
+.speaker-match{
+  gap:8px!important;
+
+  margin:
+    10px
+    0!important;
+}
+
+.speaker-match>div{
+  padding:
+    9px
+    11px!important;
+
+  font-size:
+    clamp(18px,1.5vw,22px)!important;
+}
+
+
+/* =========================================================
+   VOCAB / TRANSCRIPT / OTHER ACTIVITIES
+   ========================================================= */
+
+.vocab-panel{
+  min-height:180px!important;
+
+  align-content:start!important;
+
+  padding:22px!important;
+}
+
+.vocab-panel span{
+  font-size:
+    clamp(20px,1.7vw,25px)!important;
+
+  padding:
+    10px
+    14px!important;
+}
+
+.transcript{
+  font-size:
+    clamp(21px,1.75vw,26px)!important;
+
+  line-height:1.5!important;
+
+  max-height:
+    calc(100dvh - 265px)!important;
+
+  overflow:auto!important;
+}
+
+.gap-grid>div,
+.rule-card,
+.letter p,
+.question-line{
+  font-size:
+    clamp(20px,1.65vw,25px)!important;
+
+  line-height:1.4!important;
+}
+
+
+/* =========================================================
+   SCREEN 9 — TWO REAL SUB-STEPS
+   ========================================================= */
+
+.screen[data-screen="9"]{
+  overflow:hidden!important;
+}
+
+.screen[data-screen="9"] .instruction{
+  margin-bottom:9px!important;
+
+  font-size:
+    clamp(20px,1.65vw,24px)!important;
+}
+
+.ex7-step-tabs{
+  display:flex;
+
+  gap:8px;
+
+  margin:
+    3px
+    0
+    12px;
+}
+
+.ex7-step-tab{
+  min-width:135px;
+  min-height:42px!important;
+
+  padding:
+    8px
+    18px!important;
+
+  border:
+    1px solid
+    #b8cdc5!important;
+
+  border-radius:999px!important;
+
+  background:#fff!important;
+
+  color:
+    var(--u11-green)!important;
+
+  font-size:16px!important;
+  font-weight:900!important;
+}
+
+.ex7-step-tab.active{
+  background:
+    var(--u11-green)!important;
+
+  color:#fff!important;
+
+  border-color:
+    var(--u11-green)!important;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(30,106,92,.10)!important;
+}
+
+.screen[data-screen="9"] .ex7-step{
+  display:none!important;
+}
+
+.screen[data-screen="9"] .ex7-step.ex7-active{
+  display:block!important;
+
+  height:
+    calc(100% - 165px)!important;
+
+  overflow:auto!important;
+
+  margin:0!important;
+
+  padding:
+    15px
+    17px!important;
+}
+
+.screen[data-screen="9"] .step-title{
+  font-size:
+    clamp(22px,1.9vw,28px)!important;
+
+  margin-bottom:11px!important;
+}
+
+
+/* STEP 1 */
+
+.screen[data-screen="9"]
+.ex7-active
+.candidate-grid{
+  grid-template-columns:
+    repeat(3,minmax(0,1fr))!important;
+
+  gap:
+    10px!important;
+}
+
+.screen[data-screen="9"]
+.candidate-item{
+  min-height:58px!important;
+
+  padding:
+    10px
+    12px!important;
+}
+
+.screen[data-screen="9"]
+.candidate-item label{
+  font-size:
+    clamp(18px,1.5vw,22px)!important;
+}
+
+
+/* STEP 2 */
+
+.screen[data-screen="9"]
+.matching-board{
+  grid-template-columns:
+    minmax(280px,.9fr)
+    minmax(0,1.35fr)!important;
+
+  gap:18px!important;
+}
+
+.screen[data-screen="9"]
+.match-col{
+  gap:7px!important;
+
+  padding:12px!important;
+}
+
+.screen[data-screen="9"]
+.match-heading{
+  font-size:
+    clamp(21px,1.7vw,25px)!important;
+}
+
+.screen[data-screen="9"]
+.match-item,
+.screen[data-screen="9"]
+.definition-item{
+  font-size:
+    clamp(18px,1.4vw,21px)!important;
+
+  line-height:1.25!important;
+
+  padding:
+    9px
+    11px!important;
+}
+
+
+/* =========================================================
+   EXERCISE 10–15
+   ========================================================= */
+
+.go-bank{
+  font-size:
+    clamp(20px,1.65vw,24px)!important;
+}
+
+.letter{
+  max-height:
+    calc(100dvh - 265px)!important;
+
+  padding:
+    18px
+    22px!important;
+}
+
+.big-prompt{
+  font-size:
+    clamp(28px,2.6vw,38px)!important;
+}
+
+.challenge-card{
+  min-height:160px!important;
+
+  font-size:
+    clamp(22px,1.9vw,27px)!important;
+}
+
+.exit-grid textarea{
+  min-height:135px!important;
+}
+
+.homework-card{
+  max-width:1200px!important;
+
+  padding:28px!important;
+}
+
+.homework-checks span{
+  font-size:
+    clamp(20px,1.6vw,24px)!important;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.footer{
+  height:54px!important;
+  min-height:54px!important;
+
+  padding:
+    0
+    22px!important;
+
+  background:
+    rgba(255,255,255,.95)!important;
+
+  border-top:
+    1px solid
+    var(--u11-line)!important;
+}
+
+.footer button{
+  min-height:38px!important;
+
+  padding:
+    7px
+    13px!important;
+
+  border-radius:10px!important;
+
+  font-size:15px!important;
+}
+
+.progress{
+  width:
+    clamp(170px,17vw,245px)!important;
+}
+
+
+/* =========================================================
+   THANK YOU — RESTORE FULL BACKGROUND
+   ========================================================= */
+
+.screen[data-screen="16"]{
+  padding:0!important;
+
+  overflow:hidden!important;
+
+  border:0!important;
+
+  background:
+    radial-gradient(
+      circle at 12% 18%,
+      rgba(242,196,94,.92)
+      0 5px,
+      transparent 6px
+    ),
+    radial-gradient(
+      circle at 86% 26%,
+      rgba(230,111,97,.88)
+      0 6px,
+      transparent 7px
+    ),
+    radial-gradient(
+      circle at 75% 78%,
+      rgba(255,255,255,.20)
+      0 4px,
+      transparent 5px
+    ),
+    repeating-linear-gradient(
+      45deg,
+      transparent
+      0 34px,
+      rgba(255,255,255,.035)
+      35px 37px
+    ),
+    linear-gradient(
+      135deg,
+      #0e3935,
+      #1d6b5d 58%,
+      #123f3a
+    )!important;
+
+  background-size:
+    110px 110px,
+    150px 150px,
+    120px 120px,
+    auto,
+    auto!important;
+}
+
+.screen[data-screen="16"]::before{
+  display:none!important;
+}
+
+.screen[data-screen="16"]
+.thankyou-screen{
+  width:100%!important;
+  height:100%!important;
+  min-height:100%!important;
+
+  display:flex!important;
+  flex-direction:column!important;
+
+  align-items:center!important;
+  justify-content:center!important;
+
+  text-align:center!important;
+
+  padding:
+    40px!important;
+
+  color:#fff!important;
+}
+
+.screen[data-screen="16"]
+.stage-label{
+  color:
+    #f7d77e!important;
+
+  background:
+    rgba(255,255,255,.10)!important;
+
+  border:
+    1px solid
+    rgba(255,255,255,.20)!important;
+
+  padding:
+    8px
+    13px!important;
+}
+
+.screen[data-screen="16"]
+h1{
+  color:#fff!important;
+
+  font-size:
+    clamp(72px,8vw,110px)!important;
+
+  margin:
+    18px
+    0
+    18px!important;
+
+  text-shadow:
+    0 8px 28px
+    rgba(0,0,0,.22)!important;
+}
+
+.screen[data-screen="16"]
+.thankyou-sub{
+  color:#fff!important;
+
+  font-size:
+    clamp(26px,2.7vw,38px)!important;
+}
+
+.screen[data-screen="16"]
+.thankyou-line{
+  width:190px!important;
+  height:6px!important;
+
+  background:
+    var(--u11-gold)!important;
+
+  margin:
+    19px
+    0!important;
+}
+
+.screen[data-screen="16"]
+.thankyou-note{
+  color:
+    #f7d77e!important;
+
+  font-size:
+    clamp(23px,2.2vw,32px)!important;
+}
+
+
+/* =========================================================
+   TEACHER MODAL
+   ========================================================= */
+
+.u11-modal{
+  position:fixed;
+  inset:0;
+
+  z-index:100;
+
+  display:none;
+
+  align-items:center;
+  justify-content:center;
+
+  background:
+    rgba(8,25,21,.68);
+
+  padding:20px;
+}
+
+.u11-modal.show{
+  display:flex;
+}
+
+.u11-modal-box{
+  position:relative;
+
+  width:
+    min(760px,94vw);
+
+  max-height:
+    86dvh;
+
+  overflow:auto;
+
+  padding:
+    26px;
+
+  border-radius:22px;
+
+  background:#fff;
+
+  box-shadow:
+    0 30px 80px
+    rgba(0,0,0,.28);
+}
+
+.u11-modal-close{
+  position:absolute;
+
+  right:14px;
+  top:12px;
+
+  width:40px;
+  height:40px;
+  min-height:40px;
+
+  display:grid;
+  place-items:center;
+
+  border:0;
+
+  border-radius:999px;
+
+  background:#eef4f1;
+
+  color:
+    var(--u11-green);
+
+  font-size:27px;
+}
+
+.u11-modal-kicker{
+  color:
+    var(--u11-green2);
+
+  font-size:12px;
+
+  font-weight:900;
+
+  letter-spacing:.12em;
+}
+
+.u11-modal-title{
+  color:
+    var(--u11-green)!important;
+
+  font-size:32px!important;
+
+  margin:
+    6px
+    0
+    20px!important;
+}
+
+.u11-global-timer{
+  text-align:center;
+
+  font-size:
+    clamp(66px,10vw,110px);
+
+  line-height:1;
+
+  font-weight:950;
+
+  color:
+    var(--u11-green);
+
+  margin:
+    25px
+    0;
+}
+
+.u11-timer-presets,
+.u11-timer-controls{
+  display:flex;
+  justify-content:center;
+
+  gap:9px;
+
+  flex-wrap:wrap;
+
+  margin-top:12px;
+}
+
+.u11-timer-presets button,
+.u11-timer-controls button{
+  min-height:44px;
+
+  padding:
+    9px
+    15px;
+
+  border:
+    1px solid
+    var(--u11-line);
+
+  border-radius:11px;
+
+  background:#fff;
+
+  color:
+    var(--u11-green);
+
+  font-weight:850;
+}
+
+.u11-timer-controls button:first-child{
+  background:
+    var(--u11-green);
+
+  color:#fff;
+}
+
+.u11-response-list{
+  display:grid;
+  gap:10px;
+}
+
+.u11-response-card{
+  padding:
+    13px
+    15px;
+
+  border:
+    1px solid
+    var(--u11-line);
+
+  border-radius:13px;
+
+  background:#f8fbfa;
+}
+
+.u11-response-card strong{
+  display:block;
+
+  margin-bottom:5px;
+
+  color:
+    var(--u11-green);
+}
+
+.u11-empty-response{
+  padding:24px;
+
+  text-align:center;
+
+  color:
+    var(--u11-muted);
+
+  background:#f8fbfa;
+
+  border-radius:14px;
+}
+
+
+/* =========================================================
+   PRESENTATION MODE
+   ========================================================= */
+
+body.presentation .app{
+  grid-template-rows:
+    minmax(0,1fr)!important;
+}
+
+body.presentation .topbar{
+  display:none!important;
+}
+
+body.presentation main{
+  height:100dvh!important;
+
+  padding:
+    8px
+    10px
+    68px!important;
+}
+
+body.presentation
+.screen.active{
+  border-radius:20px!important;
+}
+
+body.presentation .footer{
+  position:fixed!important;
+
+  left:50%!important;
+  bottom:12px!important;
+
+  transform:
+    translateX(-50%)!important;
+
+  z-index:50!important;
+
+  width:auto!important;
+  min-width:370px!important;
+
+  height:auto!important;
+  min-height:48px!important;
+
+  gap:18px!important;
+
+  justify-content:center!important;
+
+  padding:
+    6px
+    10px!important;
+
+  border:
+    1px solid
+    rgba(180,205,196,.9)!important;
+
+  border-radius:16px!important;
+
+  background:
+    rgba(255,255,255,.84)!important;
+
+  box-shadow:
+    0 10px 30px
+    rgba(18,63,58,.16)!important;
+
+  backdrop-filter:
+    blur(10px)!important;
+}
+
+
+/* =========================================================
+   SHORT LAPTOP / EMBEDDED HOST
+   Keep media large.
+   ========================================================= */
+
+@media
+  (min-width:1100px)
+  and
+  (max-height:820px){
+
+  .app{
+    grid-template-rows:
+      58px
+      minmax(0,1fr)
+      48px!important;
+  }
+
+  .topbar{
+    height:58px!important;
+    min-height:58px!important;
+  }
+
+  .footer{
+    height:48px!important;
+    min-height:48px!important;
+  }
+
+  main{
+    padding:
+      7px
+      11px!important;
+  }
+
+  .screen,
+  .screen.active{
+    padding:
+      11px
+      24px
+      8px!important;
+  }
+
+  h1{
+    font-size:
+      43px!important;
+  }
+
+  h2{
+    font-size:
+      32px!important;
+  }
+
+  .instruction{
+    font-size:
+      19px!important;
+
+    margin-bottom:
+      7px!important;
+  }
+
+  .hero-img{
+    height:
+      clamp(
+        340px,
+        54dvh,
+        465px
+      )!important;
+  }
+
+  .media-layout video,
+  video{
+    height:
+      clamp(
+        350px,
+        54dvh,
+        475px
+      )!important;
+  }
+
+  .image-wrap>img,
+  .listening-layout>img{
+    height:
+      clamp(
+        335px,
+        53dvh,
+        465px
+      )!important;
+  }
+
+  .screen[data-screen="9"]
+  .ex7-step.ex7-active{
+    height:
+      calc(100% - 145px)!important;
+  }
+}
+
+
+/* =========================================================
+   TABLET LANDSCAPE
+   ========================================================= */
+
+@media
+  (min-width:768px)
+  and
+  (max-width:1099px){
+
+  html,
+  body{
+    overflow:auto!important;
+  }
+
+  .app{
+    height:auto!important;
+
+    min-height:100dvh!important;
+
+    grid-template-rows:
+      auto
+      1fr
+      auto!important;
+  }
+
+  .topbar{
+    min-height:60px!important;
+
+    height:auto!important;
+  }
+
+  main{
+    overflow:visible!important;
+
+    padding:
+      9px!important;
+  }
+
+  .screen,
+  .screen.active{
+    height:auto!important;
+
+    min-height:
+      calc(100dvh - 125px)!important;
+
+    overflow:visible!important;
+  }
+
+  .hero-grid,
+  .media-layout,
+  .photo-layout,
+  .listening-layout,
+  .advice-layout{
+    grid-template-columns:
+      1fr
+      1fr!important;
+  }
+
+  .hero-img,
+  .image-wrap>img,
+  .listening-layout>img,
+  video{
+    height:auto!important;
+    max-height:none!important;
+  }
+
+  .footer{
+    position:sticky!important;
+    bottom:0!important;
+
+    z-index:30!important;
+  }
+}
+
+
+/* =========================================================
+   PHONE / TABLET PORTRAIT
+   ========================================================= */
+
+@media (max-width:767px){
+
+  html,
+  body{
+    overflow:auto!important;
+  }
+
+  .app{
+    height:auto!important;
+
+    min-height:100dvh!important;
+
+    grid-template-rows:
+      auto
+      1fr
+      auto!important;
+  }
+
+  .topbar{
+    min-height:56px!important;
+
+    height:auto!important;
+
+    padding:
+      7px
+      10px!important;
+  }
+
+  .course-title{
+    font-size:17px!important;
+  }
+
+  .u11-teacher-tools{
+    gap:4px;
+  }
+
+  .u11-tool-btn{
+    min-height:36px!important;
+
+    padding:
+      6px
+      8px!important;
+
+    font-size:12px!important;
+  }
+
+  .review-badge{
+    display:none!important;
+  }
+
+  main{
+    overflow:visible!important;
+
+    padding:
+      7px!important;
+  }
+
+  .screen,
+  .screen.active{
+    height:auto!important;
+
+    min-height:
+      calc(100dvh - 116px)!important;
+
+    padding:
+      14px
+      12px
+      76px!important;
+
+    overflow:visible!important;
+  }
+
+  h1{
+    font-size:34px!important;
+  }
+
+  h2{
+    font-size:28px!important;
+  }
+
+  .instruction{
+    font-size:18px!important;
+  }
+
+  .hero-grid,
+  .media-layout,
+  .photo-layout,
+  .listening-layout,
+  .advice-layout,
+  .exercise7,
+  .matching-board,
+  .candidate-grid,
+  .layer-grid{
+    grid-template-columns:
+      1fr!important;
+  }
+
+  .hero-img,
+  .image-wrap>img,
+  .listening-layout>img,
+  video{
+    width:100%!important;
+
+    height:auto!important;
+
+    max-height:none!important;
+  }
+
+  .screen[data-screen="9"]{
+    overflow:visible!important;
+  }
+
+  .screen[data-screen="9"]
+  .ex7-step.ex7-active{
+    height:auto!important;
+
+    overflow:visible!important;
+  }
+
+  .screen[data-screen="9"]
+  .candidate-grid{
+    grid-template-columns:
+      1fr!important;
+  }
+
+  .screen[data-screen="9"]
+  .matching-board{
+    grid-template-columns:
+      1fr!important;
+  }
+
+  .footer{
+    position:sticky!important;
+
+    bottom:0!important;
+
+    z-index:30!important;
+
+    height:auto!important;
+
+    min-height:58px!important;
+
+    padding:
+      6px
+      8px!important;
+  }
+
+  .progress{
+    width:80px!important;
+  }
+}
+
+/* =========================================================
+   E-LEAP U1.1 CONTROL ALIGNMENT v2.0
+   Match U1.2 Golden Reference controls
+   ========================================================= */
+
+
+/* HEADER */
+
+.u11-header-right{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.u11-modes{
+  display:flex;
+  gap:5px;
+}
+
+.u11-modes button{
+  min-height:36px!important;
+  padding:7px 10px!important;
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--green);
+  border-radius:10px;
+  font-size:13px;
+  font-weight:800;
+}
+
+.u11-modes button.active{
+  background:var(--green)!important;
+  color:#fff!important;
+  border-color:var(--green)!important;
+}
+
+.u11-teacher-tools{
+  display:flex;
+  gap:6px;
+  align-items:center;
+}
+
+.u11-teacher-tools button{
+  min-height:38px!important;
+  padding:7px 10px!important;
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--green);
+  border-radius:10px;
+  font-size:14px;
+  font-weight:800;
+}
+
+
+/* STUDENT MODE */
+
+body.u11-student .u11-teacher-tools{
+  display:none!important;
+}
+
+
+/* TEACHER MODE */
+
+body.u11-teacher .u11-teacher-tools{
+  display:flex!important;
+}
+
+
+/* PRESENTATION */
+
+body.presentation .u11-teacher-tools{
+  display:flex!important;
+}
+
+body.presentation .u11-modes{
+  position:fixed;
+  top:10px;
+  left:10px;
+  z-index:80;
+  opacity:.75;
+}
+
+body.presentation .u11-modes:hover{
+  opacity:1;
+}
+
+
+/* MODAL */
+
+.u11-modal{
+  position:fixed;
+  inset:0;
+  z-index:100;
+
+  display:none;
+  align-items:center;
+  justify-content:center;
+
+  padding:20px;
+
+  background:
+    rgba(11,29,24,.68);
+}
+
+.u11-modal.show{
+  display:flex;
+}
+
+.u11-modalbox{
+  position:relative;
+
+  width:min(760px,92vw);
+  max-height:82dvh;
+
+  overflow:auto;
+
+  padding:24px;
+
+  background:#fff;
+
+  border-radius:20px;
+
+  box-shadow:
+    0 25px 70px
+    rgba(0,0,0,.30);
+}
+
+.u11-close{
+  position:absolute;
+
+  right:14px;
+  top:12px;
+
+  width:40px;
+  height:40px;
+  min-height:40px!important;
+
+  display:grid;
+  place-items:center;
+
+  border:0;
+  border-radius:999px;
+
+  background:#edf4f1;
+
+  color:var(--green);
+
+  font-size:24px;
+}
+
+
+/* RESPONSES */
+
+.u11-tabs{
+  display:flex;
+  gap:8px;
+  margin:12px 0;
+}
+
+.u11-tabs button{
+  padding:8px 12px;
+  border:1px solid var(--line);
+  border-radius:9px;
+  background:#fff;
+  font-weight:800;
+}
+
+.u11-tabs button.active{
+  background:var(--green);
+  color:#fff;
+}
+
+.u11-response-card{
+  padding:12px;
+
+  margin:8px 0;
+
+  border:1px solid var(--line);
+  border-radius:12px;
+
+  background:#f9fbfa;
+
+  font-size:18px;
+}
+
+.u11-media-status{
+  font-size:14px;
+  color:var(--muted);
+}
+
+
+/* TIMER */
+
+.u11-timerbig{
+  margin:22px;
+
+  text-align:center;
+
+  font-size:72px;
+
+  font-weight:900;
+
+  color:var(--green);
+}
+
+.u11-timercontrols{
+  display:flex;
+
+  gap:10px;
+
+  justify-content:center;
+
+  flex-wrap:wrap;
+}
+
+.u11-timercontrols button{
+  min-height:44px;
+
+  padding:9px 14px;
+
+  border:1px solid var(--line);
+  border-radius:10px;
+
+  background:#fff;
+
+  color:var(--green);
+
+  font-weight:800;
+}
+
+
+/* LUCKY */
+
+.u11-lucky{
+  padding:35px;
+
+  text-align:center;
+
+  font-size:68px;
+
+  font-weight:900;
+
+  color:#e66f61;
+}
+
+
+/* =========================================================
+   SCREEN 9
+   ========================================================= */
+
+.ex7-step-tabs{
+  display:flex;
+
+  gap:8px;
+
+  margin:4px 0 12px;
+}
+
+.ex7-step-tab{
+  min-width:135px;
+
+  padding:8px 18px!important;
+
+  border:1px solid #b8cdc5;
+
+  border-radius:999px;
+
+  background:#fff;
+
+  color:var(--green);
+
+  font-weight:900;
+}
+
+.ex7-step-tab.active{
+  background:var(--green)!important;
+
+  color:#fff!important;
+
+  border-color:var(--green)!important;
+}
+
+.screen[data-screen="9"] .ex7-step{
+  display:none!important;
+}
+
+.screen[data-screen="9"] .ex7-step.ex7-active{
+  display:block!important;
+}
+
+
+/* =========================================================
+   ACTION BAR — CHECK / RESET
+   ========================================================= */
+
+.u11-actionbar{
+  position:sticky;
+
+  bottom:0;
+
+  z-index:20;
+
+  display:flex;
+
+  justify-content:flex-end;
+
+  gap:9px;
+
+  margin-top:12px;
+
+  padding:
+    18px
+    0
+    4px;
+
+  background:
+    linear-gradient(
+      180deg,
+      transparent,
+      #edf4f1 28%
+    );
+}
+
+.u11-actionbar button{
+  min-height:44px;
+
+  padding:9px 16px;
+
+  border:1px solid var(--line);
+
+  border-radius:11px;
+
+  background:#fff;
+
+  font-weight:850;
+}
+
+.u11-actionbar .u11-check{
+  border:2px solid var(--green);
+
+  color:var(--green);
+
+  font-size:17px;
+}
+
+.u11-answer-correct{
+  background:#e6f7ec!important;
+
+  border:
+    3px solid
+    #43a568!important;
+}
+
+.u11-answer-wrong{
+  background:#fff0ef!important;
+
+  border:
+    3px solid
+    #d8665f!important;
+}
+
+.u11-check-feedback{
+  margin:12px 0 0;
+
+  padding:
+    11px
+    16px;
+
+  border-radius:13px;
+
+  text-align:center;
+
+  font-size:20px;
+
+  font-weight:850;
+}
+
+.u11-check-feedback.good{
+  background:#e6f7ec;
+
+  color:#185d32;
+
+  border:
+    1px solid
+    #8bc9a1;
+}
+
+.u11-check-feedback.try{
+  background:#fff3ef;
+
+  color:#8b3b32;
+
+  border:
+    1px solid
+    #e2a19a;
+}
+
+
+/* =========================================================
+   HOMEWORK — ALIGN WITH U1.2
+   ========================================================= */
+
+.screen[data-screen="15"]
+.homework-card{
+  max-width:none!important;
+
+  display:grid;
+
+  grid-template-columns:
+    1fr;
+
+  gap:14px;
+
+  padding:22px!important;
+}
+
+.u11-homework-response{
+  display:grid;
+
+  gap:10px;
+
+  margin-top:4px;
+}
+
+.u11-homework-label{
+  font-size:21px;
+
+  font-weight:900;
+
+  color:var(--green);
+}
+
+.u11-homework-textarea{
+  width:100%;
+
+  min-height:190px;
+
+  padding:15px 16px;
+
+  border:
+    2px solid
+    #b9d4ca;
+
+  border-radius:15px;
+
+  background:#fff;
+
+  font:inherit;
+
+  font-size:21px;
+
+  line-height:1.45;
+
+  resize:vertical;
+}
+
+.u11-homework-textarea:focus{
+  outline:
+    3px solid
+    rgba(242,196,94,.38);
+
+  border-color:
+    #c99c3d;
+}
+
+.u11-homework-actions{
+  display:flex;
+
+  justify-content:flex-end;
+
+  gap:9px;
+
+  flex-wrap:wrap;
+}
+
+.u11-homework-actions button{
+  min-height:44px;
+
+  padding:9px 15px;
+
+  border:
+    1px solid
+    var(--line);
+
+  border-radius:11px;
+
+  background:#fff;
+
+  color:var(--green);
+
+  font-weight:850;
+}
+
+.u11-homework-submit{
+  background:var(--green)!important;
+
+  color:#fff!important;
+}
+
+.u11-homework-submit.submitted{
+  background:#477f72!important;
+}
+
+.u11-suggested-answer{
+  display:none;
+
+  margin-top:4px;
+
+  padding:
+    17px
+    19px;
+
+  border-left:
+    6px solid
+    var(--green2);
+
+  border-radius:12px;
+
+  background:
+    var(--sage2);
+
+  font-size:20px;
+
+  line-height:1.48;
+
+  color:#173a31;
+}
+
+.u11-suggested-answer.show{
+  display:block;
+}
+
+.u11-suggested-answer b{
+  color:var(--green);
+}
+
+
+/* MOBILE */
+
+@media(max-width:900px){
+
+  .u11-header-right{
+    width:100%;
+  }
+
+  .u11-teacher-tools{
+    flex-wrap:wrap;
+  }
+
+  .u11-homework-textarea{
+    min-height:160px;
+  }
+}
+
+/* =========================================================
+   E-LEAP U1.1 — FINAL CONTROL & INTERACTION STYLE v3.0
+   Works with ui-alignment.js v3.0
+   Golden Reference alignment with U1.2
+   ========================================================= */
+
+
+/* =========================================================
+   1. GLOBAL ANSWER / INPUT STANDARD
+   One typography and colour system across all 16 screens
+   ========================================================= */
+
+:root{
+  --u11-control-green:#123f3a;
+  --u11-control-green2:#1e6a5c;
+  --u11-control-mint:#e5f5ef;
+  --u11-control-cream:#fffdf8;
+  --u11-control-gold:#f2c45e;
+  --u11-control-coral:#e66f61;
+  --u11-control-line:#d6e3de;
+  --u11-control-ink:#173f38;
+  --u11-answer-green:#174f31;
+  --u11-answer-bg:#e5f5ec;
+  --u11-wrong:#8b302b;
+  --u11-wrong-bg:#fff0ef;
+}
+
+.u11-student-input,
+.u11-homework-textarea,
+.u11-speaker-input{
+  width:100%!important;
+  min-width:0!important;
+  min-height:48px!important;
+
+  border:2px solid #bfd3cc!important;
+  border-radius:11px!important;
+
+  padding:10px 13px!important;
+
+  background:#fff!important;
+
+  color:var(--u11-control-ink)!important;
+
+  font-family:
+    "Avenir Next",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif!important;
+
+  font-size:21px!important;
+  line-height:1.4!important;
+
+  font-weight:500!important;
+
+  box-shadow:none!important;
+}
+
+textarea.u11-student-input,
+.u11-homework-textarea{
+  min-height:110px!important;
+  resize:vertical!important;
+}
+
+.u11-student-input:focus,
+.u11-homework-textarea:focus,
+.u11-speaker-input:focus{
+  outline:3px solid rgba(242,196,94,.34)!important;
+  border-color:#b59038!important;
+}
+
+.u11-student-input::placeholder,
+.u11-homework-textarea::placeholder,
+.u11-speaker-input::placeholder{
+  color:#91a39d!important;
+  font-weight:400!important;
+}
+
+
+/* Correct / wrong answers */
+
+.u11-student-input.answer-correct,
+.u11-speaker-input.answer-correct{
+  background:#e6f7ec!important;
+  border:3px solid #43a568!important;
+  color:#185d32!important;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(67,165,104,.12)!important;
+}
+
+.u11-student-input.answer-wrong,
+.u11-speaker-input.answer-wrong{
+  background:#fff0ef!important;
+  border:3px solid #d8665f!important;
+  color:#8b2e29!important;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(216,102,95,.11)!important;
+}
+
+
+/* Teacher revealed answer */
+
+.u11-revealed-answer{
+  display:block!important;
+
+  margin-top:10px!important;
+
+  padding:10px 13px!important;
+
+  border:2px solid #8fc2aa!important;
+  border-radius:11px!important;
+
+  background:var(--u11-answer-bg)!important;
+
+  color:var(--u11-answer-green)!important;
+
+  font-family:
+    "Avenir Next",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif!important;
+
+  font-size:21px!important;
+  line-height:1.42!important;
+
+  font-weight:800!important;
+
+  text-align:left!important;
+
+  animation:u11AnswerIn .18s ease-out;
+}
+
+@keyframes u11AnswerIn{
+  from{
+    opacity:0;
+    transform:translateY(-5px);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.u11-reveal-target.u11-revealed{
+  border-color:#89bda8!important;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(67,165,104,.08)!important;
+}
+
+
+/* =========================================================
+   2. HEADER — MATCH U1.2
+   ========================================================= */
+
+.u11-header-right{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+
+  gap:12px!important;
+
+  margin-left:auto!important;
+}
+
+.u11-modes{
+  display:flex!important;
+  gap:5px!important;
+}
+
+.u11-modes button{
+  min-height:37px!important;
+
+  padding:7px 11px!important;
+
+  border:1px solid var(--u11-control-line)!important;
+  border-radius:10px!important;
+
+  background:#fff!important;
+
+  color:var(--u11-control-green)!important;
+
+  font-size:13px!important;
+  font-weight:800!important;
+}
+
+.u11-modes button.active{
+  background:var(--u11-control-green)!important;
+  color:#fff!important;
+
+  border-color:var(--u11-control-green)!important;
+}
+
+.u11-teacher-tools{
+  display:flex!important;
+
+  gap:6px!important;
+
+  align-items:center!important;
+}
+
+.u11-teacher-tools button{
+  min-height:38px!important;
+
+  padding:7px 10px!important;
+
+  border:1px solid var(--u11-control-line)!important;
+  border-radius:10px!important;
+
+  background:#fff!important;
+
+  color:var(--u11-control-green)!important;
+
+  font-size:14px!important;
+  font-weight:800!important;
+}
+
+.u11-teacher-tools button:hover{
+  background:var(--u11-control-green)!important;
+
+  color:#fff!important;
+
+  border-color:var(--u11-control-green)!important;
+}
+
+
+/* Student must not see Teacher tools */
+
+body.u11-student .u11-teacher-tools{
+  display:none!important;
+}
+
+
+/* Teacher sees full tools */
+
+body.u11-teacher .u11-teacher-tools{
+  display:flex!important;
+}
+
+
+/* =========================================================
+   3. MODAL — TIMER / RESPONSES / LUCKY
+   ========================================================= */
+
+.u11-modal{
+  position:fixed!important;
+  inset:0!important;
+
+  z-index:120!important;
+
+  display:none;
+
+  align-items:center!important;
+  justify-content:center!important;
+
+  padding:20px!important;
+
+  background:
+    rgba(11,29,24,.68)!important;
+}
+
+.u11-modal.show{
+  display:flex!important;
+}
+
+.u11-modalbox{
+  position:relative!important;
+
+  width:min(760px,92vw)!important;
+  max-height:84dvh!important;
+
+  overflow:auto!important;
+
+  padding:24px!important;
+
+  background:#fff!important;
+
+  border-radius:20px!important;
+
+  box-shadow:
+    0 25px 70px
+    rgba(0,0,0,.30)!important;
+}
+
+.u11-close{
+  position:absolute!important;
+
+  right:14px!important;
+  top:12px!important;
+
+  width:40px!important;
+  height:40px!important;
+  min-height:40px!important;
+
+  display:grid!important;
+  place-items:center!important;
+
+  border:0!important;
+  border-radius:999px!important;
+
+  background:#edf4f1!important;
+
+  color:var(--u11-control-green)!important;
+
+  font-size:25px!important;
+  line-height:1!important;
+}
+
+.u11-modalbox h2{
+  color:var(--u11-control-green)!important;
+
+  font-size:32px!important;
+
+  margin:3px 0 18px!important;
+}
+
+
+/* =========================================================
+   4. TIMER — TEACHER SELECTS DURATION FIRST
+   ========================================================= */
+
+.u11-timer-note{
+  text-align:center!important;
+
+  font-size:18px!important;
+
+  color:#5c6e68!important;
+}
+
+.u11-timerbig{
+  margin:23px!important;
+
+  text-align:center!important;
+
+  color:var(--u11-control-green)!important;
+
+  font-size:76px!important;
+  line-height:1!important;
+
+  font-weight:950!important;
+}
+
+.u11-timer-presets{
+  display:flex!important;
+
+  gap:8px!important;
+
+  justify-content:center!important;
+
+  flex-wrap:wrap!important;
+
+  margin-bottom:16px!important;
+}
+
+.u11-timer-presets button{
+  min-height:42px!important;
+
+  padding:8px 13px!important;
+
+  border:1px solid var(--u11-control-line)!important;
+  border-radius:10px!important;
+
+  background:#fff!important;
+
+  color:var(--u11-control-green)!important;
+
+  font-weight:850!important;
+}
+
+.u11-timer-presets button:hover{
+  background:var(--u11-control-mint)!important;
+}
+
+.u11-custom-time{
+  display:flex!important;
+
+  align-items:center!important;
+  justify-content:center!important;
+
+  gap:8px!important;
+
+  flex-wrap:wrap!important;
+
+  margin:10px 0 18px!important;
+}
+
+.u11-custom-time label{
+  font-size:16px!important;
+  font-weight:800!important;
+
+  color:var(--u11-control-green)!important;
+}
+
+.u11-custom-time input{
+  width:140px!important;
+  min-height:42px!important;
+
+  padding:8px 10px!important;
+
+  border:1px solid #b9cec6!important;
+  border-radius:9px!important;
+
+  font-size:17px!important;
+}
+
+.u11-custom-time button{
+  min-height:42px!important;
+
+  padding:8px 13px!important;
+
+  border:1px solid var(--u11-control-green2)!important;
+  border-radius:9px!important;
+
+  background:#fff!important;
+
+  color:var(--u11-control-green2)!important;
+
+  font-weight:800!important;
+}
+
+.u11-timercontrols{
+  display:flex!important;
+
+  gap:10px!important;
+
+  justify-content:center!important;
+}
+
+.u11-timercontrols button{
+  min-height:44px!important;
+
+  padding:9px 15px!important;
+
+  border:1px solid var(--u11-control-line)!important;
+  border-radius:10px!important;
+
+  background:#fff!important;
+
+  color:var(--u11-control-green)!important;
+
+  font-weight:850!important;
+}
+
+.u11-timercontrols #u11TStart:not(:disabled){
+  background:var(--u11-control-green)!important;
+  color:#fff!important;
+}
+
+.u11-timercontrols button:disabled{
+  opacity:.45!important;
+  cursor:not-allowed!important;
+}
+
+
+/* =========================================================
+   5. RESPONSES
+   ========================================================= */
+
+.u11-tabs{
+  display:flex!important;
+
+  gap:8px!important;
+
+  margin:12px 0!important;
+}
+
+.u11-tabs button{
+  min-height:38px!important;
+
+  padding:7px 12px!important;
+
+  border:1px solid var(--u11-control-line)!important;
+  border-radius:9px!important;
+
+  background:#fff!important;
+
+  font-weight:800!important;
+}
+
+.u11-tabs button.active{
+  background:var(--u11-control-green)!important;
+  color:#fff!important;
+}
+
+.u11-response-card{
+  margin:8px 0!important;
+
+  padding:12px 14px!important;
+
+  border:1px solid var(--u11-control-line)!important;
+  border-radius:12px!important;
+
+  background:#f8fbfa!important;
+
+  color:var(--u11-control-ink)!important;
+
+  font-size:18px!important;
+  line-height:1.4!important;
+}
+
+
+/* =========================================================
+   6. LUCKY NUMBER
+   ========================================================= */
+
+.u11-lucky{
+  padding:34px!important;
+
+  text-align:center!important;
+
+  color:var(--u11-control-coral)!important;
+
+  font-size:72px!important;
+
+  font-weight:950!important;
+}
+
+
+/* =========================================================
+   7. ACTION BAR — CHECK / RESET
+   ========================================================= */
+
+.u11-actionbar{
+  position:sticky!important;
+
+  bottom:0!important;
+
+  z-index:35!important;
+
+  display:flex!important;
+
+  justify-content:flex-end!important;
+
+  gap:9px!important;
+
+  margin-top:12px!important;
+
+  padding:
+    17px
+    0
+    4px!important;
+
+  background:
+    linear-gradient(
+      180deg,
+      transparent,
+      rgba(237,244,241,.97)
+      30%
+    )!important;
+}
+
+.u11-actionbar button{
+  min-height:43px!important;
+
+  padding:8px 15px!important;
+
+  border:1px solid var(--u11-control-line)!important;
+  border-radius:11px!important;
+
+  background:#fff!important;
+
+  color:var(--u11-control-green)!important;
+
+  font-size:16px!important;
+
+  font-weight:850!important;
+}
+
+.u11-actionbar .u11-check{
+  border:2px solid var(--u11-control-green2)!important;
+
+  color:var(--u11-control-green2)!important;
+}
+
+.u11-actionbar .u11-check.reveal-on{
+  background:var(--u11-control-green2)!important;
+
+  color:#fff!important;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(30,106,92,.12)!important;
+}
+
+
+/* =========================================================
+   8. REVEAL MODE VISUAL CUE
+   ========================================================= */
+
+body.u11-reveal-mode
+[data-u11-answer]{
+  cursor:pointer!important;
+
+  outline:
+    2px dashed
+    rgba(30,106,92,.25)!important;
+
+  outline-offset:3px!important;
+}
+
+body.u11-reveal-mode
+[data-u11-answer]:hover{
+  box-shadow:
+    0 0 0 4px
+    rgba(30,106,92,.10)!important;
+}
+
+
+/* =========================================================
+   9. FEEDBACK TOAST
+   ========================================================= */
+
+.u11-toast{
+  position:sticky!important;
+
+  bottom:56px!important;
+
+  z-index:55!important;
+
+  width:max-content!important;
+  max-width:90%!important;
+
+  margin:
+    12px
+    auto
+    0!important;
+
+  padding:
+    10px
+    17px!important;
+
+  border-radius:13px!important;
+
+  font-size:18px!important;
+
+  font-weight:850!important;
+
+  text-align:center!important;
+}
+
+.u11-toast.good{
+  background:#e6f7ec!important;
+
+  color:#185d32!important;
+
+  border:1px solid #8bc9a1!important;
+}
+
+.u11-toast.try{
+  background:#fff3ef!important;
+
+  color:#8b3b32!important;
+
+  border:1px solid #e2a19a!important;
+}
+
+
+/* =========================================================
+   10. RECORDING
+   ========================================================= */
+
+.u11-record{
+  display:flex!important;
+
+  align-items:center!important;
+
+  gap:8px!important;
+
+  flex-wrap:wrap!important;
+
+  margin-top:9px!important;
+}
+
+.u11-record button{
+  min-height:40px!important;
+
+  padding:7px 11px!important;
+
+  border:1px solid #b9cec6!important;
+  border-radius:9px!important;
+
+  background:#fff!important;
+
+  color:var(--u11-control-green)!important;
+
+  font-size:14px!important;
+  font-weight:850!important;
+}
+
+.u11-record-start{
+  border-color:#c96a63!important;
+
+  color:#9c3833!important;
+}
+
+.u11-record-stop:not(:disabled){
+  background:#fbeeed!important;
+
+  border-color:#c96a63!important;
+
+  color:#8b302b!important;
+}
+
+.u11-record-status{
+  font-size:14px!important;
+
+  color:#60706c!important;
+
+  font-weight:700!important;
+}
+
+.u11-record-playback{
+  width:100%!important;
+
+  margin-top:5px!important;
+}
+
+
+/* =========================================================
+   11. SLIDE 1–2 OPEN RESPONSE
+   ========================================================= */
+
+.u11-open-response{
+  display:grid!important;
+
+  gap:8px!important;
+
+  margin-top:12px!important;
+}
+
+.screen[data-screen="2"]
+.question-card{
+  padding-bottom:14px!important;
+}
+
+.screen[data-screen="2"]
+textarea.u11-student-input{
+  min-height:72px!important;
+}
+
+
+/* =========================================================
+   12. SLIDE 3 — CUMULATIVE REVEAL CARDS
+   ========================================================= */
+
+.screen[data-screen="3"]
+.layer-card{
+  position:relative!important;
+
+  overflow:visible!important;
+}
+
+.screen[data-screen="3"]
+.layer-card .u11-revealed-answer{
+  font-size:18px!important;
+
+  font-weight:700!important;
+}
+
+
+/* =========================================================
+   13. SLIDE 4 — EXTRA VOCAB + MINI TASK
+   ========================================================= */
+
+.u11-vocab-extra{
+  margin-top:12px!important;
+
+  padding:14px!important;
+
+  border:1px solid #cbded6!important;
+  border-radius:12px!important;
+
+  background:#fff!important;
+}
+
+.u11-vocab-extra label{
+  display:block!important;
+
+  margin-bottom:8px!important;
+
+  color:var(--u11-control-green)!important;
+
+  font-size:18px!important;
+
+  font-weight:850!important;
+}
+
+.u11-vocab-extra input{
+  width:100%!important;
+
+  min-height:46px!important;
+}
+
+.u11-mini-response{
+  margin-top:10px!important;
+
+  padding:14px!important;
+
+  border:1px solid #cbded6!important;
+  border-radius:12px!important;
+
+  background:#fff!important;
+}
+
+.u11-mini-response textarea{
+  min-height:90px!important;
+}
+
+
+/* =========================================================
+   14. SLIDE 5 — PHOTO TASK
+   ========================================================= */
+
+.screen[data-screen="5"]
+.support-box .u11-open-response{
+  margin-top:15px!important;
+}
+
+/* Hotspot answer opens as a readable tooltip */
+
+.screen[data-screen="5"]
+.hotspot{
+  overflow:visible!important;
+}
+
+.screen[data-screen="5"]
+.hotspot .u11-revealed-answer{
+  position:absolute!important;
+
+  left:0!important;
+  top:calc(100% + 7px)!important;
+
+  z-index:80!important;
+
+  width:230px!important;
+
+  margin:0!important;
+
+  font-size:16px!important;
+
+  line-height:1.3!important;
+
+  white-space:normal!important;
+}
+
+
+/* =========================================================
+   15. SLIDE 6 — SPEAKER INPUT
+   ========================================================= */
+
+.screen[data-screen="6"]
+.speaker-match>div{
+  display:grid!important;
+
+  grid-template-columns:
+    110px
+    minmax(0,1fr)!important;
+
+  gap:8px!important;
+
+  align-items:center!important;
+}
+
+.screen[data-screen="6"]
+.speaker-match>div
+.u11-revealed-answer{
+  grid-column:1/-1!important;
+}
+
+.u11-speaker-input{
+  min-height:42px!important;
+
+  font-size:18px!important;
+}
+
+
+/* =========================================================
+   16. SLIDE 7 — PHRASAL VERB MEANING GRID
+   ========================================================= */
+
+.u11-phrasal-grid{
+  display:grid!important;
+
+  grid-template-columns:
+    1fr
+    1fr!important;
+
+  gap:10px!important;
+
+  margin-top:14px!important;
+}
+
+.u11-phrasal-row{
+  padding:12px 13px!important;
+
+  border:1px solid #d2e0db!important;
+  border-radius:12px!important;
+
+  background:#fff!important;
+}
+
+.u11-phrasal-row>b{
+  display:block!important;
+
+  margin-bottom:7px!important;
+
+  color:var(--u11-control-green2)!important;
+
+  font-size:20px!important;
+}
+
+.u11-phrasal-row
+.u11-student-input{
+  min-height:44px!important;
+
+  font-size:18px!important;
+}
+
+
+/* =========================================================
+   17. SLIDE 8 — GUIDED DISCOVERY
+   ========================================================= */
+
+.screen[data-screen="8"]
+.discovery-card{
+  min-height:92px!important;
+}
+
+.screen[data-screen="8"]
+.discovery-card.u11-revealed{
+  background:#fff!important;
+
+  color:#17332a!important;
+}
+
+
+/* =========================================================
+   18. SLIDE 9 — STEP 1 / STEP 2
+   ========================================================= */
+
+.ex7-step-tabs{
+  display:flex!important;
+
+  gap:8px!important;
+
+  margin:
+    5px
+    0
+    12px!important;
+}
+
+.ex7-step-tab{
+  min-width:135px!important;
+  min-height:42px!important;
+
+  padding:
+    8px
+    18px!important;
+
+  border:1px solid #b8cdc5!important;
+  border-radius:999px!important;
+
+  background:#fff!important;
+
+  color:var(--u11-control-green)!important;
+
+  font-size:16px!important;
+
+  font-weight:900!important;
+}
+
+.ex7-step-tab.active{
+  background:var(--u11-control-green)!important;
+
+  color:#fff!important;
+
+  border-color:var(--u11-control-green)!important;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(30,106,92,.10)!important;
+}
+
+.screen[data-screen="9"]
+.ex7-step{
+  display:none!important;
+}
+
+.screen[data-screen="9"]
+.ex7-step.ex7-active{
+  display:block!important;
+}
+
+.screen[data-screen="9"]
+.candidate-item.u11-answer-correct{
+  background:#e6f7ec!important;
+
+  border:3px solid #43a568!important;
+}
+
+.screen[data-screen="9"]
+.candidate-item.u11-answer-wrong{
+  background:#fff0ef!important;
+
+  border:3px solid #d8665f!important;
+}
+
+
+/* =========================================================
+   19. SLIDE 12 — SPEAKING RECORD
+   ========================================================= */
+
+.u11-speaking-response{
+  margin-top:12px!important;
+
+  padding:14px!important;
+
+  border:1px solid #cbded6!important;
+  border-radius:13px!important;
+
+  background:#fff!important;
+}
+
+.u11-speaking-response
+textarea{
+  min-height:80px!important;
+}
+
+
+/* =========================================================
+   20. SLIDE 13 — 4 CHALLENGE ROWS
+   ========================================================= */
+
+.screen[data-screen="13"]
+.challenge-grid{
+  display:grid!important;
+
+  grid-template-columns:
+    minmax(0,1fr)
+    minmax(300px,.72fr)!important;
+
+  gap:10px!important;
+
+  align-items:stretch!important;
+}
+
+.screen[data-screen="13"]
+.challenge-card{
+  min-height:92px!important;
+
+  padding:13px 15px!important;
+
+  font-size:20px!important;
+}
+
+.screen[data-screen="13"]
+.u11-challenge-input{
+  width:100%!important;
+
+  min-height:92px!important;
+
+  align-self:stretch!important;
+}
+
+.screen[data-screen="13"]
+.challenge-card
+.u11-revealed-answer{
+  font-size:19px!important;
+}
+
+
+/* =========================================================
+   21. SLIDE 14 — EXIT TICKET CHECK + ANSWERS
+   ========================================================= */
+
+.screen[data-screen="14"]
+.exit-grid>div{
+  min-width:0!important;
+
+  position:relative!important;
+}
+
+.screen[data-screen="14"]
+.exit-grid textarea{
+  min-height:120px!important;
+
+  font-family:
+    "Avenir Next",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif!important;
+
+  font-size:20px!important;
+
+  line-height:1.4!important;
+}
+
+.screen[data-screen="14"]
+.u11-revealed-answer{
+  font-size:19px!important;
+}
+
+
+/* =========================================================
+   22. SLIDE 15 — HOMEWORK
+   ========================================================= */
+
+.screen[data-screen="15"]
+.homework-card{
+  max-width:none!important;
+
+  width:100%!important;
+
+  display:grid!important;
+
+  grid-template-columns:1fr!important;
+
+  gap:14px!important;
+
+  padding:20px!important;
+}
+
+.u11-homework-response{
+  display:grid!important;
+
+  gap:10px!important;
+
+  margin-top:4px!important;
+}
+
+.u11-homework-label{
+  color:var(--u11-control-green)!important;
+
+  font-size:21px!important;
+
+  font-weight:900!important;
+}
+
+.u11-homework-textarea{
+  min-height:180px!important;
+
+  font-size:21px!important;
+}
+
+.u11-homework-actions{
+  display:flex!important;
+
+  justify-content:flex-end!important;
+
+  gap:9px!important;
+
+  flex-wrap:wrap!important;
+}
+
+.u11-homework-actions button{
+  min-height:43px!important;
+
+  padding:8px 14px!important;
+
+  border:1px solid var(--u11-control-line)!important;
+  border-radius:10px!important;
+
+  background:#fff!important;
+
+  color:var(--u11-control-green)!important;
+
+  font-size:16px!important;
+
+  font-weight:850!important;
+}
+
+.u11-homework-submit{
+  background:var(--u11-control-green)!important;
+
+  color:#fff!important;
+}
+
+.u11-homework-submit.submitted{
+  background:#477f72!important;
+}
+
+.u11-suggested-answer{
+  display:none!important;
+
+  margin-top:5px!important;
+
+  padding:17px 19px!important;
+
+  border-left:
+    6px solid
+    var(--u11-control-green2)!important;
+
+  border-radius:12px!important;
+
+  background:
+    var(--u11-control-mint)!important;
+
+  color:var(--u11-answer-green)!important;
+
+  font-family:
+    "Avenir Next",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif!important;
+
+  font-size:20px!important;
+  line-height:1.5!important;
+
+  font-weight:600!important;
+}
+
+.u11-suggested-answer.show{
+  display:block!important;
+}
+
+.u11-suggested-answer b{
+  color:var(--u11-answer-green)!important;
+
+  font-weight:900!important;
+}
+
+
+/* =========================================================
+   23. PRESENTATION
+   ========================================================= */
+
+body.presentation
+.u11-header-right{
+  display:block!important;
+}
+
+body.presentation
+.u11-teacher-tools{
+  position:fixed!important;
+
+  right:18px!important;
+  top:12px!important;
+
+  z-index:90!important;
+
+  display:flex!important;
+
+  padding:6px!important;
+
+  border:1px solid #c8dad4!important;
+  border-radius:13px!important;
+
+  background:
+    rgba(255,255,255,.92)!important;
+
+  box-shadow:
+    0 8px 24px
+    rgba(18,63,58,.12)!important;
+}
+
+body.presentation
+.u11-modes{
+  position:fixed!important;
+
+  left:16px!important;
+  top:12px!important;
+
+  z-index:90!important;
+
+  display:flex!important;
+
+  padding:5px!important;
+
+  border-radius:12px!important;
+
+  background:
+    rgba(255,255,255,.90)!important;
+}
+
+
+/* =========================================================
+   24. TABLET
+   ========================================================= */
+
+@media(max-width:1000px){
+
+  .u11-header-right{
+    gap:7px!important;
+  }
+
+  .u11-teacher-tools{
+    flex-wrap:wrap!important;
+  }
+
+  .u11-modes button,
+  .u11-teacher-tools button{
+    font-size:12px!important;
+
+    padding:6px 8px!important;
+  }
+
+  .u11-phrasal-grid{
+    grid-template-columns:1fr!important;
+  }
+
+  .screen[data-screen="13"]
+  .challenge-grid{
+    grid-template-columns:1fr!important;
+  }
+
+  .screen[data-screen="13"]
+  .u11-challenge-input{
+    min-height:60px!important;
+  }
+}
+
+
+/* =========================================================
+   25. PHONE
+   ========================================================= */
+
+@media(max-width:700px){
+
+  .u11-header-right{
+    width:100%!important;
+
+    display:block!important;
+  }
+
+  .u11-modes{
+    margin-bottom:5px!important;
+  }
+
+  .u11-teacher-tools{
+    display:flex!important;
+
+    gap:4px!important;
+  }
+
+  body.u11-student
+  .u11-teacher-tools{
+    display:none!important;
+  }
+
+  .u11-teacher-tools button{
+    flex:1 1 auto!important;
+  }
+
+  .u11-timerbig{
+    font-size:58px!important;
+  }
+
+  .u11-custom-time{
+    display:grid!important;
+
+    grid-template-columns:
+      1fr!important;
+  }
+
+  .u11-custom-time input{
+    width:100%!important;
+  }
+
+  .u11-timercontrols{
+    flex-wrap:wrap!important;
+  }
+
+  .screen[data-screen="6"]
+  .speaker-match>div{
+    grid-template-columns:1fr!important;
+  }
+
+  .screen[data-screen="13"]
+  .challenge-grid{
+    grid-template-columns:1fr!important;
+  }
+
+  .u11-homework-textarea{
+    min-height:150px!important;
+  }
+}
+
+/* =========================================================
+   E-LEAP U1.1 — FINAL CORRECTION STYLE v4.0
+   ========================================================= */
+
+
+/* =========================================================
+   A. REMOVE THE PALE-GREEN BAR THAT COVERS THE SLIDE
+   ========================================================= */
+
+.u11-actionbar{
+  position:static!important;
+
+  width:auto!important;
+
+  margin:
+    8px
+    0
+    0!important;
+
+  padding:
+    4px
+    0!important;
+
+  background:
+    transparent!important;
+
+  justify-content:flex-end!important;
+
+  box-shadow:none!important;
+}
+
+.u11-toast,
+.u11-v4-toast{
+  position:relative!important;
+  bottom:auto!important;
+}
+
+
+/* =========================================================
+   B. STUDENT / TEACHER ROLE STANDARD
+   ========================================================= */
+
+body.u11-student
+.u11-teacher-tools{
+  display:none!important;
+}
+
+body.u11-teacher
+.u11-teacher-tools,
+body.presentation
+.u11-teacher-tools{
+  display:flex!important;
+}
+
+
+/* Student never sees legacy teacher-check buttons */
+
+body.u11-student
+.item-check,
+
+body.u11-student
+.hide-local,
+
+body.u11-student
+.reset-local{
+  display:none!important;
+}
+
+
+/* =========================================================
+   C. STANDARD INTERACTION INPUT
+   ========================================================= */
+
+.u11-v4-card-response{
+  grid-column:
+    1 / -1!important;
+
+  width:100%!important;
+
+  margin-top:
+    10px!important;
+}
+
+.u11-v4-input{
+  display:block!important;
+
+  width:100%!important;
+  min-width:0!important;
+
+  min-height:68px!important;
+
+  padding:
+    10px
+    12px!important;
+
+  border:
+    2px solid
+    #bfd3cc!important;
+
+  border-radius:
+    10px!important;
+
+  background:
+    #fff!important;
+
+  color:
+    #173f38!important;
+
+  font-family:
+    "Avenir Next",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif!important;
+
+  font-size:
+    19px!important;
+
+  line-height:
+    1.4!important;
+
+  resize:
+    vertical!important;
+}
+
+.u11-v4-input:focus{
+  outline:
+    3px solid
+    rgba(242,196,94,.34)!important;
+
+  border-color:
+    #aa8531!important;
+}
+
+
+/* =========================================================
+   D. SLIDE 3
+   ========================================================= */
+
+.screen[data-screen="3"]
+.layer-card{
+  overflow:
+    visible!important;
+
+  align-content:
+    start!important;
+}
+
+.screen[data-screen="3"]
+.u11-v4-card-response{
+  margin-top:
+    12px!important;
+}
+
+
+/* =========================================================
+   E. SLIDE 8
+   FIX THE NARROW VERTICAL ANSWER IN THE SCREENSHOT
+   ========================================================= */
+
+.screen[data-screen="8"]
+.discovery-stack{
+  min-width:0!important;
+}
+
+.screen[data-screen="8"]
+.discovery-card,
+
+.screen[data-screen="8"]
+.discovery-card.u11-revealed{
+
+  display:grid!important;
+
+  grid-template-columns:
+    38px
+    minmax(0,1fr)
+    auto!important;
+
+  width:100%!important;
+
+  min-width:0!important;
+
+  overflow:
+    visible!important;
+}
+
+.screen[data-screen="8"]
+.discovery-card
+.u11-revealed-answer,
+
+.screen[data-screen="8"]
+.discovery-card
+.u11-v4-answer{
+
+  grid-column:
+    1 / -1!important;
+
+  width:100%!important;
+
+  min-width:0!important;
+
+  white-space:
+    normal!important;
+
+  word-break:
+    normal!important;
+
+  overflow-wrap:
+    normal!important;
+
+  font-size:
+    21px!important;
+
+  line-height:
+    1.42!important;
+}
+
+
+/* Student typing area */
+
+.screen[data-screen="8"]
+.u11-v4-card-response{
+  grid-column:
+    1 / -1!important;
+}
+
+
+/* =========================================================
+   F. SLIDE 9 STEP 1
+   ========================================================= */
+
+.screen[data-screen="9"]
+.item-check{
+  display:none!important;
+}
+
+.screen[data-screen="9"]
+.candidate-item{
+
+  grid-template-columns:
+    minmax(0,1fr)!important;
+
+  overflow:
+    visible!important;
+}
+
+.screen[data-screen="9"]
+.candidate-item
+.u11-v4-answer{
+
+  margin-top:
+    8px!important;
+
+  padding:
+    8px
+    11px!important;
+
+  border-radius:
+    9px!important;
+
+  background:
+    #e5f5ec!important;
+
+  border:
+    2px solid
+    #76ae92!important;
+
+  color:
+    #174f31!important;
+
+  font-size:
+    18px!important;
+
+  font-weight:
+    900!important;
+}
+
+
+/* =========================================================
+   G. SLIDE 9 STEP 2
+   TEACHER ANSWER HIGHLIGHT
+   ========================================================= */
+
+.screen[data-screen="9"]
+.match-item.u11-v4-match-source{
+
+  background:
+    #fff4d9!important;
+
+  border:
+    3px solid
+    #d4a83d!important;
+
+  color:
+    #57400b!important;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(212,168,61,.12)!important;
+
+  font-weight:
+    900!important;
+}
+
+.screen[data-screen="9"]
+.definition-item.u11-v4-match-answer{
+
+  position:
+    relative!important;
+
+  background:
+    #dff5e7!important;
+
+  border:
+    3px solid
+    #43a568!important;
+
+  color:
+    #174f31!important;
+
+  font-size:
+    22px!important;
+
+  line-height:
+    1.32!important;
+
+  font-weight:
+    950!important;
+
+  box-shadow:
+    0 0 0 5px
+    rgba(67,165,104,.13)!important;
+
+  padding:
+    12px
+    90px
+    12px
+    14px!important;
+}
+
+.u11-v4-answer-label{
+
+  position:
+    absolute!important;
+
+  top:
+    50%!important;
+
+  right:
+    10px!important;
+
+  transform:
+    translateY(-50%)!important;
+
+  display:
+    inline-flex!important;
+
+  align-items:
+    center!important;
+
+  min-height:
+    28px!important;
+
+  padding:
+    4px
+    7px!important;
+
+  border-radius:
+    7px!important;
+
+  background:
+    #174f31!important;
+
+  color:
+    #fff!important;
+
+  font-size:
+    11px!important;
+
+  letter-spacing:
+    .04em!important;
+
+  font-weight:
+    950!important;
+}
+
+
+/* =========================================================
+   H. SLIDE 10–11
+   REAL STUDENT INPUTS INSTEAD OF CLICK-TO-REVEAL BUTTONS
+   ========================================================= */
+
+.u11-v4-inline-shell{
+
+  display:inline-flex!important;
+
+  flex-direction:
+    column!important;
+
+  vertical-align:
+    middle!important;
+
+  min-width:
+    185px!important;
+
+  margin:
+    2px
+    5px!important;
+}
+
+.u11-v4-inline-input{
+
+  width:
+    100%!important;
+
+  min-width:
+    175px!important;
+
+  min-height:
+    43px!important;
+
+  padding:
+    6px
+    9px!important;
+
+  border:
+    2px solid
+    #bfd3cc!important;
+
+  border-radius:
+    9px!important;
+
+  background:
+    #fff!important;
+
+  color:
+    #173f38!important;
+
+  font-family:
+    "Avenir Next",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif!important;
+
+  font-size:
+    19px!important;
+
+  font-weight:
+    700!important;
+}
+
+.u11-v4-inline-input:focus{
+
+  outline:
+    3px solid
+    rgba(242,196,94,.32)!important;
+
+  border-color:
+    #a98536!important;
+}
+
+
+/* Student feedback */
+
+.u11-v4-inline-input.u11-v4-correct{
+
+  background:
+    #e6f7ec!important;
+
+  border:
+    3px solid
+    #43a568!important;
+
+  color:
+    #185d32!important;
+}
+
+.u11-v4-inline-input.u11-v4-wrong{
+
+  background:
+    #fff0ef!important;
+
+  border:
+    3px solid
+    #d8665f!important;
+
+  color:
+    #8b302b!important;
+}
+
+
+/* Teacher cumulative reveal */
+
+.u11-v4-inline-shell
+.u11-revealed-answer,
+
+.u11-v4-inline-shell
+.u11-v4-answer{
+
+  width:
+    100%!important;
+
+  margin-top:
+    6px!important;
+
+  padding:
+    8px
+    10px!important;
+
+  border:
+    2px solid
+    #43a568!important;
+
+  border-radius:
+    8px!important;
+
+  background:
+    #e5f5ec!important;
+
+  color:
+    #174f31!important;
+
+  font-size:
+    20px!important;
+
+  line-height:
+    1.35!important;
+
+  font-weight:
+    900!important;
+}
+
+
+/* S10 layout remains readable */
+
+.screen[data-screen="10"]
+.gap-grid>div{
+
+  overflow:
+    visible!important;
+
+  align-content:
+    start!important;
+}
+
+
+/* S11 letter can expand naturally */
+
+.screen[data-screen="11"]
+.letter{
+
+  max-height:
+    calc(100dvh - 285px)!important;
+
+  overflow-y:
+    auto!important;
+
+  overflow-x:
+    visible!important;
+}
+
+
+/* =========================================================
+   I. SLIDE 12 TEACHER ANSWER
+   ========================================================= */
+
+.u11-v4-s12-answer{
+
+  display:none!important;
+
+  width:100%!important;
+
+  margin-top:
+    12px!important;
+
+  padding:
+    17px
+    20px!important;
+
+  border:
+    3px solid
+    #43a568!important;
+
+  border-radius:
+    14px!important;
+
+  background:
+    #e5f5ec!important;
+
+  color:
+    #174f31!important;
+
+  font-family:
+    "Avenir Next",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif!important;
+
+  font-size:
+    21px!important;
+
+  line-height:
+    1.48!important;
+
+  font-weight:
+    700!important;
+}
+
+.u11-v4-s12-answer.show{
+
+  display:block!important;
+}
+
+.u11-v4-s12-answer b{
+
+  color:
+    #0f5832!important;
+
+  font-weight:
+    950!important;
+}
+
+
+/* =========================================================
+   J. SLIDE 15
+   MODEL ANSWER IS TEACHER/PRESENTATION ONLY
+   ========================================================= */
+
+body.u11-student
+.screen[data-screen="15"]
+#u11SuggestedAnswer{
+
+  display:none!important;
+}
+
+body.u11-student
+.screen[data-screen="15"]
+#u11SuggestedPanel{
+
+  display:none!important;
+}
+
+
+/* Teacher and Presentation */
+
+body.u11-teacher
+.screen[data-screen="15"]
+#u11SuggestedAnswer,
+
+body.presentation
+.screen[data-screen="15"]
+#u11SuggestedAnswer{
+
+  display:inline-flex!important;
+}
+
+
+/* =========================================================
+   K. TOAST
+   ========================================================= */
+
+.u11-v4-toast{
+
+  width:
+    max-content!important;
+
+  max-width:
+    90%!important;
+
+  margin:
+    9px
+    auto
+    0!important;
+
+  padding:
+    9px
+    15px!important;
+
+  border-radius:
+    11px!important;
+
+  text-align:
+    center!important;
+
+  font-size:
+    17px!important;
+
+  font-weight:
+    850!important;
+}
+
+.u11-v4-toast.good{
+
+  background:
+    #e6f7ec!important;
+
+  border:
+    1px solid
+    #8bc9a1!important;
+
+  color:
+    #185d32!important;
+}
+
+.u11-v4-toast.try{
+
+  background:
+    #fff3ef!important;
+
+  border:
+    1px solid
+    #e2a19a!important;
+
+  color:
+    #8b3b32!important;
+}
+
+
+/* =========================================================
+   L. TEACHER REVEAL — GLOBAL VISUAL STANDARD
+   ========================================================= */
+
+.u11-v4-answer{
+
+  width:100%!important;
+
+  margin-top:
+    8px!important;
+
+  padding:
+    10px
+    13px!important;
+
+  border:
+    2px solid
+    #78b797!important;
+
+  border-radius:
+    10px!important;
+
+  background:
+    #e5f5ec!important;
+
+  color:
+    #174f31!important;
+
+  font-family:
+    "Avenir Next",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif!important;
+
+  font-size:
+    20px!important;
+
+  line-height:
+    1.42!important;
+
+  font-weight:
+    850!important;
+}
+
+
+/* =========================================================
+   M. MOBILE / TABLET
+   ========================================================= */
+
+@media(max-width:900px){
+
+  .u11-v4-inline-shell{
+    width:100%!important;
+
+    min-width:0!important;
+
+    margin:
+      6px
+      0!important;
+  }
+
+  .u11-v4-inline-input{
+    width:100%!important;
+
+    min-width:0!important;
+  }
+
+  .screen[data-screen="9"]
+  .matching-board{
+
+    grid-template-columns:
+      1fr!important;
+  }
+
+  .u11-v4-answer-label{
+
+    position:
+      static!important;
+
+    transform:
+      none!important;
+
+    width:
+      max-content!important;
+
+    margin-top:
+      8px!important;
+  }
+
+  .screen[data-screen="9"]
+  .definition-item.u11-v4-match-answer{
+
+    padding:
+      11px
+      13px!important;
+  }
+}
+
+/* =========================================================
+   E-LEAP U1.1 — S09 / S13 TEACHER REVEAL v5
+   ========================================================= */
+
+
+/* Check itself must never reveal the answer.
+   Only clicked activity cards reveal after mode is armed. */
+
+.v5-teacher-answer{
+  display:block!important;
+
+  width:100%!important;
+
+  margin-top:9px!important;
+
+  padding:
+    9px
+    12px!important;
+
+  border:
+    2px solid
+    #43a568!important;
+
+  border-radius:
+    9px!important;
+
+  background:
+    #e5f5ec!important;
+
+  color:
+    #174f31!important;
+
+  font-family:
+    "Avenir Next",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif!important;
+
+  font-size:
+    20px!important;
+
+  line-height:
+    1.35!important;
+
+  font-weight:
+    900!important;
+
+  text-align:
+    left!important;
+}
+
+
+/* =========================================================
+   S09 STEP 1
+   ========================================================= */
+
+.screen[data-screen="9"]
+.candidate-item.v5-revealed{
+
+  border:
+    2px solid
+    #8ebda7!important;
+
+  background:
+    #f7fcf9!important;
+}
+
+
+/* =========================================================
+   S09 STEP 2
+   ========================================================= */
+
+.screen[data-screen="9"]
+.match-item.v5-match-question{
+
+  background:
+    #fff3d6!important;
+
+  border:
+    3px solid
+    #d3a33b!important;
+
+  color:
+    #654807!important;
+
+  font-weight:
+    950!important;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(211,163,59,.12)!important;
+}
+
+.screen[data-screen="9"]
+.definition-item.v5-match-answer{
+
+  position:relative!important;
+
+  background:
+    #dff5e7!important;
+
+  border:
+    3px solid
+    #43a568!important;
+
+  color:
+    #174f31!important;
+
+  font-size:
+    22px!important;
+
+  line-height:
+    1.3!important;
+
+  font-weight:
+    950!important;
+
+  padding:
+    11px
+    92px
+    11px
+    13px!important;
+
+  box-shadow:
+    0 0 0 5px
+    rgba(67,165,104,.13)!important;
+}
+
+.v5-answer-tag{
+
+  position:absolute!important;
+
+  right:9px!important;
+  top:50%!important;
+
+  transform:
+    translateY(-50%)!important;
+
+  padding:
+    4px
+    7px!important;
+
+  border-radius:
+    7px!important;
+
+  background:
+    #174f31!important;
+
+  color:#fff!important;
+
+  font-size:
+    11px!important;
+
+  font-weight:
+    950!important;
+
+  letter-spacing:
+    .04em!important;
+}
+
+
+/* =========================================================
+   S13
+   ========================================================= */
+
+.screen[data-screen="13"]
+.challenge-card.v5-revealed{
+
+  background:
+    #f8fcfa!important;
+
+  border:
+    2px solid
+    #8ebda7!important;
+
+  color:
+    #17352d!important;
+
+  text-align:
+    left!important;
+}
+
+
+/* =========================================================
+   STUDENT ROLE
+   ========================================================= */
+
+body.u11-student
+.screen[data-screen="9"]
+.item-check{
+
+  display:none!important;
+}
+
+
+/* Action buttons must not cover slide */
+
+.u11-actionbar{
+
+  position:static!important;
+
+  background:
+    transparent!important;
+
+  padding:
+    5px
+    0!important;
+
+  margin-top:
+    8px!important;
+}
+
+/* =========================================================
+   E-LEAP U1.1 — FINAL INTERACTION CONTROLLER v6 STYLE
+   ========================================================= */
+
+
+/* =========================================================
+   COMMON ACTION BAR
+   Never cover lesson content
+   ========================================================= */
+
+.u11-actionbar{
+  position:static!important;
+
+  display:flex!important;
+
+  justify-content:flex-end!important;
+  align-items:center!important;
+
+  gap:9px!important;
+
+  width:100%!important;
+
+  margin:
+    9px
+    0
+    0!important;
+
+  padding:
+    5px
+    0!important;
+
+  background:
+    transparent!important;
+
+  box-shadow:
+    none!important;
+}
+
+.u11-actionbar button{
+  min-height:42px!important;
+
+  padding:
+    8px
+    15px!important;
+
+  border:
+    1px solid
+    #c3d3cd!important;
+
+  border-radius:
+    10px!important;
+
+  background:
+    #fff!important;
+
+  color:
+    #123f3a!important;
+
+  font-size:
+    16px!important;
+
+  font-weight:
+    850!important;
+}
+
+.u11-actionbar
+.u11-check{
+  border:
+    2px solid
+    #1e6a5c!important;
+
+  color:
+    #1e6a5c!important;
+}
+
+.u11-actionbar
+.final-check-on{
+  background:
+    #1e6a5c!important;
+
+  color:
+    #fff!important;
+}
+
+
+/* =========================================================
+   FEEDBACK MESSAGE
+   ========================================================= */
+
+.u11-final-message{
+  width:
+    max-content!important;
+
+  max-width:
+    94%!important;
+
+  margin:
+    8px
+    auto
+    0!important;
+
+  padding:
+    9px
+    16px!important;
+
+  border-radius:
+    11px!important;
+
+  font-family:
+    "Avenir Next",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif!important;
+
+  font-size:
+    18px!important;
+
+  line-height:
+    1.35!important;
+
+  font-weight:
+    850!important;
+
+  text-align:
+    center!important;
+}
+
+.u11-final-message.score{
+  border:
+    1px solid
+    #8bc9a1!important;
+
+  background:
+    #e6f7ec!important;
+
+  color:
+    #185d32!important;
+}
+
+.u11-final-message.teacher{
+  border:
+    1px solid
+    #80ad9d!important;
+
+  background:
+    #e8f3ee!important;
+
+  color:
+    #075c49!important;
+}
+
+.u11-final-message.warning{
+  border:
+    1px solid
+    #e2a19a!important;
+
+  background:
+    #fff3ef!important;
+
+  color:
+    #8b3b32!important;
+}
+
+
+/* =========================================================
+   SLIDE 9 — REMOVE ALL LEGACY PER-ITEM CHECK BUTTONS
+   ========================================================= */
+
+.screen[data-screen="9"]
+.item-check{
+  display:none!important;
+}
+
+
+/* =========================================================
+   S09 STEP 1
+   ========================================================= */
+
+.screen[data-screen="9"]
+.candidate-item{
+  position:relative!important;
+
+  display:grid!important;
+
+  grid-template-columns:
+    1fr!important;
+
+  align-items:start!important;
+
+  overflow:visible!important;
+}
+
+
+/* Teacher answer */
+
+.u11-final-item-answer{
+  display:block!important;
+
+  width:100%!important;
+
+  margin-top:
+    7px!important;
+
+  padding:
+    8px
+    11px!important;
+
+  border:
+    2px solid
+    #43a568!important;
+
+  border-radius:
+    9px!important;
+
+  background:
+    #e5f5ec!important;
+
+  color:
+    #174f31!important;
+
+  font-family:
+    "Avenir Next",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif!important;
+
+  font-size:
+    18px!important;
+
+  line-height:
+    1.3!important;
+
+  font-weight:
+    950!important;
+
+  text-align:
+    center!important;
+}
+
+.screen[data-screen="9"]
+.candidate-item.u11-final-revealed{
+  border:
+    2px solid
+    #8dbda7!important;
+
+  background:
+    #f8fcfa!important;
+}
+
+
+/* =========================================================
+   SLIDE 9 STEP 2 — THREE COLUMNS FOR STUDENT
+   ========================================================= */
+
+body.u11-student
+.screen[data-screen="9"]
+.matching-board{
+  display:grid!important;
+
+  grid-template-columns:
+    minmax(220px,.82fr)
+    minmax(0,1.35fr)
+    minmax(125px,.42fr)!important;
+
+  gap:
+    12px!important;
+
+  align-items:start!important;
+}
+
+
+/* Student should TYPE, not click-match */
+
+body.u11-student
+.screen[data-screen="9"]
+.match-item,
+
+body.u11-student
+.screen[data-screen="9"]
+.definition-item{
+  cursor:default!important;
+}
+
+
+/* Third column */
+
+.u11-s9-answer-col{
+  display:grid!important;
+
+  gap:7px!important;
+
+  align-content:start!important;
+}
+
+.u11-s9-answer-row{
+  min-height:47px!important;
+
+  display:grid!important;
+
+  grid-template-columns:
+    29px
+    minmax(0,1fr)!important;
+
+  gap:
+    6px!important;
+
+  align-items:center!important;
+
+  padding:
+    5px
+    6px!important;
+
+  border:
+    1px solid
+    #d5e0dc!important;
+
+  border-radius:
+    8px!important;
+
+  background:
+    #fff!important;
+}
+
+.u11-s9-letter{
+  color:
+    #6f315c!important;
+
+  font-size:
+    18px!important;
+
+  font-weight:
+    950!important;
+
+  text-align:
+    center!important;
+}
+
+.u11-s9-number{
+  width:100%!important;
+
+  min-width:0!important;
+
+  min-height:36px!important;
+
+  padding:
+    5px
+    7px!important;
+
+  border:
+    2px solid
+    #bcd0c8!important;
+
+  border-radius:
+    7px!important;
+
+  background:
+    #fff!important;
+
+  color:
+    #173f38!important;
+
+  font-family:
+    "Avenir Next",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif!important;
+
+  font-size:
+    18px!important;
+
+  font-weight:
+    800!important;
+
+  text-align:
+    center!important;
+}
+
+
+/* =========================================================
+   SLIDE 9 STEP 2 — TEACHER
+   ========================================================= */
+
+body.u11-teacher
+.screen[data-screen="9"]
+.u11-s9-answer-col,
+
+body.presentation
+.screen[data-screen="9"]
+.u11-s9-answer-col{
+  display:none!important;
+}
+
+
+/* Restore normal 2-column board */
+
+body.u11-teacher
+.screen[data-screen="9"]
+.matching-board,
+
+body.presentation
+.screen[data-screen="9"]
+.matching-board{
+  grid-template-columns:
+    minmax(260px,.85fr)
+    minmax(0,1.35fr)!important;
+}
+
+
+/* Selected/revealed verb */
+
+.screen[data-screen="9"]
+.match-item.u11-final-match-left{
+  border:
+    3px solid
+    #d4a73d!important;
+
+  background:
+    #fff3d6!important;
+
+  color:
+    #654807!important;
+
+  font-weight:
+    950!important;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(212,167,61,.12)!important;
+}
+
+
+/* Correct definition */
+
+.screen[data-screen="9"]
+.definition-item.u11-final-match-right{
+  border:
+    3px solid
+    #43a568!important;
+
+  background:
+    #dff5e7!important;
+
+  color:
+    #174f31!important;
+
+  font-size:
+    21px!important;
+
+  line-height:
+    1.32!important;
+
+  font-weight:
+    950!important;
+
+  box-shadow:
+    0 0 0 5px
+    rgba(67,165,104,.12)!important;
+}
+
+.u11-final-pair{
+  display:block!important;
+
+  margin-top:
+    7px!important;
+
+  padding:
+    6px
+    9px!important;
+
+  border-radius:
+    7px!important;
+
+  background:
+    #174f31!important;
+
+  color:
+    #fff!important;
+
+  font-size:
+    14px!important;
+
+  font-weight:
+    950!important;
+
+  letter-spacing:
+    .02em!important;
+}
+
+
+/* =========================================================
+   SLIDE 12
+   ========================================================= */
+
+/* Student:
+   Type + Record + Submit + Reset only */
+
+body.u11-student
+.screen[data-screen="12"]
+#u11Check{
+  display:none!important;
+}
+
+body.u11-student
+.screen[data-screen="12"]
+#u11Submit12{
+  display:inline-flex!important;
+}
+
+
+/* Teacher:
+   Check + Reset; Submit hidden */
+
+body.u11-teacher
+.screen[data-screen="12"]
+#u11Submit12,
+
+body.presentation
+.screen[data-screen="12"]
+#u11Submit12{
+  display:none!important;
+}
+
+body.u11-teacher
+.screen[data-screen="12"]
+#u11Check,
+
+body.presentation
+.screen[data-screen="12"]
+#u11Check{
+  display:inline-flex!important;
+}
+
+
+#u11Submit12{
+  border-color:
+    #123f3a!important;
+
+  background:
+    #123f3a!important;
+
+  color:
+    #fff!important;
+}
+
+#u11Submit12.submitted{
+  background:
+    #477f72!important;
+}
+
+
+/* Teacher suggested answer */
+
+.u11-final-s12-answer{
+  display:none!important;
+
+  width:100%!important;
+
+  margin-top:
+    12px!important;
+
+  padding:
+    16px
+    19px!important;
+
+  border:
+    3px solid
+    #43a568!important;
+
+  border-radius:
+    13px!important;
+
+  background:
+    #e5f5ec!important;
+
+  color:
+    #174f31!important;
+
+  font-family:
+    "Avenir Next",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif!important;
+
+  font-size:
+    20px!important;
+
+  line-height:
+    1.47!important;
+
+  font-weight:
+    650!important;
+}
+
+.u11-final-s12-answer.show{
+  display:block!important;
+}
+
+.u11-final-s12-answer b{
+  color:
+    #0f5832!important;
+
+  font-weight:
+    950!important;
+}
+
+
+/* =========================================================
+   SLIDE 13
+   ========================================================= */
+
+.screen[data-screen="13"]
+.challenge-card{
+  overflow:
+    visible!important;
+}
+
+.screen[data-screen="13"]
+.challenge-card.u11-final-revealed{
+  border:
+    2px solid
+    #8dbda7!important;
+
+  background:
+    #f8fcfa!important;
+
+  color:
+    #17352d!important;
+
+  text-align:
+    left!important;
+}
+
+
+/* Cumulative teacher answer */
+
+.u11-final-card-answer{
+  display:block!important;
+
+  width:100%!important;
+
+  margin-top:
+    9px!important;
+
+  padding:
+    9px
+    11px!important;
+
+  border:
+    2px solid
+    #43a568!important;
+
+  border-radius:
+    9px!important;
+
+  background:
+    #e5f5ec!important;
+
+  color:
+    #174f31!important;
+
+  font-family:
+    "Avenir Next",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif!important;
+
+  font-size:
+    19px!important;
+
+  line-height:
+    1.35!important;
+
+  font-weight:
+    900!important;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media(max-width:1050px){
+
+  body.u11-student
+  .screen[data-screen="9"]
+  .matching-board{
+    grid-template-columns:
+      1fr
+      1fr!important;
+  }
+
+  body.u11-student
+  .screen[data-screen="9"]
+  .u11-s9-answer-col{
+    grid-column:
+      1 / -1!important;
+
+    grid-template-columns:
+      repeat(3,1fr)!important;
+  }
+}
+
+
+/* =========================================================
+   PHONE
+   ========================================================= */
+
+@media(max-width:700px){
+
+  body.u11-student
+  .screen[data-screen="9"]
+  .matching-board{
+    grid-template-columns:
+      1fr!important;
+  }
+
+  body.u11-student
+  .screen[data-screen="9"]
+  .u11-s9-answer-col{
+    grid-template-columns:
+      1fr!important;
+  }
+}
+
+/* =========================================================
+   U1.1 CLEAN FINAL S09 / S12 / S13 v7
+   ========================================================= */
+
+
+/* ---------- COMMON ---------- */
+
+.u11-clean-message{
+  width:max-content!important;
+  max-width:94%!important;
+
+  margin:10px auto 0!important;
+  padding:10px 16px!important;
+
+  border-radius:11px!important;
+
+  font-family:
+    "Avenir Next",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif!important;
+
+  font-size:18px!important;
+  line-height:1.35!important;
+  font-weight:850!important;
+
+  text-align:center!important;
+}
+
+.u11-clean-message.score{
+  background:#e6f7ec!important;
+  border:1px solid #8bc9a1!important;
+  color:#185d32!important;
+}
+
+.u11-clean-message.teacher{
+  background:#e8f3ee!important;
+  border:1px solid #80ad9d!important;
+  color:#075c49!important;
+}
+
+.u11-actionbar{
+  position:static!important;
+  background:transparent!important;
+  box-shadow:none!important;
+
+  margin-top:9px!important;
+  padding:4px 0!important;
+
+  display:flex!important;
+  justify-content:flex-end!important;
+  gap:9px!important;
+}
+
+.u11-actionbar .clean-check-on{
+  background:#1e6a5c!important;
+  color:#fff!important;
+}
+
+
+/* =========================================================
+   SLIDE 9 — TABS
+   ========================================================= */
+
+.u11-clean-tabs{
+  display:flex!important;
+  gap:8px!important;
+
+  margin:5px 0 12px!important;
+}
+
+.u11-clean-tab{
+  min-width:135px!important;
+  min-height:42px!important;
+
+  padding:8px 18px!important;
+
+  border:1px solid #b8cdc5!important;
+  border-radius:999px!important;
+
+  background:#fff!important;
+
+  color:#123f3a!important;
+
+  font-size:16px!important;
+  font-weight:900!important;
+}
+
+.u11-clean-tab.active{
+  background:#123f3a!important;
+  border-color:#123f3a!important;
+
+  color:#fff!important;
+}
+
+
+/* =========================================================
+   SLIDE 9 STEP 1
+   ========================================================= */
+
+.u11-s9-listen-grid{
+  display:grid!important;
+
+  grid-template-columns:
+    repeat(3,minmax(0,1fr))!important;
+
+  gap:9px!important;
+}
+
+.u11-s9-listen-item{
+  min-width:0!important;
+
+  padding:10px 12px!important;
+
+  border:1px solid #c7d1cd!important;
+  border-radius:9px!important;
+
+  background:#fff!important;
+
+  overflow:visible!important;
+}
+
+.u11-s9-listen-item label{
+  display:flex!important;
+
+  gap:8px!important;
+  align-items:center!important;
+
+  color:#17352d!important;
+
+  font-size:20px!important;
+  line-height:1.25!important;
+  font-weight:750!important;
+}
+
+.u11-s9-listen-check{
+  width:20px!important;
+  height:20px!important;
+
+  min-height:20px!important;
+}
+
+
+/* Teacher answer appears only after Check + click */
+
+.u11-s9-teacher-key{
+  margin-top:8px!important;
+
+  padding:8px 10px!important;
+
+  border:2px solid #43a568!important;
+  border-radius:8px!important;
+
+  background:#e5f5ec!important;
+
+  color:#174f31!important;
+
+  font-size:18px!important;
+  font-weight:950!important;
+
+  text-align:center!important;
+}
+
+.u11-s9-teacher-key[hidden]{
+  display:none!important;
+}
+
+.u11-s9-listen-item.teacher-revealed{
+  border:2px solid #8dbda7!important;
+
+  background:#f8fcfa!important;
+}
+
+
+/* =========================================================
+   SLIDE 9 STEP 2 — STUDENT = 3 COLUMNS
+   ========================================================= */
+
+.u11-s9-match-board{
+  display:grid!important;
+
+  grid-template-columns:
+    minmax(215px,.82fr)
+    minmax(0,1.5fr)
+    minmax(120px,.43fr)!important;
+
+  gap:13px!important;
+
+  align-items:start!important;
+}
+
+.u11-s9-col{
+  min-width:0!important;
+
+  display:grid!important;
+
+  gap:7px!important;
+
+  padding:10px!important;
+
+  border:1px solid #d0ddd8!important;
+  border-radius:10px!important;
+
+  background:#fff!important;
+}
+
+.u11-s9-col .match-heading{
+  color:#6f315c!important;
+
+  font-size:21px!important;
+  font-weight:950!important;
+
+  margin-bottom:3px!important;
+}
+
+
+/* LEFT a–i */
+
+.u11-s9-verb{
+  min-height:46px!important;
+
+  padding:9px 11px!important;
+
+  border:1px solid #c7d1cd!important;
+  border-radius:8px!important;
+
+  background:#fff!important;
+
+  color:#17352d!important;
+
+  font-size:19px!important;
+  line-height:1.25!important;
+
+  font-weight:750!important;
+
+  text-align:left!important;
+}
+
+.u11-s9-verb b{
+  color:#6f315c!important;
+
+  margin-right:5px!important;
+
+  font-weight:950!important;
+}
+
+
+/* MIDDLE 1–9 */
+
+.u11-s9-definition{
+  min-height:46px!important;
+
+  position:relative!important;
+
+  padding:9px 10px!important;
+
+  border:1px solid #c7d1cd!important;
+  border-radius:8px!important;
+
+  background:#fff!important;
+
+  color:#17352d!important;
+
+  font-size:18px!important;
+  line-height:1.28!important;
+
+  font-weight:700!important;
+}
+
+.u11-s9-definition>b{
+  color:#173a63!important;
+
+  margin-right:5px!important;
+
+  font-weight:950!important;
+}
+
+
+/* RIGHT a–i answer boxes */
+
+.u11-s9-answer-row{
+  min-height:46px!important;
+
+  display:grid!important;
+
+  grid-template-columns:
+    28px
+    minmax(0,1fr)!important;
+
+  gap:6px!important;
+
+  align-items:center!important;
+
+  padding:4px!important;
+}
+
+.u11-s9-answer-row>b{
+  color:#6f315c!important;
+
+  font-size:18px!important;
+  font-weight:950!important;
+
+  text-align:center!important;
+}
+
+.u11-s9-answer-input{
+  width:100%!important;
+  min-width:0!important;
+
+  min-height:38px!important;
+
+  padding:5px 7px!important;
+
+  border:2px solid #bcd0c8!important;
+  border-radius:7px!important;
+
+  background:#fff!important;
+
+  color:#173f38!important;
+
+  font-size:18px!important;
+  font-weight:850!important;
+
+  text-align:center!important;
+}
+
+
+/* Teacher does not need the third input column */
+
+body.u11-teacher
+.u11-s9-student-answer-col,
+body.presentation
+.u11-s9-student-answer-col{
+  display:none!important;
+}
+
+body.u11-teacher
+.u11-s9-match-board,
+body.presentation
+.u11-s9-match-board{
+  grid-template-columns:
+    minmax(260px,.85fr)
+    minmax(0,1.45fr)!important;
+}
+
+
+/* TEACHER pair — cumulative */
+
+.u11-s9-verb.teacher-paired{
+  background:#fff3d6!important;
+
+  border:3px solid #d4a73d!important;
+
+  color:#654807!important;
+
+  font-weight:950!important;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(212,167,61,.12)!important;
+}
+
+.u11-s9-definition.teacher-paired{
+  background:#dff5e7!important;
+
+  border:3px solid #43a568!important;
+
+  color:#174f31!important;
+
+  font-weight:950!important;
+
+  box-shadow:
+    0 0 0 5px
+    rgba(67,165,104,.12)!important;
+}
+
+.u11-s9-pair-label{
+  margin-top:6px!important;
+
+  width:max-content!important;
+
+  padding:4px 8px!important;
+
+  border-radius:6px!important;
+
+  background:#174f31!important;
+
+  color:#fff!important;
+
+  font-size:13px!important;
+  font-weight:950!important;
+}
+
+
+/* =========================================================
+   SLIDE 12
+   ========================================================= */
+
+body.u11-student
+.screen[data-screen="12"]
+#u11Check{
+  display:none!important;
+}
+
+body.u11-student
+.screen[data-screen="12"]
+#u11Submit12{
+  display:inline-flex!important;
+}
+
+body.u11-teacher
+.screen[data-screen="12"]
+#u11Submit12,
+body.presentation
+.screen[data-screen="12"]
+#u11Submit12{
+  display:none!important;
+}
+
+body.u11-teacher
+.screen[data-screen="12"]
+#u11Check,
+body.presentation
+.screen[data-screen="12"]
+#u11Check{
+  display:inline-flex!important;
+}
+
+#u11Submit12{
+  background:#123f3a!important;
+  border-color:#123f3a!important;
+  color:#fff!important;
+}
+
+#u11Submit12.submitted{
+  background:#477f72!important;
+}
+
+.u11-clean-s12-answer{
+  display:none!important;
+
+  margin-top:12px!important;
+
+  padding:16px 19px!important;
+
+  border:3px solid #43a568!important;
+  border-radius:13px!important;
+
+  background:#e5f5ec!important;
+
+  color:#174f31!important;
+
+  font-size:20px!important;
+  line-height:1.48!important;
+
+  font-weight:650!important;
+}
+
+.u11-clean-s12-answer.show{
+  display:block!important;
+}
+
+
+/* =========================================================
+   SLIDE 13
+   ========================================================= */
+
+.screen[data-screen="13"]
+.challenge-card{
+  overflow:visible!important;
+}
+
+.screen[data-screen="13"]
+.challenge-card.clean-revealed{
+  background:#f8fcfa!important;
+
+  border:2px solid #8dbda7!important;
+
+  color:#17352d!important;
+
+  text-align:left!important;
+}
+
+.u11-clean-s13-answer{
+  display:block!important;
+
+  width:100%!important;
+
+  margin-top:10px!important;
+
+  padding:9px 11px!important;
+
+  border:2px solid #43a568!important;
+  border-radius:9px!important;
+
+  background:#e5f5ec!important;
+
+  color:#174f31!important;
+
+  font-size:19px!important;
+  line-height:1.35!important;
+
+  font-weight:900!important;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media(max-width:1050px){
+
+  .u11-s9-listen-grid{
+    grid-template-columns:
+      repeat(2,minmax(0,1fr))!important;
+  }
+
+  body.u11-student
+  .u11-s9-match-board{
+    grid-template-columns:
+      1fr
+      1fr!important;
+  }
+
+  body.u11-student
+  .u11-s9-student-answer-col{
+    grid-column:
+      1 / -1!important;
+
+    grid-template-columns:
+      repeat(3,minmax(0,1fr))!important;
+  }
+}
+
+@media(max-width:700px){
+
+  .u11-s9-listen-grid{
+    grid-template-columns:
+      1fr!important;
+  }
+
+  body.u11-student
+  .u11-s9-match-board{
+    grid-template-columns:
+      1fr!important;
+  }
+
+  body.u11-student
+  .u11-s9-student-answer-col{
+    grid-template-columns:
+      1fr!important;
+  }
+}
+
+/* =========================================================
+   E-LEAP U1.1 — SLIDE 9 FINAL CLEAN v8
+   ========================================================= */
+
+
+/* Hide all old generic action bars on S9 */
+
+.screen[data-screen="9"]
+.u11-actionbar{
+  display:none!important;
+}
+
+
+/* =========================================================
+   S9 TABS
+   ========================================================= */
+
+.s9-tabs{
+  display:flex!important;
+  gap:8px!important;
+
+  margin:
+    5px
+    0
+    12px!important;
+}
+
+.s9-tab{
+  min-width:145px!important;
+  min-height:43px!important;
+
+  padding:
+    8px
+    18px!important;
+
+  border:
+    1px solid
+    #b9cec7!important;
+
+  border-radius:
+    999px!important;
+
+  background:#fff!important;
+  color:#123f3a!important;
+
+  font-size:17px!important;
+  font-weight:900!important;
+}
+
+.s9-tab.active{
+  background:#123f3a!important;
+  border-color:#123f3a!important;
+  color:#fff!important;
+}
+
+
+/* =========================================================
+   STEP 1
+   ========================================================= */
+
+.s9-heard-grid{
+  display:grid!important;
+
+  grid-template-columns:
+    repeat(3,minmax(0,1fr))!important;
+
+  gap:
+    10px!important;
+}
+
+.s9-heard-item{
+  min-width:0!important;
+
+  padding:
+    11px
+    13px!important;
+
+  border:
+    1px solid
+    #b9d2c9!important;
+
+  border-radius:
+    10px!important;
+
+  background:#fff!important;
+}
+
+.s9-heard-item label{
+  display:flex!important;
+
+  align-items:center!important;
+
+  gap:
+    9px!important;
+
+  font-size:
+    21px!important;
+
+  line-height:
+    1.25!important;
+
+  font-weight:
+    800!important;
+
+  color:
+    #173c34!important;
+}
+
+.s9-student-check{
+  width:
+    21px!important;
+
+  height:
+    21px!important;
+
+  min-height:
+    21px!important;
+}
+
+
+/*
+  CRITICAL FIX:
+  Teacher answer MUST be invisible initially.
+*/
+
+.s9-teacher-answer{
+  display:none!important;
+}
+
+
+/*
+  Only after teacher clicks a card
+  in Check mode does it appear.
+*/
+
+.s9-heard-item.revealed
+.s9-teacher-answer{
+  display:block!important;
+
+  margin-top:
+    9px!important;
+
+  padding:
+    8px
+    10px!important;
+
+  border:
+    2px solid
+    #43a568!important;
+
+  border-radius:
+    8px!important;
+
+  background:
+    #e5f5ec!important;
+
+  color:
+    #174f31!important;
+
+  font-size:
+    19px!important;
+
+  font-weight:
+    950!important;
+
+  text-align:
+    center!important;
+}
+
+
+/* Teacher doesn't need Student checkboxes */
+
+body.u11-teacher
+.s9-student-check,
+body.presentation
+.s9-student-check{
+  display:none!important;
+}
+
+
+/* =========================================================
+   STEP 2
+   ========================================================= */
+
+.s9-match-layout{
+  display:grid!important;
+
+  grid-template-columns:
+    minmax(220px,.82fr)
+    minmax(0,1.48fr)
+    minmax(120px,.42fr)!important;
+
+  gap:
+    13px!important;
+
+  align-items:start!important;
+}
+
+.s9-column{
+  min-width:0!important;
+
+  display:grid!important;
+
+  gap:
+    7px!important;
+
+  padding:
+    10px!important;
+
+  border:
+    1px solid
+    #d0ddd8!important;
+
+  border-radius:
+    10px!important;
+
+  background:#fff!important;
+}
+
+.s9-column
+.match-heading{
+  margin-bottom:
+    4px!important;
+
+  color:
+    #6f315c!important;
+
+  font-size:
+    21px!important;
+
+  font-weight:
+    950!important;
+}
+
+
+/* LEFT a–i */
+
+.s9-verb{
+  min-height:
+    47px!important;
+
+  padding:
+    9px
+    11px!important;
+
+  border:
+    1px solid
+    #c6d1cd!important;
+
+  border-radius:
+    8px!important;
+
+  background:#fff!important;
+
+  color:
+    #17352d!important;
+
+  font-size:
+    19px!important;
+
+  line-height:
+    1.27!important;
+
+  font-weight:
+    750!important;
+
+  text-align:
+    left!important;
+}
+
+.s9-verb b{
+  margin-right:
+    5px!important;
+
+  color:
+    #6f315c!important;
+
+  font-weight:
+    950!important;
+}
+
+
+/* MIDDLE 1–9 */
+
+.s9-definition{
+  min-height:
+    47px!important;
+
+  padding:
+    9px
+    11px!important;
+
+  border:
+    1px solid
+    #c6d1cd!important;
+
+  border-radius:
+    8px!important;
+
+  background:#fff!important;
+
+  color:
+    #17352d!important;
+
+  font-size:
+    18px!important;
+
+  line-height:
+    1.28!important;
+
+  font-weight:
+    700!important;
+}
+
+.s9-definition>b{
+  margin-right:
+    5px!important;
+
+  color:
+    #173a63!important;
+
+  font-weight:
+    950!important;
+}
+
+
+/* RIGHT */
+
+.s9-answer-row{
+  min-height:
+    47px!important;
+
+  display:grid!important;
+
+  grid-template-columns:
+    29px
+    minmax(0,1fr)!important;
+
+  align-items:center!important;
+
+  gap:
+    6px!important;
+}
+
+.s9-answer-row>b{
+  color:
+    #6f315c!important;
+
+  font-size:
+    18px!important;
+
+  font-weight:
+    950!important;
+
+  text-align:center!important;
+}
+
+.s9-answer-input{
+  width:
+    100%!important;
+
+  min-width:0!important;
+
+  min-height:
+    39px!important;
+
+  padding:
+    5px
+    7px!important;
+
+  border:
+    2px solid
+    #bcd0c8!important;
+
+  border-radius:
+    7px!important;
+
+  background:#fff!important;
+
+  color:
+    #173f38!important;
+
+  font-size:
+    18px!important;
+
+  font-weight:
+    850!important;
+
+  text-align:
+    center!important;
+}
+
+
+/* Teacher = 2 columns */
+
+body.u11-teacher
+.s9-answer-column,
+body.presentation
+.s9-answer-column{
+  display:none!important;
+}
+
+body.u11-teacher
+.s9-match-layout,
+body.presentation
+.s9-match-layout{
+  grid-template-columns:
+    minmax(260px,.82fr)
+    minmax(0,1.48fr)!important;
+}
+
+
+/* Teacher cumulative pair */
+
+.s9-verb.paired{
+  border:
+    3px solid
+    #d3a33b!important;
+
+  background:
+    #fff3d6!important;
+
+  color:
+    #654807!important;
+
+  font-weight:
+    950!important;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(211,163,59,.12)!important;
+}
+
+.s9-definition.paired{
+  border:
+    3px solid
+    #43a568!important;
+
+  background:
+    #dff5e7!important;
+
+  color:
+    #174f31!important;
+
+  font-weight:
+    950!important;
+
+  box-shadow:
+    0 0 0 5px
+    rgba(67,165,104,.12)!important;
+}
+
+.s9-pair-badge{
+  width:
+    max-content!important;
+
+  margin-top:
+    6px!important;
+
+  padding:
+    4px
+    8px!important;
+
+  border-radius:
+    6px!important;
+
+  background:
+    #174f31!important;
+
+  color:
+    #fff!important;
+
+  font-size:
+    13px!important;
+
+  font-weight:
+    950!important;
+}
+
+
+/* =========================================================
+   OWN CHECK / RESET
+   ========================================================= */
+
+.s9-actions{
+  display:flex!important;
+
+  justify-content:
+    flex-end!important;
+
+  gap:
+    9px!important;
+
+  margin-top:
+    11px!important;
+
+  padding:
+    4px
+    0!important;
+
+  background:
+    transparent!important;
+}
+
+.s9-actions button{
+  min-height:
+    43px!important;
+
+  padding:
+    8px
+    16px!important;
+
+  border:
+    1px solid
+    #c3d3cd!important;
+
+  border-radius:
+    10px!important;
+
+  background:#fff!important;
+
+  color:
+    #123f3a!important;
+
+  font-size:
+    16px!important;
+
+  font-weight:
+    900!important;
+}
+
+#s9Check{
+  border:
+    2px solid
+    #1e6a5c!important;
+
+  color:
+    #1e6a5c!important;
+}
+
+#s9Check.active{
+  background:
+    #1e6a5c!important;
+
+  color:#fff!important;
+}
+
+
+/* =========================================================
+   SCORE / TEACHER MESSAGE
+   ========================================================= */
+
+.s9-feedback{
+  min-height:
+    0!important;
+}
+
+.s9-feedback:not(:empty){
+  width:
+    max-content!important;
+
+  max-width:
+    94%!important;
+
+  margin:
+    8px
+    auto
+    0!important;
+
+  padding:
+    9px
+    16px!important;
+
+  border-radius:
+    10px!important;
+
+  font-size:
+    18px!important;
+
+  font-weight:
+    900!important;
+}
+
+.s9-feedback.student-score{
+  border:
+    1px solid
+    #8bc9a1!important;
+
+  background:
+    #e6f7ec!important;
+
+  color:
+    #185d32!important;
+}
+
+.s9-feedback.teacher-note{
+  border:
+    1px solid
+    #80ad9d!important;
+
+  background:
+    #e8f3ee!important;
+
+  color:
+    #075c49!important;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media(max-width:1050px){
+
+  .s9-heard-grid{
+    grid-template-columns:
+      repeat(2,minmax(0,1fr))!important;
+  }
+
+  body.u11-student
+  .s9-match-layout{
+    grid-template-columns:
+      1fr
+      1fr!important;
+  }
+
+  body.u11-student
+  .s9-answer-column{
+    grid-column:
+      1 / -1!important;
+
+    grid-template-columns:
+      repeat(3,minmax(0,1fr))!important;
+  }
+}
+
+@media(max-width:700px){
+
+  .s9-heard-grid{
+    grid-template-columns:
+      1fr!important;
+  }
+
+  body.u11-student
+  .s9-match-layout{
+    grid-template-columns:
+      1fr!important;
+  }
+
+  body.u11-student
+  .s9-answer-column{
+    grid-template-columns:
+      1fr!important;
+  }
+}

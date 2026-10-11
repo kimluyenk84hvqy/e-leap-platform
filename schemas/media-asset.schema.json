@@ -1,0 +1,7 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://e-leap.local/schemas/media-asset.schema.json",
+  "title":"E-LEAP Media Asset Schema v1.0","type":"object",
+  "required":["id","type","status","rights"],
+  "properties":{"id":{"type":"string"},"type":{"enum":["image","audio","video","document"]},"status":{"enum":["draft","active","archived"]},"storageRef":{"type":"string"},"checksum":{"type":"string"},"title":{"type":"string"},"tags":{"type":"array","items":{"type":"string"}},"rights":{"type":"object","required":["status"],"properties":{"status":{"enum":["cleared","restricted","unknown","institution-owned","author-owned","ai-generated"]},"source":{"type":"string"},"creator":{"type":"string"},"licence":{"type":"string"},"citation":{"type":"string"}}},"usageRefs":{"type":"array","items":{"type":"string"}}},"additionalProperties":true
+}

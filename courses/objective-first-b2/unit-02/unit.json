@@ -1,0 +1,22 @@
+{
+  "id": "objective-first-b2-u02",
+  "courseId": "objective-first-b2",
+  "title": "Unit 2",
+  "subtitle": "The Virtual World",
+  "status": "draft",
+  "lessons": [
+    {
+      "shellId": "objective-first-b2-u02-l01",
+      "resourceId": "res-objective-first-b2-u02-l01",
+      "order": 1,
+      "status": "draft"
+    },
+    {
+      "shellId": "objective-first-b2-u02-l02",
+      "resourceId": "res-objective-first-b2-u02-l02",
+      "order": 2,
+      "status": "draft"
+    }
+  ],
+  "rule": "Lesson identity is held by Resource ID; placement is independent from content."
+}

@@ -1,0 +1,7 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://e-leap.local/schemas/activity.schema.json",
+  "title":"E-LEAP Activity Schema v1.0",
+  "type":"object","required":["id","type"],
+  "properties":{"id":{"type":"string"},"type":{"enum":["mcq","multi-select","true-false","fill","matching","ordering","categorising","click-reveal","listening","video-question","speaking-record","writing","discussion","poll","flashcards","flip-match"]},"prompt":{"type":"string"},"policy":{"type":"object","properties":{"studentSubmit":{"type":"boolean"},"studentReveal":{"type":"boolean"},"teacherReveal":{"type":"boolean"}}},"mediaRefs":{"type":"array","items":{"type":"string"}},"answerKey":{"type":"array"}},"additionalProperties":true
+}

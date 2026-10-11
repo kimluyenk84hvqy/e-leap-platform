@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "1.0",
+  "principle": "Learn → Practise → Assess → Diagnose → Targeted Re-learning",
+  "cefrRole": "competency-metadata",
+  "examPathways": [
+    "VSTEP",
+    "IELTS"
+  ],
+  "links": [
+    {
+      "coreModule": "adv-writing-essay-writing",
+      "skillsLab": "lab-writing",
+      "mockTracks": [
+        "mock-vstep",
+        "mock-ielts"
+      ],
+      "tags": [
+        "writing",
+        "essay"
+      ]
+    },
+    {
+      "coreModule": "adv-writing-letter-email-writing",
+      "skillsLab": "lab-writing",
+      "mockTracks": [
+        "mock-vstep",
+        "mock-ielts"
+      ],
+      "tags": [
+        "writing",
+        "letter-email"
+      ]
+    },
+    {
+      "coreModule": "adv-writing-visual-data-writing",
+      "skillsLab": "lab-writing",
+      "mockTracks": [
+        "mock-ielts"
+      ],
+      "tags": [
+        "writing",
+        "visual-data"
+      ]
+    },
+    {
+      "coreModule": "adv-listening-listening-foundations",
+      "skillsLab": "lab-listening",
+      "mockTracks": [
+        "mock-vstep",
+        "mock-ielts"
+      ],
+      "tags": [
+        "listening"
+      ]
+    },
+    {
+      "coreModule": "adv-reading-reading-foundations",
+      "skillsLab": "lab-reading",
+      "mockTracks": [
+        "mock-vstep",
+        "mock-ielts"
+      ],
+      "tags": [
+        "reading"
+      ]
+    },
+    {
+      "coreModule": "adv-speaking-speaking-foundations",
+      "skillsLab": "lab-speaking",
+      "mockTracks": [
+        "mock-vstep",
+        "mock-ielts"
+      ],
+      "tags": [
+        "speaking"
+      ]
+    }
+  ]
+}

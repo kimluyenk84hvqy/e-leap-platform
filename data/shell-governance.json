@@ -1,0 +1,63 @@
+{
+  "schemaVersion": "2.0-r2-locked",
+  "lifecycle": [
+    "draft",
+    "published",
+    "hidden",
+    "archived"
+  ],
+  "independentState": [
+    "locked",
+    "unlocked"
+  ],
+  "actions": [
+    "add",
+    "rename",
+    "move",
+    "reorder",
+    "duplicate",
+    "publish",
+    "hide",
+    "unhide",
+    "lock",
+    "unlock",
+    "archive",
+    "restore",
+    "add-resource",
+    "version-history",
+    "audit-log"
+  ],
+  "hardDeleteInNormalUI": false,
+  "protectedIds": [
+    "e-leap-root",
+    "courses",
+    "skills-lab",
+    "assignments",
+    "mock-tests",
+    "progress",
+    "advanced-skills",
+    "lab-listening",
+    "lab-speaking",
+    "lab-reading",
+    "lab-writing",
+    "lab-grammar",
+    "lab-vocabulary"
+  ],
+  "rules": {
+    "renameKeepsId": true,
+    "moveKeepsId": true,
+    "reorderSiblingsOnly": true,
+    "archiveKeepsEvidence": true,
+    "duplicateGetsNewId": true,
+    "moveRequiresCompatibility": true,
+    "archiveRequiresImpactCheck": true,
+    "versioningRequiredTypes": [
+      "course",
+      "unit",
+      "lesson",
+      "practice-set",
+      "assignment",
+      "mock-test"
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0",
+  "identity": {
+    "registeredLearner": {"required": ["studentId", "fullName"], "classMembership": true},
+    "guestLearner": {"enabled": true, "defaultAccess": ["skills-lab", "mock-practice"], "classProgress": false, "researchCohortDefault": false},
+    "internalKey": "immutable UUID",
+    "researchKey": "pseudonymous Research ID"
+  },
+  "classroom": {
+    "join": "Class QR or Class Code",
+    "deviceSelectionRequired": false,
+    "responsive": true,
+    "allowGuestsPerSession": true,
+    "sessionJoinCodeOptional": true,
+    "targetConcurrentLearners": 100,
+    "loadTestHeadroom": 200,
+    "joinWrite": ["studentKey", "classId", "sessionId", "joinedAt"],
+    "lazyLoadMediaAfterJoin": true
+  },
+  "assignments": {
+    "fields": ["resourceId", "assignee", "availableFrom", "deadline", "attemptLimit", "latePolicy", "instructions"],
+    "states": ["draft", "active", "submitted", "grading", "completed", "archived"],
+    "grading": ["auto", "ai-assisted", "teacher", "hybrid"],
+    "teacherControlsFinalGrade": true
+  },
+  "skillsLab": {"availability": "always-open", "guestAllowed": true},
+  "mockTests": {
+    "practiceMode": {"availability": "always-open", "guestAllowed": true},
+    "testMode": {"availability": "scheduled", "guestAllowed": false}
+  }
+}

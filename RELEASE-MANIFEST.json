@@ -1,0 +1,31 @@
+{
+  "release": "E-LEAP CLEAN V1.2 MASTER",
+  "base": "E-LEAP CLEAN V1.1 MASTER",
+  "purpose": "Clean production baseline with locked visual contract before U2.1 authoring",
+  "lockedContracts": [
+    "Modular Source Architecture",
+    "Role Control Contract",
+    "Control Layout & Visual State Contract",
+    "Lesson Template Contract v1.0"
+  ],
+  "changes": [
+    "VMMU Poppins template system + fresh military green palette",
+    "mandatory lesson cover for new lessons",
+    "expanded standard smart template pack",
+    "item-by-item U1.2 teacher/presentation reveal",
+    "K84 Home identity",
+    "cleaner Create/Choose Class UX",
+    "Research DB common env support + idempotent bootstrap",
+    "Live Session QR flow retained",
+    "Official visual direction: Dark shell + clean warm-green canvas + crisp white cards + stronger active green",
+    "Poppins as default shell and Studio typography",
+    "Removed MASTER PASS CANDIDATE developer copy from Home",
+    "Increased canvas/card/active-state contrast without darkening lesson workspace",
+    "Service-worker cache namespace bumped to prevent stale visual assets"
+  ],
+  "goldenReferences": [
+    "U1.1",
+    "U1.2"
+  ],
+  "goldenAuthoringTest": "U2.1"
+}

@@ -1,0 +1,2907 @@
+{
+  "schemaVersion": "1.3-master-pass-candidate",
+  "platformId": "e-leap",
+  "platformName": "E-LEAP",
+  "formalName": "English Learning, Engagement and Assessment Platform",
+  "rootId": "e-leap-root",
+  "shells": [
+    {
+      "id": "e-leap-root",
+      "parentId": null,
+      "name": "E-LEAP",
+      "type": "root",
+      "order": 0,
+      "status": "published"
+    },
+    {
+      "id": "courses",
+      "parentId": "e-leap-root",
+      "name": "Courses",
+      "type": "large-shell",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "skills-lab",
+      "parentId": "e-leap-root",
+      "name": "Skills Lab",
+      "type": "large-shell",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "assignments",
+      "parentId": "e-leap-root",
+      "name": "Assignments",
+      "type": "large-shell",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "mock-tests",
+      "parentId": "e-leap-root",
+      "name": "Mock Tests",
+      "type": "large-shell",
+      "order": 4,
+      "status": "published"
+    },
+    {
+      "id": "progress",
+      "parentId": "e-leap-root",
+      "name": "Progress",
+      "type": "large-shell",
+      "order": 5,
+      "status": "published"
+    },
+    {
+      "id": "coursebooks",
+      "parentId": "courses",
+      "name": "Coursebooks",
+      "type": "collection",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "advanced-skills",
+      "parentId": "courses",
+      "name": "Advanced Skills Courses",
+      "type": "collection",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "objective-first-b2",
+      "parentId": "coursebooks",
+      "name": "Objective First B2",
+      "type": "course",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "life-intermediate",
+      "parentId": "coursebooks",
+      "name": "Life Intermediate",
+      "type": "course",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "medical-english",
+      "parentId": "coursebooks",
+      "name": "Medical English",
+      "type": "course",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "english-for-pharmacy",
+      "parentId": "coursebooks",
+      "name": "English for Pharmacy",
+      "type": "course",
+      "order": 4,
+      "status": "planned"
+    },
+    {
+      "id": "objective-first-b2-u01",
+      "parentId": "objective-first-b2",
+      "name": "Unit 1",
+      "type": "unit",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "objective-first-b2-u01-l01",
+      "parentId": "objective-first-b2-u01",
+      "name": "U1.1 · Fashion Matters",
+      "type": "lesson",
+      "order": 1,
+      "status": "approved"
+    },
+    {
+      "id": "objective-first-b2-u01-l02",
+      "parentId": "objective-first-b2-u01",
+      "name": "U1.2 · Fashion Matters",
+      "type": "lesson",
+      "order": 2,
+      "status": "approved"
+    },
+    {
+      "id": "classes",
+      "parentId": "courses",
+      "name": "Classes",
+      "type": "class-workspace",
+      "order": 3,
+      "status": "published",
+      "description": "Lightweight learner, enrollment, QR/Class Code and live-session workspace."
+    },
+    {
+      "id": "classes-active",
+      "parentId": "classes",
+      "name": "Active Classes",
+      "type": "workflow-shell",
+      "order": 3,
+      "status": "published",
+      "description": "Create/open a class, generate QR/Class Code and start a live session."
+    },
+    {
+      "id": "classes-archive",
+      "parentId": "classes",
+      "name": "Archived Classes",
+      "type": "workflow-shell",
+      "order": 5,
+      "status": "published",
+      "description": "Archive memberships while retaining learning evidence."
+    },
+    {
+      "id": "lab-listening",
+      "parentId": "skills-lab",
+      "name": "Listening",
+      "type": "skill",
+      "order": 1,
+      "status": "published",
+      "description": "Always-open self-study and practice area."
+    },
+    {
+      "id": "lab-listening-general-english",
+      "parentId": "lab-listening",
+      "name": "General English",
+      "type": "track",
+      "order": 1,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-listening-general-english-a1",
+      "parentId": "lab-listening-general-english",
+      "name": "A1",
+      "type": "level",
+      "order": 1,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-listening-general-english-a1-question-types",
+      "parentId": "lab-listening-general-english-a1",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-listening-general-english-a2",
+      "parentId": "lab-listening-general-english",
+      "name": "A2",
+      "type": "level",
+      "order": 2,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-listening-general-english-a2-question-types",
+      "parentId": "lab-listening-general-english-a2",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-listening-general-english-b1",
+      "parentId": "lab-listening-general-english",
+      "name": "B1",
+      "type": "level",
+      "order": 3,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-listening-general-english-b1-question-types",
+      "parentId": "lab-listening-general-english-b1",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-listening-general-english-b2",
+      "parentId": "lab-listening-general-english",
+      "name": "B2",
+      "type": "level",
+      "order": 4,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-listening-general-english-b2-question-types",
+      "parentId": "lab-listening-general-english-b2",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-listening-general-english-c1",
+      "parentId": "lab-listening-general-english",
+      "name": "C1",
+      "type": "level",
+      "order": 5,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-listening-general-english-c1-question-types",
+      "parentId": "lab-listening-general-english-c1",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-listening-vstep",
+      "parentId": "lab-listening-exam-practice",
+      "name": "VSTEP",
+      "type": "track",
+      "order": 1,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-listening-vstep-p1",
+      "parentId": "lab-listening-vstep",
+      "name": "Part 1",
+      "type": "exam-part",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "lab-listening-vstep-p2",
+      "parentId": "lab-listening-vstep",
+      "name": "Part 2",
+      "type": "exam-part",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "lab-listening-vstep-p3",
+      "parentId": "lab-listening-vstep",
+      "name": "Part 3",
+      "type": "exam-part",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "lab-listening-ielts",
+      "parentId": "lab-listening-exam-practice",
+      "name": "IELTS",
+      "type": "track",
+      "order": 2,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-listening-ielts-question-types",
+      "parentId": "lab-listening-ielts",
+      "name": "Question Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Question types can recur across IELTS test parts, so they are not locked to Part shells."
+    },
+    {
+      "id": "lab-listening-medical-english",
+      "parentId": "lab-listening",
+      "name": "Medical English",
+      "type": "domain",
+      "order": 4,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-listening-medical-english-topics",
+      "parentId": "lab-listening-medical-english",
+      "name": "Topics",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin adds curriculum-aligned specialist topics here."
+    },
+    {
+      "id": "lab-listening-pharmaceutical-english",
+      "parentId": "lab-listening",
+      "name": "Pharmaceutical English",
+      "type": "domain",
+      "order": 5,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-listening-pharmaceutical-english-topics",
+      "parentId": "lab-listening-pharmaceutical-english",
+      "name": "Topics",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin adds curriculum-aligned specialist topics here."
+    },
+    {
+      "id": "lab-speaking",
+      "parentId": "skills-lab",
+      "name": "Speaking",
+      "type": "skill",
+      "order": 2,
+      "status": "published",
+      "description": "Always-open self-study and practice area."
+    },
+    {
+      "id": "lab-speaking-general-english",
+      "parentId": "lab-speaking",
+      "name": "General English",
+      "type": "track",
+      "order": 1,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-speaking-general-english-a1",
+      "parentId": "lab-speaking-general-english",
+      "name": "A1",
+      "type": "level",
+      "order": 1,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-speaking-general-english-a1-question-types",
+      "parentId": "lab-speaking-general-english-a1",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-speaking-general-english-a2",
+      "parentId": "lab-speaking-general-english",
+      "name": "A2",
+      "type": "level",
+      "order": 2,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-speaking-general-english-a2-question-types",
+      "parentId": "lab-speaking-general-english-a2",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-speaking-general-english-b1",
+      "parentId": "lab-speaking-general-english",
+      "name": "B1",
+      "type": "level",
+      "order": 3,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-speaking-general-english-b1-question-types",
+      "parentId": "lab-speaking-general-english-b1",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-speaking-general-english-b2",
+      "parentId": "lab-speaking-general-english",
+      "name": "B2",
+      "type": "level",
+      "order": 4,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-speaking-general-english-b2-question-types",
+      "parentId": "lab-speaking-general-english-b2",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-speaking-general-english-c1",
+      "parentId": "lab-speaking-general-english",
+      "name": "C1",
+      "type": "level",
+      "order": 5,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-speaking-general-english-c1-question-types",
+      "parentId": "lab-speaking-general-english-c1",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-speaking-vstep",
+      "parentId": "lab-speaking-exam-practice",
+      "name": "VSTEP",
+      "type": "track",
+      "order": 1,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-speaking-vstep-p1",
+      "parentId": "lab-speaking-vstep",
+      "name": "Part 1",
+      "type": "exam-part",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "lab-speaking-vstep-p2",
+      "parentId": "lab-speaking-vstep",
+      "name": "Part 2",
+      "type": "exam-part",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "lab-speaking-vstep-p3",
+      "parentId": "lab-speaking-vstep",
+      "name": "Part 3",
+      "type": "exam-part",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "lab-speaking-ielts",
+      "parentId": "lab-speaking-exam-practice",
+      "name": "IELTS",
+      "type": "track",
+      "order": 2,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-speaking-ielts-p1",
+      "parentId": "lab-speaking-ielts",
+      "name": "Part 1",
+      "type": "exam-part",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "lab-speaking-ielts-p2",
+      "parentId": "lab-speaking-ielts",
+      "name": "Part 2",
+      "type": "exam-part",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "lab-speaking-ielts-p3",
+      "parentId": "lab-speaking-ielts",
+      "name": "Part 3",
+      "type": "exam-part",
+      "order": 3,
+      "status": "planned"
+    },
+    {
+      "id": "lab-speaking-medical-english",
+      "parentId": "lab-speaking",
+      "name": "Medical English",
+      "type": "domain",
+      "order": 4,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-speaking-medical-english-topics",
+      "parentId": "lab-speaking-medical-english",
+      "name": "Topics",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin adds curriculum-aligned specialist topics here."
+    },
+    {
+      "id": "lab-speaking-pharmaceutical-english",
+      "parentId": "lab-speaking",
+      "name": "Pharmaceutical English",
+      "type": "domain",
+      "order": 5,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-speaking-pharmaceutical-english-topics",
+      "parentId": "lab-speaking-pharmaceutical-english",
+      "name": "Topics",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin adds curriculum-aligned specialist topics here."
+    },
+    {
+      "id": "lab-reading",
+      "parentId": "skills-lab",
+      "name": "Reading",
+      "type": "skill",
+      "order": 3,
+      "status": "published",
+      "description": "Always-open self-study and practice area."
+    },
+    {
+      "id": "lab-reading-general-english",
+      "parentId": "lab-reading",
+      "name": "General English",
+      "type": "track",
+      "order": 1,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-reading-general-english-a1",
+      "parentId": "lab-reading-general-english",
+      "name": "A1",
+      "type": "level",
+      "order": 1,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-reading-general-english-a1-question-types",
+      "parentId": "lab-reading-general-english-a1",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-reading-general-english-a2",
+      "parentId": "lab-reading-general-english",
+      "name": "A2",
+      "type": "level",
+      "order": 2,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-reading-general-english-a2-question-types",
+      "parentId": "lab-reading-general-english-a2",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-reading-general-english-b1",
+      "parentId": "lab-reading-general-english",
+      "name": "B1",
+      "type": "level",
+      "order": 3,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-reading-general-english-b1-question-types",
+      "parentId": "lab-reading-general-english-b1",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-reading-general-english-b2",
+      "parentId": "lab-reading-general-english",
+      "name": "B2",
+      "type": "level",
+      "order": 4,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-reading-general-english-b2-question-types",
+      "parentId": "lab-reading-general-english-b2",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-reading-general-english-c1",
+      "parentId": "lab-reading-general-english",
+      "name": "C1",
+      "type": "level",
+      "order": 5,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-reading-general-english-c1-question-types",
+      "parentId": "lab-reading-general-english-c1",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-reading-vstep",
+      "parentId": "lab-reading-exam-practice",
+      "name": "VSTEP",
+      "type": "track",
+      "order": 1,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-reading-vstep-question-types",
+      "parentId": "lab-reading-vstep",
+      "name": "Question Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Question-type organisation for VSTEP Reading."
+    },
+    {
+      "id": "lab-reading-ielts",
+      "parentId": "lab-reading-exam-practice",
+      "name": "IELTS",
+      "type": "track",
+      "order": 2,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-reading-ielts-question-types",
+      "parentId": "lab-reading-ielts",
+      "name": "Question Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Question types can recur across IELTS test parts, so they are not locked to Part shells."
+    },
+    {
+      "id": "lab-reading-medical-english",
+      "parentId": "lab-reading",
+      "name": "Medical English",
+      "type": "domain",
+      "order": 4,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-reading-medical-english-topics",
+      "parentId": "lab-reading-medical-english",
+      "name": "Topics",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin adds curriculum-aligned specialist topics here."
+    },
+    {
+      "id": "lab-reading-pharmaceutical-english",
+      "parentId": "lab-reading",
+      "name": "Pharmaceutical English",
+      "type": "domain",
+      "order": 5,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-reading-pharmaceutical-english-topics",
+      "parentId": "lab-reading-pharmaceutical-english",
+      "name": "Topics",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin adds curriculum-aligned specialist topics here."
+    },
+    {
+      "id": "lab-writing",
+      "parentId": "skills-lab",
+      "name": "Writing",
+      "type": "skill",
+      "order": 4,
+      "status": "published",
+      "description": "Always-open self-study and practice area."
+    },
+    {
+      "id": "lab-writing-general-english",
+      "parentId": "lab-writing",
+      "name": "General English",
+      "type": "track",
+      "order": 1,
+      "status": "archived",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-writing-general-english-a1",
+      "parentId": "lab-writing-general-english",
+      "name": "A1",
+      "type": "level",
+      "order": 1,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-writing-general-english-a1-question-types",
+      "parentId": "lab-writing-general-english-a1",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-writing-general-english-a2",
+      "parentId": "lab-writing-general-english",
+      "name": "A2",
+      "type": "level",
+      "order": 2,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-writing-general-english-a2-question-types",
+      "parentId": "lab-writing-general-english-a2",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-writing-general-english-b1",
+      "parentId": "lab-writing-general-english",
+      "name": "B1",
+      "type": "level",
+      "order": 3,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-writing-general-english-b1-question-types",
+      "parentId": "lab-writing-general-english-b1",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-writing-general-english-b2",
+      "parentId": "lab-writing-general-english",
+      "name": "B2",
+      "type": "level",
+      "order": 4,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-writing-general-english-b2-question-types",
+      "parentId": "lab-writing-general-english-b2",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-writing-general-english-c1",
+      "parentId": "lab-writing-general-english",
+      "name": "C1",
+      "type": "level",
+      "order": 5,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-writing-general-english-c1-question-types",
+      "parentId": "lab-writing-general-english-c1",
+      "name": "Question / Task Types",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin-configurable types; Practice Set is the final shell before an activity."
+    },
+    {
+      "id": "lab-writing-vstep",
+      "parentId": "lab-writing-exam-practice",
+      "name": "VSTEP",
+      "type": "track",
+      "order": 1,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-writing-vstep-p1",
+      "parentId": "lab-writing-vstep",
+      "name": "Part 1",
+      "type": "exam-part",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "lab-writing-vstep-p2",
+      "parentId": "lab-writing-vstep",
+      "name": "Part 2",
+      "type": "exam-part",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "lab-writing-ielts",
+      "parentId": "lab-writing-exam-practice",
+      "name": "IELTS",
+      "type": "track",
+      "order": 2,
+      "status": "planned",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-writing-ielts-task1",
+      "parentId": "lab-writing-ielts",
+      "name": "Task 1",
+      "type": "exam-part",
+      "order": 1,
+      "status": "planned"
+    },
+    {
+      "id": "lab-writing-ielts-task2",
+      "parentId": "lab-writing-ielts",
+      "name": "Task 2",
+      "type": "exam-part",
+      "order": 2,
+      "status": "planned"
+    },
+    {
+      "id": "lab-writing-medical-english",
+      "parentId": "lab-writing",
+      "name": "Medical English",
+      "type": "domain",
+      "order": 4,
+      "status": "archived",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-writing-medical-english-topics",
+      "parentId": "lab-writing-medical-english",
+      "name": "Topics",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin adds curriculum-aligned specialist topics here."
+    },
+    {
+      "id": "lab-writing-pharmaceutical-english",
+      "parentId": "lab-writing",
+      "name": "Pharmaceutical English",
+      "type": "domain",
+      "order": 5,
+      "status": "archived",
+      "description": "Practice structure follows this track, not a forced universal hierarchy."
+    },
+    {
+      "id": "lab-writing-pharmaceutical-english-topics",
+      "parentId": "lab-writing-pharmaceutical-english",
+      "name": "Topics",
+      "type": "configurable-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Admin adds curriculum-aligned specialist topics here."
+    },
+    {
+      "id": "lab-vocabulary",
+      "parentId": "skills-lab",
+      "name": "Vocabulary",
+      "type": "skill",
+      "order": 5,
+      "status": "published",
+      "description": "Always-open self-study and practice area."
+    },
+    {
+      "id": "lab-vocabulary-general",
+      "parentId": "lab-vocabulary",
+      "name": "General English",
+      "type": "track",
+      "order": 1,
+      "status": "planned",
+      "description": "CEFR-organised language competence practice."
+    },
+    {
+      "id": "lab-vocabulary-medical",
+      "parentId": "lab-vocabulary",
+      "name": "Medical English",
+      "type": "domain",
+      "order": 2,
+      "status": "planned",
+      "description": "Topic-based specialist practice."
+    },
+    {
+      "id": "lab-vocabulary-pharma",
+      "parentId": "lab-vocabulary",
+      "name": "Pharmaceutical English",
+      "type": "domain",
+      "order": 3,
+      "status": "planned",
+      "description": "Topic-based specialist practice."
+    },
+    {
+      "id": "lab-vocabulary-general-a1",
+      "parentId": "lab-vocabulary-general",
+      "name": "A1",
+      "type": "level",
+      "order": 1,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-vocabulary-general-a2",
+      "parentId": "lab-vocabulary-general",
+      "name": "A2",
+      "type": "level",
+      "order": 2,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-vocabulary-general-b1",
+      "parentId": "lab-vocabulary-general",
+      "name": "B1",
+      "type": "level",
+      "order": 3,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-vocabulary-general-b2",
+      "parentId": "lab-vocabulary-general",
+      "name": "B2",
+      "type": "level",
+      "order": 4,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-vocabulary-general-c1",
+      "parentId": "lab-vocabulary-general",
+      "name": "C1",
+      "type": "level",
+      "order": 5,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-grammar",
+      "parentId": "skills-lab",
+      "name": "Grammar",
+      "type": "skill",
+      "order": 6,
+      "status": "published",
+      "description": "Always-open self-study and practice area."
+    },
+    {
+      "id": "lab-grammar-general",
+      "parentId": "lab-grammar",
+      "name": "General English",
+      "type": "track",
+      "order": 1,
+      "status": "planned",
+      "description": "CEFR-organised language competence practice."
+    },
+    {
+      "id": "lab-grammar-medical",
+      "parentId": "lab-grammar",
+      "name": "Medical English",
+      "type": "domain",
+      "order": 2,
+      "status": "planned",
+      "description": "Topic-based specialist practice."
+    },
+    {
+      "id": "lab-grammar-pharma",
+      "parentId": "lab-grammar",
+      "name": "Pharmaceutical English",
+      "type": "domain",
+      "order": 3,
+      "status": "planned",
+      "description": "Topic-based specialist practice."
+    },
+    {
+      "id": "lab-grammar-general-a1",
+      "parentId": "lab-grammar-general",
+      "name": "A1",
+      "type": "level",
+      "order": 1,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-grammar-general-a2",
+      "parentId": "lab-grammar-general",
+      "name": "A2",
+      "type": "level",
+      "order": 2,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-grammar-general-b1",
+      "parentId": "lab-grammar-general",
+      "name": "B1",
+      "type": "level",
+      "order": 3,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-grammar-general-b2",
+      "parentId": "lab-grammar-general",
+      "name": "B2",
+      "type": "level",
+      "order": 4,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "lab-grammar-general-c1",
+      "parentId": "lab-grammar-general",
+      "name": "C1",
+      "type": "level",
+      "order": 5,
+      "status": "planned",
+      "framework": "CEFR"
+    },
+    {
+      "id": "assign-library",
+      "parentId": "assignments",
+      "name": "Assignment Library",
+      "type": "workflow-shell",
+      "order": 1,
+      "status": "published",
+      "description": "Select an existing Resource/Interactive Activity or create a new task."
+    },
+    {
+      "id": "assign-active",
+      "parentId": "assignments",
+      "name": "Active Assignments",
+      "type": "workflow-shell",
+      "order": 2,
+      "status": "published",
+      "description": "Assign to a class or learner with Available From, Deadline, attempts and late policy."
+    },
+    {
+      "id": "assign-submissions",
+      "parentId": "assignments",
+      "name": "Submissions",
+      "type": "workflow-shell",
+      "order": 3,
+      "status": "published",
+      "description": "Student submissions with timestamps, attempt history and status."
+    },
+    {
+      "id": "assign-review",
+      "parentId": "assignments",
+      "name": "Review & Grading",
+      "type": "workflow-shell",
+      "order": 4,
+      "status": "published",
+      "description": "Auto-check, AI-assisted feedback, teacher review/override and final grade."
+    },
+    {
+      "id": "assign-completed",
+      "parentId": "assignments",
+      "name": "Completed",
+      "type": "workflow-shell",
+      "order": 5,
+      "status": "published",
+      "description": "Released feedback and completed work linked to Progress."
+    },
+    {
+      "id": "assign-archive",
+      "parentId": "assignments",
+      "name": "Archive",
+      "type": "workflow-shell",
+      "order": 6,
+      "status": "published",
+      "description": "Closed assignments retained with learning evidence and research history."
+    },
+    {
+      "id": "mock-general",
+      "parentId": "mock-tests",
+      "name": "General English",
+      "type": "domain",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "mock-medical",
+      "parentId": "mock-tests",
+      "name": "Medical English",
+      "type": "domain",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "mock-pharma",
+      "parentId": "mock-tests",
+      "name": "Pharmaceutical English",
+      "type": "domain",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "mock-vstep",
+      "parentId": "mock-general",
+      "name": "VSTEP",
+      "type": "test-track",
+      "order": 1,
+      "status": "published",
+      "description": "One assessment engine; Practice Mode can stay always open, Test Mode can be scheduled/timed."
+    },
+    {
+      "id": "mock-vstep-practice",
+      "parentId": "mock-vstep",
+      "name": "Practice Mode",
+      "type": "assessment-mode",
+      "order": 1,
+      "status": "planned",
+      "description": "Always open; configurable attempts and feedback."
+    },
+    {
+      "id": "mock-vstep-scheduled",
+      "parentId": "mock-vstep",
+      "name": "Scheduled Test Mode",
+      "type": "assessment-mode",
+      "order": 2,
+      "status": "planned",
+      "description": "Open/close window, time limit, attempt limit and controlled feedback release."
+    },
+    {
+      "id": "mock-ielts",
+      "parentId": "mock-general",
+      "name": "IELTS",
+      "type": "test-track",
+      "order": 2,
+      "status": "published",
+      "description": "One assessment engine; Practice Mode can stay always open, Test Mode can be scheduled/timed."
+    },
+    {
+      "id": "mock-ielts-practice",
+      "parentId": "mock-ielts",
+      "name": "Practice Mode",
+      "type": "assessment-mode",
+      "order": 1,
+      "status": "planned",
+      "description": "Always open; configurable attempts and feedback."
+    },
+    {
+      "id": "mock-ielts-scheduled",
+      "parentId": "mock-ielts",
+      "name": "Scheduled Test Mode",
+      "type": "assessment-mode",
+      "order": 2,
+      "status": "planned",
+      "description": "Open/close window, time limit, attempt limit and controlled feedback release."
+    },
+    {
+      "id": "mock-medical-1",
+      "parentId": "mock-medical",
+      "name": "Progress Tests",
+      "type": "test-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Sections are configurable; not hard-coded to four skills."
+    },
+    {
+      "id": "mock-medical-2",
+      "parentId": "mock-medical",
+      "name": "Module Tests",
+      "type": "test-collection",
+      "order": 2,
+      "status": "planned",
+      "description": "Sections are configurable; not hard-coded to four skills."
+    },
+    {
+      "id": "mock-medical-3",
+      "parentId": "mock-medical",
+      "name": "Final / Mock Tests",
+      "type": "test-collection",
+      "order": 3,
+      "status": "planned",
+      "description": "Sections are configurable; not hard-coded to four skills."
+    },
+    {
+      "id": "mock-pharma-1",
+      "parentId": "mock-pharma",
+      "name": "Progress Tests",
+      "type": "test-collection",
+      "order": 1,
+      "status": "planned",
+      "description": "Sections are configurable; not hard-coded to four skills."
+    },
+    {
+      "id": "mock-pharma-2",
+      "parentId": "mock-pharma",
+      "name": "Module Tests",
+      "type": "test-collection",
+      "order": 2,
+      "status": "planned",
+      "description": "Sections are configurable; not hard-coded to four skills."
+    },
+    {
+      "id": "mock-pharma-3",
+      "parentId": "mock-pharma",
+      "name": "Final / Mock Tests",
+      "type": "test-collection",
+      "order": 3,
+      "status": "planned",
+      "description": "Sections are configurable; not hard-coded to four skills."
+    },
+    {
+      "id": "progress-student",
+      "parentId": "progress",
+      "name": "Student Overview",
+      "type": "analytics-shell",
+      "order": 1,
+      "status": "published",
+      "description": "Personal learning evidence across courses, practice, assignments and mock tests."
+    },
+    {
+      "id": "progress-class",
+      "parentId": "progress",
+      "name": "Class Overview",
+      "type": "analytics-shell",
+      "order": 2,
+      "status": "published",
+      "description": "Teacher view of assigned class participation and outcomes."
+    },
+    {
+      "id": "progress-course",
+      "parentId": "progress",
+      "name": "Course Progress",
+      "type": "analytics-shell",
+      "order": 3,
+      "status": "published",
+      "description": "Course and lesson completion evidence."
+    },
+    {
+      "id": "progress-skill",
+      "parentId": "progress",
+      "name": "Skill Progress",
+      "type": "analytics-shell",
+      "order": 4,
+      "status": "published",
+      "description": "Practice history by skill, track, level/question type and topic."
+    },
+    {
+      "id": "progress-assign",
+      "parentId": "progress",
+      "name": "Assignment Results",
+      "type": "analytics-shell",
+      "order": 5,
+      "status": "published",
+      "description": "Submission, feedback and final grade history."
+    },
+    {
+      "id": "progress-mock",
+      "parentId": "progress",
+      "name": "Mock Test Results",
+      "type": "analytics-shell",
+      "order": 6,
+      "status": "published",
+      "description": "Attempts, sections, scores, timing and feedback."
+    },
+    {
+      "id": "progress-feedback",
+      "parentId": "progress",
+      "name": "Feedback History",
+      "type": "analytics-shell",
+      "order": 7,
+      "status": "published",
+      "description": "AI suggestions, teacher feedback, revisions and final feedback."
+    },
+    {
+      "id": "progress-analytics",
+      "parentId": "progress",
+      "name": "Analytics & Export",
+      "type": "analytics-shell",
+      "order": 8,
+      "status": "published",
+      "description": "Filter and export pseudonymised research-ready learning events."
+    },
+    {
+      "id": "adv-listening",
+      "parentId": "advanced-skills",
+      "name": "Listening",
+      "type": "skill",
+      "order": 1,
+      "status": "published",
+      "description": "Reusable teaching modules. CEFR is metadata; VSTEP/IELTS are pathways."
+    },
+    {
+      "id": "adv-speaking",
+      "parentId": "advanced-skills",
+      "name": "Speaking",
+      "type": "skill",
+      "order": 2,
+      "status": "published",
+      "description": "Reusable teaching modules. CEFR is metadata; VSTEP/IELTS are pathways."
+    },
+    {
+      "id": "adv-reading",
+      "parentId": "advanced-skills",
+      "name": "Reading",
+      "type": "skill",
+      "order": 3,
+      "status": "published",
+      "description": "Reusable teaching modules. CEFR is metadata; VSTEP/IELTS are pathways."
+    },
+    {
+      "id": "adv-writing",
+      "parentId": "advanced-skills",
+      "name": "Writing",
+      "type": "skill",
+      "order": 4,
+      "status": "published",
+      "description": "Reusable teaching modules. CEFR is metadata; VSTEP/IELTS are pathways."
+    },
+    {
+      "id": "adv-listening-listening-foundations",
+      "parentId": "adv-listening",
+      "name": "Listening Foundations",
+      "type": "core-module",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "adv-listening-conversations-dialogues",
+      "parentId": "adv-listening",
+      "name": "Conversations & Dialogues",
+      "type": "core-module",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "adv-listening-monologues-talks",
+      "parentId": "adv-listening",
+      "name": "Monologues & Talks",
+      "type": "core-module",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "adv-listening-exam-strategies",
+      "parentId": "adv-listening",
+      "name": "Exam Strategies",
+      "type": "pathway-hub",
+      "order": 4,
+      "status": "published"
+    },
+    {
+      "id": "adv-speaking-speaking-foundations",
+      "parentId": "adv-speaking",
+      "name": "Speaking Foundations",
+      "type": "core-module",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "adv-speaking-social-interaction",
+      "parentId": "adv-speaking",
+      "name": "Social Interaction",
+      "type": "core-module",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "adv-speaking-describing-narrating",
+      "parentId": "adv-speaking",
+      "name": "Describing & Narrating",
+      "type": "core-module",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "adv-speaking-opinions-discussion",
+      "parentId": "adv-speaking",
+      "name": "Opinions & Discussion",
+      "type": "core-module",
+      "order": 4,
+      "status": "published"
+    },
+    {
+      "id": "adv-speaking-extended-speaking",
+      "parentId": "adv-speaking",
+      "name": "Extended Speaking",
+      "type": "core-module",
+      "order": 5,
+      "status": "published"
+    },
+    {
+      "id": "adv-speaking-exam-strategies",
+      "parentId": "adv-speaking",
+      "name": "Exam Strategies",
+      "type": "pathway-hub",
+      "order": 6,
+      "status": "published"
+    },
+    {
+      "id": "adv-reading-reading-foundations",
+      "parentId": "adv-reading",
+      "name": "Reading Foundations",
+      "type": "core-module",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "adv-reading-meaning-vocabulary",
+      "parentId": "adv-reading",
+      "name": "Meaning & Vocabulary",
+      "type": "core-module",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "adv-reading-critical-reading",
+      "parentId": "adv-reading",
+      "name": "Critical Reading",
+      "type": "core-module",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "adv-reading-text-organisation",
+      "parentId": "adv-reading",
+      "name": "Text Organisation",
+      "type": "core-module",
+      "order": 4,
+      "status": "published"
+    },
+    {
+      "id": "adv-reading-exam-strategies",
+      "parentId": "adv-reading",
+      "name": "Exam Strategies",
+      "type": "pathway-hub",
+      "order": 5,
+      "status": "published"
+    },
+    {
+      "id": "adv-writing-writing-foundations",
+      "parentId": "adv-writing",
+      "name": "Writing Foundations",
+      "type": "core-module",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "adv-writing-paragraph-writing",
+      "parentId": "adv-writing",
+      "name": "Paragraph Writing",
+      "type": "core-module",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "adv-writing-letter-email-writing",
+      "parentId": "adv-writing",
+      "name": "Letter & Email Writing",
+      "type": "core-module",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "adv-writing-essay-writing",
+      "parentId": "adv-writing",
+      "name": "Essay Writing",
+      "type": "core-module",
+      "order": 4,
+      "status": "published"
+    },
+    {
+      "id": "adv-writing-visual-data-writing",
+      "parentId": "adv-writing",
+      "name": "Visual Data Writing",
+      "type": "core-module",
+      "order": 5,
+      "status": "published"
+    },
+    {
+      "id": "adv-writing-exam-strategies",
+      "parentId": "adv-writing",
+      "name": "Exam Strategies",
+      "type": "pathway-hub",
+      "order": 6,
+      "status": "published"
+    },
+    {
+      "id": "adv-writing-paragraph-writing-paragraph-structure",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Paragraph Structure",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-paragraph-writing-topic-sentence",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Topic Sentence",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-paragraph-writing-supporting-sentences",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Supporting Sentences",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-paragraph-writing-examples-evidence",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Examples & Evidence",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-paragraph-writing-concluding-sentence",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Concluding Sentence",
+      "type": "teaching-topic",
+      "order": 5,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-paragraph-writing-unity-coherence",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Unity & Coherence",
+      "type": "teaching-topic",
+      "order": 6,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-paragraph-writing-cohesive-devices",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Cohesive Devices",
+      "type": "teaching-topic",
+      "order": 7,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-paragraph-writing-descriptive-paragraph",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Descriptive Paragraph",
+      "type": "teaching-topic",
+      "order": 8,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-paragraph-writing-narrative-paragraph",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Narrative Paragraph",
+      "type": "teaching-topic",
+      "order": 9,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-paragraph-writing-opinion-paragraph",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Opinion Paragraph",
+      "type": "teaching-topic",
+      "order": 10,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-paragraph-writing-compare-contrast-paragraph",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Compare–Contrast Paragraph",
+      "type": "teaching-topic",
+      "order": 11,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-paragraph-writing-cause-effect-paragraph",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Cause–Effect Paragraph",
+      "type": "teaching-topic",
+      "order": 12,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-paragraph-writing-problem-solution-paragraph",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Problem–Solution Paragraph",
+      "type": "teaching-topic",
+      "order": 13,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-paragraph-writing-process-paragraph",
+      "parentId": "adv-writing-paragraph-writing",
+      "name": "Process Paragraph",
+      "type": "teaching-topic",
+      "order": 14,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-letter-email-writing-formal",
+      "parentId": "adv-writing-letter-email-writing",
+      "name": "Formal",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-letter-email-writing-semi-formal",
+      "parentId": "adv-writing-letter-email-writing",
+      "name": "Semi-formal",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-letter-email-writing-informal",
+      "parentId": "adv-writing-letter-email-writing",
+      "name": "Informal",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-letter-email-writing-request",
+      "parentId": "adv-writing-letter-email-writing",
+      "name": "Request",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-letter-email-writing-complaint",
+      "parentId": "adv-writing-letter-email-writing",
+      "name": "Complaint",
+      "type": "teaching-topic",
+      "order": 5,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-letter-email-writing-application",
+      "parentId": "adv-writing-letter-email-writing",
+      "name": "Application",
+      "type": "teaching-topic",
+      "order": 6,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-essay-writing-opinion",
+      "parentId": "adv-writing-essay-writing",
+      "name": "Opinion",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-essay-writing-discussion",
+      "parentId": "adv-writing-essay-writing",
+      "name": "Discussion",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-essay-writing-advantages-disadvantages",
+      "parentId": "adv-writing-essay-writing",
+      "name": "Advantages–Disadvantages",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-essay-writing-problem-solution",
+      "parentId": "adv-writing-essay-writing",
+      "name": "Problem–Solution",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-essay-writing-cause-effect",
+      "parentId": "adv-writing-essay-writing",
+      "name": "Cause–Effect",
+      "type": "teaching-topic",
+      "order": 5,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-essay-writing-two-part-question",
+      "parentId": "adv-writing-essay-writing",
+      "name": "Two-part Question",
+      "type": "teaching-topic",
+      "order": 6,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-visual-data-writing-line-graph",
+      "parentId": "adv-writing-visual-data-writing",
+      "name": "Line Graph",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-visual-data-writing-bar-chart",
+      "parentId": "adv-writing-visual-data-writing",
+      "name": "Bar Chart",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-visual-data-writing-pie-chart",
+      "parentId": "adv-writing-visual-data-writing",
+      "name": "Pie Chart",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-visual-data-writing-table",
+      "parentId": "adv-writing-visual-data-writing",
+      "name": "Table",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-visual-data-writing-process",
+      "parentId": "adv-writing-visual-data-writing",
+      "name": "Process",
+      "type": "teaching-topic",
+      "order": 5,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-visual-data-writing-map",
+      "parentId": "adv-writing-visual-data-writing",
+      "name": "Map",
+      "type": "teaching-topic",
+      "order": 6,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-writing-visual-data-writing-mixed-charts",
+      "parentId": "adv-writing-visual-data-writing",
+      "name": "Mixed Charts",
+      "type": "teaching-topic",
+      "order": 7,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-listening-listening-foundations-listening-for-gist",
+      "parentId": "adv-listening-listening-foundations",
+      "name": "Listening for Gist",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-listening-listening-foundations-listening-for-specific-information",
+      "parentId": "adv-listening-listening-foundations",
+      "name": "Listening for Specific Information",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-listening-listening-foundations-listening-for-detail",
+      "parentId": "adv-listening-listening-foundations",
+      "name": "Listening for Detail",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-listening-listening-foundations-speaker-purpose-attitude",
+      "parentId": "adv-listening-listening-foundations",
+      "name": "Speaker Purpose & Attitude",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-listening-listening-foundations-inference-implied-meaning",
+      "parentId": "adv-listening-listening-foundations",
+      "name": "Inference & Implied Meaning",
+      "type": "teaching-topic",
+      "order": 5,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-listening-listening-foundations-predicting-content",
+      "parentId": "adv-listening-listening-foundations",
+      "name": "Predicting Content",
+      "type": "teaching-topic",
+      "order": 6,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-listening-listening-foundations-note-taking",
+      "parentId": "adv-listening-listening-foundations",
+      "name": "Note-taking",
+      "type": "teaching-topic",
+      "order": 7,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-reading-foundations-skimming",
+      "parentId": "adv-reading-reading-foundations",
+      "name": "Skimming",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-reading-foundations-scanning",
+      "parentId": "adv-reading-reading-foundations",
+      "name": "Scanning",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-reading-foundations-reading-for-gist-main-idea",
+      "parentId": "adv-reading-reading-foundations",
+      "name": "Reading for Gist / Main Idea",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-reading-foundations-reading-for-detail",
+      "parentId": "adv-reading-reading-foundations",
+      "name": "Reading for Detail",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-meaning-vocabulary-vocabulary-in-context",
+      "parentId": "adv-reading-meaning-vocabulary",
+      "name": "Vocabulary in Context",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-meaning-vocabulary-reference",
+      "parentId": "adv-reading-meaning-vocabulary",
+      "name": "Reference",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-meaning-vocabulary-paraphrase-synonyms",
+      "parentId": "adv-reading-meaning-vocabulary",
+      "name": "Paraphrase & Synonyms",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-meaning-vocabulary-guessing-meaning-from-context",
+      "parentId": "adv-reading-meaning-vocabulary",
+      "name": "Guessing Meaning from Context",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-critical-reading-inference-implied-meaning",
+      "parentId": "adv-reading-critical-reading",
+      "name": "Inference & Implied Meaning",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-critical-reading-writer-s-opinion",
+      "parentId": "adv-reading-critical-reading",
+      "name": "Writer’s Opinion",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-critical-reading-writer-s-attitude",
+      "parentId": "adv-reading-critical-reading",
+      "name": "Writer’s Attitude",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-critical-reading-writer-s-purpose",
+      "parentId": "adv-reading-critical-reading",
+      "name": "Writer’s Purpose",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-critical-reading-fact-vs-opinion",
+      "parentId": "adv-reading-critical-reading",
+      "name": "Fact vs Opinion",
+      "type": "teaching-topic",
+      "order": 5,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-text-organisation-paragraph-main-ideas",
+      "parentId": "adv-reading-text-organisation",
+      "name": "Paragraph Main Ideas",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-text-organisation-cohesion-reference",
+      "parentId": "adv-reading-text-organisation",
+      "name": "Cohesion & Reference",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-text-organisation-logical-relationships",
+      "parentId": "adv-reading-text-organisation",
+      "name": "Logical Relationships",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-reading-text-organisation-argument-structure",
+      "parentId": "adv-reading-text-organisation",
+      "name": "Argument Structure",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-speaking-foundations-fluency",
+      "parentId": "adv-speaking-speaking-foundations",
+      "name": "Fluency",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-speaking-foundations-pronunciation",
+      "parentId": "adv-speaking-speaking-foundations",
+      "name": "Pronunciation",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-speaking-foundations-vocabulary-for-speaking",
+      "parentId": "adv-speaking-speaking-foundations",
+      "name": "Vocabulary for Speaking",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-speaking-foundations-grammar-for-speaking",
+      "parentId": "adv-speaking-speaking-foundations",
+      "name": "Grammar for Speaking",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-speaking-foundations-developing-an-answer",
+      "parentId": "adv-speaking-speaking-foundations",
+      "name": "Developing an Answer",
+      "type": "teaching-topic",
+      "order": 5,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-social-interaction-personal-information",
+      "parentId": "adv-speaking-social-interaction",
+      "name": "Personal Information",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-social-interaction-familiar-topics",
+      "parentId": "adv-speaking-social-interaction",
+      "name": "Familiar Topics",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-social-interaction-asking-answering-questions",
+      "parentId": "adv-speaking-social-interaction",
+      "name": "Asking & Answering Questions",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-social-interaction-everyday-interaction",
+      "parentId": "adv-speaking-social-interaction",
+      "name": "Everyday Interaction",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-describing-narrating-people",
+      "parentId": "adv-speaking-describing-narrating",
+      "name": "People",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-describing-narrating-places",
+      "parentId": "adv-speaking-describing-narrating",
+      "name": "Places",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-describing-narrating-objects",
+      "parentId": "adv-speaking-describing-narrating",
+      "name": "Objects",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-describing-narrating-experiences-events",
+      "parentId": "adv-speaking-describing-narrating",
+      "name": "Experiences & Events",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-describing-narrating-storytelling",
+      "parentId": "adv-speaking-describing-narrating",
+      "name": "Storytelling",
+      "type": "teaching-topic",
+      "order": 5,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-opinions-discussion-giving-opinions",
+      "parentId": "adv-speaking-opinions-discussion",
+      "name": "Giving Opinions",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-opinions-discussion-giving-reasons",
+      "parentId": "adv-speaking-opinions-discussion",
+      "name": "Giving Reasons",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-opinions-discussion-examples-evidence",
+      "parentId": "adv-speaking-opinions-discussion",
+      "name": "Examples & Evidence",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-opinions-discussion-agreeing-disagreeing",
+      "parentId": "adv-speaking-opinions-discussion",
+      "name": "Agreeing / Disagreeing",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-opinions-discussion-comparing-alternatives",
+      "parentId": "adv-speaking-opinions-discussion",
+      "name": "Comparing Alternatives",
+      "type": "teaching-topic",
+      "order": 5,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-opinions-discussion-developing-discussion",
+      "parentId": "adv-speaking-opinions-discussion",
+      "name": "Developing Discussion",
+      "type": "teaching-topic",
+      "order": 6,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-extended-speaking-planning-a-talk",
+      "parentId": "adv-speaking-extended-speaking",
+      "name": "Planning a Talk",
+      "type": "teaching-topic",
+      "order": 1,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-extended-speaking-organising-ideas",
+      "parentId": "adv-speaking-extended-speaking",
+      "name": "Organising Ideas",
+      "type": "teaching-topic",
+      "order": 2,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-extended-speaking-topic-development",
+      "parentId": "adv-speaking-extended-speaking",
+      "name": "Topic Development",
+      "type": "teaching-topic",
+      "order": 3,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-speaking-extended-speaking-presentation-long-turn",
+      "parentId": "adv-speaking-extended-speaking",
+      "name": "Presentation / Long Turn",
+      "type": "teaching-topic",
+      "order": 4,
+      "status": "published",
+      "description": "Attach one or more BG / interactive lessons here."
+    },
+    {
+      "id": "adv-listening-exam-strategies-vstep",
+      "parentId": "adv-listening-exam-strategies",
+      "name": "VSTEP",
+      "type": "exam-pathway",
+      "order": 1,
+      "status": "published",
+      "description": "Links shared core modules to VSTEP-specific strategy and format."
+    },
+    {
+      "id": "adv-listening-exam-strategies-ielts",
+      "parentId": "adv-listening-exam-strategies",
+      "name": "IELTS",
+      "type": "exam-pathway",
+      "order": 2,
+      "status": "published",
+      "description": "Links shared core modules to IELTS-specific strategy and format."
+    },
+    {
+      "id": "adv-speaking-exam-strategies-vstep",
+      "parentId": "adv-speaking-exam-strategies",
+      "name": "VSTEP",
+      "type": "exam-pathway",
+      "order": 1,
+      "status": "published",
+      "description": "Links shared core modules to VSTEP-specific strategy and format."
+    },
+    {
+      "id": "adv-speaking-exam-strategies-ielts",
+      "parentId": "adv-speaking-exam-strategies",
+      "name": "IELTS",
+      "type": "exam-pathway",
+      "order": 2,
+      "status": "published",
+      "description": "Links shared core modules to IELTS-specific strategy and format."
+    },
+    {
+      "id": "adv-reading-exam-strategies-vstep",
+      "parentId": "adv-reading-exam-strategies",
+      "name": "VSTEP",
+      "type": "exam-pathway",
+      "order": 1,
+      "status": "published",
+      "description": "Links shared core modules to VSTEP-specific strategy and format."
+    },
+    {
+      "id": "adv-reading-exam-strategies-ielts",
+      "parentId": "adv-reading-exam-strategies",
+      "name": "IELTS",
+      "type": "exam-pathway",
+      "order": 2,
+      "status": "published",
+      "description": "Links shared core modules to IELTS-specific strategy and format."
+    },
+    {
+      "id": "adv-writing-exam-strategies-vstep",
+      "parentId": "adv-writing-exam-strategies",
+      "name": "VSTEP",
+      "type": "exam-pathway",
+      "order": 1,
+      "status": "published",
+      "description": "Links shared core modules to VSTEP-specific strategy and format."
+    },
+    {
+      "id": "adv-writing-exam-strategies-ielts",
+      "parentId": "adv-writing-exam-strategies",
+      "name": "IELTS",
+      "type": "exam-pathway",
+      "order": 2,
+      "status": "published",
+      "description": "Links shared core modules to IELTS-specific strategy and format."
+    },
+    {
+      "id": "students",
+      "parentId": "classes",
+      "name": "Learners",
+      "type": "workflow-shell",
+      "order": 1,
+      "status": "published",
+      "description": "Student ID + Full Name with hidden immutable learner key and pseudonymous Research ID."
+    },
+    {
+      "id": "enrollment",
+      "parentId": "classes",
+      "name": "Enrollment & Membership",
+      "type": "workflow-shell",
+      "order": 2,
+      "status": "published",
+      "description": "Enroll learners in one or more classes without creating a heavy SIS."
+    },
+    {
+      "id": "live-join",
+      "parentId": "classes",
+      "name": "Live Join & Guests",
+      "type": "workflow-shell",
+      "order": 4,
+      "status": "published",
+      "description": "Lightweight QR/code join; optional guest access for live sessions."
+    },
+    {
+      "id": "lab-writing-paragraph",
+      "parentId": "lab-writing",
+      "name": "Paragraph Writing",
+      "type": "practice-module",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-letter-email",
+      "parentId": "lab-writing",
+      "name": "Letter & Email Writing",
+      "type": "practice-module",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-essay",
+      "parentId": "lab-writing",
+      "name": "Essay Writing",
+      "type": "practice-module",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-visual-data",
+      "parentId": "lab-writing",
+      "name": "Visual Data Writing",
+      "type": "practice-module",
+      "order": 4,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-exam-practice",
+      "parentId": "lab-writing",
+      "name": "Exam Practice",
+      "type": "pathway-hub",
+      "order": 5,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-medical",
+      "parentId": "lab-writing",
+      "name": "Medical English",
+      "type": "domain",
+      "order": 6,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-pharma",
+      "parentId": "lab-writing",
+      "name": "Pharmaceutical English",
+      "type": "domain",
+      "order": 7,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-paragraph-structure",
+      "parentId": "lab-writing-paragraph",
+      "name": "Paragraph Structure",
+      "type": "practice-topic",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-topic-sentence",
+      "parentId": "lab-writing-paragraph",
+      "name": "Topic Sentence",
+      "type": "practice-topic",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-supporting-sentences",
+      "parentId": "lab-writing-paragraph",
+      "name": "Supporting Sentences",
+      "type": "practice-topic",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-examples-evidence",
+      "parentId": "lab-writing-paragraph",
+      "name": "Examples & Evidence",
+      "type": "practice-topic",
+      "order": 4,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-concluding-sentence",
+      "parentId": "lab-writing-paragraph",
+      "name": "Concluding Sentence",
+      "type": "practice-topic",
+      "order": 5,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-unity-coherence",
+      "parentId": "lab-writing-paragraph",
+      "name": "Unity & Coherence",
+      "type": "practice-topic",
+      "order": 6,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-cohesive-devices",
+      "parentId": "lab-writing-paragraph",
+      "name": "Cohesive Devices",
+      "type": "practice-topic",
+      "order": 7,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-descriptive-paragraph",
+      "parentId": "lab-writing-paragraph",
+      "name": "Descriptive Paragraph",
+      "type": "practice-topic",
+      "order": 8,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-narrative-paragraph",
+      "parentId": "lab-writing-paragraph",
+      "name": "Narrative Paragraph",
+      "type": "practice-topic",
+      "order": 9,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-opinion-paragraph",
+      "parentId": "lab-writing-paragraph",
+      "name": "Opinion Paragraph",
+      "type": "practice-topic",
+      "order": 10,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-compare-contrast-paragraph",
+      "parentId": "lab-writing-paragraph",
+      "name": "Compare–Contrast Paragraph",
+      "type": "practice-topic",
+      "order": 11,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-cause-effect-paragraph",
+      "parentId": "lab-writing-paragraph",
+      "name": "Cause–Effect Paragraph",
+      "type": "practice-topic",
+      "order": 12,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-problem-solution-paragraph",
+      "parentId": "lab-writing-paragraph",
+      "name": "Problem–Solution Paragraph",
+      "type": "practice-topic",
+      "order": 13,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-paragraph-process-paragraph",
+      "parentId": "lab-writing-paragraph",
+      "name": "Process Paragraph",
+      "type": "practice-topic",
+      "order": 14,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-letter-email-formal",
+      "parentId": "lab-writing-letter-email",
+      "name": "Formal",
+      "type": "practice-topic",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-letter-email-semi-formal",
+      "parentId": "lab-writing-letter-email",
+      "name": "Semi-formal",
+      "type": "practice-topic",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-letter-email-informal",
+      "parentId": "lab-writing-letter-email",
+      "name": "Informal",
+      "type": "practice-topic",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-letter-email-request",
+      "parentId": "lab-writing-letter-email",
+      "name": "Request",
+      "type": "practice-topic",
+      "order": 4,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-letter-email-complaint",
+      "parentId": "lab-writing-letter-email",
+      "name": "Complaint",
+      "type": "practice-topic",
+      "order": 5,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-letter-email-application",
+      "parentId": "lab-writing-letter-email",
+      "name": "Application",
+      "type": "practice-topic",
+      "order": 6,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-essay-opinion",
+      "parentId": "lab-writing-essay",
+      "name": "Opinion",
+      "type": "practice-topic",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-essay-discussion",
+      "parentId": "lab-writing-essay",
+      "name": "Discussion",
+      "type": "practice-topic",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-essay-advantages-disadvantages",
+      "parentId": "lab-writing-essay",
+      "name": "Advantages–Disadvantages",
+      "type": "practice-topic",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-essay-problem-solution",
+      "parentId": "lab-writing-essay",
+      "name": "Problem–Solution",
+      "type": "practice-topic",
+      "order": 4,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-essay-cause-effect",
+      "parentId": "lab-writing-essay",
+      "name": "Cause–Effect",
+      "type": "practice-topic",
+      "order": 5,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-essay-two-part-question",
+      "parentId": "lab-writing-essay",
+      "name": "Two-part Question",
+      "type": "practice-topic",
+      "order": 6,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-visual-data-line-graph",
+      "parentId": "lab-writing-visual-data",
+      "name": "Line Graph",
+      "type": "practice-topic",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-visual-data-bar-chart",
+      "parentId": "lab-writing-visual-data",
+      "name": "Bar Chart",
+      "type": "practice-topic",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-visual-data-pie-chart",
+      "parentId": "lab-writing-visual-data",
+      "name": "Pie Chart",
+      "type": "practice-topic",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-visual-data-table",
+      "parentId": "lab-writing-visual-data",
+      "name": "Table",
+      "type": "practice-topic",
+      "order": 4,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-visual-data-process",
+      "parentId": "lab-writing-visual-data",
+      "name": "Process",
+      "type": "practice-topic",
+      "order": 5,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-visual-data-map",
+      "parentId": "lab-writing-visual-data",
+      "name": "Map",
+      "type": "practice-topic",
+      "order": 6,
+      "status": "published"
+    },
+    {
+      "id": "lab-writing-visual-data-mixed-charts",
+      "parentId": "lab-writing-visual-data",
+      "name": "Mixed Charts",
+      "type": "practice-topic",
+      "order": 7,
+      "status": "published"
+    },
+    {
+      "id": "lab-listening-core",
+      "parentId": "lab-listening",
+      "name": "Core Practice",
+      "type": "practice-module",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "lab-listening-core-gist-main-idea",
+      "parentId": "lab-listening-core",
+      "name": "Gist & Main Idea",
+      "type": "practice-topic",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "lab-listening-core-specific-information-detail",
+      "parentId": "lab-listening-core",
+      "name": "Specific Information & Detail",
+      "type": "practice-topic",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "lab-listening-core-purpose-attitude",
+      "parentId": "lab-listening-core",
+      "name": "Purpose & Attitude",
+      "type": "practice-topic",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "lab-listening-core-inference",
+      "parentId": "lab-listening-core",
+      "name": "Inference",
+      "type": "practice-topic",
+      "order": 4,
+      "status": "published"
+    },
+    {
+      "id": "lab-listening-core-note-taking",
+      "parentId": "lab-listening-core",
+      "name": "Note-taking",
+      "type": "practice-topic",
+      "order": 5,
+      "status": "published"
+    },
+    {
+      "id": "lab-listening-exam-practice",
+      "parentId": "lab-listening",
+      "name": "Exam Practice",
+      "type": "pathway-hub",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "lab-reading-core",
+      "parentId": "lab-reading",
+      "name": "Core Practice",
+      "type": "practice-module",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "lab-reading-core-skimming-scanning",
+      "parentId": "lab-reading-core",
+      "name": "Skimming & Scanning",
+      "type": "practice-topic",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "lab-reading-core-main-idea-detail",
+      "parentId": "lab-reading-core",
+      "name": "Main Idea & Detail",
+      "type": "practice-topic",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "lab-reading-core-vocabulary-in-context",
+      "parentId": "lab-reading-core",
+      "name": "Vocabulary in Context",
+      "type": "practice-topic",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "lab-reading-core-inference-attitude",
+      "parentId": "lab-reading-core",
+      "name": "Inference & Attitude",
+      "type": "practice-topic",
+      "order": 4,
+      "status": "published"
+    },
+    {
+      "id": "lab-reading-core-text-organisation",
+      "parentId": "lab-reading-core",
+      "name": "Text Organisation",
+      "type": "practice-topic",
+      "order": 5,
+      "status": "published"
+    },
+    {
+      "id": "lab-reading-exam-practice",
+      "parentId": "lab-reading",
+      "name": "Exam Practice",
+      "type": "pathway-hub",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "lab-speaking-core",
+      "parentId": "lab-speaking",
+      "name": "Core Practice",
+      "type": "practice-module",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "lab-speaking-core-fluency-pronunciation",
+      "parentId": "lab-speaking-core",
+      "name": "Fluency & Pronunciation",
+      "type": "practice-topic",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "lab-speaking-core-social-interaction",
+      "parentId": "lab-speaking-core",
+      "name": "Social Interaction",
+      "type": "practice-topic",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "lab-speaking-core-describing-narrating",
+      "parentId": "lab-speaking-core",
+      "name": "Describing & Narrating",
+      "type": "practice-topic",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "lab-speaking-core-opinions-discussion",
+      "parentId": "lab-speaking-core",
+      "name": "Opinions & Discussion",
+      "type": "practice-topic",
+      "order": 4,
+      "status": "published"
+    },
+    {
+      "id": "lab-speaking-core-extended-speaking",
+      "parentId": "lab-speaking-core",
+      "name": "Extended Speaking",
+      "type": "practice-topic",
+      "order": 5,
+      "status": "published"
+    },
+    {
+      "id": "lab-speaking-exam-practice",
+      "parentId": "lab-speaking",
+      "name": "Exam Practice",
+      "type": "pathway-hub",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "objective-first-b2-u02",
+      "parentId": "objective-first-b2",
+      "name": "Unit 2",
+      "type": "unit",
+      "order": 2,
+      "status": "draft"
+    },
+    {
+      "id": "objective-first-b2-u02-l01",
+      "parentId": "objective-first-b2-u02",
+      "name": "U2.1 · The Virtual World",
+      "type": "lesson",
+      "order": 1,
+      "status": "draft"
+    },
+    {
+      "id": "objective-first-b2-u02-l02",
+      "parentId": "objective-first-b2-u02",
+      "name": "U2.2 · Review of Present Tenses",
+      "type": "lesson",
+      "order": 2,
+      "status": "draft"
+    },
+    {
+      "id": "adv-writing-letter-email-writing-informal-l01",
+      "parentId": "adv-writing-letter-email-writing-informal",
+      "name": "Lesson 1 · Writing to a Friend",
+      "type": "lesson",
+      "order": 1,
+      "status": "published"
+    }
+  ]
+}

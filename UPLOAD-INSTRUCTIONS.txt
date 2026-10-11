@@ -1,0 +1,2 @@
+Upload all files and folders inside this patch to the repository root on e-leap-clean-v1.
+Commit: Add Advanced Skills Informal Letter Lesson 1 FINAL

@@ -1,0 +1,15 @@
+{
+  "id": "objective-first-b2-u01-l01",
+  "courseId": "objective-first-b2",
+  "unitId": "unit-01",
+  "lessonNumber": "U1.1",
+  "title": "Fashion Matters",
+  "status": "APPROVED",
+  "sourcePackage": "E-LEAP-Objective-First-B2-U1.1-FINAL-v2",
+  "integration": {
+    "mode": "standalone-adapter",
+    "entry": "standalone/index.html",
+    "goldenReference": true,
+    "note": "Original approved standalone package preserved byte-for-byte; shared-engine migration follows after parity QA."
+  }
+}

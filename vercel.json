@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/api/auth/:name", "destination": "/api/router?group=auth&name=:name" },
+    { "source": "/api/research/:name", "destination": "/api/router?group=research&name=:name" }
+  ]
+}

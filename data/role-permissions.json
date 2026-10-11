@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "2.0-r1-locked",
+  "roles": {
+    "guest": {
+      "label": "Guest",
+      "capabilities": [
+        "practice:view",
+        "course:view"
+      ]
+    },
+    "student": {
+      "label": "Student",
+      "capabilities": [
+        "course:view",
+        "practice:view",
+        "assignment:submit",
+        "progress:self",
+        "class:join"
+      ]
+    },
+    "teacher": {
+      "label": "Teacher",
+      "capabilities": [
+        "course:view",
+        "class:manage:assigned",
+        "assignment:manage:assigned",
+        "submissions:review:assigned",
+        "progress:class",
+        "live:manage",
+        "presentation:enter"
+      ],
+      "grantsRequired": [
+        "content:manage",
+        "content:publish",
+        "assessment:edit"
+      ]
+    },
+    "admin": {
+      "label": "Admin",
+      "capabilities": [
+        "*"
+      ]
+    }
+  },
+  "presentation": {
+    "kind": "mode",
+    "inheritsRole": true,
+    "allowedRoles": [
+      "teacher",
+      "admin"
+    ]
+  },
+  "principles": [
+    "role-determines-permission",
+    "device-determines-layout-only",
+    "session-code-determines-live-context-only",
+    "assessment-policy-controls-submit-check-reveal-reset",
+    "content-editing-is-a-separate-grant"
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "1.0",
+  "storageMode": "development-local-adapter",
+  "productionRequirement": "authenticated server-side datastore",
+  "identity": {
+    "registered": [
+      "studentId",
+      "fullName",
+      "learnerKey",
+      "researchId"
+    ],
+    "guest": [
+      "displayName",
+      "learnerKey",
+      "researchId"
+    ]
+  },
+  "entities": [
+    "Learner",
+    "Class",
+    "Membership",
+    "Session",
+    "Attempt",
+    "Submission",
+    "Grade",
+    "Feedback",
+    "ProgressEvent"
+  ],
+  "grading": {
+    "objective": "auto",
+    "writingSpeaking": "AI-assisted + teacher review/override",
+    "finalAuthority": "teacher"
+  },
+  "research": {
+    "exportKey": "researchId",
+    "excludeDirectIdentifiersByDefault": true
+  }
+}

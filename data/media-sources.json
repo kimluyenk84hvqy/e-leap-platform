@@ -1,0 +1,11 @@
+{
+  "schemaVersion":"1.0",
+  "mode":"private-media",
+  "publicRepoMedia":false,
+  "baseUrl":"__PRIVATE_MEDIA_BASE_URL__",
+  "note":"Set a private/authorized media base URL at deployment time. Do not commit restricted course media to the public GitHub repository.",
+  "lessons":{
+    "res-objective-first-b2-u01-l01":{"prefix":"u01/l01/"},
+    "res-objective-first-b2-u01-l02":{"prefix":"u01/l02/"}
+  }
+}

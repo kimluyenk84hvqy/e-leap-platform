@@ -1,0 +1,13 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "title":"E-LEAP Server Submission v2",
+  "type":"object",
+  "required":["submissionId","assignmentId","studentCode","attemptNo","status","submittedAt"],
+  "properties":{
+    "submissionId":{"type":"string"},"assignmentId":{"type":"string"},"studentCode":{"type":"string"},
+    "studentName":{"type":["string","null"]},"response":{"type":"object"},"attemptNo":{"type":"integer","minimum":1},
+    "status":{"enum":["submitted","graded","feedback-released"]},"submittedAt":{"type":"string"},
+    "score":{"type":["number","null"]},"maxScore":{"type":["number","null"]},"feedback":{"type":["string","null"]},
+    "rubricScores":{"type":["object","null"]}
+  }
+}
