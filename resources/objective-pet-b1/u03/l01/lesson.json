@@ -1,1 +1,214 @@
-{"lesson_id":"u3l31","title":"Unit 3.1 · What’s your job?","status":"locked-final","canonical_route":"/resources/objective-pet-b1/u03/l01/standalone/"}
+{
+  "lesson_id": "u3l31",
+  "release": "FINAL_CANDIDATE_RC2.3_ONLINE",
+  "title": "Objective PET · Unit 3 · What’s your job? · Lesson 3.1",
+  "audience": "Postgraduate Specialist Level 1 doctors",
+  "scope_note": "Source pages 22–24; Short Answers excluded and reserved for Lesson 3.2.",
+  "screen_count": 20,
+  "preface": [
+    "hero",
+    "aims"
+  ],
+  "closing": [
+    "thanks"
+  ],
+  "screens": [
+    {
+      "id": "hero",
+      "label": "Opening",
+      "title": "Unit 3 · What’s your job?",
+      "type": "hero"
+    },
+    {
+      "id": "aims",
+      "label": "Aims",
+      "title": "Aims of the Lesson",
+      "type": "aims"
+    },
+    {
+      "id": "s02",
+      "label": "02",
+      "title": "Who is working here?",
+      "type": "warmup"
+    },
+    {
+      "id": "s03",
+      "label": "03",
+      "title": "Explore the Jobs",
+      "type": "jobs"
+    },
+    {
+      "id": "s04",
+      "label": "04",
+      "title": "Notice the Difference",
+      "type": "notice"
+    },
+    {
+      "id": "s05",
+      "label": "05",
+      "title": "At the Shopping Mall",
+      "type": "listening"
+    },
+    {
+      "id": "s06",
+      "label": "06",
+      "title": "Grammar Discovery",
+      "type": "discovery"
+    },
+    {
+      "id": "s07",
+      "label": "07",
+      "title": "Usually or Right Now?",
+      "type": "video"
+    },
+    {
+      "id": "s08",
+      "label": "08",
+      "title": "Build the Tense Model",
+      "type": "tenseBuild"
+    },
+    {
+      "id": "s09",
+      "label": "09",
+      "title": "Present Simple vs Present Continuous",
+      "type": "tenseFocus"
+    },
+    {
+      "id": "s10",
+      "label": "10",
+      "title": "Shopping Mall Practice",
+      "type": "controlled"
+    },
+    {
+      "id": "s11",
+      "label": "11",
+      "title": "Sonia: Two Lives",
+      "type": "soniaSort"
+    },
+    {
+      "id": "s12",
+      "label": "12",
+      "title": "Speak about Sonia",
+      "type": "soniaSpeak"
+    },
+    {
+      "id": "s13",
+      "label": "13",
+      "title": "Sonia & Granny",
+      "type": "soniaDialogue"
+    },
+    {
+      "id": "s14",
+      "label": "14",
+      "title": "Action or State?",
+      "type": "stateElicit"
+    },
+    {
+      "id": "s15",
+      "label": "15",
+      "title": "Before the Rule",
+      "type": "stateCategorise"
+    },
+    {
+      "id": "s16",
+      "label": "16",
+      "title": "Build the State-Verb Model",
+      "type": "stateBuild"
+    },
+    {
+      "id": "s17",
+      "label": "17",
+      "title": "State Verbs · Focus Mode",
+      "type": "stateFocus"
+    },
+    {
+      "id": "s18",
+      "label": "18",
+      "title": "Error Doctor",
+      "type": "errorDoctor"
+    },
+    {
+      "id": "s19",
+      "label": "19",
+      "title": "Professional Transfer",
+      "type": "professional"
+    },
+    {
+      "id": "s20",
+      "label": "20",
+      "title": "Exit Ticket",
+      "type": "exit"
+    },
+    {
+      "id": "thanks",
+      "label": "End",
+      "title": "Thank You",
+      "type": "thanks"
+    }
+  ],
+  "latest_decisions": {
+    "screen07": "One external YouTube video only; local/offline fallback; no rehosting.",
+    "screen15": "No second video. State Verbs are elicited interactively.",
+    "screen16_17": "Golden interaction retained: build -> Responses -> discussion -> Show Answer -> Focus.",
+    "aims": "Use the approved 3-box Knowledge / Skills / Attitude slide.",
+    "short_answers": "Not in Lesson 3.1."
+  },
+  "typography_update": "Projector-friendly pass: body 20–22px; questions 24–28px; controls 18–20px.",
+  "rc1_2_features": {
+    "adaptive_layout": [
+      "auto",
+      "projector",
+      "compact",
+      "responsive breakpoints"
+    ],
+    "live_class_qr": "Generated from current hosted URL; local file mode shows publish-first notice.",
+    "responses_board": "Teacher/Admin local QA board with activity filter, search, metrics, JSON export.",
+    "offline_video": "Third-party YouTube video is not bundled; offline fallback activity remains active to avoid unlicensed redistribution."
+  },
+  "typography_update_rc1_3": {
+    "goal": "TV/projector readability with emphasis on form-heavy screens",
+    "body": "~22px desktop",
+    "question_sentence": "~26–28px desktop",
+    "inputs": "~22–24px desktop",
+    "footer_nav": "~20px"
+  },
+  "rc1_4_features": {
+    "hero_controls": "QR / Responses / Timer / Layout / Presentation visible before Start Lesson",
+    "qr_first_flow": "Hosted teacher view requires QR shared / students joined confirmation before Start Lesson",
+    "student_qr_url": "?role=student&join=1",
+    "per_box_answer_reveal": "Answers reveal individually; global Show answer activates reveal mode only",
+    "answer_color": "green differentiated answer text",
+    "typography": "further increased for classroom projection",
+    "offline_package": false
+  },
+  "book_activity_map": {
+    "Screen03": [
+      "Introduction Activity 1",
+      "Introduction Activity 2",
+      "Introduction Activity 3",
+      "Introduction Activity 4"
+    ],
+    "Screen05": [
+      "Listening Activity 1",
+      "Listening Activity 2",
+      "Listening Activity 3"
+    ],
+    "Screen06": "Grammar Spot p.23",
+    "Screen10": "Language Focus Activity 1",
+    "Screen11_12": "Language Focus Activity 2",
+    "Screen13": "Language Focus Activity 3 + Audio 1.12",
+    "Screen14_18": "Grammar Spot: State verbs",
+    "Screen19": "Professional extension",
+    "Screen20": "Exit Ticket"
+  },
+  "answer_reveal_contract": "Submit -> Responses -> Discuss -> Show Answer mode -> reveal one box at a time; typed answers reveal inside the same input box in green.",
+  "video_policy": "YouTube embed online; no rehosting.",
+  "status": "FINAL CANDIDATE - classroom test before FINAL",
+  "final_candidate_fixes": {
+    "screen01": "Removed default Student devices card; QR appears only on demand via Live Class / QR.",
+    "screen03": "Job Word Bank shuffled: mechanic, flight attendant, engineer, shop assistant, hairdresser, website designer, salesperson.",
+    "screen05": "Three listening tabs locked to one line on desktop/projector.",
+    "screen10": "Per-item Show button placed immediately before learner answer box on the same row."
+  },
+  "screen10_final_fix": "Show button fixed inline immediately before learner answer input; no extra vertical row."
+}
