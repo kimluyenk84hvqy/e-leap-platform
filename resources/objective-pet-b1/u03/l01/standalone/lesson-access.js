@@ -1,7 +1,7 @@
 /* E-LEAP U3.1 hosted access adapter.
-   The platform owns role-aware controls; the lesson owns content, activity state,
-   answer keys and Next/Previous navigation. Standalone QA controls remain available
-   only when the lesson is opened outside the platform host. */
+   Platform owns roles/controls/data; lesson owns content/activity/Next-Previous.
+   This adapter also carries a direct same-origin Live Class sync path so U3.1
+   remains synchronized even if the parent host stabilization layer is unavailable. */
 (function(){
   'use strict';
   const p=new URLSearchParams(location.search);
@@ -11,6 +11,11 @@
   let hostRole=allowedRoles.includes(p.get('eleapRole'))?p.get('eleapRole'):'guest';
   let canTeach=['teacher','admin'].includes(hostRole);
   let hostMode=(p.get('eleapMode')==='presentation'&&canTeach)?'presentation':(canTeach?'teacher':'student');
+  const liveSessionId=p.get('sessionId')||null;
+  let liveLastScreen=null;
+  let liveTeacherTimer=null;
+  let liveStudentTimer=null;
+  let applyingTeacherScreen=false;
 
   function publishContext(extra={}){
     window.ELEAP_HOST_CONTEXT={
@@ -56,14 +61,27 @@
     document.head.appendChild(s);
   }
 
+  function screenFromCounter(){
+    const txt=document.getElementById('screenCounter')?.textContent||'';
+    const n=parseInt(txt,10);
+    return Number.isFinite(n)&&n>0?n:null;
+  }
+
   function syncNavigationContract(){
     try{
-      if(typeof current!=='undefined'&&Number.isFinite(Number(current))){
-        document.body.dataset.screen=String(Number(current)+1);
-      }
+      let n=null;
+      if(typeof current!=='undefined'&&Number.isFinite(Number(current)))n=Number(current)+1;
+      if(!n)n=screenFromCounter();
+      if(n)document.body.dataset.screen=String(n);
       const prev=document.getElementById('prevBtn');if(prev)prev.dataset.nav='prev';
       const next=document.getElementById('nextBtn');if(next)next.dataset.nav='next';
     }catch(_){ }
+  }
+
+  function currentScreenNumber(){
+    syncNavigationContract();
+    const n=Number(document.body.dataset.screen)||screenFromCounter();
+    return Number.isFinite(Number(n))&&Number(n)>0?Number(n):null;
   }
 
   function setLessonRole(){
@@ -80,10 +98,8 @@
 
   function visibleActivityRoot(){return document.getElementById('stage')||document;}
   function activityMeta(){
-    try{
-      if(typeof getActivity==='function')return getActivity();
-    }catch(_){ }
-    return {id:'screen-'+(Number(document.body.dataset.screen)||1),screenId:null,type:null};
+    try{if(typeof getActivity==='function')return getActivity();}catch(_){ }
+    return {id:'screen-'+(currentScreenNumber()||1),screenId:null,type:null};
   }
   function actionButton(action){
     const root=visibleActivityRoot();
@@ -104,50 +120,29 @@
     return state.inputs.some(x=>(x.type==='checkbox'||x.type==='radio')?x.value===true:String(x.value??'').trim()!=='')||state.selected.length>0;
   }
   function capabilities(){
-    return {
-      check:Boolean(actionButton('check')),
-      reset:Boolean(actionButton('reset')),
-      reveal:Boolean(actionButton('show')),
-      submit:Boolean(actionButton('submit')),
-      score:Boolean(actionButton('score')),
-      assessable:Boolean(actionButton('score'))
-    };
+    return {check:Boolean(actionButton('check')),reset:Boolean(actionButton('reset')),reveal:Boolean(actionButton('show')),submit:Boolean(actionButton('submit')),score:Boolean(actionButton('score')),assessable:Boolean(actionButton('score'))};
   }
   function assessment(){
     const root=visibleActivityRoot();
-    const scoreBtn=actionButton('score');
-    if(!scoreBtn)return null;
+    const scoreBtn=actionButton('score');if(!scoreBtn)return null;
     const statusText=[...root.querySelectorAll('.status')].map(x=>x.textContent||'').join(' ');
-    const m=statusText.match(/(\d+)\s*\/\s*(\d+)/);
-    if(!m)return null;
-    const correct=Number(m[1]),total=Number(m[2]);
-    if(!total)return null;
+    const m=statusText.match(/(\d+)\s*\/\s*(\d+)/);if(!m)return null;
+    const correct=Number(m[1]),total=Number(m[2]);if(!total)return null;
     const response=snapshot();
     const answered=response.inputs.filter(x=>(x.type==='checkbox'||x.type==='radio')?x.value===true:String(x.value??'').trim()!=='').length||total;
     return {isCorrect:correct===total,score:correct/total,correctCount:correct,answeredCount:Math.min(answered,total),wrongCount:Math.max(0,Math.min(answered,total)-correct),unansweredCount:Math.max(0,total-answered),totalCount:total,source:'u3.1-lesson-engine'};
   }
   function armReveal(){
-    const btn=actionButton('show');
-    if(!btn)return false;
-    btn.click();
+    const btn=actionButton('show');if(!btn)return false;btn.click();
     const armed=visibleActivityRoot().querySelector('.reveal-mode');
-    document.body.classList.toggle('platform-reveal-armed',Boolean(armed));
-    return true;
+    document.body.classList.toggle('platform-reveal-armed',Boolean(armed));return true;
   }
   function clickAction(action){const b=actionButton(action);if(!b)return false;b.click();return true;}
 
   window.ELEAP_LESSON_HOST_API={
-    setMode(mode){
-      hostMode=(mode==='presentation'&&canTeach)?'presentation':(canTeach?'teacher':'student');
-      publishContext();setLessonRole();
-      return true;
-    },
+    setMode(mode){hostMode=(mode==='presentation'&&canTeach)?'presentation':(canTeach?'teacher':'student');publishContext();setLessonRole();return true;},
     getMode(){return hostMode;},
-    getActivityState(){
-      syncNavigationContract();
-      const a=activityMeta();
-      return {screenNumber:Number(document.body.dataset.screen)||null,activityId:a.screenId||a.id||'u3l31',response:snapshot(),assessment:assessment(),capabilities:capabilities()};
-    },
+    getActivityState(){syncNavigationContract();const a=activityMeta();return {screenNumber:currentScreenNumber(),activityId:a.screenId||a.id||'u3l31',response:snapshot(),assessment:assessment(),capabilities:capabilities()};},
     command(action){
       if(action==='check')return clickAction('check');
       if(action==='reset'){document.body.classList.remove('platform-reveal-armed');return clickAction('reset');}
@@ -157,7 +152,64 @@
     }
   };
 
-  function enforce(){installHostedStyle();publishContext();setLessonRole();syncNavigationContract();}
+  const eventUid=()=>globalThis.crypto?.randomUUID?.()||`u31-live-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  async function postLiveControl(eventType,answer){
+    if(!liveSessionId||!canTeach)return false;
+    try{
+      const a=activityMeta();
+      const r=await fetch('/api/research/events',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({clientEventId:eventUid(),sessionId:liveSessionId,activityId:a.screenId||a.id||null,eventType,answer,metadata:{source:'u3.1-direct-live-sync-v2',resourceId:'res-objective-pet-b1-u03-l01'}})});
+      window.ELEAP_U31_LIVE_DIAGNOSTIC={role:hostRole,sessionId:liveSessionId,lastPost:eventType,ok:r.ok,status:r.status,at:Date.now()};
+      return r.ok;
+    }catch(err){window.ELEAP_U31_LIVE_DIAGNOSTIC={role:hostRole,sessionId:liveSessionId,lastPost:eventType,ok:false,error:String(err),at:Date.now()};return false;}
+  }
+
+  async function publishTeacherScreen(force=false){
+    if(!canTeach||!liveSessionId)return;
+    const n=currentScreenNumber();if(!n)return;
+    if(!force&&n===liveLastScreen)return;
+    liveLastScreen=n;
+    await postLiveControl('teacher.navigation',{screenNumber:n,activityId:activityMeta()?.screenId||activityMeta()?.id||null,locked:true});
+  }
+
+  function startDirectTeacherSync(){
+    if(!liveSessionId||!canTeach||liveTeacherTimer)return;
+    postLiveControl('teacher.follow',{enabled:true}).then(()=>publishTeacherScreen(true));
+    liveTeacherTimer=setInterval(()=>publishTeacherScreen(false),500);
+  }
+
+  function goDirectlyToScreen(target){
+    const n=Number(target);if(!Number.isFinite(n)||n<1)return false;
+    const now=currentScreenNumber();if(now===n)return true;
+    applyingTeacherScreen=true;
+    try{
+      if(typeof go==='function'){go(n-1);syncNavigationContract();return currentScreenNumber()===n;}
+      let guard=0,cur=now;
+      while(cur&&cur!==n&&guard++<40){
+        const btn=document.getElementById(n>cur?'nextBtn':'prevBtn');if(!btn||btn.disabled)break;btn.click();
+        const next=currentScreenNumber();if(!next||next===cur)break;cur=next;
+      }
+      return currentScreenNumber()===n;
+    }catch(_){return false;}finally{applyingTeacherScreen=false;}
+  }
+
+  async function pollTeacherScreen(){
+    if(!liveSessionId||hostRole!=='student')return;
+    try{
+      const r=await fetch(`/api/research/events?sessionId=${encodeURIComponent(liveSessionId)}&control=1`,{credentials:'same-origin',cache:'no-store'});
+      if(!r.ok)return;
+      const d=await r.json();const c=d?.control||{};const n=Number(c.screenNumber);
+      window.ELEAP_U31_LIVE_DIAGNOSTIC={role:hostRole,sessionId:liveSessionId,followEnabled:!!c.followEnabled,target:Number.isFinite(n)?n:null,at:Date.now()};
+      if(c.followEnabled===true&&Number.isFinite(n)&&n>0)goDirectlyToScreen(n);
+    }catch(err){window.ELEAP_U31_LIVE_DIAGNOSTIC={role:hostRole,sessionId:liveSessionId,error:String(err),at:Date.now()};}
+  }
+
+  function startDirectStudentSync(){
+    if(!liveSessionId||hostRole!=='student'||liveStudentTimer)return;
+    pollTeacherScreen();
+    liveStudentTimer=setInterval(pollTeacherScreen,650);
+  }
+
+  function enforce(){installHostedStyle();publishContext();setLessonRole();syncNavigationContract();startDirectTeacherSync();startDirectStudentSync();}
   window.addEventListener('message',(ev)=>{
     if(ev.origin!==location.origin)return;
     const msg=ev.data;if(!msg||msg.type!=='e-leap:runtime-context'||!msg.context)return;
@@ -170,11 +222,11 @@
     if(!document.body.classList.contains('platform-reveal-armed'))return;
     const target=e.target.closest('input[data-answer],textarea[data-answer],select[data-answer],[data-dialogue],.answer-slot,.dropzone[data-zone],.elicit-card');
     if(!target||!canTeach)return;
-    const scope=target.closest('.tab-panel')||target.closest('.screen');
-    scope?.classList.add('reveal-mode');
+    const scope=target.closest('.tab-panel')||target.closest('.screen');scope?.classList.add('reveal-mode');
   },true);
   window.addEventListener('DOMContentLoaded',()=>setTimeout(enforce,0));
   window.addEventListener('load',()=>{enforce();setTimeout(enforce,120)});
+  window.addEventListener('pagehide',()=>{clearInterval(liveTeacherTimer);clearInterval(liveStudentTimer);},{once:true});
   setInterval(syncNavigationContract,120);
   enforce();
   try{window.parent.postMessage({type:'e-leap:request-runtime-context'},location.origin)}catch(_){ }
