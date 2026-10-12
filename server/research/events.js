@@ -4,6 +4,17 @@ import { requireAuth,requireSameOrigin,teacherOwnsClass,studentInClass } from '.
 const CONTROL_TYPES=new Set(['teacher.follow','teacher.navigation']);
 const safeObject=(v)=>v&&typeof v==='object'&&!Array.isArray(v)?v:{};
 
+async function findStudentParticipant(sql,sessionId,user){
+  const rows=await sql`
+    SELECT p.participant_id
+    FROM participants p
+    JOIN users ru ON ru.user_id=p.student_user_id
+    WHERE p.session_id=${sessionId}
+      AND ru.external_auth_id=${String(user.user_id)}
+    LIMIT 1`;
+  return rows[0]||null;
+}
+
 export default async function handler(req,res){
   try{
     const sql=getResearchDb();
@@ -29,8 +40,8 @@ export default async function handler(req,res){
         if(!await studentInClass(sql,user,session.class_id)){
           return res.status(403).json({ok:false,error:'Student is not a member of this class'});
         }
-        const joined=await sql`SELECT participant_id FROM participants WHERE session_id=${sessionId} AND student_user_id=${user.user_id} LIMIT 1`;
-        if(!joined.length)return res.status(403).json({ok:false,error:'Student has not joined this live session'});
+        const joined=await findStudentParticipant(sql,sessionId,user);
+        if(!joined)return res.status(403).json({ok:false,error:'Student has not joined this live session'});
         const rows=await sql`SELECT event_type,answer,activity_id,occurred_at
           FROM events
           WHERE session_id=${sessionId} AND event_type IN ('teacher.follow','teacher.navigation')
@@ -76,10 +87,10 @@ export default async function handler(req,res){
       if(user.role!=='student')return res.status(403).json({ok:false,error:'Student session required'});
       if(CONTROL_TYPES.has(safeType))return res.status(403).json({ok:false,error:'Student cannot publish classroom controls'});
       if(!await studentInClass(sql,user,session.class_id))return res.status(403).json({ok:false,error:'Student is not a member of this class'});
-      const p=await sql`SELECT participant_id FROM participants WHERE session_id=${sessionId} AND student_user_id=${user.user_id} LIMIT 1`;
-      if(!p.length)return res.status(403).json({ok:false,error:'Student has not joined this live session'});
+      const p=await findStudentParticipant(sql,sessionId,user);
+      if(!p)return res.status(403).json({ok:false,error:'Student has not joined this live session'});
       const rows=await sql`INSERT INTO events(client_event_id,session_id,class_id,participant_id,lesson_id,activity_id,event_type,answer,is_correct,score,metadata)
-        VALUES(${clientEventId},${sessionId},${session.class_id},${p[0].participant_id},${session.lesson_id},${activityId},${safeType},${answer},${isCorrect},${score},${safeMeta})
+        VALUES(${clientEventId},${sessionId},${session.class_id},${p.participant_id},${session.lesson_id},${activityId},${safeType},${answer},${isCorrect},${score},${safeMeta})
         ON CONFLICT(client_event_id) DO UPDATE SET client_event_id=EXCLUDED.client_event_id RETURNING *`;
       return res.status(201).json({ok:true,event:rows[0]});
     }
