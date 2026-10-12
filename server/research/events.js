@@ -1,5 +1,5 @@
 import { getResearchDb } from '../_research-db.js';
-import { requireAuth,requireSameOrigin,teacherOwnsClass,studentInClass } from '../_auth.js';
+import { requireAuth,requireSameOrigin,teacherOwnsClass,studentInClass,ensureResearchStaffUser } from '../_auth.js';
 
 const CONTROL_TYPES=new Set(['teacher.follow','teacher.navigation']);
 const safeObject=(v)=>v&&typeof v==='object'&&!Array.isArray(v)?v:{};
@@ -78,8 +78,10 @@ export default async function handler(req,res){
       if(['teacher','admin'].includes(user.role)){
         if(!CONTROL_TYPES.has(safeType))return res.status(403).json({ok:false,error:'Teacher may only publish classroom control events here'});
         if(!await teacherOwnsClass(sql,user,session.class_id))return res.status(403).json({ok:false,error:'Teacher does not own this class'});
+        const researchTeacherId=await ensureResearchStaffUser(sql,user);
+        if(!researchTeacherId)return res.status(403).json({ok:false,error:'Teacher research identity is unavailable'});
         const rows=await sql`INSERT INTO events(client_event_id,session_id,teacher_id,class_id,participant_id,lesson_id,activity_id,event_type,answer,is_correct,score,metadata)
-          VALUES(${clientEventId},${sessionId},${user.user_id},${session.class_id},${null},${session.lesson_id},${activityId},${safeType},${answer},${null},${null},${safeMeta})
+          VALUES(${clientEventId},${sessionId},${researchTeacherId},${session.class_id},${null},${session.lesson_id},${activityId},${safeType},${answer},${null},${null},${safeMeta})
           ON CONFLICT(client_event_id) DO UPDATE SET client_event_id=EXCLUDED.client_event_id RETURNING *`;
         return res.status(201).json({ok:true,event:rows[0]});
       }
