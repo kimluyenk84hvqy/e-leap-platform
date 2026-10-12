@@ -94,16 +94,19 @@ export function requireSameOrigin(req,res){
 export async function ensureResearchStaffUser(sql,user){
   if(!user || !['teacher','admin'].includes(user.role)) return null;
   const externalAuthId=String(user.user_id);
+  // Legacy research users accept research_lead / teacher / student, not platform admin.
+  // Platform admin therefore bridges to research_lead while retaining admin authority in auth_users.
+  const researchRole=user.role==='admin'?'research_lead':'teacher';
   let rows=await sql`SELECT user_id FROM users WHERE external_auth_id=${externalAuthId} LIMIT 1`;
   if(rows.length)return rows[0].user_id;
   if(user.email){
     rows=await sql`SELECT user_id FROM users WHERE lower(email)=lower(${user.email}) LIMIT 1`;
     if(rows.length){
-      await sql`UPDATE users SET external_auth_id=COALESCE(external_auth_id,${externalAuthId}),display_name=${user.display_name||user.email},role=${user.role==='admin'?'admin':'teacher'},is_active=TRUE,updated_at=NOW() WHERE user_id=${rows[0].user_id}`;
+      await sql`UPDATE users SET external_auth_id=COALESCE(external_auth_id,${externalAuthId}),display_name=${user.display_name||user.email},role=${researchRole},is_active=TRUE,updated_at=NOW() WHERE user_id=${rows[0].user_id}`;
       return rows[0].user_id;
     }
   }
-  const inserted=await sql`INSERT INTO users(external_auth_id,email,display_name,role,is_active) VALUES(${externalAuthId},${user.email||null},${user.display_name||user.email||'E-LEAP Staff'},${user.role==='admin'?'admin':'teacher'},TRUE) RETURNING user_id`;
+  const inserted=await sql`INSERT INTO users(external_auth_id,email,display_name,role,is_active) VALUES(${externalAuthId},${user.email||null},${user.display_name||user.email||'E-LEAP Staff'},${researchRole},TRUE) RETURNING user_id`;
   return inserted[0].user_id;
 }
 
