@@ -19,6 +19,22 @@ async function ensureLiveJoinSchema(sql){
   await sql`ALTER TABLE participants ADD COLUMN IF NOT EXISTS left_at TIMESTAMPTZ`;
 }
 
+async function ensureResearchStudentUser(sql,authUser){
+  // The legacy Research schema still has participants.student_user_id -> users.user_id.
+  // Authenticated E-LEAP students live in auth_users, so bridge the two identities instead
+  // of inserting an auth_users UUID into a legacy foreign-key column.
+  const externalAuthId=String(authUser.user_id);
+  let rows=await sql`SELECT user_id FROM users WHERE external_auth_id=${externalAuthId} LIMIT 1`;
+  if(rows.length){
+    await sql`UPDATE users SET display_name=${authUser.display_name||authUser.student_id||'Student'},role='student',is_active=TRUE,updated_at=NOW() WHERE user_id=${rows[0].user_id}`;
+    return rows[0].user_id;
+  }
+  const inserted=await sql`INSERT INTO users(external_auth_id,email,display_name,role,is_active)
+    VALUES(${externalAuthId},${authUser.email||null},${authUser.display_name||authUser.student_id||'Student'},'student',TRUE)
+    RETURNING user_id`;
+  return inserted[0].user_id;
+}
+
 export default async function handler(req,res){
   try{
     // Always ensure the shared auth tables before any join attempt. This makes QR join
@@ -75,16 +91,18 @@ export default async function handler(req,res){
         }
       }
 
-      // Joining a Live Class also activates class membership. This is intentionally idempotent:
-      // previously enrolled, previously joined, and first-time students all follow the same path.
+      // Auth/class membership uses auth_users, while the legacy research participants table
+      // still points to users. Keep both identities linked explicitly.
+      const researchStudentUserId=await ensureResearchStudentUser(sql,u[0]);
+
       await sql`INSERT INTO auth_class_members(class_id,student_user_id,status)
         VALUES(${String(s[0].class_id)},${u[0].user_id},'active')
         ON CONFLICT(class_id,student_user_id) DO UPDATE SET status='active'`;
 
-      let p=await sql`SELECT * FROM participants WHERE session_id=${s[0].session_id} AND student_user_id=${u[0].user_id} LIMIT 1`;
+      let p=await sql`SELECT * FROM participants WHERE session_id=${s[0].session_id} AND student_user_id=${researchStudentUserId} LIMIT 1`;
       if(!p.length){
         p=await sql`INSERT INTO participants(session_id,student_user_id,participant_code,display_name)
-          VALUES(${s[0].session_id},${u[0].user_id},${studentId},${displayName}) RETURNING *`;
+          VALUES(${s[0].session_id},${researchStudentUserId},${studentId},${displayName}) RETURNING *`;
       }else if(p[0].left_at || p[0].display_name!==displayName || p[0].participant_code!==studentId){
         p=await sql`UPDATE participants
           SET left_at=NULL,display_name=${displayName},participant_code=${studentId}
