@@ -1,4 +1,4 @@
-/* U3.1 activity contract hotfix — scoped marking + platform submit bridge */
+/* U3.1 activity contract hotfix — scoped marking + platform submit bridge + activity follow */
 (function(){
   'use strict';
   const RESOURCE_ID='res-objective-pet-b1-u03-l01';
@@ -7,6 +7,8 @@
 
   const role=p.get('eleapRole')||'guest';
   const uid=()=>globalThis.crypto?.randomUUID?.()||`u31-submit-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  let followPoll=null;
+  let applyingRemoteActivity=false;
 
   function currentScreenNumber(){
     const n=Number(document.body?.dataset?.screen)||parseInt(document.getElementById('screenCounter')?.textContent||'',10);
@@ -142,6 +144,50 @@
     return true;
   }
 
+  function tabKeyFromActivity(targetActivityId){
+    if(!targetActivityId)return null;
+    const m=String(targetActivityId).match(/^screen-(\d+)-(.+)$/);
+    if(!m)return null;
+    if(Number(m[1])!==currentScreenNumber())return null;
+    return m[2]||null;
+  }
+
+  function applyRemoteActivity(targetActivityId){
+    const key=tabKeyFromActivity(targetActivityId);
+    if(!key||activityId()===targetActivityId)return false;
+    const panel=document.querySelector(`[data-tab-panel="${CSS.escape(key)}"]`);
+    if(!panel)return false;
+    const cut=key.lastIndexOf('-');
+    if(cut<1)return false;
+    const groupId=key.slice(0,cut);
+    const tabNo=key.slice(cut+1);
+    const tabs=document.querySelector(`[data-tabs="${CSS.escape(groupId)}"]`);
+    const btn=tabs?.querySelector(`button[data-tab="${CSS.escape(tabNo)}"]`);
+    if(!btn)return false;
+    applyingRemoteActivity=true;
+    try{btn.click();return true;}finally{setTimeout(()=>{applyingRemoteActivity=false;},80);}
+  }
+
+  async function pollTeacherActivity(){
+    if(role!=='student'||applyingRemoteActivity)return;
+    const sessionId=p.get('sessionId');
+    if(!sessionId)return;
+    try{
+      const r=await fetch(`/api/research/events?sessionId=${encodeURIComponent(sessionId)}&control=1`,{credentials:'same-origin',cache:'no-store'});
+      if(!r.ok)return;
+      const d=await r.json();
+      const targetActivity=d?.control?.activityId||null;
+      if(targetActivity)applyRemoteActivity(targetActivity);
+    }catch(_){}
+  }
+
+  function installActivityFollow(){
+    if(role!=='student'||!p.get('sessionId')||followPoll)return;
+    pollTeacherActivity();
+    followPoll=setInterval(pollTeacherActivity,650);
+    addEventListener('pagehide',()=>{clearInterval(followPoll);followPoll=null;},{once:true});
+  }
+
   function install(){
     const api=window.ELEAP_LESSON_HOST_API;
     if(!api)return false;
@@ -160,14 +206,14 @@
       if(action==='reveal')return ['teacher','admin'].includes(role)?armReveal():false;
       if(action==='submit'){
         if(role!=='student')return false;
-        // Keep lesson-local state in sync when the activity exposes its own Submit.
         const native=actionButton('submit');
         if(native)native.click();
         return emitSubmit();
       }
       return false;
     };
-    window.ELEAP_U31_ACTIVITY_HOTFIX={installed:true,activityId:activityId(),at:Date.now()};
+    installActivityFollow();
+    window.ELEAP_U31_ACTIVITY_HOTFIX={installed:true,activityId:activityId(),activityFollow:role==='student',at:Date.now()};
     return true;
   }
 
