@@ -188,6 +188,15 @@
     addEventListener('pagehide',()=>{clearInterval(followPoll);followPoll=null;},{once:true});
   }
 
+  function singleAnswerZone(target){
+    const zone=target?.closest?.('.answer-slot.dropzone');
+    if(!zone)return null;
+    const panel=zone.closest('.tab-panel');
+    if(!panel)return null;
+    const key=panel.dataset.tabPanel||'';
+    return (key==='jobs-0'||key==='jobs-1')?zone:null;
+  }
+
   function answerSlotBank(zone){
     const panel=zone?.closest?.('.tab-panel')||zone?.closest?.('.screen')||document;
     return panel.querySelector('.job-word-bank')||panel.querySelector('.bank')||null;
@@ -206,7 +215,7 @@
   function installAnswerSlotReplacement(){
     const stage=document.getElementById('stage')||document;
     stage.addEventListener('drop',e=>{
-      const zone=e.target?.closest?.('.answer-slot.dropzone');
+      const zone=singleAnswerZone(e.target);
       if(!zone)return;
       const id=e.dataTransfer?.getData?.('text/plain');
       const chip=id?document.querySelector(`.chip[data-id="${CSS.escape(id)}"]`):null;
@@ -216,7 +225,7 @@
       placeSingleChip(zone,chip);
     },true);
     stage.addEventListener('click',e=>{
-      const zone=e.target?.closest?.('.answer-slot.dropzone');
+      const zone=singleAnswerZone(e.target);
       if(!zone||e.target?.closest?.('.chip'))return;
       const panel=zone.closest('.tab-panel')||zone.closest('.screen')||stage;
       const chip=panel.querySelector('.chip.selected');
@@ -245,14 +254,13 @@
       if(action==='reveal')return ['teacher','admin'].includes(role)?armReveal():false;
       if(action==='submit'){
         if(role!=='student')return false;
-        // Hosted live submission uses the E-LEAP event bridge only. Do not invoke the legacy lesson-local submit path.
         return emitSubmit();
       }
       return false;
     };
     installActivityFollow();
     installAnswerSlotReplacement();
-    window.ELEAP_U31_ACTIVITY_HOTFIX={installed:true,activityId:activityId(),activityFollow:role==='student',singleAnswerSlot:true,at:Date.now()};
+    window.ELEAP_U31_ACTIVITY_HOTFIX={installed:true,activityId:activityId(),activityFollow:role==='student',singleAnswerSlots:'jobs-0,jobs-1',at:Date.now()};
     return true;
   }
 
