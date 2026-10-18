@@ -14,9 +14,20 @@ export class UnifiedLessonControls extends CoreUnifiedLessonControls{
     return super._currentScreenNumber();
   }
 
+  async _goToTeacherActivity(activityId){
+    if(!activityId)return false;
+    try{
+      const current=this._currentActivityId?.();
+      if(String(current||'')===String(activityId))return true;
+    }catch(_){}
+    return super._goToTeacherActivity(activityId);
+  }
+
   async _goToTeacherScreen(target){
     if(!Number.isFinite(target)||target<1)return false;
     try{
+      const current=this._currentScreenNumber?.();
+      if(Number(current)===Number(target))return true;
       const state=this._inspect?.()||null;
       const idx=Number(state?.screenIndex);
       const api=this._api?.();
