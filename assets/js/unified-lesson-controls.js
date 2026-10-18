@@ -2,7 +2,7 @@ import {UnifiedLessonControls as CoreUnifiedLessonControls} from './unified-less
 
 /**
  * Platform-level compatibility layer.
- * Keeps lesson-specific code thin by normalizing navigation and response shapes here.
+ * Keeps lesson-specific code thin by normalizing navigation, submit results and response shapes here.
  */
 export class UnifiedLessonControls extends CoreUnifiedLessonControls{
   _currentScreenNumber(){
@@ -40,6 +40,55 @@ export class UnifiedLessonControls extends CoreUnifiedLessonControls{
       }
     }catch(_){}
     return super._goToTeacherScreen(target);
+  }
+
+  _command(action){
+    try{
+      const api=this._api?.();
+      if(!api?.command)return false;
+      const out=api.command(action);
+      const ok=out===true || (!!out && typeof out==='object');
+      if(ok && String(action||'').toLowerCase()==='submit' && out && typeof out==='object'){
+        this._syncObjectSubmission(out).catch(()=>{});
+      }
+      return ok;
+    }catch(_){return false}
+  }
+
+  async _syncObjectSubmission(state){
+    if(this.role!=='student'||!this.sessionId||!state?.activityId)return false;
+    let live={};
+    try{live=JSON.parse(localStorage.getItem('e-leap-r4-live-context')||'{}')||{}}catch(_){}
+    const a=state.assessment||{};
+    const total=Number(a.totalCount),correct=Number(a.correctCount);
+    const isCorrect=Number.isFinite(total)&&total>0&&Number.isFinite(correct)?correct===total:null;
+    try{
+      const r=await fetch('/api/research/events',{
+        method:'POST',
+        credentials:'same-origin',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          clientEventId:`core-submit-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+          sessionId:this.sessionId,
+          classId:live.classId||null,
+          participantId:live.participantId||null,
+          lessonId:this.resourceId,
+          activityId:state.activityId,
+          eventType:'response.submitted',
+          answer:state.response??null,
+          isCorrect,
+          score:Number.isFinite(Number(a.score))?Number(a.score):null,
+          occurredAt:new Date().toISOString(),
+          metadata:{
+            source:'platform-core-submit-bridge-v1',
+            studentId:live.studentId||null,
+            payload:{response:state.response??null,grading:a},
+            context:{role:'student',sessionId:this.sessionId,participantId:live.participantId||null,classId:live.classId||null}
+          }
+        })
+      });
+      return r.ok;
+    }catch(_){return false}
   }
 
   _answerText(value,depth=0){
