@@ -11,6 +11,59 @@ const asTime=(v)=>{try{return new Date(v||Date.now()).toLocaleTimeString([], {ho
 const scorePct=(v)=>{const n=Number(v);if(!Number.isFinite(n))return '';const p=n>=0&&n<=1?n*100:n;return `${Math.round(p)}%`};
 
 export class UnifiedLessonControls extends CoreUnifiedLessonControls{
+  constructor(opts={}){
+    super(opts);
+    this._installClassroomP0Css();
+    this._adoptTeacherSessionContext();
+    this._teacherContextPoll=setInterval(()=>this._adoptTeacherSessionContext(),500);
+    this._hallModePoll=setInterval(()=>this._syncHallMode(),300);
+    window.addEventListener('storage',(e)=>{if(e.key==='e-leap-teacher-live-context')this._adoptTeacherSessionContext()});
+    window.addEventListener('e-leap:teacher-live-context',()=>this._adoptTeacherSessionContext());
+    window.addEventListener('pagehide',()=>{clearInterval(this._teacherContextPoll);clearInterval(this._hallModePoll)},{once:true});
+  }
+
+  _installClassroomP0Css(){
+    if(document.getElementById('e-leap-classroom-p0-css'))return;
+    const link=document.createElement('link');link.id='e-leap-classroom-p0-css';link.rel='stylesheet';link.href='../assets/css/classroom-p0-overrides.css';document.head.appendChild(link);
+  }
+
+  _adoptTeacherSessionContext(){
+    if(!['teacher','admin'].includes(this.role))return false;
+    let live=null;try{live=JSON.parse(localStorage.getItem('e-leap-teacher-live-context')||'null')}catch(_){return false}
+    if(!live||live.status==='ended'||String(live.lessonId||'')!==String(this.resourceId||''))return false;
+    const sid=live.sessionId||null;if(!sid)return false;
+    const changed=String(this.sessionId||'')!==String(sid);
+    this.sessionId=sid;this.followEnabled=true;
+    if(changed){
+      this._lastTeacherScreen=null;
+      try{this._installLiveStabilization();}catch(_){}
+      try{this._publishTeacherNavigation(true);}catch(_){}
+    }
+    return true;
+  }
+
+  _syncHallMode(){
+    let doc=null;try{doc=this.frame?.contentDocument}catch(_){return}
+    if(!doc?.documentElement)return;
+    const on=Boolean(this.presentation&&['teacher','admin'].includes(this.role));
+    doc.documentElement.classList.toggle('eleap-hall-mode',on);
+    if(!doc.getElementById('e-leap-hall-mode-style')){
+      const s=doc.createElement('style');s.id='e-leap-hall-mode-style';s.textContent=`
+        html.eleap-hall-mode .slide.active,html.eleap-hall-mode .screen.active{overflow:auto!important}
+        html.eleap-hall-mode .slide.active h1,html.eleap-hall-mode .screen.active h1{font-size:clamp(72px,7vw,112px)!important;line-height:1.02!important}
+        html.eleap-hall-mode .slide.active h2,html.eleap-hall-mode .screen.active h2{font-size:clamp(58px,5.6vw,88px)!important;line-height:1.06!important;margin-bottom:22px!important}
+        html.eleap-hall-mode .slide.active h3,html.eleap-hall-mode .screen.active h3{font-size:clamp(40px,3.7vw,58px)!important;line-height:1.12!important}
+        html.eleap-hall-mode .slide.active p,html.eleap-hall-mode .slide.active li,html.eleap-hall-mode .slide.active label,html.eleap-hall-mode .slide.active span:not(.section-tag):not(.eyebrow),html.eleap-hall-mode .screen.active p,html.eleap-hall-mode .screen.active li,html.eleap-hall-mode .screen.active label{font-size:clamp(32px,2.7vw,46px)!important;line-height:1.32!important}
+        html.eleap-hall-mode .slide.active .lead,html.eleap-hall-mode .slide.active .instruction,html.eleap-hall-mode .screen.active .lead,html.eleap-hall-mode .screen.active .instruction{font-size:clamp(36px,3vw,50px)!important;line-height:1.28!important}
+        html.eleap-hall-mode .slide.active input,html.eleap-hall-mode .slide.active select,html.eleap-hall-mode .slide.active textarea,html.eleap-hall-mode .slide.active button,html.eleap-hall-mode .screen.active input,html.eleap-hall-mode .screen.active select,html.eleap-hall-mode .screen.active textarea,html.eleap-hall-mode .screen.active button{font-size:clamp(28px,2.3vw,38px)!important;min-height:54px!important}
+        html.eleap-hall-mode .slide.active .teacher-answer,html.eleap-hall-mode .screen.active .teacher-answer{font-size:clamp(32px,2.6vw,44px)!important;line-height:1.3!important}
+        html.eleap-hall-mode .slide.active .section-tag,html.eleap-hall-mode .screen.active .section-tag{font-size:clamp(22px,1.8vw,30px)!important;padding:9px 14px!important}
+        html.eleap-hall-mode .slide.active .pane,html.eleap-hall-mode .slide.active .task-pane,html.eleap-hall-mode .slide.active .watch-task{max-height:none!important}
+        html.eleap-hall-mode .slide.active .split,html.eleap-hall-mode .slide.active .two-col{gap:26px!important}
+      `;doc.head?.appendChild(s);
+    }
+  }
+
   _currentScreenNumber(){
     try{
       const state=this._inspect?.()||null;
