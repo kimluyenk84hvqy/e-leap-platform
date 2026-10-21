@@ -1,0 +1,61 @@
+/* E-LEAP Classroom P0 overrides — mobile student controls + hall presentation readability */
+
+/* STUDENT MOBILE: Submit must always be visible without horizontal scrolling. */
+@media (max-width: 900px){
+  html[data-eleap-role="student"] .unified-controls{
+    position:fixed!important;
+    left:8px!important;
+    right:8px!important;
+    bottom:max(8px,env(safe-area-inset-bottom))!important;
+    top:auto!important;
+    transform:none!important;
+    width:auto!important;
+    max-width:none!important;
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:6px!important;
+    overflow:visible!important;
+    padding:7px!important;
+    border-radius:16px!important;
+    z-index:9999!important;
+  }
+  html[data-eleap-role="student"] .unified-controls .unified-group{display:contents!important}
+  html[data-eleap-role="student"] .unified-controls .dock-label,
+  html[data-eleap-role="student"] .unified-controls .dock-toggle,
+  html[data-eleap-role="student"] .unified-controls .host-practice-pill{display:none!important}
+  html[data-eleap-role="student"] .unified-controls button{
+    min-width:0!important;
+    width:100%!important;
+    min-height:48px!important;
+    padding:0 4px!important;
+    justify-content:center!important;
+    font-size:12px!important;
+    font-weight:900!important;
+    white-space:nowrap!important;
+  }
+  html[data-eleap-role="student"] .unified-controls #hostSubmitBtn{
+    display:inline-flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+    background:#1d5b4c!important;
+    border-color:#1d5b4c!important;
+    color:#fff!important;
+  }
+  html[data-eleap-role="student"] .unified-controls .host-score-pill{
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    min-height:48px!important;
+    min-width:0!important;
+    padding:0 4px!important;
+    margin:0!important;
+    font-size:11px!important;
+    font-weight:900!important;
+  }
+  html[data-eleap-role="student"] .stage{padding-bottom:70px!important}
+}
+
+/* HALL MODE: only Teacher/Admin Presentation receives large projection typography. */
+html[data-eleap-mode="presentation"] #lessonFrame{background:#fff}
+html[data-eleap-mode="presentation"] .hostbar{min-height:48px}
+html[data-eleap-mode="presentation"] .unified-controls{z-index:10000!important}
