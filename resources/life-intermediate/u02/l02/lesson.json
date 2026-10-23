@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "3.1",
+  "courseId": "life-intermediate",
+  "courseDisplayName": "Life Pre-Intermediate",
+  "unitId": "u02",
+  "lessonId": "l02",
+  "resourceId": "res-life-intermediate-u02-l02",
+  "shellId": "life-intermediate-u02-l02",
+  "placementId": "placement-life-u02-l02",
+  "title": "Unit 2 · Competitions · Lesson 2",
+  "subtitle": "2c Bolivian wrestlers + 2d Joining a group",
+  "level": "A2–B1",
+  "status": "FINAL_CONTENT_DESIGN_OFFLINE_QA_PASS_INTEGRATION_READY",
+  "screenCount": 28,
+  "templateStatus": "LIFE_PRE_INTERMEDIATE_VISUAL_INSTRUCTIONAL_MASTER_v1.1_LOCKED",
+  "version": "FINAL v1.1 · E-LEAP Integration Ready",
+  "hostContract": {
+    "api": "ELEAP_LESSON_HOST_API",
+    "compatibilityAlias": "ELEAP_LESSON_API",
+    "roleControlOwner": "Platform Core",
+    "supportedModes": ["teacher", "admin", "student", "guest", "presentation"],
+    "commands": ["check", "reset", "show-answer", "submit", "score", "next", "previous"],
+    "activityScopedState": true
+  },
+  "teacherMaterials": {
+    "teacherKey": "standalone/teacher-key.html",
+    "readingResource": "embedded modal · Bolivian wrestlers paragraphs 1–5"
+  },
+  "media": [
+    {"id":"track015","offlinePath":"standalone/assets/audio/track015.mp3","platformPath":"life-intermediate/u02/l02/assets/audio/track015.mp3","access":"private","use":"2d listening · adverts / interests"},
+    {"id":"track016","offlinePath":"standalone/assets/audio/track016.mp3","platformPath":"life-intermediate/u02/l02/assets/audio/track016.mp3","access":"private","use":"2d pronunciation · silent letters"}
+  ],
+  "sourceScope": {
+    "studentBook": "Unit 2c–2d · supplied Student's Book extract pp.26–28",
+    "workbook": "Supplied Unit 2 workbook pages 18–21 · consolidation/homework",
+    "teacherPpt": "UNIT 2 C&D-COMPETITIONS.pptx · source/teacher reference"
+  },
+  "sourcePolicy": {
+    "sourceTypes": ["SOURCE_CONTENT", "SOURCE_REVIEW", "TEACHER_EXTENSION"],
+    "teacherExtensionActivities": ["life-intermediate-u02-l02-a11", "life-intermediate-u02-l02-a19", "life-intermediate-u02-l02-exit"]
+  },
+  "screens": [
+    {"screenId":"hero","activityId":null},{"screenId":"aims","activityId":null},{"screenId":"recap","activityId":"life-intermediate-u02-l02-a01"},{"screenId":"sec2c","activityId":null},{"screenId":"c01","activityId":"life-intermediate-u02-l02-a02"},{"screenId":"c02","activityId":"life-intermediate-u02-l02-a03"},{"screenId":"c03","activityId":"life-intermediate-u02-l02-a04"},{"screenId":"c03b","activityId":"life-intermediate-u02-l02-a04"},{"screenId":"c04","activityId":"life-intermediate-u02-l02-a05"},{"screenId":"c05","activityId":"life-intermediate-u02-l02-a06"},{"screenId":"c06","activityId":"life-intermediate-u02-l02-a07"},{"screenId":"c07","activityId":"life-intermediate-u02-l02-a08"},{"screenId":"c08","activityId":"life-intermediate-u02-l02-a09"},{"screenId":"c09","activityId":"life-intermediate-u02-l02-a10"},{"screenId":"c10","activityId":"life-intermediate-u02-l02-a10"},{"screenId":"c11","activityId":"life-intermediate-u02-l02-a11"},{"screenId":"sec2d","activityId":null},{"screenId":"d01","activityId":"life-intermediate-u02-l02-a12"},{"screenId":"d02","activityId":"life-intermediate-u02-l02-a13"},{"screenId":"d03","activityId":"life-intermediate-u02-l02-a14"},{"screenId":"d04","activityId":"life-intermediate-u02-l02-a15"},{"screenId":"d04b","activityId":"life-intermediate-u02-l02-a15"},{"screenId":"d05","activityId":"life-intermediate-u02-l02-a16"},{"screenId":"d06","activityId":"life-intermediate-u02-l02-a17"},{"screenId":"d07","activityId":"life-intermediate-u02-l02-a18"},{"screenId":"d08","activityId":"life-intermediate-u02-l02-a19"},{"screenId":"exit","activityId":"life-intermediate-u02-l02-exit"},{"screenId":"thanks","activityId":null}
+  ],
+  "activities": [
+    {"activityId":"life-intermediate-u02-l02-a01","title":"Quick Review","assessable":false,"sourceType":"SOURCE_REVIEW","capabilities":["reset","submit"],"assessment":{"type":"open"}},
+    {"activityId":"life-intermediate-u02-l02-a02","title":"Before Reading","assessable":false,"sourceType":"SOURCE_CONTENT","capabilities":["reset","submit"],"assessment":{"type":"open"}},
+    {"activityId":"life-intermediate-u02-l02-a03","title":"Reading · Paragraph Map","assessable":true,"sourceType":"SOURCE_CONTENT","capabilities":["check","reset","reveal","submit","score"],"assessment":{"type":"deterministic","answerKey":{"pA":"2","pB":"1","pC":"4","pD":"5","pE":"3"},"totalCount":5}},
+    {"activityId":"life-intermediate-u02-l02-a04","title":"Vocabulary in Context","assessable":true,"sourceType":"SOURCE_CONTENT","capabilities":["check","reset","reveal","submit","score"],"assessment":{"type":"deterministic","answerKey":{"v1":"entertainment","v2":"ring","v3":"crowd","v4":"commentator","v5":"go crazy","v6":"fans","v7":"salary"},"totalCount":7}},
+    {"activityId":"life-intermediate-u02-l02-a05","title":"Reading Between the Lines","assessable":true,"sourceType":"SOURCE_CONTENT","capabilities":["check","reset","reveal","submit","score"],"assessment":{"type":"deterministic","answerKey":{"f1":"Daughter","f2":"Yolanda","f3":"Esperanza"},"totalCount":3}},
+    {"activityId":"life-intermediate-u02-l02-a06","title":"Respond to the Reading","assessable":false,"sourceType":"SOURCE_CONTENT","capabilities":["reset","submit"],"assessment":{"type":"open"}},
+    {"activityId":"life-intermediate-u02-l02-a07","title":"Word Focus · like","assessable":true,"sourceType":"SOURCE_CONTENT","capabilities":["check","reset","reveal","submit","score"],"assessment":{"type":"deterministic","answerKey":{"l1":"A","l2":"C","l3":"D","l4":"B"},"totalCount":4}},
+    {"activityId":"life-intermediate-u02-l02-a08","title":"Questions with like","assessable":true,"sourceType":"SOURCE_CONTENT","capabilities":["check","reset","reveal","submit","score"],"assessment":{"type":"deterministic","answerKey":{"q1":"D","q2":"C","q3":"A","q4":"B"},"totalCount":4}},
+    {"activityId":"life-intermediate-u02-l02-a09","title":"Ask · Answer · Follow up","assessable":false,"sourceType":"SOURCE_CONTENT","capabilities":["reset","submit"],"assessment":{"type":"open"}},
+    {"activityId":"life-intermediate-u02-l02-a10","title":"Olympic Sports","assessable":false,"sourceType":"SOURCE_CONTENT","capabilities":["reset","submit"],"assessment":{"type":"open"}},
+    {"activityId":"life-intermediate-u02-l02-a11","title":"Describe a Sport","assessable":false,"sourceType":"TEACHER_EXTENSION","capabilities":["reset","submit"],"assessment":{"type":"open"}},
+    {"activityId":"life-intermediate-u02-l02-a12","title":"Find Someone Who","assessable":false,"sourceType":"SOURCE_CONTENT","capabilities":["reset","submit"],"assessment":{"type":"open"}},
+    {"activityId":"life-intermediate-u02-l02-a13","title":"Read the Adverts","assessable":false,"sourceType":"SOURCE_CONTENT","capabilities":["reset","submit"],"assessment":{"type":"open"}},
+    {"activityId":"life-intermediate-u02-l02-a14","title":"Track 015 · Order","assessable":true,"sourceType":"SOURCE_CONTENT","capabilities":["check","reset","reveal","submit","score"],"assessment":{"type":"deterministic","answerKey":{"o1":"1","o2":"2","o3":"3"},"totalCount":3}},
+    {"activityId":"life-intermediate-u02-l02-a15","title":"Track 015 · Complete","assessable":true,"sourceType":"SOURCE_CONTENT","capabilities":["check","reset","reveal","submit","score"],"assessment":{"type":"deterministic","answerKey":{"g1":"good at","g2":"what about","g3":"interested in","g4":"hate","g5":"not very","g6":"on","g7":"like to","g8a":"looks","g8b":"Why don't"},"totalCount":9}},
+    {"activityId":"life-intermediate-u02-l02-a16","title":"Useful Language","assessable":true,"sourceType":"SOURCE_CONTENT","capabilities":["check","reset","reveal","submit","score"],"assessment":{"type":"deterministic","answerKey":{"cat1":"I","cat2":"R","cat3":"I","cat4":"I","cat5":"I","cat6":"R","cat7":"P","cat8":"R"},"totalCount":8}},
+    {"activityId":"life-intermediate-u02-l02-a17","title":"Track 016 · Silent Letters","assessable":true,"sourceType":"SOURCE_CONTENT","capabilities":["check","reset","reveal","submit","score"],"assessment":{"type":"deterministic","answerKey":{"s1":"e","s2":"l","s3":"i","s4":"w","s5":"l","s6":"h"},"totalCount":6}},
+    {"activityId":"life-intermediate-u02-l02-a18","title":"Which Club?","assessable":false,"sourceType":"SOURCE_CONTENT","capabilities":["reset","submit"],"assessment":{"type":"open"}},
+    {"activityId":"life-intermediate-u02-l02-a19","title":"Create a Mini Club Advert","assessable":false,"sourceType":"TEACHER_EXTENSION","capabilities":["reset","submit"],"assessment":{"type":"open"}},
+    {"activityId":"life-intermediate-u02-l02-exit","title":"Exit Ticket","assessable":false,"sourceType":"TEACHER_EXTENSION","capabilities":["reset","submit"],"assessment":{"type":"open"}}
+  ],
+  "qa": {"scrollSafe":true,"audioLocal":true,"teacherKey":true,"revealScopedByActivity":true,"track015KeyVerified":true,"hostApiPresent":true,"platformLive":"PENDING_HOSTED_PLATFORM_QA"}
+}
