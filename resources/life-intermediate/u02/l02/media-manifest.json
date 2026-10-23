@@ -1,0 +1,17 @@
+{
+  "resourceId": "res-life-intermediate-u02-l02",
+  "access": "private",
+  "basePrefix": "life-intermediate/u02/l02/",
+  "items": [
+    {"pathname":"life-intermediate/u02/l02/assets/images/wrestling-book.jpg","kind":"image","source":"user-provided course material","required":true},
+    {"pathname":"life-intermediate/u02/l02/assets/images/wrestlers.jpg","kind":"image","source":"user-provided course material","required":true},
+    {"pathname":"life-intermediate/u02/l02/assets/images/olympic.png","kind":"image","source":"teacher/course material","required":true},
+    {"pathname":"life-intermediate/u02/l02/assets/images/advert-running.png","kind":"image","source":"user-provided course material","required":true},
+    {"pathname":"life-intermediate/u02/l02/assets/images/advert-photo.png","kind":"image","source":"user-provided course material","required":true},
+    {"pathname":"life-intermediate/u02/l02/assets/images/advert-theatre.png","kind":"image","source":"user-provided course material","required":true},
+    {"pathname":"life-intermediate/u02/l02/assets/images/club-people.jpg","kind":"image","source":"teacher/course material","required":false},
+    {"pathname":"life-intermediate/u02/l02/assets/audio/track015.mp3","kind":"audio","source":"015 Track 015.mp3","required":true},
+    {"pathname":"life-intermediate/u02/l02/assets/audio/track016.mp3","kind":"audio","source":"016 Track 016.mp3","required":true}
+  ],
+  "policy": "Do not commit copyrighted binary media to the public repository. Upload these items to the project private media store before hosted QA."
+}
