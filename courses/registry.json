@@ -11,8 +11,8 @@
     },
     {
       "id": "life-intermediate",
-      "title": "Life Intermediate",
-      "level": "Intermediate",
+      "title": "Life Pre-Intermediate",
+      "level": "Pre-Intermediate (A2–B1)",
       "type": "general-english",
       "path": "courses/life-intermediate/course.json"
     },
