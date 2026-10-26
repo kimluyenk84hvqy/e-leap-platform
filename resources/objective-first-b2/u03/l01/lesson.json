@@ -1,0 +1,101 @@
+{
+  "schemaVersion": "3.0",
+  "id": "objective-first-b2-u03-l01",
+  "resourceId": "res-objective-first-b2-u03-l01",
+  "courseId": "objective-first-b2",
+  "unitId": "u03",
+  "lessonId": "l01",
+  "lessonNumber": "U3.1",
+  "title": "Going places",
+  "status": "FINAL-MASTER-LEARNER-FIRST",
+  "sourceScope": "Objective First 4th Edition, Unit 3.1, source pages + user-provided Track 1.04 audio",
+  "design": {
+    "learnerScreens": 12,
+    "principle": "learner-first",
+    "projector": "large-hall",
+    "minimumLearnerFontPx": 22,
+    "mainTaskPx": "27-32",
+    "internalTabsPreserveActivityId": true,
+    "secondaryInstructions": "on-demand",
+    "answerReveal": "per-item-after-show-answer",
+    "imageTreatment": "bright-functional-stimulus",
+    "b2Scaffolding": true
+  },
+  "integration": {
+    "mode": "standalone-adapter",
+    "entry": "standalone/index.html",
+    "hostApi": true,
+    "hostedMode": true,
+    "platformOwns": [
+      "roles",
+      "check",
+      "reset",
+      "show-answer",
+      "submit",
+      "score",
+      "responses",
+      "presentation",
+      "timer",
+      "live-class",
+      "follow-teacher",
+      "progress",
+      "research-logs"
+    ]
+  },
+  "screens": [
+    {"screen":1,"screenId":"s01","title":"Going Places","activityId":"u31-cover","kind":"none"},
+    {"screen":2,"screenId":"s02","title":"Today’s Goals","activityId":"u31-aims","kind":"none"},
+    {"screen":3,"screenId":"s03","title":"Holiday Speaking","activityId":"objective-first-b2-u03-l01-a01-speaking","kind":"speaking","states":["compare","language-help","choose"]},
+    {"screen":4,"screenId":"s04","title":"Trip to Antarctica","activityId":"objective-first-b2-u03-l01-a02-listening","kind":"listening","states":["listen-1-5","listen-6-10"]},
+    {"screen":5,"screenId":"s05","title":"Responsible Tourism","activityId":"objective-first-b2-u03-l01-a03-discussion","kind":"discussion","states":["discuss","b2-frame","switch-groups","model"]},
+    {"screen":6,"screenId":"s06","title":"Travel Words","activityId":"objective-first-b2-u03-l01-a04-vocabulary","kind":"vocab","states":["words-1-10","words-11-20"]},
+    {"screen":7,"screenId":"s07","title":"Phrasal Verbs","activityId":"objective-first-b2-u03-l01-a05-phrasal","kind":"phrasal","states":["match-a-d","match-e-h","use-it"]},
+    {"screen":8,"screenId":"s08","title":"Collocations","activityId":"objective-first-b2-u03-l01-a06-collocations","kind":"collocation"},
+    {"screen":9,"screenId":"s09","title":"The History of Airports","activityId":"objective-first-b2-u03-l01-a07-airports","kind":"airport"},
+    {"screen":10,"screenId":"s10","title":"Plan a 3-Day Trip","activityId":"objective-first-b2-u03-l01-extension","kind":"extension","states":["where","how","stay","do"]},
+    {"screen":11,"screenId":"s11","title":"Exit Ticket","activityId":"objective-first-b2-u03-l01-exit","kind":"exit"},
+    {"screen":12,"screenId":"s12","title":"Thank You","activityId":"u31-thanks","kind":"none"}
+  ],
+  "activities": {
+    "objective-first-b2-u03-l01-a01-speaking": {"assessable":false,"submit":false,"answerMode":"model-per-prompt","grouping":"pair"},
+    "objective-first-b2-u03-l01-a02-listening": {"assessable":true,"total":10,"submit":true,"answerMode":"exact-per-item-with-evidence","grouping":"individual-pair"},
+    "objective-first-b2-u03-l01-a03-discussion": {"assessable":false,"submit":false,"answerMode":"b2-model-response","grouping":"group-switch-group"},
+    "objective-first-b2-u03-l01-a04-vocabulary": {"assessable":true,"total":20,"submit":false,"answerMode":"exact-per-word","grouping":"team"},
+    "objective-first-b2-u03-l01-a05-phrasal": {"assessable":true,"total":8,"submit":false,"answerMode":"exact-per-item-plus-model","grouping":"individual-pair"},
+    "objective-first-b2-u03-l01-a06-collocations": {"assessable":false,"submit":false,"answerMode":"accepted-partners-per-verb","grouping":"pair"},
+    "objective-first-b2-u03-l01-a07-airports": {"assessable":true,"total":8,"submit":true,"answerMode":"exact-per-gap-with-clue","grouping":"individual-pair"},
+    "objective-first-b2-u03-l01-extension": {"assessable":false,"submit":false,"answerMode":"model-segment-per-wh","grouping":"group"},
+    "objective-first-b2-u03-l01-exit": {"assessable":true,"total":4,"submit":true,"answerMode":"exact-per-question","grouping":"individual"}
+  },
+  "requiredSubmits": [
+    "objective-first-b2-u03-l01-a02-listening",
+    "objective-first-b2-u03-l01-a07-airports",
+    "objective-first-b2-u03-l01-exit"
+  ],
+  "listening": {
+    "parts": [
+      {"id":"part-1","items":[1,2,3,4,5],"media":"PRIVATE_MEDIA/u03/l01/u03-l01-listening-1-5.mp3"},
+      {"id":"part-2","items":[6,7,8,9,10],"media":"PRIVATE_MEDIA/u03/l01/u03-l01-listening-6-10.mp3"}
+    ],
+    "evidence": {
+      "enabled": true,
+      "perItem": true,
+      "localTranscript": true,
+      "highlightEvidence": true,
+      "whyTeachingNote": true,
+      "roleGated": ["teacher","admin","presentation"]
+    }
+  },
+  "roleContract": {
+    "teacher": ["check","reset","show-answer","presentation","timer","responses","live-class-qr"],
+    "admin": ["check","reset","show-answer","presentation","timer","responses","live-class-qr","edit-studio"],
+    "student": ["check","reset","submit","score"],
+    "guest": ["check","reset","score"],
+    "presentation": ["show-answer","reset","exit-presentation"]
+  },
+  "media": {
+    "privatePrefix":"u03/l01/",
+    "copyright":"private-educational-use",
+    "publicRepoMedia":false
+  }
+}
