@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "4.1.0",
+  "resourceId": "res-objective-pet-b1-u03-l02",
+  "courseId": "objective-pet-b1",
+  "unitId": "u03",
+  "lessonId": "l02",
+  "title": "Unit 3 · What’s your job? · Lesson 2",
+  "version": "4.1.0",
+  "status": "approved-final",
+  "source": {
+    "kind": "lesson-data",
+    "standaloneUrl": "resources/objective-pet-b1/u03/l02/standalone/index.html"
+  },
+  "capabilities": ["classroom", "self-study", "presentation", "responses", "progress", "live-class"],
+  "hostApi": {
+    "readyEvent": "ELEAP_LESSON_READY",
+    "stateEvent": "ELEAP_LESSON_STATE",
+    "commandEvent": "ELEAP_COMMAND",
+    "getActivityState": true,
+    "setActivity": true
+  }
+}
