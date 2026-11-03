@@ -1,0 +1,133 @@
+name: Install Objective PET B1 U3.2
+
+on:
+  push:
+    branches:
+      - integrate/objective-pet-b1-u3-2
+    paths:
+      - incoming/U3.2_FINAL_ELEAP_READY_RESOURCE.zip
+
+permissions:
+  contents: write
+
+jobs:
+  install-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: integrate/objective-pet-b1-u3-2
+          fetch-depth: 0
+
+      - name: Unpack the approved U3.2 resource only
+        shell: bash
+        run: |
+          set -euo pipefail
+          ZIP='incoming/U3.2_FINAL_ELEAP_READY_RESOURCE.zip'
+          test -f "$ZIP"
+          rm -rf /tmp/u32
+          mkdir -p /tmp/u32
+          unzip -q "$ZIP" -d /tmp/u32
+          test -f /tmp/u32/resources/objective-pet-b1/u03/l02/lesson.json
+          test -f /tmp/u32/resources/objective-pet-b1/u03/l02/standalone/index.html
+          test -f /tmp/u32/resources/objective-pet-b1/u03/l02/standalone/app.js
+          test -f /tmp/u32/resources/objective-pet-b1/u03/l02/standalone/styles.css
+          test -f /tmp/u32/resources/objective-pet-b1/u03/l02/standalone/lesson-access.js
+          rm -rf resources/objective-pet-b1/u03/l02
+          mkdir -p resources/objective-pet-b1/u03/l02
+          cp -R /tmp/u32/resources/objective-pet-b1/u03/l02/. resources/objective-pet-b1/u03/l02/
+
+      - name: Merge canonical resource and placement idempotently
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          reg=Path('data/resources.json')
+          frag=Path('/tmp/u32/data/resources.merge-fragment.json')
+          d=json.loads(reg.read_text())
+          f=json.loads(frag.read_text())
+          r=f['resource']; p=f['placement']
+          d['resources']=[x for x in d.get('resources',[]) if x.get('id')!=r['id']]+[r]
+          d['placements']=[x for x in d.get('placements',[]) if x.get('id')!=p['id']]+[p]
+          reg.write_text(json.dumps(d,ensure_ascii=False,separators=(',',':'))+'\n')
+          shells=json.loads(Path('data/course-shells.json').read_text())
+          assert any(x.get('id')=='objective-pet-b1-u03-l02' for x in shells.get('shells',[])), 'U3.2 shell missing'
+          assert sum(x.get('id')==r['id'] for x in d['resources'])==1
+          assert sum(x.get('id')==p['id'] for x in d['placements'])==1
+          PY
+
+      - name: Make Teacher Live Class lesson-aware for U3.2
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          p=Path('teacher-live.html')
+          s=p.read_text()
+          option='<option value="res-objective-pet-b1-u03-l02">Objective PET B1 · U3.2 · What’s your job?</option>'
+          if 'value="res-objective-pet-b1-u03-l02"' not in s:
+              pat=r'(<option[^>]+value="res-objective-pet-b1-u03-l01"[^>]*>.*?</option>)'
+              s,n=re.subn(pat,lambda m:m.group(1)+option,s,count=1,flags=re.S)
+              assert n==1, 'Could not locate U3.1 lesson option'
+          resource_fn='function resourceName(id){if(id===\'res-objective-pet-b1-u03-l01\')return"Objective PET B1 · U3.1 · What\'s your job?";if(id===\'res-objective-pet-b1-u03-l02\')return"Objective PET B1 · U3.2 · What\'s your job?";if(id.includes(\'adv-writing-letter-email-writing-informal-l01\'))return\'Academic Skills · Informal Letter · Lesson 1\';if(id.includes(\'u02-l02\'))return\'Objective First B2 · U2.2\';if(id.includes(\'u02-l01\'))return\'Objective First B2 · U2.1\';if(id.endsWith(\'l02\'))return\'Objective First B2 · U1.2\';return\'Objective First B2 · U1.1\'}'
+          course_fn="function courseForLesson(lessonId){if(String(lessonId||'').startsWith('res-objective-pet-b1-'))return'objective-pet-b1';if(String(lessonId||'').includes('res-adv-writing-'))return'advanced-skills';return'objective-first-b2'}"
+          s,n1=re.subn(r'function resourceName\(id\)\{[^\n]*\}',lambda _:resource_fn,s,count=1)
+          s,n2=re.subn(r'function courseForLesson\(lessonId\)\{[^\n]*\}',lambda _:course_fn,s,count=1)
+          assert n1==1 and n2==1, 'Live Class helper patch failed'
+          p.write_text(s)
+          PY
+
+      - name: Static QA before commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check resources/objective-pet-b1/u03/l02/standalone/app.js
+          node --check resources/objective-pet-b1/u03/l02/standalone/lesson-access.js
+          python - <<'PY'
+          import json,re
+          from pathlib import Path
+          base=Path('resources/objective-pet-b1/u03/l02')
+          lesson=json.loads((base/'lesson.json').read_text())
+          assert lesson['resourceId']=='res-objective-pet-b1-u03-l02'
+          assert lesson['version']=='4.1.0'
+          assert lesson['screenCount']==20
+          assert len(lesson['activityIds'])==19
+          reg=json.loads(Path('data/resources.json').read_text())
+          assert sum(x.get('id')=='res-objective-pet-b1-u03-l02' for x in reg['resources'])==1
+          app=(base/'standalone/app.js').read_text()
+          access=(base/'standalone/lesson-access.js').read_text()
+          assert 'ELEAP_LESSON_READY' in app
+          assert 'ELEAP_LESSON_STATE' in app
+          assert 'res-objective-pet-b1-u03-l02' in access
+          assert 'base64,' not in app.lower()
+          refs=set(re.findall(r'assets/(?:images|audio)/[A-Za-z0-9_./-]+',app))
+          missing=[x for x in sorted(refs) if not (base/'standalone'/x).exists()]
+          assert not missing, f'Missing media: {missing}'
+          required=[
+            'standalone/assets/audio/pronunciation-1-13.mp3',
+            'standalone/assets/audio/pronunciation-1-14.mp3',
+            'standalone/assets/images/u03l02-spot-p23.webp',
+            'standalone/assets/images/u03l02-spot-p25.webp'
+          ]
+          for x in required: assert (base/x).exists(), f'Missing required asset: {x}'
+          print('U3.2 static QA PASS; media refs:',len(refs))
+          PY
+
+      - name: Commit clean installed resource
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f incoming/U3.2_FINAL_ELEAP_READY_RESOURCE.zip
+          rmdir incoming 2>/dev/null || true
+          git config user.name 'E-LEAP Installer'
+          git config user.email 'actions@users.noreply.github.com'
+          git add resources/objective-pet-b1/u03/l02 data/resources.json teacher-live.html incoming || true
+          if git diff --cached --quiet; then
+            echo 'Nothing to commit'
+          else
+            git commit -m 'Install Objective PET B1 U3.2 resource with validated Live Class integration'
+            git push origin HEAD:integrate/objective-pet-b1-u3-2
+          fi

@@ -1,0 +1,453 @@
+{
+  "version": "1.6.0-u41-feedback-v2-answer-mode-reading2",
+  "status": "u4.1-feedback-v2-review",
+  "courseId": "objective-pet-b1",
+  "unitId": "u04",
+  "lessonId": "l01",
+  "resourceId": "res-objective-pet-b1-u04-l01",
+  "shellId": "objective-pet-b1-u04-l01",
+  "placementId": "placement-objective-pet-b1-u04-l01",
+  "title": "Let's Go Out — Entertainment & Time",
+  "audience": "B1 / Objective PET",
+  "sourceScope": [
+    "Objective PET Student’s Book Unit 4 source supplied by user",
+    "Unit 4.1 PPT supplied by user",
+    "Unit 4.2 PPT supplied by user for Language Focus media",
+    "Embedded source audio Track 15–18"
+  ],
+  "sourceStatus": {
+    "track15": true,
+    "track16": true,
+    "track17": true,
+    "track18": true,
+    "track19": false,
+    "track20": false,
+    "track21": false,
+    "diaryPages": false
+  },
+  "canonicalPath": "resources/objective-pet-b1/u04/l01/",
+  "hostRoute": "engine/lesson-host.html?resource=res-objective-pet-b1-u04-l01",
+  "screenMap": [
+    {
+      "index": 1,
+      "screenId": "s01",
+      "title": "Let's Go Out",
+      "phase": null,
+      "type": "hero",
+      "activityId": null
+    },
+    {
+      "index": 2,
+      "screenId": "s02",
+      "title": "Aims of the Lesson",
+      "phase": "LESSON 4.1",
+      "type": "aims",
+      "activityId": null
+    },
+    {
+      "index": 3,
+      "screenId": "s03",
+      "title": "Guess the Job",
+      "phase": "WARM-UP",
+      "type": "video",
+      "activityId": null
+    },
+    {
+      "index": 4,
+      "screenId": "s04",
+      "title": "Introduction 1 — Name the Entertainment",
+      "phase": "INTRODUCTION 1",
+      "type": "imageGrid",
+      "activityId": "objective-pet-b1-u04-l01-a01"
+    },
+    {
+      "index": 5,
+      "screenId": "s05",
+      "title": "Introduction 2 — Listen & Match",
+      "phase": "INTRODUCTION 2",
+      "type": "audioMatch",
+      "activityId": "objective-pet-b1-u04-l01-a02"
+    },
+    {
+      "index": 6,
+      "screenId": "s06",
+      "title": "Talk about Entertainment",
+      "phase": "INTRODUCTION 3–4",
+      "type": "introTalk",
+      "activityId": null
+    },
+    {
+      "index": 7,
+      "screenId": "s08",
+      "title": "Reading 1 — What’s On?",
+      "phase": "READING 1",
+      "type": "readingMatchFull",
+      "activityId": "objective-pet-b1-u04-l01-a03"
+    },
+    {
+      "index": 8,
+      "screenId": "s09",
+      "title": "Reading 2",
+      "phase": "READING 2",
+      "type": "readingJigsawEvidence",
+      "activityId": "objective-pet-b1-u04-l01-a10"
+    },
+    {
+      "index": 9,
+      "screenId": "s10",
+      "title": "Guess from Context",
+      "phase": "VOCABULARY SPOT",
+      "type": "vocabEvidence",
+      "activityId": "objective-pet-b1-u04-l01-a04"
+    },
+    {
+      "index": 10,
+      "screenId": "s11",
+      "title": "Fun or Funny?",
+      "phase": "CORPUS SPOT · WORD CHOICE",
+      "type": "corpusFunFunny",
+      "activityId": "objective-pet-b1-u04-l01-a11"
+    },
+    {
+      "index": 11,
+      "screenId": "s12",
+      "title": "Listen for the Main Idea",
+      "phase": "LANGUAGE FOCUS 1",
+      "type": "listenGistEvidence",
+      "activityId": "objective-pet-b1-u04-l01-a05"
+    },
+    {
+      "index": 12,
+      "screenId": "s13",
+      "title": "Listen for Time Expressions",
+      "phase": "LANGUAGE FOCUS 2",
+      "type": "gapFill",
+      "activityId": "objective-pet-b1-u04-l01-a06"
+    },
+    {
+      "index": 13,
+      "screenId": "s14",
+      "title": "Build the Pattern — ON · AT · IN · —",
+      "phase": "LANGUAGE FOCUS 3",
+      "type": "sort",
+      "activityId": "objective-pet-b1-u04-l01-a07"
+    },
+    {
+      "index": 14,
+      "screenId": "s15",
+      "title": "Grammar Spot — Prepositions of Time",
+      "phase": "GRAMMAR SPOT",
+      "type": "rule",
+      "activityId": null
+    },
+    {
+      "index": 15,
+      "screenId": "s16",
+      "title": "Time Challenge",
+      "phase": "LANGUAGE FOCUS 4",
+      "type": "mcq",
+      "activityId": "objective-pet-b1-u04-l01-a08"
+    },
+    {
+      "index": 16,
+      "screenId": "s17",
+      "title": "Days · Months · Dates",
+      "phase": "PRONUNCIATION",
+      "type": "pronunciation3",
+      "activityId": null
+    },
+    {
+      "index": 17,
+      "screenId": "s18",
+      "title": "Raise Your Hand!",
+      "phase": "ACTIVITY · TIME EXPRESSIONS",
+      "type": "handRaiseGame",
+      "activityId": null
+    },
+    {
+      "index": 18,
+      "screenId": "s19",
+      "title": "5 Questions Before You Go",
+      "phase": "EXIT TICKET",
+      "type": "mcq",
+      "activityId": "objective-pet-b1-u04-l01-a09"
+    },
+    {
+      "index": 19,
+      "screenId": "s20",
+      "title": "Thank you",
+      "phase": null,
+      "type": "thanks",
+      "activityId": null
+    }
+  ],
+  "activityMap": [
+    {
+      "id": "objective-pet-b1-u04-l01-a01",
+      "type": "image-label",
+      "assessable": true,
+      "gradable": true,
+      "totalCount": 6,
+      "answerKey": {
+        "a": "circus",
+        "b": "ballet",
+        "c": "magic show",
+        "d": "music festival",
+        "e": "musical",
+        "f": "film"
+      },
+      "capabilities": {
+        "check": true,
+        "reset": true,
+        "reveal": true,
+        "submit": true,
+        "score": true
+      }
+    },
+    {
+      "id": "objective-pet-b1-u04-l01-a02",
+      "type": "audio-match",
+      "assessable": true,
+      "gradable": true,
+      "totalCount": 6,
+      "capabilities": {
+        "check": true,
+        "reset": true,
+        "reveal": true,
+        "submit": true,
+        "score": true
+      },
+      "answerKey": {
+        "a": "1",
+        "b": "4",
+        "c": "6",
+        "d": "3",
+        "e": "5",
+        "f": "2"
+      }
+    },
+    {
+      "id": "objective-pet-b1-u04-l01-a03",
+      "type": "reading-match",
+      "assessable": true,
+      "gradable": true,
+      "totalCount": 6,
+      "answerKey": {
+        "A": "Cinema",
+        "B": "Children",
+        "C": "Music",
+        "D": "Clubbing",
+        "E": "Dance shows",
+        "F": "Music"
+      },
+      "capabilities": {
+        "check": true,
+        "reset": true,
+        "reveal": true,
+        "submit": true,
+        "score": true
+      }
+    },
+    {
+      "id": "objective-pet-b1-u04-l01-a04",
+      "type": "mcq",
+      "assessable": true,
+      "gradable": true,
+      "totalCount": 3,
+      "answerKey": {
+        "v1": "changes",
+        "v2": "concert",
+        "v3": "interesting"
+      },
+      "capabilities": {
+        "check": true,
+        "reset": true,
+        "reveal": true,
+        "submit": true,
+        "score": true
+      }
+    },
+    {
+      "id": "objective-pet-b1-u04-l01-a05",
+      "type": "listening-gist",
+      "assessable": true,
+      "gradable": true,
+      "totalCount": 3,
+      "answerKey": {
+        "c1": "the circus",
+        "c2": "the cinema",
+        "c3": "the nightclub"
+      },
+      "capabilities": {
+        "check": true,
+        "reset": true,
+        "reveal": true,
+        "submit": true,
+        "score": true
+      }
+    },
+    {
+      "id": "objective-pet-b1-u04-l01-a06",
+      "type": "gap-listening",
+      "assessable": true,
+      "gradable": true,
+      "totalCount": 19,
+      "answerKey": {
+        "b": "today",
+        "c": "this afternoon",
+        "d": "tomorrow afternoon",
+        "e": "at the weekend",
+        "f": "on 29 August",
+        "g": "on Saturday afternoon",
+        "h": "at a quarter to eight",
+        "i": "on Wednesdays",
+        "j": "this week",
+        "k": "at the end of the day",
+        "l": "at 7 o'clock",
+        "m": "in August",
+        "n": "at the moment",
+        "o": "next weekend",
+        "p": "on Sunday afternoon",
+        "q": "in the afternoon",
+        "r": "in the summer",
+        "s": "on my birthday",
+        "t": "on Saturday"
+      },
+      "capabilities": {
+        "check": true,
+        "reset": true,
+        "reveal": true,
+        "submit": true,
+        "score": true
+      }
+    },
+    {
+      "id": "objective-pet-b1-u04-l01-a07",
+      "type": "sort",
+      "assessable": true,
+      "gradable": true,
+      "totalCount": 20,
+      "answerKey": {
+        "t1": "ON",
+        "t2": "ON",
+        "t3": "ON",
+        "t4": "ON",
+        "t5": "ON",
+        "t6": "ON",
+        "t7": "AT",
+        "t8": "AT",
+        "t9": "AT",
+        "t10": "AT",
+        "t11": "AT",
+        "t12": "IN",
+        "t13": "IN",
+        "t14": "IN",
+        "t15": "IN",
+        "t16": "—",
+        "t17": "—",
+        "t18": "—",
+        "t19": "—",
+        "t20": "—"
+      },
+      "capabilities": {
+        "check": true,
+        "reset": true,
+        "reveal": true,
+        "submit": true,
+        "score": true
+      }
+    },
+    {
+      "id": "objective-pet-b1-u04-l01-a08",
+      "type": "prepositions",
+      "assessable": true,
+      "gradable": true,
+      "totalCount": 12,
+      "answerKey": {
+        "p1": "—",
+        "p2": "on",
+        "p3": "—",
+        "p4": "on",
+        "p5": "at",
+        "p6": "in",
+        "p7": "in",
+        "p8": "on",
+        "p9": "in",
+        "p10": "at",
+        "p11": "—",
+        "p12": "at"
+      },
+      "capabilities": {
+        "check": true,
+        "reset": true,
+        "reveal": true,
+        "submit": true,
+        "score": true
+      }
+    },
+    {
+      "id": "objective-pet-b1-u04-l01-a09",
+      "type": "exit",
+      "assessable": true,
+      "gradable": true,
+      "totalCount": 5,
+      "answerKey": {
+        "e1": "music festival",
+        "e2": "on",
+        "e3": "at",
+        "e4": "in",
+        "e5": "—"
+      },
+      "capabilities": {
+        "check": true,
+        "reset": true,
+        "reveal": true,
+        "submit": true,
+        "score": true
+      }
+    },
+    {
+      "id": "objective-pet-b1-u04-l01-a10",
+      "type": "reading-evidence-open",
+      "assessable": true,
+      "gradable": false,
+      "totalCount": 6,
+      "capabilities": {
+        "check": false,
+        "reset": true,
+        "reveal": true,
+        "submit": true,
+        "score": false
+      }
+    },
+    {
+      "id": "objective-pet-b1-u04-l01-a11",
+      "type": "corpus-choice",
+      "assessable": true,
+      "gradable": true,
+      "totalCount": 3,
+      "answerKey": {
+        "ff1": "fun",
+        "ff2": "funny",
+        "ff3": "fun"
+      },
+      "capabilities": {
+        "check": true,
+        "reset": true,
+        "reveal": true,
+        "submit": true,
+        "score": true
+      }
+    }
+  ],
+  "feedbackPassDecisions": [
+    "Show Answer is now a mode: click Show Answer once, then click any item to reveal only that item.",
+    "Item answers overlay the response box; Evidence controls stay visible and separate.",
+    "Track 15 answer map recovered from the supplied U4.1 PPT reveal labels: A-1, B-4, C-6, D-3, E-5, F-2.",
+    "Track 15 uses one full-audio listen first; evidence clips are attached under the matching picture.",
+    "Reading 2 now has three steps: six-member read-and-summarise, group questions only, then split-screen check-and-evidence.",
+    "Reading 2 question panes are independently scrollable with larger question text.",
+    "Evidence highlighting remains item-scoped in the full reading pane.",
+    "All previously approved brighter visual treatment, Aims, vertical page scroll and floating navigation remain unchanged."
+  ]
+}

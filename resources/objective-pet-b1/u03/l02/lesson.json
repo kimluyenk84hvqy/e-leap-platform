@@ -1,0 +1,159 @@
+{
+  "lessonId": "objective-pet-b1-u03-l02",
+  "resourceId": "res-objective-pet-b1-u03-l02",
+  "course": "Objective PET B1",
+  "courseId": "objective-pet-b1",
+  "unit": "03",
+  "lesson": "02",
+  "title": "Unit 3 · What's your job? · Lesson 2",
+  "audience": "Postgraduate Specialist Level 1 doctors / adult B1 learners",
+  "version": "4.1.0",
+  "status": "FINAL-eleap-compatible-lock",
+  "sourceScope": [
+    "Objective PET Student's Book pp.25-27 (uploaded extract)",
+    "U3-Objective-B1-Dang-Nga-L2 lecturer PPT",
+    "U3.1 source asset for source page-23 mall scene"
+  ],
+  "screenCount": 20,
+  "aims": {
+    "knowledge": [
+      "Distinguish Present Simple and Present Continuous in context.",
+      "Recognise correct question and short-answer patterns.",
+      "Identify key requirements of PET Speaking Part 3 and Reading Part 5."
+    ],
+    "skills": [
+      "Ask and answer questions about jobs and current actions accurately.",
+      "Distinguish and produce /æ/, /ɑː/ and /ʌ/.",
+      "Describe photographs and apply basic PET exam strategies."
+    ],
+    "learningBehaviour": [
+      "Participate actively in pair and group work.",
+      "Listen respectfully and support peer learning.",
+      "Review and improve performance after feedback."
+    ]
+  },
+  "activityIds": [
+    "objective-pet-b1-u03-l02-a01a-shortanswers-ex1a",
+    "objective-pet-b1-u03-l02-a01b-shortanswers-ex1b",
+    "objective-pet-b1-u03-l02-a02-shortanswers-ex2",
+    "objective-pet-b1-u03-l02-a03-pronunciation-ex1",
+    "objective-pet-b1-u03-l02-a04-pronunciation-ex3",
+    "objective-pet-b1-u03-l02-a05a-spot-observe",
+    "objective-pet-b1-u03-l02-a05b-spot-speak",
+    "objective-pet-b1-u03-l02-a05c-spot-check",
+    "objective-pet-b1-u03-l02-a06-whats-my-job",
+    "objective-pet-b1-u03-l02-a07a-speaking-ex1a",
+    "objective-pet-b1-u03-l02-a07b-speaking-ex1b",
+    "objective-pet-b1-u03-l02-a08a-speaking-ex2-place-appearance",
+    "objective-pet-b1-u03-l02-a08b-speaking-ex2-clothes-personality",
+    "objective-pet-b1-u03-l02-a08c-speaking-ex2-action-feeling-why",
+    "objective-pet-b1-u03-l02-a09-speaking-ex3",
+    "objective-pet-b1-u03-l02-a10-speaking-ex4",
+    "objective-pet-b1-u03-l02-a11-reading-ex1",
+    "objective-pet-b1-u03-l02-a12-reading-ex2",
+    "objective-pet-b1-u03-l02-a13-exit-ticket"
+  ],
+  "assessmentRules": {
+    "fixedAnswer": [
+      "a01a",
+      "a01b",
+      "a03",
+      "a04",
+      "a07a",
+      "a07b",
+      "a11",
+      "a12"
+    ],
+    "guidedOpen": [
+      "a02",
+      "a05a",
+      "a05b",
+      "a05c",
+      "a06",
+      "a08a",
+      "a08b",
+      "a08c",
+      "a09",
+      "a10",
+      "a13"
+    ],
+    "openSpeakingAutoScore": false
+  },
+  "media": {
+    "page23": "assets/images/u03l02-spot-p23.webp",
+    "page25": "assets/images/u03l02-spot-p25.webp",
+    "audio1_13": "assets/audio/pronunciation-1-13.mp3",
+    "audio1_14": "assets/audio/pronunciation-1-14.mp3"
+  },
+  "lockedDecisions": [
+    "Source-first content and numbering",
+    "Speaking open responses are not fake auto-scored",
+    "Pronunciation Exercise 2 transcript is not invented",
+    "Hosted mode does not duplicate platform controls",
+    "No autoplay",
+    "Private educational-use source status",
+    "Spot the Difference uses one three-tab screen with the same two source pictures visible in Observe, Speak and Check",
+    "Speaking Part 3 Exercise 1 uses one two-tab screen with Tom visible throughout",
+    "Exam Folder practice uses a three-tab screen for Speaking Exercise 4 and Reading Part 5 Exercises 1-2, with relevant photographs visible on every tab",
+    "V3 visual identity uses fresh lime/yellow-green as the Objective PET brand signal, balanced with academic navy, warm ivory, soft blue, restrained coral and warm gold",
+    "Projector-first typography is enlarged; dense screens use tabs or wider layouts instead of shrinking text",
+    "Speaking Exercise 2 uses three learner-friendly tabs while keeping Irena visible throughout",
+    "Speaking Exercise 3 adds a persistent source photograph as a visual anchor and selective retrieval reveal",
+    "A dedicated Exam Folder divider strengthens lesson rhythm without changing source content",
+    "All key lesson photographs support click-to-enlarge visual aid in standalone/lesson UI",
+    "Speaking Exercise 4 remains integrated into the three-tab Exam Practice canvas; duplicate prepare screen removed",
+    "Exam Folder 3 divider title is forced to remain on one line on desktop/projector layouts.",
+    "A dedicated final Thank You screen closes the lesson with restrained lime/navy/coral/gold visual decoration and VMMU sign-off.",
+    "FINAL audit restores the exact source task instructions for Speaking Exercise 4 and Reading Part 5 Exercises 1-2 inside the shared Exam Practice canvas.",
+    "Platform compatibility fix: each response-bearing micro-tab now exposes its own stable activityId; lesson state returns response snapshots and per-activity assessment to the E-LEAP host.",
+    "Platform compatibility fix: working responses persist by activity across tab/screen rerenders so Follow Teacher/navigation does not silently erase learner work."
+  ],
+  "contentAudit": {
+    "date": "2026-10-12",
+    "result": "FINAL PASS",
+    "checks": [
+      "Coursebook pp.25-27 rechecked against the uploaded scan",
+      "Lecturer PPT exercises, answer logic and pronunciation keys cross-checked",
+      "Short Answers questions and answer mapping verified",
+      "Pronunciation Exercise 1 order key and Exercise 3 vowel-family key verified",
+      "Spot the Difference source example and six suggested answers verified",
+      "What’s my job source question systems preserved",
+      "Speaking Part 3 Exercises 1-4 preserved, including retrieval Exercise 3",
+      "Reading Part 5 contains photographs plus three gap items per exercise; no unsupported reading passage added",
+      "Reading Part 5 Exercise 1 answer to Tom’s ___ a tin of yellow paint is got, following the scanned coursebook page",
+      "Exam Advice preserved",
+      "Exam Folder 3 title stays on one line at desktop/projector layouts",
+      "Thank You closing screen retained",
+      "Fresh lime / navy / warm ivory visual theme retained with enlarged projector typography",
+      "No core source content invented to fill unsupported gaps"
+    ]
+  },
+  "technicalCompatibility": {
+    "hostApiVersion": "1.1",
+    "hostedMode": "auto-detect iframe or ?eleapHosted=1",
+    "resourceId": "res-objective-pet-b1-u03-l02",
+    "atomicTabActivities": true,
+    "responseSnapshot": true,
+    "workingStatePersistence": "sessionStorage keyed by resource + Live Class session context + activity",
+    "commands": [
+      "check",
+      "reset",
+      "reveal",
+      "show-answer",
+      "submit",
+      "score",
+      "next",
+      "previous",
+      "goto",
+      "goto-activity"
+    ],
+    "events": [
+      "eleap:lesson-state",
+      "ELEAP_LESSON_STATE",
+      "ELEAP_LESSON_READY"
+    ],
+    "productionResponsesOwnedBy": "E-LEAP platform host",
+    "lessonDirectNetworkSubmission": false,
+    "followTeacherAdapter": "setScreen(index|screenId) + setActivity(activityId)"
+  }
+}

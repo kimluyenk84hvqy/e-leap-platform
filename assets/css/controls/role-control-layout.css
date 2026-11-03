@@ -165,3 +165,14 @@ html[data-eleap-mode="presentation"] .eleap-actions{justify-content:flex-end}
   .unified-controls .host-score-pill{font-size:10px;padding:0 6px}
   html[data-eleap-role="student"] .unified-controls{grid-template-columns:repeat(4,minmax(0,1fr))!important}
 }
+
+/* Classroom readability refinement: one restrained step larger without changing control geometry. */
+.unified-controls .dock-label{font-size:11px!important}
+html[data-eleap-role="teacher"] .unified-controls button,
+html[data-eleap-role="teacher"] .unified-controls a,
+html[data-eleap-role="admin"] .unified-controls button,
+html[data-eleap-role="admin"] .unified-controls a{font-size:13px}
+html[data-eleap-role="student"] .unified-controls button,
+html[data-eleap-role="guest"] .unified-controls button{font-size:13px}
+html[data-eleap-mode="presentation"] .unified-controls button{font-size:13px!important}
+.eleap-actions [data-status]{font-size:.92rem}
