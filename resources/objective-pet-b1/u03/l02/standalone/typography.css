@@ -1,0 +1,18 @@
+/* U3.2 projector-first typography pass */
+body{font-size:18px}
+.brand{font-size:19px}.brand .eyebrow,.eyebrow{font-size:14px}.badge{font-size:14px}
+.head h2{font-size:50px}.head p{font-size:25px;line-height:1.45}.head .kicker{font-size:15px}.source{font-size:15px}
+.card h3{font-size:31px}.card li{font-size:25px;line-height:1.45}.card p,.panel p,.source-answer{font-size:25px}
+.qcard>label,.qcard label{font-size:29px;line-height:1.32}.qcard select,.qcard input,.qcard textarea{font-size:25px}.answer-note{font-size:22px;line-height:1.4}
+.activity-banner{font-size:23px;line-height:1.4}.source-task b{font-size:21px}.source-task span,.source-task.compact span{font-size:23px;line-height:1.4}
+.tabs-large button{font-size:25px!important}.panel h3{font-size:31px}.checklist label,.compact-check label{font-size:22px}
+.photo-frame figcaption{font-size:19px}.photo-tag{font-size:16px}.modelbox{font-size:22px;line-height:1.45}.note{font-size:20px}
+.mcq-row label{font-size:24px!important}.strategy span{font-size:21px}.memory-card b{font-size:25px}.tense-bridge span{font-size:21px}
+.footer button{font-size:19px}#counter{font-size:19px}
+@media(min-width:1200px){
+ .screen{padding:32px 34px 38px}
+ .head{margin-bottom:24px}
+ .card,.qcard,.panel{padding-top:18px;padding-bottom:18px}
+}
+@media(max-width:1199px){.head h2{font-size:42px}.head p{font-size:22px}.qcard>label,.qcard label{font-size:25px}.card li{font-size:22px}.tabs-large button{font-size:21px!important}}
+@media(max-width:900px){body{font-size:16px}.head h2{font-size:34px}.head p{font-size:19px}.qcard>label,.qcard label{font-size:22px}.qcard select,.qcard input,.qcard textarea{font-size:20px}.card li,.card p,.panel p,.source-answer{font-size:20px}.activity-banner{font-size:19px}.source-task span,.source-task.compact span{font-size:19px}}
