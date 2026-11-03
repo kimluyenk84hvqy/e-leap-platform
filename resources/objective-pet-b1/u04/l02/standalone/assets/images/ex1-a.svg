@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 440" width="640" height="440">
+    <rect width="640" height="440" rx="30" fill="#fbfdfc"/>
+    <rect x="16" y="16" width="608" height="408" rx="26" fill="none" stroke="#90bbb1" stroke-width="5"/>
+    
+<line x1="115" y1="265" x2="525" y2="265" stroke="#2f7f76" stroke-width="8"/>
+<line x1="320" y1="125" x2="320" y2="315" stroke="#2f7f76" stroke-width="6"/>
+<ellipse cx="208" cy="196" rx="62" ry="86" fill="none" stroke="#12344a" stroke-width="11" transform="rotate(-24 208 196)"/>
+<line x1="250" y1="258" x2="300" y2="330" stroke="#12344a" stroke-width="12" stroke-linecap="round"/>
+<circle cx="410" cy="170" r="22" fill="#f2c94c" stroke="#12344a" stroke-width="5"/>
+
+    <text x="320" y="402" text-anchor="middle" font-family="Arial" font-size="34" font-weight="800" fill="#12344a">TENNIS</text>
+    </svg>
