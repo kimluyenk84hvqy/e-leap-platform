@@ -6,12 +6,22 @@
   const app=()=>window.__ELEAP_APP__;
   let runtimeContext={};
   const eventId=()=>globalThis.crypto?.randomUUID?.()||`u32-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  function responseForPlatform(response){
+    if(!response)return null;
+    if(Array.isArray(response.inputs))return response;
+    if(Array.isArray(response.items))return {
+      inputs:response.items.map((x,i)=>({name:x?.key||`Field ${i+1}`,type:x?.type||'text',value:x?.value??'',checked:x?.type==='checkbox'?Boolean(x?.value):undefined,display:x?.display??''})),
+      raw:response
+    };
+    return response;
+  }
   function postLearningEvent(eventType,state){
     if(!hosted||!state?.activityId)return;
+    const response=responseForPlatform(state.response);
     const event={
       eventId:eventId(),eventType,occurredAt:new Date().toISOString(),resourceId:RESOURCE_ID,activityId:state.activityId,
       context:{...runtimeContext},
-      payload:{response:state.response??null,assessment:state.assessment??null,score:state.assessment?.score??null,state:state.state??null,screenId:state.screenId??null,tab:state.tab??null}
+      payload:{response,assessment:state.assessment??null,grading:state.assessment??null,score:state.assessment?.score??null,correctCount:state.assessment?.correctCount??null,totalCount:state.assessment?.totalCount??null,answeredCount:state.assessment?.answeredCount??null,state:state.state??null,screenId:state.screenId??null,tab:state.tab??null}
     };
     try{window.parent?.postMessage({type:'e-leap:learning-event',event},location.origin)}catch(_){ }
   }
