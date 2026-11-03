@@ -1,0 +1,157 @@
+name: Install Objective PET B1 U4.2
+
+on:
+  push:
+    branches:
+      - integrate/objective-pet-b1-u4-2
+    paths:
+      - incoming/Objective_PET_B1_U4_2_ELEAP_RESOURCE_FINAL.zip
+
+permissions:
+  contents: write
+
+jobs:
+  install-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: integrate/objective-pet-b1-u4-2
+          fetch-depth: 0
+
+      - name: Unpack approved U4.2 package
+        shell: bash
+        run: |
+          set -euo pipefail
+          ZIP='incoming/Objective_PET_B1_U4_2_ELEAP_RESOURCE_FINAL.zip'
+          test -f "$ZIP"
+          rm -rf /tmp/u42 && mkdir -p /tmp/u42
+          unzip -q "$ZIP" -d /tmp/u42
+          BASE='/tmp/u42/Objective_PET_B1_U4_2_ELEAP_RESOURCE_FINAL'
+          test -f "$BASE/lesson.json"
+          test -f "$BASE/resource/index.html"
+          test -f "$BASE/resource/lesson-data.js"
+          test -f "$BASE/resource/app.js"
+          test -f "$BASE/resource/styles.css"
+          test -f "$BASE/resource/lesson-access.js"
+          (cd "$BASE" && sha256sum -c SHA256SUMS.txt)
+          rm -rf resources/objective-pet-b1/u04/l02
+          mkdir -p resources/objective-pet-b1/u04/l02/standalone
+          cp "$BASE/lesson.json" resources/objective-pet-b1/u04/l02/lesson.json
+          cp -R "$BASE/resource"/. resources/objective-pet-b1/u04/l02/standalone/
+
+      - name: Upgrade U4.2 hosted adapter to current E-LEAP contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > resources/objective-pet-b1/u04/l02/standalone/lesson-access.js <<'JS'
+          (function(){
+            const RESOURCE_ID='res-objective-pet-b1-u04-l02';
+            const p=new URLSearchParams(location.search);
+            const hosted=p.get('eleapHosted')==='1'||window.self!==window.top;
+            if(hosted){document.documentElement.classList.add('hosted');document.addEventListener('DOMContentLoaded',()=>document.body.classList.add('hosted'));}
+            const app=()=>window.ELEAPApp; let runtimeContext={};
+            const eventId=()=>globalThis.crypto?.randomUUID?.()||`u42-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+            function responseForPlatform(response){
+              if(!response)return null;
+              if(Array.isArray(response.inputs))return response;
+              if(response&&typeof response==='object')return {inputs:Object.entries(response).map(([name,value])=>({name,type:typeof value==='boolean'?'checkbox':'text',value,checked:typeof value==='boolean'?value:undefined})),raw:response};
+              return response;
+            }
+            function postLearningEvent(eventType,state){
+              if(!hosted||!state?.activityId)return;
+              const a=state.assessment||{};
+              const event={eventId:eventId(),eventType,occurredAt:new Date().toISOString(),resourceId:RESOURCE_ID,activityId:state.activityId,context:{...runtimeContext},payload:{response:responseForPlatform(state.response),assessment:state.assessment??null,grading:state.assessment??null,score:a.percentage??a.score??null,correctCount:a.correctCount??null,totalCount:a.totalCount??null,answeredCount:a.answeredCount??null,state:state.state??null,screenId:state.screen?.id??null,screenIndex:state.screen?.index??null,tab:state.screen?.tab??null}};
+              try{window.parent?.postMessage({type:'e-leap:learning-event',event},location.origin)}catch(_){ }
+            }
+            window.addEventListener('message',ev=>{
+              if(ev.source!==window.parent||ev.origin!==location.origin)return;
+              const d=ev.data||{};
+              if(d.type==='e-leap:runtime-context'){runtimeContext={...(d.context||{})};return;}
+              if(d.type==='ELEAP_COMMAND'&&d.action)window.ELEAP_LESSON_HOST_API.command(d.action,d.payload);
+              if(d.type==='ELEAP_SET_MODE')window.ELEAP_LESSON_HOST_API.setMode(d.mode);
+              if(d.type==='ELEAP_SET_SCREEN')window.ELEAP_LESSON_HOST_API.setScreen(d.target);
+              if(d.type==='ELEAP_SET_ACTIVITY')window.ELEAP_LESSON_HOST_API.setActivity(d.activityId);
+            });
+            window.ELEAP_LESSON_HOST_API={apiVersion:'1.2',resourceId:RESOURCE_ID,
+              setMode(mode){const r=app()?.setMode?.(mode);return r!==false},
+              getMode(){return app()?.getMode?.()||document.body?.dataset?.mode||'student'},
+              getActivityState(){return app()?.getActivityState?.()||null},
+              command(action,payload){const key=String(action||'').toLowerCase();const r=app()?.command?.(action,payload);if(r===false||r==null)return false;const state=app()?.getActivityState?.()||r;if(key==='check')postLearningEvent('attempt.checked',state);else if(key==='submit')postLearningEvent('response.submitted',state);return true;},
+              setScreen(target){const r=app()?.setScreen?.(target);return r!==false&&r!=null},
+              setActivity(activityId){const r=app()?.setActivity?.(activityId);return r!==false&&r!=null},
+              next(){const r=app()?.command?.('next');return r!==false&&r!=null},previous(){const r=app()?.command?.('previous');return r!==false&&r!=null},getResourceId(){return RESOURCE_ID},getScreenCount(){return window.LESSON?.screens?.length||0}
+            };
+            window.ELEAPLesson=window.ELEAP_LESSON_HOST_API;
+            window.addEventListener('ELEAP_APP_READY',()=>{try{window.parent?.postMessage({type:'ELEAP_LESSON_READY',resourceId:RESOURCE_ID},location.origin)}catch(_){ }if(hosted){try{window.parent?.postMessage({type:'e-leap:request-runtime-context'},location.origin)}catch(_){ }}});
+          })();
+          JS
+
+      - name: Register U4.2 resource and placement
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          base=Path('resources/objective-pet-b1/u04/l02')
+          lesson=json.loads((base/'lesson.json').read_text())
+          regp=Path('data/resources.json'); d=json.loads(regp.read_text())
+          rid='res-objective-pet-b1-u04-l02'; pid='placement-objective-pet-b1-u04-l02'; sid='objective-pet-b1-u04-l02'
+          r={'id':rid,'name':"U4.2 · Let's Go Out — Future Arrangements",'type':'interactive-lesson','version':lesson['version'],'status':'approved-review','source':{'kind':'lesson-data','path':'resources/objective-pet-b1/u04/l02/lesson.json','standaloneUrl':'resources/objective-pet-b1/u04/l02/standalone/index.html','package':'Objective_PET_B1_U4_2_ELEAP_RESOURCE_FINAL.zip'},'capabilities':['classroom','self-study','presentation','responses','progress','live-class'],'copyright':{'reviewStatus':'private-course-material','trafficLight':'amber','usageScope':'private-educational-use'}}
+          p={'id':pid,'resourceId':rid,'shellId':sid,'order':2,'status':'active'}
+          d['resources']=[x for x in d.get('resources',[]) if x.get('id')!=rid]+[r]
+          d['placements']=[x for x in d.get('placements',[]) if x.get('id')!=pid]+[p]
+          regp.write_text(json.dumps(d,ensure_ascii=False,separators=(',',':'))+'\n')
+          shells=json.loads(Path('data/course-shells.json').read_text()); assert any(x.get('id')==sid for x in shells.get('shells',[])), 'U4.2 shell missing'
+          PY
+
+      - name: Add U4.2 to Live Class compatibility list
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          p=Path('teacher-live.html'); s=p.read_text()
+          option='<option value="res-objective-pet-b1-u04-l02">Objective PET B1 · U4.2 · Let’s Go Out</option>'
+          if 'value="res-objective-pet-b1-u04-l02"' not in s:
+              anchor=r'(<option[^>]+value="res-objective-pet-b1-u04-l01"[^>]*>.*?</option>)'
+              s,n=re.subn(anchor,lambda m:m.group(1)+option,s,count=1,flags=re.S); assert n==1, 'Could not locate U4.1 Live Class option'
+          m=re.search(r'function resourceName\(id\)\{[^\n]*\}',s); assert m, 'resourceName helper missing'; fn=m.group(0)
+          if 'res-objective-pet-b1-u04-l02' not in fn:
+              fn=fn.replace("if(id==='res-objective-pet-b1-u04-l01')return\"Objective PET B1 · U4.1 · Let’s Go Out\";", "if(id==='res-objective-pet-b1-u04-l01')return\"Objective PET B1 · U4.1 · Let’s Go Out\";if(id==='res-objective-pet-b1-u04-l02')return\"Objective PET B1 · U4.2 · Let’s Go Out\";")
+              s=s[:m.start()]+fn+s[m.end():]
+          p.write_text(s)
+          PY
+
+      - name: Static QA
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE='resources/objective-pet-b1/u04/l02'; ST="$BASE/standalone"
+          node --check "$ST/app.js"; node --check "$ST/lesson-access.js"; node --check "$ST/lesson-data.js"
+          python - <<'PY'
+          import json,re
+          from pathlib import Path
+          base=Path('resources/objective-pet-b1/u04/l02'); st=base/'standalone'; lesson=json.loads((base/'lesson.json').read_text())
+          assert lesson['resourceId']=='res-objective-pet-b1-u04-l02'; assert lesson['shellId']=='objective-pet-b1-u04-l02'; assert len(lesson['screens'])==15
+          ids=list(lesson['activities']); assert len(ids)==23 and len(ids)==len(set(ids))
+          data=(st/'lesson-data.js').read_text(); access=(st/'lesson-access.js').read_text(); css=(st/'styles.css').read_text()
+          assert 'ELEAP_LESSON_HOST_API' in access and "apiVersion:'1.2'" in access and 'response.submitted' in access and 'attempt.checked' in access
+          refs=set(re.findall(r'assets/(?:images|audio|video)/[^\"\'\\\s,}]+',data)); missing=[x for x in sorted(refs) if not (st/x).exists()]; assert not missing, f'Missing media: {missing}'
+          assert 'body.hosted' in css or 'hosted' in (st/'app.js').read_text()
+          reg=json.loads(Path('data/resources.json').read_text()); assert sum(x.get('id')=='res-objective-pet-b1-u04-l02' for x in reg['resources'])==1; assert sum(x.get('id')=='placement-objective-pet-b1-u04-l02' for x in reg['placements'])==1
+          assert 'res-objective-pet-b1-u04-l02' in Path('teacher-live.html').read_text()
+          print('U4.2 static QA PASS; screens=15 activities=23 mediaRefs=',len(refs))
+          PY
+
+      - name: Commit clean installed resource
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f incoming/Objective_PET_B1_U4_2_ELEAP_RESOURCE_FINAL.zip
+          rmdir incoming 2>/dev/null || true
+          git config user.name 'E-LEAP Installer'; git config user.email 'actions@users.noreply.github.com'
+          git add resources/objective-pet-b1/u04/l02 data/resources.json teacher-live.html incoming || true
+          if git diff --cached --quiet; then echo 'Nothing to commit'; else git commit -m 'Install Objective PET B1 U4.2 with current E-LEAP host bridge'; git push origin HEAD:integrate/objective-pet-b1-u4-2; fi
