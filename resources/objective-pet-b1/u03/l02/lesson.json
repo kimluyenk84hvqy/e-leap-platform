@@ -54,8 +54,29 @@
     "objective-pet-b1-u03-l02-a13-exit-ticket"
   ],
   "assessmentRules": {
-    "fixedAnswer": ["a01a", "a01b", "a03", "a04", "a07a", "a07b", "a11", "a12"],
-    "guidedOpen": ["a02", "a05a", "a05b", "a05c", "a06", "a08a", "a08b", "a08c", "a09", "a10", "a13"],
+    "fixedAnswer": [
+      "a01a",
+      "a01b",
+      "a03",
+      "a04",
+      "a07a",
+      "a07b",
+      "a11",
+      "a12"
+    ],
+    "guidedOpen": [
+      "a02",
+      "a05a",
+      "a05b",
+      "a05c",
+      "a06",
+      "a08a",
+      "a08b",
+      "a08c",
+      "a09",
+      "a10",
+      "a13"
+    ],
     "openSpeakingAutoScore": false
   },
   "media": {
@@ -114,8 +135,23 @@
     "atomicTabActivities": true,
     "responseSnapshot": true,
     "workingStatePersistence": "sessionStorage keyed by resource + Live Class session context + activity",
-    "commands": ["check", "reset", "reveal", "show-answer", "submit", "score", "next", "previous", "goto", "goto-activity"],
-    "events": ["eleap:lesson-state", "ELEAP_LESSON_STATE", "ELEAP_LESSON_READY"],
+    "commands": [
+      "check",
+      "reset",
+      "reveal",
+      "show-answer",
+      "submit",
+      "score",
+      "next",
+      "previous",
+      "goto",
+      "goto-activity"
+    ],
+    "events": [
+      "eleap:lesson-state",
+      "ELEAP_LESSON_STATE",
+      "ELEAP_LESSON_READY"
+    ],
     "productionResponsesOwnedBy": "E-LEAP platform host",
     "lessonDirectNetworkSubmission": false,
     "followTeacherAdapter": "setScreen(index|screenId) + setActivity(activityId)"
