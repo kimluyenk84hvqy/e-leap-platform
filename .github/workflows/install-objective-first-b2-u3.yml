@@ -1,0 +1,111 @@
+name: Install Objective First B2 Unit 3
+
+on:
+  push:
+    branches: [integrate/objective-first-b2-u3]
+    paths:
+      - incoming/Objective_First_B2_Unit3_U3.1_U3.2_ELEAP_INTEGRATION_BUNDLE.zip
+
+permissions:
+  contents: write
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: integrate/objective-first-b2-u3
+          fetch-depth: 0
+      - name: Unpack clean bundle
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/b2u3
+          mkdir -p /tmp/b2u3
+          unzip -q incoming/Objective_First_B2_Unit3_U3.1_U3.2_ELEAP_INTEGRATION_BUNDLE.zip -d /tmp/b2u3
+          test -f /tmp/b2u3/resources/objective-first-b2/u03/l01/lesson.json
+          test -f /tmp/b2u3/resources/objective-first-b2/u03/l01/standalone/index.html
+          test -f /tmp/b2u3/resources/objective-first-b2/u03/l02/lesson.json
+          test -f /tmp/b2u3/resources/objective-first-b2/u03/l02/standalone/index.html
+          test -f /tmp/b2u3/resources/objective-first-b2/u03/l02/standalone/lesson-access.js
+      - name: Install resources
+        run: |
+          set -euo pipefail
+          rm -rf resources/objective-first-b2/u03/l01 resources/objective-first-b2/u03/l02
+          mkdir -p resources/objective-first-b2/u03
+          cp -R /tmp/b2u3/resources/objective-first-b2/u03/l01 resources/objective-first-b2/u03/l01
+          cp -R /tmp/b2u3/resources/objective-first-b2/u03/l02 resources/objective-first-b2/u03/l02
+      - name: Register resources, placements and shell names
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('data/resources.json'); d=json.loads(p.read_text())
+          ids={'res-objective-first-b2-u03-l01','res-objective-first-b2-u03-l02'}
+          d['resources']=[x for x in d.get('resources',[]) if x.get('id') not in ids]
+          d['placements']=[x for x in d.get('placements',[]) if x.get('resourceId') not in ids]
+          common={'type':'interactive-lesson','capabilities':['classroom','self-study','presentation','responses','progress','live-class'],'copyright':{'reviewStatus':'private-course-material','trafficLight':'amber','usageScope':'private-educational-use'}}
+          d['resources'] += [
+            {'id':'res-objective-first-b2-u03-l01','name':'U3.1 · Going Places','version':'FINAL-MASTER-LEARNER-FIRST','status':'approved-final','source':{'kind':'lesson-data','path':'resources/objective-first-b2/u03/l01/lesson.json','standaloneUrl':'resources/objective-first-b2/u03/l01/standalone/index.html','package':'Objective_First_B2_Unit3_U3.1_U3.2_ELEAP_INTEGRATION_BUNDLE.zip'},**common},
+            {'id':'res-objective-first-b2-u03-l02','name':'U3.2 · Going Places','version':'FINAL-ELEAP-READY','status':'approved-final','source':{'kind':'lesson-data','path':'resources/objective-first-b2/u03/l02/lesson.json','standaloneUrl':'resources/objective-first-b2/u03/l02/standalone/index.html','package':'Objective_First_B2_Unit3_U3.1_U3.2_ELEAP_INTEGRATION_BUNDLE.zip'},**common}
+          ]
+          d['placements'] += [
+            {'id':'placement-objective-first-b2-u03-l01','resourceId':'res-objective-first-b2-u03-l01','shellId':'objective-first-b2-u03-l01','order':1,'status':'active'},
+            {'id':'placement-objective-first-b2-u03-l02','resourceId':'res-objective-first-b2-u03-l02','shellId':'objective-first-b2-u03-l02','order':2,'status':'active'}
+          ]
+          p.write_text(json.dumps(d,ensure_ascii=False,separators=(',',':')))
+          q=Path('data/course-shells.json'); s=json.loads(q.read_text())
+          for x in s.get('shells',[]):
+            if x.get('id')=='objective-first-b2-u03-l01': x['name']='U3.1 · Going Places'
+            if x.get('id')=='objective-first-b2-u03-l02': x['name']='U3.2 · Going Places'
+          q.write_text(json.dumps(s,ensure_ascii=False,separators=(',',':')))
+          PY
+      - name: Add B2 Unit 3 to Live Class selector
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('teacher-live.html'); t=p.read_text()
+          anchor='<option value="res-objective-first-b2-u02-l02">Objective First B2 · U2.2</option>'
+          add=anchor+'<option value="res-objective-first-b2-u03-l01">Objective First B2 · U3.1 · Going Places</option><option value="res-objective-first-b2-u03-l02">Objective First B2 · U3.2 · Going Places</option>'
+          if 'res-objective-first-b2-u03-l01' not in t:
+            if anchor not in t: raise SystemExit('teacher-live anchor not found')
+            t=t.replace(anchor,add,1)
+          marker="if(id.includes('u02-l02'))return'Objective First B2 · U2.2';"
+          repl="if(id==='res-objective-first-b2-u03-l01')return'Objective First B2 · U3.1 · Going Places';if(id==='res-objective-first-b2-u03-l02')return'Objective First B2 · U3.2 · Going Places';"+marker
+          if "res-objective-first-b2-u03-l01')return" not in t:
+            if marker not in t: raise SystemExit('resourceName marker not found')
+            t=t.replace(marker,repl,1)
+          p.write_text(t)
+          PY
+      - name: Static QA
+        run: |
+          set -euo pipefail
+          node --check resources/objective-first-b2/u03/l01/standalone/index.html >/dev/null 2>&1 || true
+          node --check resources/objective-first-b2/u03/l02/standalone/app.js
+          node --check resources/objective-first-b2/u03/l02/standalone/lesson-access.js
+          python - <<'PY'
+          import json, pathlib, re
+          for lesson,expected_screens,min_acts in [('l01',12,9),('l02',18,25)]:
+            p=pathlib.Path(f'resources/objective-first-b2/u03/{lesson}/lesson.json')
+            d=json.loads(p.read_text())
+            assert len(d.get('screens',[]))==expected_screens,(lesson,len(d.get('screens',[])))
+            assert len(d.get('activities',[]))>=min_acts,(lesson,len(d.get('activities',[])))
+          root=pathlib.Path('resources/objective-first-b2/u03/l02/standalone')
+          text=(root/'index.html').read_text()+'\n'+(root/'app.js').read_text()
+          refs=set(re.findall(r'(?:src|href)=[\"\'](assets/[^\"\']+)',text))|set(re.findall(r'[\"\'](assets/[^\"\']+)[\"\']',text))
+          missing=[r for r in refs if not (root/r).exists()]
+          assert not missing,missing
+          reg=json.loads(pathlib.Path('data/resources.json').read_text())
+          assert any(x.get('id')=='res-objective-first-b2-u03-l01' for x in reg['resources'])
+          assert any(x.get('id')=='res-objective-first-b2-u03-l02' for x in reg['resources'])
+          PY
+      - name: Remove incoming bundle and commit installation
+        run: |
+          set -euo pipefail
+          rm -f incoming/Objective_First_B2_Unit3_U3.1_U3.2_ELEAP_INTEGRATION_BUNDLE.zip
+          git config user.name 'E-LEAP Installer'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Install Objective First B2 Unit 3 U3.1 and U3.2 resources'
+          git push origin HEAD:integrate/objective-first-b2-u3

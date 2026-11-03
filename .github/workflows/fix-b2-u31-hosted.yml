@@ -1,0 +1,47 @@
+name: Fix Objective First B2 U3.1 hosted mode
+
+on:
+  push:
+    branches:
+      - integrate/objective-first-b2-u3
+    paths:
+      - .github/workflows/fix-b2-u31-hosted.yml
+
+permissions:
+  contents: write
+
+jobs:
+  fix-hosted:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: integrate/objective-first-b2-u3
+          fetch-depth: 0
+      - name: Patch hosted class detection
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('resources/objective-first-b2/u03/l01/standalone/index.html')
+          s=p.read_text(encoding='utf-8')
+          marker="<script>if(new URLSearchParams(location.search).get('eleapHosted')==='1'||window.self!==window.top)document.documentElement.classList.add('hosted');</script>"
+          if marker not in s:
+              s=s.replace('</head>',marker+'</head>',1)
+              p.write_text(s,encoding='utf-8')
+          PY
+      - name: Validate
+        run: |
+          grep -q "eleapHosted" resources/objective-first-b2/u03/l01/standalone/index.html
+          grep -q "window.ELEAP_LESSON_HOST_API" resources/objective-first-b2/u03/l01/standalone/index.html
+          grep -q "response.submitted" resources/objective-first-b2/u03/l01/standalone/index.html
+      - name: Commit fix
+        run: |
+          git config user.name 'E-LEAP Installer'
+          git config user.email 'actions@users.noreply.github.com'
+          git add resources/objective-first-b2/u03/l01/standalone/index.html
+          if git diff --cached --quiet; then
+            echo 'No hosted-mode change required'
+          else
+            git commit -m 'Fix Objective First B2 U3.1 hosted mode'
+            git push origin HEAD:integrate/objective-first-b2-u3
+          fi

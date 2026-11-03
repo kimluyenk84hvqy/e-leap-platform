@@ -1,0 +1,373 @@
+{
+  "schemaVersion": "1.0",
+  "id": "objective-first-b2-u03-l02",
+  "resourceId": "res-objective-first-b2-u03-l02",
+  "courseId": "objective-first-b2",
+  "unitId": "objective-first-b2-u03",
+  "lessonId": "l02",
+  "lessonNumber": "U3.2",
+  "title": "Going Places",
+  "status": "FINAL-ELEAP-READY",
+  "sourcePackage": "OBJECTIVE_FIRST_B2_U3.2_GOING_PLACES_ELEAP_FINAL.zip",
+  "integration": {
+    "hostApiVersion": "1.2",
+    "hostedMode": true,
+    "atomicTabActivities": true,
+    "events": [
+      "attempt.checked",
+      "response.submitted"
+    ],
+    "platformOwnsResponses": true
+  },
+  "screens": [
+    {
+      "id": "s01",
+      "title": "Cover",
+      "order": 1
+    },
+    {
+      "id": "s02",
+      "title": "Aims",
+      "order": 2
+    },
+    {
+      "id": "s03",
+      "title": "Travel situations from U3.1",
+      "order": 3,
+      "activities": [
+        "res-objective-first-b2-u03-l02-a01-review"
+      ]
+    },
+    {
+      "id": "s04",
+      "title": "What does the speaker mean?",
+      "order": 4,
+      "activities": [
+        "res-objective-first-b2-u03-l02-a02a-listen",
+        "res-objective-first-b2-u03-l02-a02b-build"
+      ]
+    },
+    {
+      "id": "s05",
+      "title": "Must or have to?",
+      "order": 5,
+      "activities": [
+        "res-objective-first-b2-u03-l02-a03a-task",
+        "res-objective-first-b2-u03-l02-a03b-elicit",
+        "res-objective-first-b2-u03-l02-a03c-apply"
+      ]
+    },
+    {
+      "id": "s06",
+      "title": "If money were no object…",
+      "order": 6,
+      "activities": [
+        "res-objective-first-b2-u03-l02-a04a-choose",
+        "res-objective-first-b2-u03-l02-a04b-build",
+        "res-objective-first-b2-u03-l02-a04c-present"
+      ]
+    },
+    {
+      "id": "s07",
+      "title": "Accuracy check",
+      "order": 7,
+      "activities": [
+        "res-objective-first-b2-u03-l02-a05-accuracy"
+      ]
+    },
+    {
+      "id": "s08",
+      "title": "What do you need to do?",
+      "order": 8,
+      "activities": [
+        "res-objective-first-b2-u03-l02-a06-life"
+      ]
+    },
+    {
+      "id": "s09",
+      "title": "From obligation to permission",
+      "order": 9,
+      "activities": [
+        "res-objective-first-b2-u03-l02-a07a-task",
+        "res-objective-first-b2-u03-l02-a07b-pattern",
+        "res-objective-first-b2-u03-l02-a07c-use"
+      ]
+    },
+    {
+      "id": "s10",
+      "title": "Exam Folder",
+      "order": 10
+    },
+    {
+      "id": "s11",
+      "title": "Word Formation: think before you build",
+      "order": 11,
+      "activities": [
+        "res-objective-first-b2-u03-l02-a08a-strategy",
+        "res-objective-first-b2-u03-l02-a08b-prefix",
+        "res-objective-first-b2-u03-l02-a08c-suffix"
+      ]
+    },
+    {
+      "id": "s12",
+      "title": "A Distinguished Map-maker",
+      "order": 12,
+      "activities": [
+        "res-objective-first-b2-u03-l02-a09-wordformation-reading"
+      ]
+    },
+    {
+      "id": "s13",
+      "title": "Preserve the meaning",
+      "order": 13,
+      "activities": [
+        "res-objective-first-b2-u03-l02-a10a-kwt-strategy",
+        "res-objective-first-b2-u03-l02-a10b-kwt-practice"
+      ]
+    },
+    {
+      "id": "s14",
+      "title": "Prepositions of position & movement",
+      "order": 14
+    },
+    {
+      "id": "s15",
+      "title": "Position or movement?",
+      "order": 15,
+      "activities": [
+        "res-objective-first-b2-u03-l02-a11a-prep-concept",
+        "res-objective-first-b2-u03-l02-a11b-prep-practice",
+        "res-objective-first-b2-u03-l02-a11c-prep-map"
+      ]
+    },
+    {
+      "id": "s16",
+      "title": "Choose the meaning before the form",
+      "order": 16,
+      "activities": [
+        "res-objective-first-b2-u03-l02-a12-meaning-form"
+      ]
+    },
+    {
+      "id": "s17",
+      "title": "Four B2 checks",
+      "order": 17,
+      "activities": [
+        "res-objective-first-b2-u03-l02-a13-exit"
+      ]
+    },
+    {
+      "id": "s18",
+      "title": "Thank You",
+      "order": 18
+    }
+  ],
+  "activities": [
+    {
+      "activityId": "res-objective-first-b2-u03-l02-a01-review",
+      "screenId": "s03",
+      "tab": null,
+      "assessable": true,
+      "submittable": true
+    },
+    {
+      "activityId": "res-objective-first-b2-u03-l02-a02a-listen",
+      "screenId": "s04",
+      "tab": "listen",
+      "assessable": true,
+      "submittable": true
+    },
+    {
+      "activityId": "res-objective-first-b2-u03-l02-a02b-build",
+      "screenId": "s04",
+      "tab": "build",
+      "assessable": true,
+      "submittable": true
+    },
+    {
+      "activityId": "res-objective-first-b2-u03-l02-a03a-task",
+      "screenId": "s05",
+      "tab": "task",
+      "assessable": true,
+      "submittable": true
+    },
+    {
+      "activityId": "res-objective-first-b2-u03-l02-a03b-elicit",
+      "screenId": "s05",
+      "tab": "elicit",
+      "assessable": true,
+      "submittable": true
+    },
+    {
+      "activityId": "res-objective-first-b2-u03-l02-a03c-apply",
+      "screenId": "s05",
+      "tab": "apply",
+      "assessable": true,
+      "submittable": true
+    },
+    {
+      "activityId": "res-objective-first-b2-u03-l02-a04a-choose",
+      "screenId": "s06",
+      "tab": "choose",
+      "assessable": true,
+      "submittable": true
+    },
+    {
+      "activityId": "res-objective-first-b2-u03-l02-a04b-build",
+      "screenId": "s06",
+      "tab": "build",
+      "assessable": true,
+      "submittable": true
+    },
+    {
+      "activityId": "res-objective-first-b2-u03-l02-a04c-present",
+      "screenId": "s06",
+      "tab": "present",
+      "assessable": true,
+      "submittable": true
+    },
+    {
+      "activityId": "res-objective-first-b2-u03-l02-a05-accuracy",
+      "screenId": "s07",
+      "tab": null,
+      "assessable": true,
+      "submittable": true
+    },
+    {
+      "activityId": "res-objective-first-b2-u03-l02-a06-life",
+      "screenId": "s08",
+      "tab": null,
+      "assessable": true,
+      "submittable": true
+    },
+    {
+      "activityId": "res-objective-first-b2-u03-l02-a07a-task",
+      "screenId": "s09",
+      "tab": "task",
+      "assessable": true,
+      "submittable": true
+    },
+    {
+      "activityId": "res-objective-first-b2-u03-l02-a07b-pattern",
+      "screenId": "s09",
+      "tab": "pattern",
+      "assessable": true,
+      "submittable": true
+    },
+    {
+      "activityId": "res-objective-first-b2-u03-l02-a07c-use",
+      "screenId": "s09",
+      "tab": "use",
+      "assessable": true,
+      "submittable": true
+    },
+    {
+      "activityId": "res-objective-first-b2-u03-l02-a08a-strategy",
+      "screenId": "s11",
+      "tab": "strategy",
+      "assessable": true,
+      "submittable": true
+    },
+    {
+      "activityId": "res-objective-first-b2-u03-l02-a08b-prefix",
+      "screenId": "s11",
+      "tab": "prefix",
+      "assessable": true,
+      "submittable": true
+    },
+    {
+      "activityId": "res-objective-first-b2-u03-l02-a08c-suffix",
+      "screenId": "s11",
+      "tab": "suffix",
+      "assessable": true,
+      "submittable": true
+    },
+    {
+      "activityId": "res-objective-first-b2-u03-l02-a09-wordformation-reading",
+      "screenId": "s12",
+      "tab": null,
+      "assessable": true,
+      "submittable": true
+    },
+    {
+      "activityId": "res-objective-first-b2-u03-l02-a10a-kwt-strategy",
+      "screenId": "s13",
+      "tab": "strategy",
+      "assessable": true,
+      "submittable": true
+    },
+    {
+      "activityId": "res-objective-first-b2-u03-l02-a10b-kwt-practice",
+      "screenId": "s13",
+      "tab": "practice",
+      "assessable": true,
+      "submittable": true
+    },
+    {
+      "activityId": "res-objective-first-b2-u03-l02-a11a-prep-concept",
+      "screenId": "s15",
+      "tab": "concept",
+      "assessable": true,
+      "submittable": true
+    },
+    {
+      "activityId": "res-objective-first-b2-u03-l02-a11b-prep-practice",
+      "screenId": "s15",
+      "tab": "practice",
+      "assessable": true,
+      "submittable": true
+    },
+    {
+      "activityId": "res-objective-first-b2-u03-l02-a11c-prep-map",
+      "screenId": "s15",
+      "tab": "map",
+      "assessable": true,
+      "submittable": true
+    },
+    {
+      "activityId": "res-objective-first-b2-u03-l02-a12-meaning-form",
+      "screenId": "s16",
+      "tab": null,
+      "assessable": true,
+      "submittable": true
+    },
+    {
+      "activityId": "res-objective-first-b2-u03-l02-a13-exit",
+      "screenId": "s17",
+      "tab": null,
+      "assessable": true,
+      "submittable": true
+    }
+  ],
+  "roleContract": {
+    "teacher": [
+      "check",
+      "reset",
+      "show-answer",
+      "presentation",
+      "timer",
+      "responses",
+      "live-class"
+    ],
+    "student": [
+      "check",
+      "reset",
+      "submit",
+      "score"
+    ],
+    "guest": [
+      "check",
+      "reset",
+      "score"
+    ],
+    "presentation": [
+      "show-answer",
+      "reset",
+      "exit-presentation"
+    ]
+  },
+  "media": {
+    "bundledLocal": true,
+    "path": "standalone/assets"
+  }
+}
