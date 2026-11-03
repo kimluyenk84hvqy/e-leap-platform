@@ -1,15 +1,37 @@
 (function(){
+  const RESOURCE_ID='res-objective-pet-b1-u03-l02';
   const p=new URLSearchParams(location.search);
   const hosted=p.get('eleapHosted')==='1'||window.self!==window.top;
   if(hosted){document.documentElement.classList.add('hosted');document.addEventListener('DOMContentLoaded',()=>document.body.classList.add('hosted'))}
   const app=()=>window.__ELEAP_APP__;
+  let runtimeContext={};
+  const eventId=()=>globalThis.crypto?.randomUUID?.()||`u32-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  function postLearningEvent(eventType,state){
+    if(!hosted||!state?.activityId)return;
+    const event={
+      eventId:eventId(),eventType,occurredAt:new Date().toISOString(),resourceId:RESOURCE_ID,activityId:state.activityId,
+      context:{...runtimeContext},
+      payload:{response:state.response??null,assessment:state.assessment??null,score:state.assessment?.score??null,state:state.state??null,screenId:state.screenId??null,tab:state.tab??null}
+    };
+    try{window.parent?.postMessage({type:'e-leap:learning-event',event},location.origin)}catch(_){ }
+  }
+  window.addEventListener('message',ev=>{
+    if(ev.source!==window.parent||ev.origin!==location.origin)return;
+    if(ev.data?.type==='e-leap:runtime-context')runtimeContext={...(ev.data.context||{})};
+  });
+  window.addEventListener('eleap:lesson-state',ev=>{
+    const d=ev.detail||{};
+    if(d.reason==='response-change')postLearningEvent('response.drafted',d);
+    else if(d.reason==='checked')postLearningEvent('attempt.checked',d);
+    else if(d.reason==='submitted')postLearningEvent('response.submitted',d);
+  });
   window.ELEAP_LESSON_HOST_API={
-    apiVersion:'1.1',
-    resourceId:'res-objective-pet-b1-u03-l02',
+    apiVersion:'1.2',
+    resourceId:RESOURCE_ID,
     setMode(mode){return app()?.setMode?.(mode)??mode},
     getMode(){return app()?.getMode?.()||document.body?.dataset?.mode||'lesson'},
     getActivityState(){return app()?.getActivityState?.()||null},
-    command(action,payload){return app()?.command?.(action,payload)},
+    command(action,payload){const r=app()?.command?.(action,payload);return r!==false&&r!=null},
     setScreen(target){return app()?.setScreen?.(target)??false},
     setActivity(activityId){return app()?.setActivity?.(activityId)??false},
     next(){return app()?.next?.()??false},
@@ -17,4 +39,5 @@
     getResourceId(){return app()?.getResourceId?.()||this.resourceId},
     getScreenCount(){return app()?.getScreenCount?.()||0}
   };
+  if(hosted){try{window.parent?.postMessage({type:'e-leap:request-runtime-context'},location.origin)}catch(_){ }}
 })();
