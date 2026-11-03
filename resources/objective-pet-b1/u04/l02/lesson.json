@@ -1,0 +1,1433 @@
+{
+  "version": "2.3.0-u42-pedagogy-audio-exam-writing-v5",
+  "courseId": "objective-pet-b1",
+  "unitId": "u04",
+  "lessonId": "l02",
+  "resourceId": "res-objective-pet-b1-u04-l02",
+  "shellId": "objective-pet-b1-u04-l02",
+  "placementId": "placement-objective-pet-b1-u04-l02",
+  "title": "Let's Go Out — Future Arrangements",
+  "audience": "B1 / Objective PET",
+  "activities": {
+    "objective-pet-b1-u04-l02-a01": {
+      "id": "objective-pet-b1-u04-l02-a01",
+      "type": "previous-review",
+      "assessable": true,
+      "gradable": true,
+      "totalCount": 6,
+      "capabilities": {
+        "check": true,
+        "reset": true,
+        "reveal": true,
+        "submit": true,
+        "score": true
+      },
+      "answerKey": {
+        "r1": "on",
+        "r2": "at",
+        "r3": "in",
+        "r4": "—",
+        "r5": "at",
+        "r6": "on"
+      }
+    },
+    "objective-pet-b1-u04-l02-a02": {
+      "id": "objective-pet-b1-u04-l02-a02",
+      "type": "pronunciation-days",
+      "assessable": true,
+      "gradable": true,
+      "totalCount": 7,
+      "capabilities": {
+        "check": true,
+        "reset": true,
+        "reveal": true,
+        "submit": true,
+        "score": true
+      },
+      "answerKey": {
+        "d1": "2",
+        "d2": "2",
+        "d3": "2",
+        "d4": "2",
+        "d5": "2",
+        "d6": "2",
+        "d7": "3"
+      }
+    },
+    "objective-pet-b1-u04-l02-a03": {
+      "id": "objective-pet-b1-u04-l02-a03",
+      "type": "pronunciation-months",
+      "assessable": true,
+      "gradable": true,
+      "totalCount": 7,
+      "capabilities": {
+        "check": true,
+        "reset": true,
+        "reveal": true,
+        "submit": true,
+        "score": true
+      },
+      "answerKey": {
+        "m1": "jan",
+        "m2": "feb",
+        "m3": "au",
+        "m4": "tem",
+        "m5": "to",
+        "m6": "vem",
+        "m7": "cem"
+      }
+    },
+    "objective-pet-b1-u04-l02-a04": {
+      "id": "objective-pet-b1-u04-l02-a04",
+      "type": "pronunciation-dates",
+      "assessable": true,
+      "gradable": true,
+      "totalCount": 3,
+      "capabilities": {
+        "check": true,
+        "reset": true,
+        "reveal": true,
+        "submit": true,
+        "score": true
+      },
+      "answerKey": {
+        "dt1": "the twenty-eighth of April",
+        "dt2": "the fifteenth of August",
+        "dt3": "the third of February"
+      }
+    },
+    "objective-pet-b1-u04-l02-a05": {
+      "id": "objective-pet-b1-u04-l02-a05",
+      "type": "listening-arrangements",
+      "assessable": true,
+      "gradable": true,
+      "totalCount": 3,
+      "capabilities": {
+        "check": true,
+        "reset": true,
+        "reveal": true,
+        "submit": true,
+        "score": true
+      },
+      "answerKey": {
+        "c1": "circus · Saturday afternoon",
+        "c2": "cinema · tonight",
+        "c3": "nightclub · Saturday"
+      }
+    },
+    "objective-pet-b1-u04-l02-a06": {
+      "id": "objective-pet-b1-u04-l02-a06",
+      "type": "grammar-discovery",
+      "assessable": true,
+      "gradable": true,
+      "totalCount": 5,
+      "capabilities": {
+        "check": true,
+        "reset": true,
+        "reveal": true,
+        "submit": true,
+        "score": true
+      },
+      "answerKey": {
+        "g1": "routine",
+        "g2": "future arrangement",
+        "g3": "tomorrow afternoon",
+        "g4": "verb-ing",
+        "g5": "future arrangement"
+      }
+    },
+    "objective-pet-b1-u04-l02-a07": {
+      "id": "objective-pet-b1-u04-l02-a07",
+      "type": "future-plans",
+      "assessable": true,
+      "gradable": true,
+      "totalCount": 10,
+      "capabilities": {
+        "check": true,
+        "reset": true,
+        "reveal": true,
+        "submit": true,
+        "score": true
+      },
+      "answerKey": {
+        "fpt1": "next Monday",
+        "fpt2": "Thursday",
+        "fpt3": "tomorrow afternoon",
+        "fpt4": "15th January",
+        "fpt5": "the weekend",
+        "fp1": "He is going horse riding next Monday.",
+        "fp2": "He is having lunch with a friend on Thursday.",
+        "fp3": "He is playing basketball tomorrow afternoon.",
+        "fp4": "He is going camping on 15th January.",
+        "fp5": "He is going to a party at the weekend."
+      }
+    },
+    "objective-pet-b1-u04-l02-a09": {
+      "id": "objective-pet-b1-u04-l02-a09",
+      "type": "exam-example",
+      "assessable": true,
+      "gradable": true,
+      "totalCount": 1,
+      "capabilities": {
+        "check": true,
+        "reset": true,
+        "reveal": true,
+        "submit": true,
+        "score": true
+      },
+      "answerKey": {
+        "ex1": "C"
+      }
+    },
+    "objective-pet-b1-u04-l02-a10q2": {
+      "id": "objective-pet-b1-u04-l02-a10q2",
+      "type": "exam-q2",
+      "assessable": true,
+      "gradable": true,
+      "totalCount": 1,
+      "capabilities": {
+        "check": true,
+        "reset": true,
+        "reveal": true,
+        "submit": true,
+        "score": true
+      },
+      "answerKey": {
+        "q2": "B"
+      }
+    },
+    "objective-pet-b1-u04-l02-a10q3": {
+      "id": "objective-pet-b1-u04-l02-a10q3",
+      "type": "exam-q3",
+      "assessable": true,
+      "gradable": true,
+      "totalCount": 1,
+      "capabilities": {
+        "check": true,
+        "reset": true,
+        "reveal": true,
+        "submit": true,
+        "score": true
+      },
+      "answerKey": {
+        "q3": "C"
+      }
+    },
+    "objective-pet-b1-u04-l02-a10q4": {
+      "id": "objective-pet-b1-u04-l02-a10q4",
+      "type": "exam-q4",
+      "assessable": true,
+      "gradable": true,
+      "totalCount": 1,
+      "capabilities": {
+        "check": true,
+        "reset": true,
+        "reveal": true,
+        "submit": true,
+        "score": true
+      },
+      "answerKey": {
+        "q4": "C"
+      }
+    },
+    "objective-pet-b1-u04-l02-a10q5": {
+      "id": "objective-pet-b1-u04-l02-a10q5",
+      "type": "exam-q5",
+      "assessable": true,
+      "gradable": true,
+      "totalCount": 1,
+      "capabilities": {
+        "check": true,
+        "reset": true,
+        "reveal": true,
+        "submit": true,
+        "score": true
+      },
+      "answerKey": {
+        "q5": "A"
+      }
+    },
+    "objective-pet-b1-u04-l02-a11": {
+      "id": "objective-pet-b1-u04-l02-a11",
+      "type": "writing-production",
+      "assessable": true,
+      "gradable": false,
+      "totalCount": 1,
+      "capabilities": {
+        "check": false,
+        "reset": true,
+        "reveal": true,
+        "submit": true,
+        "score": false
+      },
+      "answerKey": {
+        "writingModel": "Dear Helen,\nI’d like to visit the museum and walk by the river on Saturday. I’m arriving at 11.30. We can meet outside the station at midday and have lunch together.\nLove,\nMaria"
+      }
+    },
+    "objective-pet-b1-u04-l02-a09look": {
+      "id": "objective-pet-b1-u04-l02-a09look",
+      "type": "exam-look-predict",
+      "assessable": false,
+      "gradable": false,
+      "totalCount": 0,
+      "capabilities": {
+        "check": false,
+        "reset": true,
+        "reveal": false,
+        "submit": false,
+        "score": false
+      }
+    },
+    "objective-pet-b1-u04-l02-a10w-task": {
+      "id": "objective-pet-b1-u04-l02-a10w-task",
+      "type": "writing-task",
+      "assessable": false,
+      "gradable": false,
+      "totalCount": 0,
+      "capabilities": {
+        "check": false,
+        "reset": true,
+        "reveal": false,
+        "submit": false,
+        "score": false
+      }
+    },
+    "objective-pet-b1-u04-l02-a10w-choose": {
+      "id": "objective-pet-b1-u04-l02-a10w-choose",
+      "type": "writing-model-analysis",
+      "assessable": true,
+      "gradable": true,
+      "totalCount": 1,
+      "capabilities": {
+        "check": true,
+        "reset": true,
+        "reveal": true,
+        "submit": true,
+        "score": true
+      },
+      "answerKey": {
+        "bestAnswer": "B"
+      }
+    },
+    "objective-pet-b1-u04-l02-a10w-notice": {
+      "id": "objective-pet-b1-u04-l02-a10w-notice",
+      "type": "writing-notice",
+      "assessable": true,
+      "gradable": false,
+      "totalCount": 1,
+      "capabilities": {
+        "check": false,
+        "reset": true,
+        "reveal": false,
+        "submit": true,
+        "score": false
+      }
+    },
+    "objective-pet-b1-u04-l02-a10w-plan": {
+      "id": "objective-pet-b1-u04-l02-a10w-plan",
+      "type": "writing-plan",
+      "assessable": true,
+      "gradable": false,
+      "totalCount": 3,
+      "capabilities": {
+        "check": false,
+        "reset": true,
+        "reveal": false,
+        "submit": true,
+        "score": false
+      }
+    },
+    "objective-pet-b1-u04-l02-a10w-write": {
+      "id": "objective-pet-b1-u04-l02-a10w-write",
+      "type": "writing-draft",
+      "assessable": true,
+      "gradable": false,
+      "totalCount": 1,
+      "capabilities": {
+        "check": false,
+        "reset": true,
+        "reveal": false,
+        "submit": true,
+        "score": false
+      }
+    },
+    "objective-pet-b1-u04-l02-a10w-check": {
+      "id": "objective-pet-b1-u04-l02-a10w-check",
+      "type": "writing-self-check",
+      "assessable": false,
+      "gradable": false,
+      "totalCount": 0,
+      "capabilities": {
+        "check": false,
+        "reset": true,
+        "reveal": false,
+        "submit": false,
+        "score": false
+      }
+    },
+    "objective-pet-b1-u04-l02-a08-diary": {
+      "id": "objective-pet-b1-u04-l02-a08-diary",
+      "type": "pair-diary-prep",
+      "assessable": false,
+      "gradable": false,
+      "totalCount": 0,
+      "capabilities": {
+        "check": false,
+        "reset": true,
+        "reveal": false,
+        "submit": false,
+        "score": false
+      }
+    },
+    "objective-pet-b1-u04-l02-a08-talk": {
+      "id": "objective-pet-b1-u04-l02-a08-talk",
+      "type": "pair-dialogue",
+      "assessable": true,
+      "gradable": false,
+      "totalCount": 1,
+      "capabilities": {
+        "check": false,
+        "reset": true,
+        "reveal": true,
+        "submit": true,
+        "score": false
+      },
+      "answerKey": {
+        "pairModel": "B: Are you free on Saturday afternoon?\nA: Sorry, I’m busy. I’m visiting my grandparents.\nB: How about Saturday evening?\nA: Yes, I’m free then.\nB: Would you like to go to the cinema?\nA: Yes, I’d love to. What time shall we meet?\nB: Let’s meet outside the cinema at 7.00.\nA: Great. See you then."
+      }
+    },
+    "objective-pet-b1-u04-l02-a08-functions": {
+      "id": "objective-pet-b1-u04-l02-a08-functions",
+      "type": "functional-language",
+      "assessable": true,
+      "gradable": true,
+      "totalCount": 6,
+      "capabilities": {
+        "check": true,
+        "reset": true,
+        "reveal": true,
+        "submit": true,
+        "score": true
+      },
+      "answerKey": {
+        "fn1": "ask about availability",
+        "fn2": "say you are busy",
+        "fn3": "say you are free",
+        "fn4": "invite someone",
+        "fn5": "suggest a time",
+        "fn6": "agree"
+      }
+    }
+  },
+  "screens": [
+    {
+      "id": "s01",
+      "type": "hero",
+      "eyebrow": "OBJECTIVE PET B1 · UNIT 4.2",
+      "title": "LET'S GO OUT",
+      "lead": "MAKING FUTURE ARRANGEMENTS",
+      "sublead": "Pronunciation · Future plans · PET Listening Part 1 · Writing Part 2",
+      "image": "assets/images/hero-u42.jpg"
+    },
+    {
+      "id": "s02",
+      "type": "bloomAims",
+      "phase": "AIMS OF THE LESSON",
+      "title": "AIMS OF THE LESSON",
+      "instruction": "Read the three learning areas. At the end of the lesson, use the activities to show what you know, what you can do, and how you work with others.",
+      "cards": [
+        {
+          "level": "UNDERSTAND · APPLY",
+          "title": "KNOWLEDGE",
+          "goals": [
+            "Distinguish routines from arranged future plans and identify the present continuous form used for future arrangements.",
+            "Recognize key pronunciation features of days, months and dates and the key-detail focus of PET Listening Part 1."
+          ]
+        },
+        {
+          "level": "APPLY · ANALYZE · CREATE",
+          "title": "SKILLS",
+          "goals": [
+            "Pronounce familiar days, months and dates accurately and use future-arrangement language to ask, answer, invite and agree in a pair conversation.",
+            "Analyze picture-based listening and writing tasks, then create a clear 35–45-word email that answers all required content points."
+          ]
+        },
+        {
+          "level": "RESPOND · VALUE",
+          "title": "ATTITUDE",
+          "goals": [
+            "Participate actively and cooperatively in pair work, listening carefully and helping a partner reach a shared plan.",
+            "Show confidence and care in using English accurately, checking answers and revising work before submission."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s03",
+      "type": "mcq",
+      "phase": "CHECKING THE PREVIOUS LESSON · ACT 1",
+      "title": "TIME EXPRESSIONS — QUICK RACE",
+      "instruction": "Work individually. Choose ON, IN, AT or — for each expression. Then compare with a partner before you check.",
+      "activityId": "objective-pet-b1-u04-l02-a01",
+      "items": [
+        {
+          "key": "r1",
+          "label": "1",
+          "question": "___ Saturday evening",
+          "options": [
+            "on",
+            "in",
+            "at",
+            "—"
+          ]
+        },
+        {
+          "key": "r2",
+          "label": "2",
+          "question": "___ 7.30",
+          "options": [
+            "on",
+            "in",
+            "at",
+            "—"
+          ]
+        },
+        {
+          "key": "r3",
+          "label": "3",
+          "question": "___ August",
+          "options": [
+            "on",
+            "in",
+            "at",
+            "—"
+          ]
+        },
+        {
+          "key": "r4",
+          "label": "4",
+          "question": "___ tomorrow afternoon",
+          "options": [
+            "on",
+            "in",
+            "at",
+            "—"
+          ]
+        },
+        {
+          "key": "r5",
+          "label": "5",
+          "question": "___ the weekend",
+          "options": [
+            "on",
+            "in",
+            "at",
+            "—"
+          ]
+        },
+        {
+          "key": "r6",
+          "label": "6",
+          "question": "___ 15th January",
+          "options": [
+            "on",
+            "in",
+            "at",
+            "—"
+          ]
+        }
+      ],
+      "footerCue": "Use these time expressions again when you make plans later."
+    },
+    {
+      "id": "s04",
+      "type": "pronAct",
+      "phase": "PRONUNCIATION · ACT 2",
+      "title": "DAYS OF THE WEEK",
+      "activityId": "objective-pet-b1-u04-l02-a02",
+      "kind": "days",
+      "tabs": [
+        {
+          "id": "try",
+          "label": "1 · TRY",
+          "instruction": "Say each day quietly to yourself. Count the syllables, choose 2 or 3, and complete all seven before checking."
+        },
+        {
+          "id": "check",
+          "label": "2 · CHECK",
+          "instruction": "Check your choices. Play only the words you need to verify, then correct any answer that does not match what you hear."
+        }
+      ],
+      "items": [
+        {
+          "key": "d1",
+          "text": "Sunday",
+          "options": [
+            "2",
+            "3"
+          ],
+          "audio": "assets/audio/clips/day-sunday.mp3"
+        },
+        {
+          "key": "d2",
+          "text": "Monday",
+          "options": [
+            "2",
+            "3"
+          ],
+          "audio": "assets/audio/clips/day-monday.mp3"
+        },
+        {
+          "key": "d3",
+          "text": "Tuesday",
+          "options": [
+            "2",
+            "3"
+          ],
+          "audio": "assets/audio/clips/day-tuesday.mp3"
+        },
+        {
+          "key": "d4",
+          "text": "Wednesday",
+          "options": [
+            "2",
+            "3"
+          ],
+          "audio": "assets/audio/clips/day-wednesday.mp3"
+        },
+        {
+          "key": "d5",
+          "text": "Thursday",
+          "options": [
+            "2",
+            "3"
+          ],
+          "audio": "assets/audio/clips/day-thursday.mp3"
+        },
+        {
+          "key": "d6",
+          "text": "Friday",
+          "options": [
+            "2",
+            "3"
+          ],
+          "audio": "assets/audio/clips/day-friday.mp3"
+        },
+        {
+          "key": "d7",
+          "text": "Saturday",
+          "options": [
+            "2",
+            "3"
+          ],
+          "audio": "assets/audio/clips/day-saturday.mp3"
+        }
+      ]
+    },
+    {
+      "id": "s05",
+      "type": "pronAct",
+      "phase": "PRONUNCIATION · ACT 3",
+      "title": "MONTH STRESS",
+      "activityId": "objective-pet-b1-u04-l02-a03",
+      "kind": "months",
+      "tabs": [
+        {
+          "id": "try",
+          "label": "1 · TRY",
+          "instruction": "Say each month aloud. Tap the syllable you think has the main stress. Make all seven choices before you check."
+        },
+        {
+          "id": "check",
+          "label": "2 · CHECK",
+          "instruction": "Check your choices. Play a word only when you need to hear the stress again, then correct your answer if necessary."
+        }
+      ],
+      "items": [
+        {
+          "key": "m1",
+          "text": "Jan · u · ar · y",
+          "options": [
+            "Jan",
+            "u",
+            "ar",
+            "y"
+          ],
+          "audio": "assets/audio/clips/january.mp3"
+        },
+        {
+          "key": "m2",
+          "text": "Feb · ru · ar · y",
+          "options": [
+            "Feb",
+            "ru",
+            "ar",
+            "y"
+          ],
+          "audio": "assets/audio/clips/february.mp3"
+        },
+        {
+          "key": "m3",
+          "text": "Au · gust",
+          "options": [
+            "Au",
+            "gust"
+          ],
+          "audio": "assets/audio/clips/august.mp3"
+        },
+        {
+          "key": "m4",
+          "text": "Sep · tem · ber",
+          "options": [
+            "Sep",
+            "tem",
+            "ber"
+          ],
+          "audio": "assets/audio/clips/september.mp3"
+        },
+        {
+          "key": "m5",
+          "text": "Oc · to · ber",
+          "options": [
+            "Oc",
+            "to",
+            "ber"
+          ],
+          "audio": "assets/audio/clips/october.mp3"
+        },
+        {
+          "key": "m6",
+          "text": "No · vem · ber",
+          "options": [
+            "No",
+            "vem",
+            "ber"
+          ],
+          "audio": "assets/audio/clips/november.mp3"
+        },
+        {
+          "key": "m7",
+          "text": "De · cem · ber",
+          "options": [
+            "De",
+            "cem",
+            "ber"
+          ],
+          "audio": "assets/audio/clips/december.mp3"
+        }
+      ]
+    },
+    {
+      "id": "s06",
+      "type": "pronAct",
+      "phase": "PRONUNCIATION · ACT 4",
+      "title": "SAYING DATES",
+      "activityId": "objective-pet-b1-u04-l02-a04",
+      "kind": "dates",
+      "tabs": [
+        {
+          "id": "try",
+          "label": "1 · TRY",
+          "instruction": "Work with a partner. Say all six dates aloud. Then type the first three exactly as you would say them in British English."
+        },
+        {
+          "id": "check",
+          "label": "2 · CHECK",
+          "instruction": "Check the first three spoken forms. Use the audio only to verify pronunciation, then practise all six dates again with your partner."
+        }
+      ],
+      "items": [
+        {
+          "key": "dt1",
+          "text": "28 April",
+          "freeText": true,
+          "audio": "assets/audio/clips/date-28-april.mp3"
+        },
+        {
+          "key": "dt2",
+          "text": "15 August",
+          "freeText": true,
+          "audio": "assets/audio/clips/date-15-august.mp3"
+        },
+        {
+          "key": "dt3",
+          "text": "3 February",
+          "freeText": true,
+          "audio": "assets/audio/clips/date-3-february.mp3"
+        }
+      ],
+      "practice": [
+        "13 May",
+        "15 May",
+        "16 May"
+      ],
+      "notice": [
+        "WRITE: 15 January",
+        "SAY: the fifteenth of January"
+      ]
+    },
+    {
+      "id": "s07",
+      "type": "listeningBridge",
+      "phase": "LISTENING · ACT 5",
+      "title": "WHAT ARE THEY PLANNING?",
+      "instruction": "Listen once for the overall plan. Choose the option that gives the agreed activity or place and the agreed time. Listen again only if necessary.",
+      "activityId": "objective-pet-b1-u04-l02-a05",
+      "items": [
+        {
+          "key": "c1",
+          "n": "1",
+          "image": "assets/images/circus-scene.webp",
+          "audio": "assets/audio/clips/t16-conv1.mp3",
+          "evidenceAudio": "assets/audio/clips/t16-evidence1.mp3",
+          "prompt": "What are they planning? When?",
+          "options": [
+            "circus · Saturday afternoon",
+            "cinema · this afternoon",
+            "tennis · tomorrow morning"
+          ],
+          "why": "They discuss the circus and agree on Saturday afternoon."
+        },
+        {
+          "key": "c2",
+          "n": "2",
+          "image": "assets/images/cinema-scene.webp",
+          "audio": "assets/audio/clips/t16-conv2.mp3",
+          "evidenceAudio": "assets/audio/clips/t16-evidence2.mp3",
+          "prompt": "Where are they going? When?",
+          "options": [
+            "cinema · tonight",
+            "shop · tomorrow",
+            "nightclub · Saturday"
+          ],
+          "why": "They have film tickets for tonight."
+        },
+        {
+          "key": "c3",
+          "n": "3",
+          "image": "assets/images/nightclub-scene.webp",
+          "audio": "assets/audio/clips/t16-conv3.mp3",
+          "evidenceAudio": "assets/audio/clips/t16-evidence3.mp3",
+          "prompt": "What do they finally decide?",
+          "options": [
+            "dance show · Sunday",
+            "rock festival · Saturday",
+            "nightclub · Saturday"
+          ],
+          "why": "They finally agree to go to the nightclub on Saturday."
+        }
+      ]
+    },
+    {
+      "id": "s08",
+      "type": "grammarDiscovery",
+      "phase": "GRAMMAR DISCOVERY · ACT 6",
+      "title": "HOW DO WE TALK ABOUT AN ARRANGED FUTURE PLAN?",
+      "activityId": "objective-pet-b1-u04-l02-a06",
+      "steps": [
+        {
+          "tab": "meaning",
+          "label": "1 · MEANING",
+          "instruction": "Read the two sentences. Decide which one describes a usual routine and which one describes an arranged future plan."
+        },
+        {
+          "tab": "clue",
+          "label": "2 · TIME CLUE",
+          "instruction": "Read the future sentence again. Identify the words that tell you the action is planned for the future."
+        },
+        {
+          "tab": "pattern",
+          "label": "3 · VERB PATTERN",
+          "instruction": "Look at the verb phrase in the future sentence. Complete the pattern using the form you can see."
+        },
+        {
+          "tab": "rule",
+          "label": "4 · BUILD THE RULE",
+          "instruction": "Use your answers from the previous steps to choose the best rule. Then use Show Answer to confirm the summary."
+        }
+      ]
+    },
+    {
+      "id": "s09",
+      "type": "futurePlansVisual",
+      "phase": "GUIDED PRACTICE · ACT 7",
+      "title": "WHAT IS HE PLANNING?",
+      "activityId": "objective-pet-b1-u04-l02-a07",
+      "image": "assets/images/future-plans-clean.png",
+      "tabs": [
+        {
+          "id": "model",
+          "label": "1 · MODEL",
+          "instruction": "Study picture A and the model sentence. Notice how the activity and future time are combined in one arranged plan."
+        },
+        {
+          "id": "match",
+          "label": "2 · MATCH THE TIME",
+          "instruction": "Look at pictures B–F. Match each activity with the most suitable future-time expression from the box."
+        },
+        {
+          "id": "build",
+          "label": "3 · BUILD THE PLAN",
+          "instruction": "Use each picture and its time expression to choose the sentence that correctly describes the arranged future plan."
+        }
+      ],
+      "model": {
+        "label": "A",
+        "caption": "travelling to Moscow · Saturday morning",
+        "sentence": "He’s travelling to Moscow on Saturday morning."
+      },
+      "timeOptions": [
+        "next Monday",
+        "Thursday",
+        "tomorrow afternoon",
+        "15th January",
+        "the weekend",
+        "the summer",
+        "6.30"
+      ],
+      "items": [
+        {
+          "key": "fp1",
+          "timeKey": "fpt1",
+          "label": "B",
+          "stem": "horse riding",
+          "time": "next Monday",
+          "options": [
+            "He is going horse riding next Monday.",
+            "He goes horse riding every Monday.",
+            "He is riding a bike next Monday."
+          ]
+        },
+        {
+          "key": "fp2",
+          "timeKey": "fpt2",
+          "label": "C",
+          "stem": "lunch with a friend",
+          "time": "Thursday",
+          "options": [
+            "He is having lunch with a friend on Thursday.",
+            "He has lunch at home every Thursday.",
+            "He is cooking lunch on Thursday."
+          ]
+        },
+        {
+          "key": "fp3",
+          "timeKey": "fpt3",
+          "label": "D",
+          "stem": "basketball",
+          "time": "tomorrow afternoon",
+          "options": [
+            "He is playing basketball tomorrow afternoon.",
+            "He plays basketball every afternoon.",
+            "He is watching basketball tomorrow."
+          ]
+        },
+        {
+          "key": "fp4",
+          "timeKey": "fpt4",
+          "label": "E",
+          "stem": "camping",
+          "time": "15th January",
+          "options": [
+            "He is going camping on 15th January.",
+            "He goes camping every January.",
+            "He is visiting Moscow on 15th January."
+          ]
+        },
+        {
+          "key": "fp5",
+          "timeKey": "fpt5",
+          "label": "F",
+          "stem": "party",
+          "time": "the weekend",
+          "options": [
+            "He is going to a party at the weekend.",
+            "He goes to parties every weekend.",
+            "He is having lunch at the weekend."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s10",
+      "type": "pairDiaryFlow",
+      "phase": "PAIR WORK · ACT 8",
+      "title": "ARE YOU FREE FOR A FILM?",
+      "activityId": "objective-pet-b1-u04-l02-a08",
+      "tabs": [
+        {
+          "id": "diary",
+          "label": "1 · MY DIARY",
+          "instruction": "On paper, make a simple diary for this week. Include at least two busy periods and two free periods. Use the example only to understand the format — write your own real or imagined schedule."
+        },
+        {
+          "id": "talk",
+          "label": "2 · PAIR CONVERSATION",
+          "instruction": "Work in pairs. Student B invites Student A to the cinema. Ask about one time, respond with what you are doing or say you are free, then suggest another time if needed. Continue until you agree on a day, time and meeting place."
+        },
+        {
+          "id": "functions",
+          "label": "3 · LANGUAGE FUNCTIONS",
+          "instruction": "Read each useful sentence and choose the communication function it performs. Use these functions to improve your own pair conversation."
+        }
+      ],
+      "diaryA": [
+        [
+          "Saturday morning",
+          "playing tennis"
+        ],
+        [
+          "Saturday afternoon",
+          "FREE"
+        ],
+        [
+          "Saturday evening",
+          "having dinner with family"
+        ],
+        [
+          "Sunday morning",
+          "FREE"
+        ],
+        [
+          "Sunday afternoon",
+          "studying"
+        ],
+        [
+          "Sunday evening",
+          "FREE"
+        ]
+      ],
+      "diaryB": [
+        [
+          "Saturday morning",
+          "FREE"
+        ],
+        [
+          "Saturday afternoon",
+          "FREE"
+        ],
+        [
+          "Saturday evening",
+          "going to a film"
+        ],
+        [
+          "Sunday morning",
+          "visiting grandparents"
+        ],
+        [
+          "Sunday afternoon",
+          "FREE"
+        ],
+        [
+          "Sunday evening",
+          "FREE"
+        ]
+      ],
+      "prompts": [
+        "What are you doing on …?",
+        "Are you free on …?",
+        "I’m …",
+        "I’m free then.",
+        "How about …?",
+        "What time shall we meet?"
+      ],
+      "model": "B: Are you free on Saturday afternoon?\nA: Sorry, I’m busy. I’m visiting my grandparents.\nB: How about Saturday evening?\nA: Yes, I’m free then.\nB: Would you like to go to the cinema?\nA: Yes, I’d love to. What time shall we meet?\nB: Let’s meet outside the cinema at 7.00.\nA: Great. See you then.",
+      "instruction": "Situation: Student B wants to invite Student A to the cinema this week. First prepare your own diary, then ask and answer until you find a time when you are both free and can agree to go together.",
+      "defaultTab": "diary",
+      "subActivities": {
+        "diary": "objective-pet-b1-u04-l02-a08-diary",
+        "talk": "objective-pet-b1-u04-l02-a08-talk",
+        "functions": "objective-pet-b1-u04-l02-a08-functions"
+      },
+      "diaryExample": [
+        [
+          "Monday evening",
+          "BUSY — I’m studying."
+        ],
+        [
+          "Wednesday afternoon",
+          "FREE"
+        ],
+        [
+          "Friday evening",
+          "BUSY — I’m having dinner with my family."
+        ],
+        [
+          "Saturday afternoon",
+          "FREE"
+        ]
+      ],
+      "languageGroups": {
+        "ask": [
+          "Are you free on Saturday afternoon?",
+          "What are you doing on Friday evening?"
+        ],
+        "busy": [
+          "Sorry, I’m busy then. I’m studying.",
+          "I can’t. I’m meeting my family."
+        ],
+        "free": [
+          "Yes, I’m free then.",
+          "I’m not doing anything then."
+        ],
+        "invite": [
+          "Would you like to go to the cinema?",
+          "Do you want to see a film?"
+        ],
+        "arrange": [
+          "How about Saturday evening?",
+          "What time shall we meet?",
+          "Let’s meet outside the cinema at 7.00."
+        ],
+        "agree": [
+          "Yes, I’d love to.",
+          "Great. See you then."
+        ]
+      },
+      "functionItems": [
+        {
+          "key": "fn1",
+          "text": "Are you free on Saturday afternoon?",
+          "options": [
+            "ask about availability",
+            "invite someone",
+            "agree"
+          ]
+        },
+        {
+          "key": "fn2",
+          "text": "Sorry, I’m busy then. I’m studying.",
+          "options": [
+            "say you are busy",
+            "say you are free",
+            "suggest a time"
+          ]
+        },
+        {
+          "key": "fn3",
+          "text": "Yes, I’m free then.",
+          "options": [
+            "say you are free",
+            "invite someone",
+            "agree"
+          ]
+        },
+        {
+          "key": "fn4",
+          "text": "Would you like to go to the cinema?",
+          "options": [
+            "invite someone",
+            "ask about availability",
+            "suggest a time"
+          ]
+        },
+        {
+          "key": "fn5",
+          "text": "How about Saturday evening?",
+          "options": [
+            "suggest a time",
+            "agree",
+            "say you are busy"
+          ]
+        },
+        {
+          "key": "fn6",
+          "text": "Great. See you then.",
+          "options": [
+            "agree",
+            "invite someone",
+            "say you are free"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s11",
+      "type": "examFolderUnified",
+      "phase": "EXAM FOLDER 4 · ACT 9",
+      "title": "LISTENING PART 1 — LOOK, LISTEN, DECIDE",
+      "activityId": "objective-pet-b1-u04-l02-a09",
+      "defaultTab": "look",
+      "subActivities": {
+        "q1": "objective-pet-b1-u04-l02-a09",
+        "q2": "objective-pet-b1-u04-l02-a10q2",
+        "q3": "objective-pet-b1-u04-l02-a10q3",
+        "q4": "objective-pet-b1-u04-l02-a10q4",
+        "q5": "objective-pet-b1-u04-l02-a10q5",
+        "look": "objective-pet-b1-u04-l02-a09look"
+      },
+      "tabs": [
+        {
+          "id": "look",
+          "label": "1 · LOOK",
+          "instruction": "Write the activity shown in pictures A, B and C. Do not use a word bank and do not listen yet.",
+          "question": "What activity can you see?",
+          "lookItems": [
+            [
+              "A",
+              "ex1-a.png"
+            ],
+            [
+              "B",
+              "ex1-b.png"
+            ],
+            [
+              "C",
+              "ex1-c.png"
+            ]
+          ]
+        },
+        {
+          "id": "q1",
+          "label": "Q1",
+          "instruction": "Read the question first. Listen to Track 20 and choose the picture that shows what Greg and Sophia finally decide to do tomorrow.",
+          "question": "What do they decide to do tomorrow?",
+          "key": "ex1",
+          "answer": "C",
+          "audio": "assets/audio/track20-exam-example.mp3",
+          "evidenceAudio": "assets/audio/exam-clips/q1-evidence.mp3",
+          "options": [
+            [
+              "A",
+              "ex1-a.png"
+            ],
+            [
+              "B",
+              "ex1-b.png"
+            ],
+            [
+              "C",
+              "ex1-c.png"
+            ]
+          ],
+          "why": "Tennis and hockey are mentioned, but Greg and Sophia finally agree to go cycling."
+        },
+        {
+          "id": "q2",
+          "label": "Q2",
+          "instruction": "Study all three shop pictures before listening. Then listen and choose the shop they are going to first.",
+          "question": "Which shop are they going to first?",
+          "key": "q2",
+          "answer": "B",
+          "audio": "assets/audio/exam-clips/q2.mp3",
+          "evidenceAudio": "assets/audio/exam-clips/q2.mp3",
+          "options": [
+            [
+              "A",
+              "q2-a.png"
+            ],
+            [
+              "B",
+              "q2-b.png"
+            ],
+            [
+              "C",
+              "q2-c.png"
+            ]
+          ],
+          "why": "They decide to look for the swimming costume first, so they go to the sports shop."
+        },
+        {
+          "id": "q3",
+          "label": "Q3",
+          "instruction": "Read the three clocks aloud before listening. Then listen and choose the agreed meeting time.",
+          "question": "When is Tim meeting his father?",
+          "key": "q3",
+          "answer": "C",
+          "audio": "assets/audio/exam-clips/q3.mp3",
+          "evidenceAudio": "assets/audio/exam-clips/q3.mp3",
+          "options": [
+            [
+              "A",
+              "q3-a.png"
+            ],
+            [
+              "B",
+              "q3-b.png"
+            ],
+            [
+              "C",
+              "q3-c.png"
+            ]
+          ],
+          "why": "Tim says 11 is too early and suggests two o’clock. His father agrees."
+        },
+        {
+          "id": "q4",
+          "label": "Q4",
+          "instruction": "Compare the three entertainment pictures first. Then listen and choose the place they agree to go to on Saturday evening.",
+          "question": "Where are they going on Saturday evening?",
+          "key": "q4",
+          "answer": "C",
+          "audio": "assets/audio/exam-clips/q4.mp3",
+          "evidenceAudio": "assets/audio/exam-clips/q4.mp3",
+          "options": [
+            [
+              "A",
+              "q4-a.png"
+            ],
+            [
+              "B",
+              "q4-b.png"
+            ],
+            [
+              "C",
+              "q4-c.png"
+            ]
+          ],
+          "why": "They agree to go to the rock band at the Town Hall."
+        },
+        {
+          "id": "q5",
+          "label": "Q5",
+          "instruction": "Read the three dates aloud first. Then listen and choose the date of Paula’s birthday party.",
+          "question": "When is Paula's birthday party?",
+          "key": "q5",
+          "answer": "A",
+          "audio": "assets/audio/exam-clips/q5.mp3",
+          "evidenceAudio": "assets/audio/exam-clips/q5.mp3",
+          "options": [
+            [
+              "A",
+              "q5-a.png"
+            ],
+            [
+              "B",
+              "q5-b.png"
+            ],
+            [
+              "C",
+              "q5-c.png"
+            ]
+          ],
+          "why": "Her birthday is 15 May, but the party is two days before, on 13 May."
+        }
+      ],
+      "instruction": "Start by identifying the pictures yourself. Then work through Q1–Q5: read the question, compare the three pictures, listen, choose one answer, and check before using Evidence or Why."
+    },
+    {
+      "id": "s11w",
+      "type": "writingFolder",
+      "phase": "WRITING FOLDER · WRITING PART 2 · ACT 10",
+      "title": "UNDERSTAND THE TASK & MODEL",
+      "defaultTab": "task",
+      "tabs": [
+        {
+          "id": "task",
+          "label": "1 · READ TASK",
+          "instruction": "Read the exam task. Underline the three content points your email must answer and note the 35–45-word limit."
+        },
+        {
+          "id": "choose",
+          "label": "2 · CHOOSE",
+          "instruction": "Read emails A, B and C. Decide which ONE answer covers all three content points. Be ready to explain what is missing from the other two."
+        },
+        {
+          "id": "notice",
+          "label": "3 · NOTICE",
+          "instruction": "Improve answer C by adding the missing meeting place. Then decide whether the improved answer fully meets the task, including the word limit."
+        }
+      ],
+      "task": {
+        "context": "You’re spending a day in the capital of your country next Saturday.",
+        "recipient": "Helen",
+        "bullets": [
+          "say what you would like to do in the city",
+          "tell her what time you are arriving",
+          "suggest where to meet"
+        ],
+        "wordLimit": "35–45 words"
+      },
+      "samples": {
+        "A": "Dear Helen,\nOn Saturday I’d like to go shopping because I want to buy a new coat and some shoes. Then I would like to go to the cinema and have an Italian meal. My father is bringing me in the car. We are leaving home at 9.30.\nLove,\nMaria",
+        "B": "Dear Helen,\nI’d like to go to the cinema on Saturday and walk by the river. We can go to a café to have lunch. What do you want to do? I am arriving at 11.30. We can meet outside the station.\nLove,\nMaria",
+        "C": "Dear Helen,\nI’d like to go to the museum on Saturday. I’m arriving at 11.30 so we can meet at midday.\nLove,\nMaria"
+      },
+      "notice": {
+        "add": "outside the museum",
+        "completed": "I’m arriving at 11.30 so we can meet outside the museum at midday.",
+        "reason": "It covers the three content points, but it is still too short for the required 35–45 words."
+      },
+      "planPrompts": [
+        [
+          "1 · WHAT TO DO",
+          "I’d like to …"
+        ],
+        [
+          "2 · ARRIVAL TIME",
+          "I’m arriving at …"
+        ],
+        [
+          "3 · MEETING PLACE",
+          "We can meet …"
+        ]
+      ],
+      "subActivities": {
+        "task": "objective-pet-b1-u04-l02-a10w-task",
+        "choose": "objective-pet-b1-u04-l02-a10w-choose",
+        "notice": "objective-pet-b1-u04-l02-a10w-notice"
+      }
+    },
+    {
+      "id": "s12",
+      "type": "writingProduction",
+      "phase": "WRITING PRACTICE · ACT 11",
+      "title": "WRITE YOUR EMAIL",
+      "instruction": "Use what you discovered in the Writing Folder. Plan one idea for each content point, write your email in 35–45 words, then check it before you finish.",
+      "activityId": "objective-pet-b1-u04-l02-a11",
+      "task": {
+        "context": "You’re spending a day in the capital of your country next Saturday.",
+        "recipient": "Helen",
+        "bullets": [
+          "say what you would like to do in the city",
+          "tell her what time you are arriving",
+          "suggest where to meet"
+        ],
+        "wordLimit": "35–45 words"
+      },
+      "planPrompts": [
+        [
+          "1 · WHAT TO DO",
+          "I’d like to …"
+        ],
+        [
+          "2 · ARRIVAL TIME",
+          "I’m arriving at …"
+        ],
+        [
+          "3 · MEETING PLACE",
+          "We can meet …"
+        ]
+      ],
+      "model": "Dear Helen,\nI’d like to visit the museum and walk by the river on Saturday. I’m arriving at 11.30. We can meet outside the station at midday and have lunch together.\nLove,\nMaria"
+    },
+    {
+      "id": "s13",
+      "type": "wrapUp",
+      "phase": "CONSOLIDATION",
+      "title": "WHAT CAN YOU DO NOW?",
+      "checks": [
+        "Pronounce days, months and dates more accurately.",
+        "Use the present continuous for arranged future plans.",
+        "Ask, answer, invite and agree in a pair conversation.",
+        "Use picture clues and key details in PET Listening Part 1.",
+        "Write a 35–45-word PET email covering all three content points."
+      ],
+      "homework": "Review today’s pair conversation and improve your 35–45-word email.",
+      "requirements": [
+        "check future-arrangement language",
+        "check all 3 writing content points",
+        "correct one sentence you want to improve"
+      ]
+    },
+    {
+      "id": "s14",
+      "type": "thanks",
+      "eyebrow": "LESSON 4.2 COMPLETE",
+      "title": "Thank you",
+      "lead": "Lesson 4.2 complete",
+      "sublead": "You can now make and understand future arrangements.",
+      "image": "assets/images/thank-you.webp"
+    }
+  ]
+}
