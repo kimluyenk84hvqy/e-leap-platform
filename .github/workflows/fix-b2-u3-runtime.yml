@@ -1,0 +1,57 @@
+name: Fix Objective First B2 Unit 3 runtime
+
+on:
+  push:
+    branches:
+      - integrate/objective-first-b2-u3
+    paths:
+      - .github/workflows/fix-b2-u3-runtime.yml
+
+permissions:
+  contents: write
+
+jobs:
+  fix-runtime:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: integrate/objective-first-b2-u3
+          fetch-depth: 0
+      - name: Patch U3.2 runtime loader
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('resources/objective-first-b2/u03/l02/standalone/index.html')
+          s=p.read_text(encoding='utf-8')
+          if 'src="app.js"' in s and 'src="lesson-access.js"' in s:
+              print('runtime loader already patched')
+          else:
+              start=s.rfind('<script>')
+              end=s.rfind('</script>')
+              if start < 0 or end < start:
+                  raise SystemExit('Could not locate final inline runtime script')
+              end += len('</script>')
+              s=s[:start]+'<script src="app.js"></script><script src="lesson-access.js"></script>'+s[end:]
+              p.write_text(s,encoding='utf-8')
+          PY
+      - name: Validate runtime contract
+        run: |
+          node --check resources/objective-first-b2/u03/l02/standalone/app.js
+          node --check resources/objective-first-b2/u03/l02/standalone/lesson-access.js
+          grep -q 'window.ELEAPApp' resources/objective-first-b2/u03/l02/standalone/app.js
+          grep -q "apiVersion:'1.2'" resources/objective-first-b2/u03/l02/standalone/lesson-access.js
+          grep -q 'src="app.js"' resources/objective-first-b2/u03/l02/standalone/index.html
+          grep -q 'src="lesson-access.js"' resources/objective-first-b2/u03/l02/standalone/index.html
+      - name: Commit fix
+        run: |
+          git config user.name 'E-LEAP Installer'
+          git config user.email 'actions@users.noreply.github.com'
+          git add resources/objective-first-b2/u03/l02/standalone/index.html
+          if git diff --cached --quiet; then
+            echo 'No runtime change required'
+          else
+            git commit -m 'Fix Objective First B2 U3.2 hosted runtime loader'
+            git push origin HEAD:integrate/objective-first-b2-u3
+          fi
