@@ -1,3 +1,4 @@
+import authoringLessons from '../server/authoring/lessons.js';
 import authLogin from '../server/auth/login.js';
 import authLogout from '../server/auth/logout.js';
 import authMe from '../server/auth/me.js';
@@ -24,6 +25,7 @@ import researchSubmissions from '../server/research/submissions.js';
 import researchUsers from '../server/research/users.js';
 
 const ROUTES={
+  'authoring/lessons':authoringLessons,
   'auth/login':authLogin,
   'auth/logout':authLogout,
   'auth/me':authMe,
