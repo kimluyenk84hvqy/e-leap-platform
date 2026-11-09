@@ -15,6 +15,66 @@
       "title": "Unit 2",
       "status": "draft",
       "path": "unit-02/unit.json"
+    },
+    {
+      "id": "unit-03",
+      "title": "Unit 3",
+      "status": "published",
+      "path": "unit-03/unit.json"
+    },
+    {
+      "id": "unit-04",
+      "title": "Unit 4",
+      "status": "shell-ready",
+      "path": "unit-04/unit.json"
+    },
+    {
+      "id": "unit-05",
+      "title": "Unit 5",
+      "status": "shell-ready",
+      "path": "unit-05/unit.json"
+    },
+    {
+      "id": "unit-06",
+      "title": "Unit 6",
+      "status": "shell-ready",
+      "path": "unit-06/unit.json"
+    },
+    {
+      "id": "unit-07",
+      "title": "Unit 7",
+      "status": "shell-ready",
+      "path": "unit-07/unit.json"
+    },
+    {
+      "id": "unit-08",
+      "title": "Unit 8",
+      "status": "shell-ready",
+      "path": "unit-08/unit.json"
+    },
+    {
+      "id": "unit-09",
+      "title": "Unit 9",
+      "status": "shell-ready",
+      "path": "unit-09/unit.json"
+    },
+    {
+      "id": "unit-10",
+      "title": "Unit 10",
+      "status": "shell-ready",
+      "path": "unit-10/unit.json"
+    },
+    {
+      "id": "unit-11",
+      "title": "Unit 11",
+      "status": "shell-ready",
+      "path": "unit-11/unit.json"
+    },
+    {
+      "id": "unit-12",
+      "title": "Unit 12",
+      "status": "shell-ready",
+      "path": "unit-12/unit.json"
     }
   ],
   "description": "Golden Reference course with classroom and self-study delivery."
