@@ -1,0 +1,406 @@
+{
+  "status": "OFFLINE_TEACHER_REVIEW",
+  "unit": "U4.1",
+  "source": "Objective First B2 Unit 4, Reading p.28–29, teacher-provided",
+  "passages": [
+    {
+      "id": "A",
+      "name": "Julia",
+      "text": "I went to Marwell Zoo with two friends. It has over 200 species of rare animals, from Siberian tigers to white rhino and snow leopards. Personally, the red pandas were my favourites – they're like cuddly teddy bears. The zoo was only started in 1972, with breeding as its objective, and some species, such as the scimitar-horned oryx, which was once extinct in the wild, have been bred so well that they have been re-introduced into the wild. I was initially amazed by the fact that there are no traditional zoo animals like elephants and penguins there. This zoo specialises in keeping rare and endangered species and there is not room or money enough to keep anything just because it happens to be popular."
+    },
+    {
+      "id": "B",
+      "name": "Peter",
+      "text": "I took the decision to visit San Diego Zoo. It has a huge reputation and I was interested in whether it would live up to it. I wasn't disappointed. The zoo was founded in 1916 and the founders couldn't have picked a better place – benefitting from breezes from the Pacific Ocean, being close to the city but also having wooded canyons. The zoo is home to a huge number of endangered species. However, one problem for the zoo was that the visitors seemed to be mainly interested in the well-known species such as the polar bear and just walked straight past other more endangered but less well-known species like the thick-billed parrot."
+    },
+    {
+      "id": "C",
+      "name": "Karin",
+      "text": "I was working as a nanny for two sisters in New York last year and I decided to visit the Bronx Zoo. Animals are kept in large, natural enclosures and the zoo is very keen on conservation. You get to go into the largest African rainforest exhibit in the world – and it actually felt like a real rainforest – with lots of different animals like, for example, gorillas. When you come out you are allowed to select which rainforest animal you want your entrance fee to fund. There were crowds of tourists at the zoo when I visited, but the place is so big that it didn't really matter that much. There are a number of inexpensive cafés you can go to, or do as I did and take a picnic."
+    },
+    {
+      "id": "D",
+      "name": "Tom",
+      "text": "Many species are now endangered because of what is happening to our planet – things like global warming – but some zoos are actually doing something to try to conserve these species. Whipsnade Zoo in England is one of them. I visited it about a month ago when I was backpacking with a friend of my brother's. He's studying zoology at university in Australia. We had a really good time and it was worth every penny. There's a free bus that can take you round all the main sights and I would really recommend you take it. The penguin pool is particularly beautiful as it is on top of a hill and has great views."
+    },
+    {
+      "id": "E",
+      "name": "Lara",
+      "text": "Last summer, I was staying with my aunt in Toronto and she suggested I take my nine-year-old cousin to the zoo as it was her favourite place. I wasn't certain at first that I wanted to spend a day at a zoo. I guess I had always regarded them as over-priced places with cages and unhappy animals, but Toronto Zoo soon made me think differently! It's quite big – a bit too big if you try to go everywhere, and it's a 20-minute journey getting from one area to another, which is a pain. You absolutely must take a map as well, as it's easy to get lost. I particularly liked the Malayan Woods Pavilion – there is artificial rainfall there, which makes children laugh."
+    }
+  ],
+  "readingQ": [
+    {
+      "q": "says visitors can decide on the animal they want to support?",
+      "a": "C",
+      "phrase": "you are allowed to select which rainforest animal you want your entrance fee to fund",
+      "why": "Visitors can decide which rainforest animal their fee supports."
+    },
+    {
+      "q": "was surprised at first by the absence of some animals?",
+      "a": "A",
+      "phrase": "amazed by the fact that there are no traditional zoo animals",
+      "why": "Julia expected traditional zoo animals but was surprised they were absent."
+    },
+    {
+      "q": "says that the zoo was as good as people said it was?",
+      "a": "B",
+      "phrase": "I wasn't disappointed",
+      "why": "Peter reports that the famous zoo lived up to its reputation."
+    },
+    {
+      "q": "says that one particular aim of the zoo has succeeded?",
+      "a": "A",
+      "phrase": "have been bred so well that they have been re-introduced into the wild",
+      "why": "Successful breeding resulted in reintroduction, matching the zoo's stated objective."
+    },
+    {
+      "q": "mentions a particular problem which is endangering animals?",
+      "a": "D",
+      "phrase": "things like global warming",
+      "why": "Tom identifies global warming as an environmental threat."
+    },
+    {
+      "q": "complains about how long it takes to see everything within the zoo?",
+      "a": "E",
+      "phrase": "it's a 20-minute journey getting from one area to another, which is a pain",
+      "why": "Lara finds the travel time within the zoo inconvenient."
+    },
+    {
+      "q": "was initially unsure about going to a zoo?",
+      "a": "E",
+      "phrase": "I wasn't certain at first that I wanted to spend a day at a zoo",
+      "why": "Lara states she was hesitant at first."
+    },
+    {
+      "q": "complains about some people's attitude to less familiar species?",
+      "a": "B",
+      "phrase": "walked straight past other more endangered but less well-known species",
+      "why": "Peter criticises visitors for ignoring unfamiliar endangered species."
+    },
+    {
+      "q": "says that after visiting a particular zoo they changed their mind about zoos?",
+      "a": "E",
+      "phrase": "Toronto Zoo soon made me think differently",
+      "why": "The visit changed Lara's opinion."
+    },
+    {
+      "q": "was unconcerned by the number of visitors at the zoo?",
+      "a": "C",
+      "phrase": "the place is so big that it didn't really matter that much",
+      "why": "The zoo's size made the crowds unimportant to Karin."
+    }
+  ],
+  "animals": [
+    {
+      "id": "parrot",
+      "name": "thick-billed parrot",
+      "habitat": "pine forests in Mexico",
+      "threat": "forest loss",
+      "fact": "A thick bill helps it feed on pine seeds.",
+      "url": "https://www.audubon.org/field-guide/bird/thick-billed-parrot"
+    },
+    {
+      "id": "polar",
+      "name": "polar bear",
+      "habitat": "Arctic sea ice",
+      "threat": "sea-ice loss",
+      "fact": "Sea ice is important for hunting seals.",
+      "url": "https://www.worldwildlife.org/species/polar-bear/"
+    },
+    {
+      "id": "koala",
+      "name": "koala",
+      "habitat": "eucalyptus woodland",
+      "threat": "habitat loss",
+      "fact": "Koalas depend on suitable eucalyptus trees for food and shelter.",
+      "url": "https://www.worldwildlife.org/"
+    },
+    {
+      "id": "shark",
+      "name": "tiger shark",
+      "habitat": "warm oceans",
+      "threat": "fishing pressure",
+      "fact": "Tiger sharks are marine predators with distinctive markings.",
+      "url": "https://www.iucnredlist.org/"
+    },
+    {
+      "id": "orangutan",
+      "name": "orang-utan",
+      "habitat": "tropical rainforest",
+      "threat": "deforestation",
+      "fact": "Agricultural expansion and logging threaten orangutan habitat.",
+      "url": "https://www.worldwildlife.org/species/orangutan/"
+    },
+    {
+      "id": "snow",
+      "name": "snow leopard",
+      "habitat": "high mountains",
+      "threat": "habitat loss and conflict",
+      "fact": "Snow leopards inhabit Asia's high mountains, not the Arctic.",
+      "url": "https://www.worldwildlife.org/species/snow-leopard/"
+    }
+  ],
+  "ex2": [
+    {
+      "a": "3",
+      "q": "Arctic animals are now in danger because of…",
+      "ending": "ice melting due to global warming.",
+      "why": "Ice-dependent animals face habitat loss as temperatures rise."
+    },
+    {
+      "a": "1",
+      "q": "Cutting down the trees where animals live is…",
+      "ending": "called habitat destruction.",
+      "why": "Forest clearance removes animals' natural habitats."
+    },
+    {
+      "a": "4",
+      "q": "Many animals suffer when rivers and streams…",
+      "ending": "are polluted by factories.",
+      "why": "Water pollution can damage ecosystems."
+    },
+    {
+      "a": "2",
+      "q": "There are very few Bengal tigers left because of…",
+      "ending": "rising sea levels affecting coastal areas of Bangladesh.",
+      "why": "This is the textbook's matching key; the statement concerns a regional pressure on coastal tiger habitat, not every reason for tiger decline."
+    },
+    {
+      "a": "5",
+      "q": "Some animals such as the white rhino are…",
+      "ending": "facing extinction because people hunt them for their horns.",
+      "why": "Poaching threatens rhinoceroses."
+    }
+  ],
+  "ex2ends": [
+    [
+      "1",
+      "called habitat destruction."
+    ],
+    [
+      "2",
+      "rising sea levels affecting coastal areas of Bangladesh."
+    ],
+    [
+      "3",
+      "ice melting due to global warming."
+    ],
+    [
+      "4",
+      "are polluted by factories."
+    ],
+    [
+      "5",
+      "facing extinction because people hunt them for their horns."
+    ]
+  ],
+  "words": [
+    {
+      "q": "tradition (A)",
+      "a": "traditional",
+      "phrase": "traditional zoo animals",
+      "why": "Adjective from tradition."
+    },
+    {
+      "q": "danger (A)",
+      "a": "endangered",
+      "phrase": "endangered species",
+      "why": "Adjective from endanger."
+    },
+    {
+      "q": "decide (B)",
+      "a": "decision",
+      "phrase": "I took the decision",
+      "why": "Noun from decide."
+    },
+    {
+      "q": "visit (B)",
+      "a": "visitors",
+      "phrase": "the visitors seemed",
+      "why": "Plural noun for visitors."
+    },
+    {
+      "q": "conserve (C)",
+      "a": "conservation",
+      "phrase": "very keen on conservation",
+      "why": "Noun from conserve, not converse."
+    },
+    {
+      "q": "enter (C)",
+      "a": "entrance",
+      "phrase": "your entrance fee",
+      "why": "The noun entrance describes the fee."
+    },
+    {
+      "q": "zoo (D)",
+      "a": "zoology",
+      "phrase": "studying zoology",
+      "why": "The study of animals."
+    },
+    {
+      "q": "see (D)",
+      "a": "sights",
+      "phrase": "all the main sights",
+      "why": "Plural noun for things worth seeing."
+    },
+    {
+      "q": "happy (E)",
+      "a": "unhappy",
+      "phrase": "unhappy animals",
+      "why": "Negative adjective."
+    },
+    {
+      "q": "rain (E)",
+      "a": "rainfall",
+      "phrase": "artificial rainfall",
+      "why": "Noun formed from rain + fall."
+    }
+  ],
+  "slides": [
+    {
+      "type": "cover",
+      "label": "UNIT 4.1",
+      "title": "ENDANGERED",
+      "subtitle": "Wildlife · Conservation · Reading",
+      "key": "Six book animals: tiger shark, snow leopard, orang-utan, thick-billed parrot, polar bear and koala.",
+      "evidence": "Objective First B2 Unit 4, Reading Exercise 1 (p. 28). Photographs are licensed equivalents of the pictured species."
+    },
+    {
+      "type": "aims",
+      "label": "TODAY'S LEARNING OUTCOMES",
+      "title": "By the end of this lesson, you will be able to:",
+      "subtitle": "Identify · Summarise · Analyse · Evaluate · Create",
+      "key": "You can identify six animals; summarise a text; share information in a group; find evidence for ten book questions; use word forms and defend an opinion.",
+      "evidence": "Learning outcomes aligned with Objective First B2 Unit 4 Reading Exercises 1–6 and measurable class outcomes."
+    },
+    {
+      "type": "pictures",
+      "label": "READING · EXERCISE 1",
+      "title": "Look at the Photographs",
+      "instruction": "Match the animal or bird with the correct photograph. Compare your answers with a partner.",
+      "key": "1 thick-billed parrot · 2 polar bear · 3 koala · 4 tiger shark · 5 orang-utan · 6 snow leopard.",
+      "evidence": "Photographic clues: bill and red crown; white fur; rounded ears; streamlined body; long arms; spotted coat."
+    },
+    {
+      "type": "opinion",
+      "label": "READING · EXERCISE 1",
+      "title": "Which Animal Would You Save?",
+      "instruction": "Which of these animals are endangered? Do you know why? If you could save one, which would you choose? Give reasons.",
+      "key": "Suggested answer: I'd save orangutans because forest loss destroys their habitat. Protecting the rainforest would also benefit other species.",
+      "evidence": "WWF identifies logging and agricultural expansion among the threats to orangutans. Conservation status differs by species."
+    },
+    {
+      "type": "match",
+      "label": "READING · EXERCISE 2",
+      "title": "Wildlife Problems in Context",
+      "instruction": "Match sentences a–e with 1–5. Check the meaning of the words in bold in an English–English dictionary.",
+      "key": "a–3 · b–1 · c–4 · d–2 · e–5",
+      "evidence": "The five matching pairs correspond to Exercise 2 on p. 28. Read each complete sentence to check grammar and meaning."
+    },
+    {
+      "type": "habitats",
+      "label": "EXTENSION · GROUP WORK",
+      "title": "Habitats and Threats",
+      "instruction": "Work in groups. Match each animal with its habitat. Explain how one threat may affect it.",
+      "key": "Thick-billed parrot–pine forest; polar bear–Arctic sea ice; koala–eucalyptus woodland; tiger shark–ocean; orang-utan–rainforest; snow leopard–high mountains.",
+      "evidence": "Additional background from WWF and Audubon species guides. Snow leopards live in high mountains, not the Arctic."
+    },
+    {
+      "type": "skim",
+      "label": "READING · EXERCISE 3",
+      "title": "Predict the Source",
+      "instruction": "Skim texts A–E. They all come from one source. Which do you think it is?",
+      "key": "c — an article",
+      "evidence": "The title introduces five personal accounts of zoo visits; it reads as a single article rather than an encyclopaedia entry, a novel or a brochure."
+    },
+    {
+      "type": "reading",
+      "label": "READING · EXERCISES 3–4",
+      "title": "A Visit to a Zoo",
+      "instruction": "Read texts A–E on the left. Use the activities on the right to discuss, answer the questions and check the evidence.",
+      "key": "Practice: E (relative), D (value). Book questions 1–10: C, A, B, A, D, E, E, B, E, C.",
+      "evidence": "Each answer has one linked phrase from the original reading text. Select Evidence beside an item to locate it."
+    },
+    {
+      "type": "words",
+      "label": "VOCABULARY · EXERCISE 6",
+      "title": "Word Formation",
+      "instruction": "Which words related to a–j occur in texts A–E? Write the words and compare your answers with a partner.",
+      "key": "traditional · endangered · decision · visitors · conservation · entrance · zoology · sights · unhappy · rainfall",
+      "evidence": "A: traditional/endangered; B: decision/visitors; C: conservation/entrance; D: zoology/sights; E: unhappy/rainfall."
+    },
+    {
+      "type": "discussion",
+      "label": "READING · EXERCISE 5",
+      "title": "Do Zoos Help Endangered Species?",
+      "instruction": "Work in pairs. Discuss the questions and give reasons for your answers. Use details from the reading.",
+      "key": "Zoos can support species through breeding programmes, but animal welfare and habitat conservation remain important.",
+      "evidence": "A: successful breeding and reintroduction; B: visitors overlook less familiar species; C: conservation and entrance-fee funding."
+    },
+    {
+      "type": "speaking",
+      "label": "B2 SPEAKING · LANGUAGE SUPPORT",
+      "title": "Build a Supported Opinion",
+      "instruction": "Choose one of the questions from Exercise 5. Give an opinion, a reason, an example and a balanced conclusion.",
+      "key": "Model: Although some zoos may have welfare problems, conservation programmes can protect species. For instance, Julia describes successful reintroduction. However, protecting natural habitats is also essential.",
+      "evidence": "The model draws on Text A's reintroduction details; its evaluation of zoos is a suggested viewpoint, not a direct book answer."
+    },
+    {
+      "type": "proposal",
+      "label": "EXTENSION · GROUP WORK",
+      "title": "Create a Conservation Message",
+      "instruction": "Work in groups of four. Choose an animal and prepare a short conservation message. Make sure everyone speaks.",
+      "key": "Include the animal and its habitat, a threat, an effect, a realistic action and a reason for your recommendation.",
+      "evidence": "Use facts from the WWF/Audubon animal information panels; distinguish evidence-based facts from proposed solutions."
+    },
+    {
+      "type": "exit",
+      "label": "CHECK YOUR LEARNING",
+      "title": "Language and Reading Check",
+      "instruction": "Complete the sentences with words from the reading. Then find evidence for your answers.",
+      "key": "conservation · endangered · decision · visitors · rainfall · zoology",
+      "evidence": "All six words appear explicitly in texts A–E."
+    },
+    {
+      "type": "thanks",
+      "label": "UNIT 4.1 · REVIEW",
+      "title": "PROTECT WHAT MATTERS",
+      "subtitle": "Read for evidence. Speak with purpose.",
+      "key": "Revisit the animal pictures, 10 reading answers, word forms and your group's conservation message.",
+      "evidence": "Objective First B2, Unit 4, pp. 28–29. Additional wildlife facts: WWF and Audubon."
+    }
+  ],
+  "exit": [
+    {
+      "q": "The Bronx Zoo is very keen on _____.",
+      "a": "conservation",
+      "phrase": "very keen on conservation"
+    },
+    {
+      "q": "Some species are rare and _____.",
+      "a": "endangered",
+      "phrase": "rare and endangered species"
+    },
+    {
+      "q": "Peter took the _____ to visit San Diego Zoo.",
+      "a": "decision",
+      "phrase": "I took the decision"
+    },
+    {
+      "q": "Some _____ walked past the less well-known species.",
+      "a": "visitors",
+      "phrase": "the visitors seemed"
+    },
+    {
+      "q": "The Malayan Woods Pavilion has artificial _____.",
+      "a": "rainfall",
+      "phrase": "artificial rainfall"
+    },
+    {
+      "q": "Tom's friend was studying _____ at university.",
+      "a": "zoology",
+      "phrase": "studying zoology"
+    }
+  ]
+}
