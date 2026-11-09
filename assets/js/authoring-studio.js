@@ -22,6 +22,7 @@ const LIBRARY=E_LEAP_AUTHORING_LIBRARY;
 const saveService=new ELeapAuthoringSaveService();
 let lesson=null, selectedScreen=0, selectedBlock=0, dirty=false, previewRole='student', autosaveTimer=null;
 let draftKey='';
+let initialLoadWarning='';
 
 if(!ctx.can('content:edit')){
   root.innerHTML=`<section class="studio-denied"><div class="studio-kicker">E-LEAP Studio</div><h1>Editing access required</h1><p>This workspace is available to Admins and Teachers with Content Edit permission.</p><a href="javascript:history.back()">← Back</a></section>`;
@@ -32,6 +33,7 @@ if(!ctx.can('content:edit')){
   const saved=localStorage.getItem(draftKey);
   if(saved && !qs.get('fresh') && !qs.get('draft')){try{lesson=JSON.parse(saved);ensureSchema();}catch{}}
   render();
+  if(initialLoadWarning)status(initialLoadWarning);
 }
 
 async function loadLesson(){
@@ -40,10 +42,11 @@ async function loadLesson(){
     try{
       const record=await saveService.loadServer(draftId);
       if(record?.lesson)return record.lesson;
-      console.warn('Studio draft does not exist on server',draftId);
-    }catch(err){console.warn('Could not load server draft',err);}
+      initialLoadWarning='Server draft not found. Local draft will be used if available.';
+    }catch(err){initialLoadWarning='Server draft unavailable: '+err.message+'. Local draft will be used if available.';}
     const local=saveService.loadLocal(draftId);
     if(local?.lesson)return local.lesson;
+    initialLoadWarning+=' No matching local draft was found; a new lesson has been opened.';
   }
   if(source){
     try{const r=await fetch(source,{cache:'no-store'});if(r.ok)return await r.json();}catch{}
@@ -86,7 +89,7 @@ function render(){
     <header class="studio-topbar">
       <div class="studio-brand"><div class="studio-logo">E</div><div><b>E-LEAP Authoring Studio</b><small data-studio-status>${dirty?'Unsaved changes':'Draft ready'}</small></div></div>
       <div class="studio-top-actions">
-        <button class="studio-btn" data-new>New lesson</button><button class="studio-btn" data-duplicate-lesson>Duplicate</button><button class="studio-btn" data-quality>Quality check</button><button class="studio-btn" data-export>Export JSON</button><button class="studio-btn" data-save>Save draft</button><button class="studio-btn primary" data-publish>${ctx.can('content:publish')?'Publish candidate':'Request publish'}</button>
+        <button class="studio-btn" data-new>New lesson</button><button class="studio-btn" data-duplicate-lesson>Duplicate</button><button class="studio-btn" data-quality>Quality check</button><button class="studio-btn" data-export>Export JSON</button><button class="studio-btn" data-save>Save draft</button><button class="studio-btn" data-copy-draft>Copy draft link</button><button class="studio-btn primary" data-publish>${ctx.can('content:publish')?'Publish candidate':'Request publish'}</button>
       </div>
     </header>
     <div class="studio-layout">
@@ -174,6 +177,14 @@ function wire(){
   document.querySelector('[data-block-down]')?.addEventListener('click',()=>move(currentScreen().blocks,selectedBlock,1,()=>selectedBlock++));
   document.querySelector('[data-save]')?.addEventListener('click',saveDraft);
   document.querySelector('[data-export]')?.addEventListener('click',exportJSON);
+  document.querySelector('[data-copy-draft]')?.addEventListener('click',async()=>{
+    const u=new URL(location.href);
+    u.searchParams.delete('source');
+    u.searchParams.delete('fresh');
+    u.searchParams.set('draft',lesson.id);
+    try{await navigator.clipboard.writeText(u.href);status('Draft link copied — server save is required to open on another device');}
+    catch(_){status('Draft URL: '+u.href);}
+  });
   document.querySelector('[data-quality]')?.addEventListener('click',()=>document.querySelector('[data-quality-panel]').classList.add('open'));
   document.querySelector('[data-close-quality]')?.addEventListener('click',()=>document.querySelector('[data-quality-panel]').classList.remove('open'));
   document.querySelector('[data-publish]')?.addEventListener('click',async()=>{
