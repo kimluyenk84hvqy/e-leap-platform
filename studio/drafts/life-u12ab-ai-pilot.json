@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.2",
   "version": 1,
-  "id": "life-u12ab-ai-pilot-v2",
+  "id": "life-u12ab-ai-pilot-v3",
   "status": "draft",
   "courseLabel": "Life (Pre-intermediate)",
   "lessonNumber": "U12A + U12B",
@@ -46,6 +46,69 @@
             "prompt": "Would you ever follow a storm to take a photo? Give a reason.",
             "modelAnswer": "I wouldn't follow it because a storm can change direction quickly.",
             "rubric": "Give a choice and one reason."
+          },
+          "style": {}
+        }
+      ]
+    },
+    {
+      "id": "u12-aims",
+      "stage": "Aims",
+      "title": "What you will be able to do",
+      "instruction": "Check your progress against these outcomes.",
+      "layout": "standard",
+      "blocks": [
+        {
+          "id": "u12-aim-r",
+          "type": "text",
+          "content": {
+            "text": "Remember · Name four types of extreme weather from the photos in Extreme weather.",
+            "role": "body"
+          },
+          "style": {}
+        },
+        {
+          "id": "u12-aim-u",
+          "type": "text",
+          "content": {
+            "text": "Understand · Identify the blog’s purpose and explain one prediction from the article in the Reading report.",
+            "role": "body"
+          },
+          "style": {}
+        },
+        {
+          "id": "u12-aim-n",
+          "type": "text",
+          "content": {
+            "text": "Analyze · Separate the condition, predicted result and supporting evidence in your group’s case.",
+            "role": "body"
+          },
+          "style": {}
+        },
+        {
+          "id": "u12-aim-a",
+          "type": "text",
+          "content": {
+            "text": "Apply · Ask and answer one new What if …? question using the second conditional and give a reason.",
+            "role": "body"
+          },
+          "style": {}
+        },
+        {
+          "id": "u12-aim-e",
+          "type": "text",
+          "content": {
+            "text": "Evaluate · Check another group’s prediction against p. 142 and support or revise it with one detail.",
+            "role": "body"
+          },
+          "style": {}
+        },
+        {
+          "id": "u12-aim-c",
+          "type": "text",
+          "content": {
+            "text": "Create · Produce a four-turn interview with two any- questions and at least one appropriate indefinite compound in the replies.",
+            "role": "body"
           },
           "style": {}
         }
@@ -127,36 +190,47 @@
       "id": "u12-s3",
       "stage": "Notice",
       "title": "12A · Extreme weather",
-      "instruction": "Match each term to a description.",
+      "instruction": "Look at photos A–D. Match each photo to its weather event.",
       "layout": "standard",
       "blocks": [
+        {
+          "id": "u12-weather-photos",
+          "type": "image",
+          "content": {
+            "src": "/studio/drafts/life-u12-media/weather.jpg",
+            "alt": "Four labelled photos: a road in a storm, buildings near water, a flash over water, and ice held in two hands",
+            "caption": "Life, p. 142",
+            "fit": "contain"
+          },
+          "style": {}
+        },
         {
           "id": "u12-s3-b1",
           "type": "matching",
           "activity": {
             "id": "u12-s3-b1-activity",
             "type": "matching",
-            "prompt": "Match the weather words and meanings.",
+            "prompt": "Match each photo to its weather event.",
             "pairs": [
               {
                 "id": "1",
-                "left": "flood",
-                "right": "Water covering normally dry land"
+                "left": "Photo A",
+                "right": "snowstorm"
               },
               {
                 "id": "2",
-                "left": "hail",
-                "right": "Pieces of ice falling from the sky"
+                "left": "Photo B",
+                "right": "flood"
               },
               {
                 "id": "3",
-                "left": "snowstorm",
-                "right": "A storm with heavy snow"
+                "left": "Photo C",
+                "right": "thunder and lightning"
               },
               {
                 "id": "4",
-                "left": "thunder and lightning",
-                "right": "Loud noise and flashes during a storm"
+                "left": "Photo D",
+                "right": "hail"
               }
             ]
           },
@@ -168,7 +242,7 @@
       "id": "u12-s4",
       "stage": "Discover",
       "title": "What if …? · Read for gist",
-      "instruction": "Read the article on p. 142. Identify the kinds of questions the blog explores.",
+      "instruction": "Read p. 142 silently for 45 seconds. Choose the blog’s purpose, then compare with a partner.",
       "layout": "standard",
       "blocks": [
         {
@@ -201,10 +275,127 @@
       ]
     },
     {
+      "id": "u12-team-a",
+      "stage": "Reading · Group task",
+      "title": "Group A · Lightning at sea",
+      "instruction": "3 minutes. In groups of four, assign a reader, evidence finder, recorder and reporter. Use p. 142 and prepare a 30-second report.",
+      "layout": "standard",
+      "blocks": [
+        {
+          "id": "u12-team-a-img",
+          "type": "image",
+          "content": {
+            "src": "/studio/drafts/life-u12-media/lightning.jpg",
+            "alt": "Group A · Lightning at sea",
+            "caption": "Life, p. 142",
+            "fit": "contain"
+          },
+          "style": {}
+        },
+        {
+          "id": "u12-team-a-response",
+          "type": "discussion",
+          "activity": {
+            "id": "u12-team-a-response-activity",
+            "type": "discussion",
+            "prompt": "Compare a boat at sea with a submarine underwater. Record three lines: What if …? / What would happen? / Which detail from the article supports your answer?",
+            "modelAnswer": "If you were underwater in a submarine, you would be safer than in a boat. The article explains that the submarine is below the surface and lightning usually hits the tallest thing.",
+            "rubric": "Give one condition, one prediction and one relevant detail from p. 142."
+          },
+          "style": {}
+        }
+      ]
+    },
+    {
+      "id": "u12-team-b",
+      "stage": "Reading · Group task",
+      "title": "Group B · A swimmer in a storm",
+      "instruction": "3 minutes. In groups of four, assign a reader, evidence finder, recorder and reporter. Use p. 142 and prepare a 30-second report.",
+      "layout": "standard",
+      "blocks": [
+        {
+          "id": "u12-team-b-img",
+          "type": "image",
+          "content": {
+            "src": "/studio/drafts/life-u12-media/lightning.jpg",
+            "alt": "Group B · A swimmer in a storm",
+            "caption": "Life, p. 142",
+            "fit": "contain"
+          },
+          "style": {}
+        },
+        {
+          "id": "u12-team-b-response",
+          "type": "discussion",
+          "activity": {
+            "id": "u12-team-b-response-activity",
+            "type": "discussion",
+            "prompt": "Imagine that lightning hits the water near a swimmer. Record three lines: What if …? / What would happen? / Which detail from the article supports your answer?",
+            "modelAnswer": "If lightning hit the water near you, the electrical energy would spread across the water. The article also says that a swimmer with their head above the water could be struck.",
+            "rubric": "Give one condition, one prediction and one relevant detail from p. 142."
+          },
+          "style": {}
+        }
+      ]
+    },
+    {
+      "id": "u12-team-c",
+      "stage": "Reading · Group task",
+      "title": "Group C · A car in extreme weather",
+      "instruction": "3 minutes. In groups of four, assign a reader, evidence finder, recorder and reporter. Use p. 142 and prepare a 30-second report.",
+      "layout": "standard",
+      "blocks": [
+        {
+          "id": "u12-team-c-img",
+          "type": "image",
+          "content": {
+            "src": "/studio/drafts/life-u12-media/windscreen.jpg",
+            "alt": "Group C · A car in extreme weather",
+            "caption": "Life, p. 142",
+            "fit": "contain"
+          },
+          "style": {}
+        },
+        {
+          "id": "u12-team-c-response",
+          "type": "discussion",
+          "activity": {
+            "id": "u12-team-c-response-activity",
+            "type": "discussion",
+            "prompt": "Compare rain at normal driving speed with hail in freezing weather when driving fast. Record three lines: What if …? / What would happen? / Which detail from the article supports your answer?",
+            "modelAnswer": "Rain would not break the glass at normal driving speed. If you drove fast in hail at freezing temperatures, the hail could break the windscreen. The article notes this happens in some places.",
+            "rubric": "Give one condition, one prediction and one relevant detail from p. 142."
+          },
+          "style": {}
+        }
+      ]
+    },
+    {
+      "id": "u12-reading-report",
+      "stage": "Reading · Report and verify",
+      "title": "Compare the three cases",
+      "instruction": "Each reporter has 30 seconds. Listeners check the evidence for one other group on p. 142. After each report, the teacher reveals that case’s model and invites one correction.",
+      "layout": "standard",
+      "blocks": [
+        {
+          "id": "u12-reading-peer",
+          "type": "discussion",
+          "activity": {
+            "id": "u12-reading-peer-activity",
+            "type": "discussion",
+            "prompt": "Which group’s prediction did you check? Give the evidence and say whether you would keep or revise the prediction.",
+            "modelAnswer": "I would keep Group C’s prediction. The article distinguishes normal-speed rain from hail in freezing weather when a car is moving fast.",
+            "rubric": "Name the group, cite a relevant detail and state a verdict."
+          },
+          "style": {}
+        }
+      ]
+    },
+    {
       "id": "u12-s5",
-      "stage": "Discover",
+      "stage": "Reading · Individual check",
       "title": "Read for evidence",
-      "instruction": "Read p. 142 again. Point to evidence before checking.",
+      "instruction": "Answer individually after the group reports. Return to p. 142 if you need evidence.",
       "layout": "standard",
       "blocks": [
         {
@@ -282,14 +473,14 @@
       "id": "u12-s6",
       "stage": "Explain",
       "title": "Second conditional",
-      "instruction": "Compare the clauses and infer which one expresses the result.",
+      "instruction": "Look at Group B’s sentence. Underline the condition, circle the result and compare the verb forms before checking.",
       "layout": "standard",
       "blocks": [
         {
           "id": "u12-s6-b1",
           "type": "text",
           "content": {
-            "text": "If our winters were warmer, we would use less heating.",
+            "text": "If lightning hit the water near you, the electrical energy would spread across the water.",
             "role": "body"
           },
           "style": {}
@@ -507,7 +698,7 @@
       "id": "u12-s11",
       "stage": "Engage",
       "title": "12B · Nature in one cubic foot",
-      "instruction": "Name a place near home where you could photograph wildlife.",
+      "instruction": "Compare the four environments. Predict what a photographer could find inside one small frame.",
       "layout": "standard",
       "blocks": [
         {
@@ -589,9 +780,20 @@
       "id": "u12-s13",
       "stage": "Discover",
       "title": "A photographer’s experiment",
-      "instruction": "Play Track 096. Listen for the purpose of the green frame.",
+      "instruction": "Look at the close-up. Predict why the photographer used a frame, then listen to Track 096 and check.",
       "layout": "standard",
       "blocks": [
+        {
+          "id": "u12-cube-detail",
+          "type": "image",
+          "content": {
+            "src": "/studio/drafts/life-u12-media/cube-closeup.jpg",
+            "alt": "Close-up of a green photography frame in a natural habitat",
+            "caption": "Life, p. 144",
+            "fit": "contain"
+          },
+          "style": {}
+        },
         {
           "id": "u12-s13-media",
           "type": "audio",
