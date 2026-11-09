@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.2",
   "version": 1,
-  "id": "life-u12ab-ai-pilot-v1",
+  "id": "life-u12ab-ai-pilot-v2",
   "status": "draft",
   "courseLabel": "Life (Pre-intermediate)",
   "lessonNumber": "U12A + U12B",
@@ -17,6 +17,17 @@
       "instruction": "Describe an approaching storm and predict why people might follow it.",
       "layout": "standard",
       "blocks": [
+        {
+          "id": "u12-s1-media",
+          "type": "image",
+          "content": {
+            "src": "/studio/drafts/life-u12-media/storm.jpg",
+            "alt": "Tornado near dark storm clouds in Kansas",
+            "caption": "Life, p. 141",
+            "fit": "contain"
+          },
+          "style": {}
+        },
         {
           "id": "u12-s1-b1",
           "type": "text",
@@ -44,9 +55,18 @@
       "id": "u12-s2",
       "stage": "Notice",
       "title": "Storm chasers",
-      "instruction": "Play Track 093 from the supplied course audio, then compare answers.",
+      "instruction": "Play Track 093, then compare your answers.",
       "layout": "standard",
       "blocks": [
+        {
+          "id": "u12-s2-media",
+          "type": "audio",
+          "content": {
+            "src": "/studio/drafts/life-u12-media/track-093.mp3",
+            "label": "Track 093 · Storm chasers"
+          },
+          "style": {}
+        },
         {
           "id": "u12-s2-b1",
           "type": "mcq",
@@ -416,10 +436,9 @@
               },
               {
                 "id": "2",
-                "prompt": "If the weather became warmer, we _____ (need) less heating.",
+                "prompt": "If the weather became warmer, we would _____ (need) less heating.",
                 "answers": [
-                  "would need",
-                  "'d need"
+                  "need"
                 ]
               },
               {
@@ -443,6 +462,15 @@
       "instruction": "Use Track 095. Tally the three forms, then check against the course audioscript.",
       "layout": "standard",
       "blocks": [
+        {
+          "id": "u12-s9-media",
+          "type": "audio",
+          "content": {
+            "src": "/studio/drafts/life-u12-media/track-095.mp3",
+            "label": "Track 095 · Would, wouldn’t and ’d"
+          },
+          "style": {}
+        },
         {
           "id": "u12-s9-b1",
           "type": "text",
@@ -482,6 +510,17 @@
       "instruction": "Name a place near home where you could photograph wildlife.",
       "layout": "standard",
       "blocks": [
+        {
+          "id": "u12-s11-media",
+          "type": "image",
+          "content": {
+            "src": "/studio/drafts/life-u12-media/nature.jpg",
+            "alt": "Four nature photographs from Life, page 144",
+            "caption": "Life, p. 144",
+            "fit": "contain"
+          },
+          "style": {}
+        },
         {
           "id": "u12-s11-b1",
           "type": "discussion",
@@ -550,9 +589,18 @@
       "id": "u12-s13",
       "stage": "Discover",
       "title": "A photographer’s experiment",
-      "instruction": "Play Track 096 from the supplied course audio. Listen for the purpose of the green frame.",
+      "instruction": "Play Track 096. Listen for the purpose of the green frame.",
       "layout": "standard",
       "blocks": [
+        {
+          "id": "u12-s13-media",
+          "type": "audio",
+          "content": {
+            "src": "/studio/drafts/life-u12-media/track-096.mp3",
+            "label": "Track 096 · Nature in one cubic foot"
+          },
+          "style": {}
+        },
         {
           "id": "u12-s13-b1",
           "type": "mcq",
@@ -732,7 +780,7 @@
               },
               {
                 "id": "3",
-                "prompt": "I found _____ unusual under the rock.",
+                "prompt": "I found _____ unusual under the rock, but I couldn't identify what it was.",
                 "answers": [
                   "something"
                 ]
