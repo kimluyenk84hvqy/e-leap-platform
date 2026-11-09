@@ -1,0 +1,797 @@
+{
+  "schemaVersion": "1.2",
+  "version": 1,
+  "id": "life-u12ab-ai-pilot-v1",
+  "status": "draft",
+  "courseLabel": "Life (Pre-intermediate)",
+  "lessonNumber": "U12A + U12B",
+  "title": "Nature · What if …? / Nature in one cubic foot",
+  "deliveryPolicy": {
+    "id": "practice"
+  },
+  "screens": [
+    {
+      "id": "u12-s1",
+      "stage": "Engage",
+      "title": "Life Unit 12 · Nature",
+      "instruction": "Describe an approaching storm and predict why people might follow it.",
+      "layout": "standard",
+      "blocks": [
+        {
+          "id": "u12-s1-b1",
+          "type": "text",
+          "content": {
+            "text": "12A · What if …?   |   12B · Nature in one cubic foot",
+            "role": "body"
+          },
+          "style": {}
+        },
+        {
+          "id": "u12-s1-b2",
+          "type": "discussion",
+          "activity": {
+            "id": "u12-s1-b2-activity",
+            "type": "discussion",
+            "prompt": "Would you ever follow a storm to take a photo? Give a reason.",
+            "modelAnswer": "I wouldn't follow it because a storm can change direction quickly.",
+            "rubric": "Give a choice and one reason."
+          },
+          "style": {}
+        }
+      ]
+    },
+    {
+      "id": "u12-s2",
+      "stage": "Notice",
+      "title": "Storm chasers",
+      "instruction": "Play Track 093 from the supplied course audio, then compare answers.",
+      "layout": "standard",
+      "blocks": [
+        {
+          "id": "u12-s2-b1",
+          "type": "mcq",
+          "activity": {
+            "id": "u12-s2-b1-activity",
+            "type": "mcq",
+            "prompt": "Why might a scientist follow a tornado?",
+            "options": [
+              {
+                "id": "1",
+                "label": "To study how tornadoes form"
+              },
+              {
+                "id": "2",
+                "label": "To find a safe route home"
+              },
+              {
+                "id": "3",
+                "label": "To predict the sunset"
+              }
+            ],
+            "answerKey": [
+              "1"
+            ]
+          },
+          "style": {}
+        },
+        {
+          "id": "u12-s2-b2",
+          "type": "mcq",
+          "activity": {
+            "id": "u12-s2-b2-activity",
+            "type": "mcq",
+            "prompt": "Why are tornadoes especially dangerous?",
+            "options": [
+              {
+                "id": "1",
+                "label": "They only form at night"
+              },
+              {
+                "id": "2",
+                "label": "They are unpredictable and can destroy property"
+              },
+              {
+                "id": "3",
+                "label": "They always travel in straight lines"
+              }
+            ],
+            "answerKey": [
+              "2"
+            ]
+          },
+          "style": {}
+        }
+      ]
+    },
+    {
+      "id": "u12-s3",
+      "stage": "Notice",
+      "title": "12A · Extreme weather",
+      "instruction": "Match each term to a description.",
+      "layout": "standard",
+      "blocks": [
+        {
+          "id": "u12-s3-b1",
+          "type": "matching",
+          "activity": {
+            "id": "u12-s3-b1-activity",
+            "type": "matching",
+            "prompt": "Match the weather words and meanings.",
+            "pairs": [
+              {
+                "id": "1",
+                "left": "flood",
+                "right": "Water covering normally dry land"
+              },
+              {
+                "id": "2",
+                "left": "hail",
+                "right": "Pieces of ice falling from the sky"
+              },
+              {
+                "id": "3",
+                "left": "snowstorm",
+                "right": "A storm with heavy snow"
+              },
+              {
+                "id": "4",
+                "left": "thunder and lightning",
+                "right": "Loud noise and flashes during a storm"
+              }
+            ]
+          },
+          "style": {}
+        }
+      ]
+    },
+    {
+      "id": "u12-s4",
+      "stage": "Discover",
+      "title": "What if …? · Read for gist",
+      "instruction": "Read the article on p. 142. Identify the kinds of questions the blog explores.",
+      "layout": "standard",
+      "blocks": [
+        {
+          "id": "u12-s4-b1",
+          "type": "mcq",
+          "activity": {
+            "id": "u12-s4-b1-activity",
+            "type": "mcq",
+            "prompt": "What makes these questions unusual?",
+            "options": [
+              {
+                "id": "1",
+                "label": "They ask for tomorrow’s forecast"
+              },
+              {
+                "id": "2",
+                "label": "They describe unlikely or impossible situations"
+              },
+              {
+                "id": "3",
+                "label": "They report events that recently happened"
+              }
+            ],
+            "answerKey": [
+              "2"
+            ]
+          },
+          "style": {}
+        }
+      ]
+    },
+    {
+      "id": "u12-s5",
+      "stage": "Discover",
+      "title": "Read for evidence",
+      "instruction": "Read p. 142 again. Point to evidence before checking.",
+      "layout": "standard",
+      "blocks": [
+        {
+          "id": "u12-s5-b1",
+          "type": "true-false",
+          "activity": {
+            "id": "u12-s5-b1-activity",
+            "type": "true-false",
+            "prompt": "The blog uses science to explain hypothetical situations.",
+            "options": [
+              {
+                "id": "T",
+                "label": "True"
+              },
+              {
+                "id": "F",
+                "label": "False"
+              }
+            ],
+            "answerKey": [
+              "T"
+            ]
+          },
+          "style": {}
+        },
+        {
+          "id": "u12-s5-b2",
+          "type": "true-false",
+          "activity": {
+            "id": "u12-s5-b2-activity",
+            "type": "true-false",
+            "prompt": "The article says a person in a boat is safer from lightning than someone underwater in a submarine.",
+            "options": [
+              {
+                "id": "T",
+                "label": "True"
+              },
+              {
+                "id": "F",
+                "label": "False"
+              }
+            ],
+            "answerKey": [
+              "F"
+            ]
+          },
+          "style": {}
+        },
+        {
+          "id": "u12-s5-b3",
+          "type": "true-false",
+          "activity": {
+            "id": "u12-s5-b3-activity",
+            "type": "true-false",
+            "prompt": "The article says hail can damage a windscreen.",
+            "options": [
+              {
+                "id": "T",
+                "label": "True"
+              },
+              {
+                "id": "F",
+                "label": "False"
+              }
+            ],
+            "answerKey": [
+              "T"
+            ]
+          },
+          "style": {}
+        }
+      ]
+    },
+    {
+      "id": "u12-s6",
+      "stage": "Explain",
+      "title": "Second conditional",
+      "instruction": "Compare the clauses and infer which one expresses the result.",
+      "layout": "standard",
+      "blocks": [
+        {
+          "id": "u12-s6-b1",
+          "type": "text",
+          "content": {
+            "text": "If our winters were warmer, we would use less heating.",
+            "role": "body"
+          },
+          "style": {}
+        },
+        {
+          "id": "u12-s6-b2",
+          "type": "mcq",
+          "activity": {
+            "id": "u12-s6-b2-activity",
+            "type": "mcq",
+            "prompt": "Which pattern describes an unlikely situation now or in the future?",
+            "options": [
+              {
+                "id": "1",
+                "label": "if + present simple, will + base verb"
+              },
+              {
+                "id": "2",
+                "label": "if + past simple, would + base verb"
+              },
+              {
+                "id": "3",
+                "label": "if + past perfect, would have + past participle"
+              }
+            ],
+            "answerKey": [
+              "2"
+            ]
+          },
+          "style": {}
+        },
+        {
+          "id": "u12-s6-b3",
+          "type": "mcq",
+          "activity": {
+            "id": "u12-s6-b3-activity",
+            "type": "mcq",
+            "prompt": "When does this sentence need a comma?",
+            "options": [
+              {
+                "id": "1",
+                "label": "When the if-clause comes first"
+              },
+              {
+                "id": "2",
+                "label": "Whenever would appears"
+              },
+              {
+                "id": "3",
+                "label": "When the result clause comes first"
+              }
+            ],
+            "answerKey": [
+              "1"
+            ]
+          },
+          "style": {}
+        }
+      ]
+    },
+    {
+      "id": "u12-s7",
+      "stage": "Practise",
+      "title": "Build the sentence",
+      "instruction": "Put the chunks in order.",
+      "layout": "standard",
+      "blocks": [
+        {
+          "id": "u12-s7-b1",
+          "type": "ordering",
+          "activity": {
+            "id": "u12-s7-b1-activity",
+            "type": "ordering",
+            "prompt": "Arrange the chunks to make a sentence.",
+            "items": [
+              {
+                "id": "1",
+                "text": "we would stay indoors."
+              },
+              {
+                "id": "2",
+                "text": "If it snowed heavily,"
+              }
+            ],
+            "answerKey": [
+              "2",
+              "1"
+            ]
+          },
+          "style": {}
+        },
+        {
+          "id": "u12-s7-b2",
+          "type": "ordering",
+          "activity": {
+            "id": "u12-s7-b2-activity",
+            "type": "ordering",
+            "prompt": "Arrange the chunks to make a sentence.",
+            "items": [
+              {
+                "id": "1",
+                "text": "you could live anywhere?"
+              },
+              {
+                "id": "2",
+                "text": "Where would you move"
+              },
+              {
+                "id": "3",
+                "text": "if"
+              }
+            ],
+            "answerKey": [
+              "2",
+              "3",
+              "1"
+            ]
+          },
+          "style": {}
+        }
+      ]
+    },
+    {
+      "id": "u12-s8",
+      "stage": "Apply",
+      "title": "Change the conditions",
+      "instruction": "Imagine a different climate and predict its effects.",
+      "layout": "standard",
+      "blocks": [
+        {
+          "id": "u12-s8-b1",
+          "type": "fill",
+          "activity": {
+            "id": "u12-s8-b1-activity",
+            "type": "fill",
+            "prompt": "Complete each sentence.",
+            "items": [
+              {
+                "id": "1",
+                "prompt": "If the river _____ (rise), we would move the equipment.",
+                "answers": [
+                  "rose"
+                ]
+              },
+              {
+                "id": "2",
+                "prompt": "If the weather became warmer, we _____ (need) less heating.",
+                "answers": [
+                  "would need",
+                  "'d need"
+                ]
+              },
+              {
+                "id": "3",
+                "prompt": "If the roads were icy, we _____ (not drive).",
+                "answers": [
+                  "would not drive",
+                  "wouldn't drive"
+                ]
+              }
+            ]
+          },
+          "style": {}
+        }
+      ]
+    },
+    {
+      "id": "u12-s9",
+      "stage": "Practise",
+      "title": "Hear would, wouldn’t and ’d",
+      "instruction": "Use Track 095. Tally the three forms, then check against the course audioscript.",
+      "layout": "standard",
+      "blocks": [
+        {
+          "id": "u12-s9-b1",
+          "type": "text",
+          "content": {
+            "text": "Pair replay. One student reads a line, and the other identifies the form. Switch roles.",
+            "role": "body"
+          },
+          "style": {}
+        }
+      ]
+    },
+    {
+      "id": "u12-s10",
+      "stage": "Transfer",
+      "title": "Hopes and dreams",
+      "instruction": "Ask a partner a hypothetical question. Follow up with why.",
+      "layout": "standard",
+      "blocks": [
+        {
+          "id": "u12-s10-b1",
+          "type": "discussion",
+          "activity": {
+            "id": "u12-s10-b1-activity",
+            "type": "discussion",
+            "prompt": "If you could live anywhere for a year, where would you go and why?",
+            "modelAnswer": "If I could live anywhere for a year, I’d choose Canada because I’d like to explore its national parks.",
+            "rubric": "Use an if-clause, a result with would or ’d, and a reason."
+          },
+          "style": {}
+        }
+      ]
+    },
+    {
+      "id": "u12-s11",
+      "stage": "Engage",
+      "title": "12B · Nature in one cubic foot",
+      "instruction": "Name a place near home where you could photograph wildlife.",
+      "layout": "standard",
+      "blocks": [
+        {
+          "id": "u12-s11-b1",
+          "type": "discussion",
+          "activity": {
+            "id": "u12-s11-b1-activity",
+            "type": "discussion",
+            "prompt": "What could you find if you looked closely at one small patch of ground?",
+            "modelAnswer": "I might find some tiny insects under the leaves.",
+            "rubric": "Name a place and at least one likely find."
+          },
+          "style": {}
+        }
+      ]
+    },
+    {
+      "id": "u12-s12",
+      "stage": "Notice",
+      "title": "Nature vocabulary",
+      "instruction": "Sort the words by type.",
+      "layout": "standard",
+      "blocks": [
+        {
+          "id": "u12-s12-b1",
+          "type": "categorising",
+          "activity": {
+            "id": "u12-s12-b1-activity",
+            "type": "categorising",
+            "prompt": "Sort land and water features.",
+            "categories": [
+              "Land",
+              "Water"
+            ],
+            "items": [
+              {
+                "id": "1",
+                "text": "forest",
+                "category": "Land"
+              },
+              {
+                "id": "2",
+                "text": "mountain",
+                "category": "Land"
+              },
+              {
+                "id": "3",
+                "text": "desert",
+                "category": "Land"
+              },
+              {
+                "id": "4",
+                "text": "ocean",
+                "category": "Water"
+              },
+              {
+                "id": "5",
+                "text": "river",
+                "category": "Water"
+              }
+            ]
+          },
+          "style": {}
+        }
+      ]
+    },
+    {
+      "id": "u12-s13",
+      "stage": "Discover",
+      "title": "A photographer’s experiment",
+      "instruction": "Play Track 096 from the supplied course audio. Listen for the purpose of the green frame.",
+      "layout": "standard",
+      "blocks": [
+        {
+          "id": "u12-s13-b1",
+          "type": "mcq",
+          "activity": {
+            "id": "u12-s13-b1-activity",
+            "type": "mcq",
+            "prompt": "What does the project help people notice?",
+            "options": [
+              {
+                "id": "1",
+                "label": "The wildlife close to them"
+              },
+              {
+                "id": "2",
+                "label": "The quality of different cameras"
+              },
+              {
+                "id": "3",
+                "label": "The height of trees around the world"
+              }
+            ],
+            "answerKey": [
+              "1"
+            ]
+          },
+          "style": {}
+        },
+        {
+          "id": "u12-s13-b2",
+          "type": "true-false",
+          "activity": {
+            "id": "u12-s13-b2-activity",
+            "type": "true-false",
+            "prompt": "The photographer used the frame in different parts of the world.",
+            "options": [
+              {
+                "id": "T",
+                "label": "True"
+              },
+              {
+                "id": "F",
+                "label": "False"
+              }
+            ],
+            "answerKey": [
+              "T"
+            ]
+          },
+          "style": {}
+        },
+        {
+          "id": "u12-s13-b3",
+          "type": "true-false",
+          "activity": {
+            "id": "u12-s13-b3-activity",
+            "type": "true-false",
+            "prompt": "He photographed only living things smaller than one millimetre.",
+            "options": [
+              {
+                "id": "T",
+                "label": "True"
+              },
+              {
+                "id": "F",
+                "label": "False"
+              }
+            ],
+            "answerKey": [
+              "F"
+            ]
+          },
+          "style": {}
+        }
+      ]
+    },
+    {
+      "id": "u12-s14",
+      "stage": "Explain",
+      "title": "People, places and things",
+      "instruction": "Infer what the endings refer to, then choose the correct option.",
+      "layout": "standard",
+      "blocks": [
+        {
+          "id": "u12-s14-b1",
+          "type": "text",
+          "content": {
+            "text": "Someone refers to a person, somewhere to a place, and something to a thing.",
+            "role": "body"
+          },
+          "style": {}
+        },
+        {
+          "id": "u12-s14-b2",
+          "type": "mcq",
+          "activity": {
+            "id": "u12-s14-b2-activity",
+            "type": "mcq",
+            "prompt": "Which word asks about a place?",
+            "options": [
+              {
+                "id": "1",
+                "label": "anybody"
+              },
+              {
+                "id": "2",
+                "label": "anything"
+              },
+              {
+                "id": "3",
+                "label": "anywhere"
+              }
+            ],
+            "answerKey": [
+              "3"
+            ]
+          },
+          "style": {}
+        },
+        {
+          "id": "u12-s14-b3",
+          "type": "mcq",
+          "activity": {
+            "id": "u12-s14-b3-activity",
+            "type": "mcq",
+            "prompt": "Which sentence describes a situation where zero people replied?",
+            "options": [
+              {
+                "id": "1",
+                "label": "Nobody replied."
+              },
+              {
+                "id": "2",
+                "label": "Everybody replied."
+              },
+              {
+                "id": "3",
+                "label": "Somebody replied."
+              }
+            ],
+            "answerKey": [
+              "1"
+            ]
+          },
+          "style": {}
+        }
+      ]
+    },
+    {
+      "id": "u12-s15",
+      "stage": "Practise",
+      "title": "Complete the conversations",
+      "instruction": "Use compounds with some-, any-, every- or no-.",
+      "layout": "standard",
+      "blocks": [
+        {
+          "id": "u12-s15-b1",
+          "type": "fill",
+          "activity": {
+            "id": "u12-s15-b1-activity",
+            "type": "fill",
+            "prompt": "Complete each sentence.",
+            "items": [
+              {
+                "id": "1",
+                "prompt": "Did you go _____ interesting?",
+                "answers": [
+                  "anywhere"
+                ]
+              },
+              {
+                "id": "2",
+                "prompt": "The trail was empty. We didn't see _____.",
+                "answers": [
+                  "anyone",
+                  "anybody"
+                ]
+              },
+              {
+                "id": "3",
+                "prompt": "I found _____ unusual under the rock.",
+                "answers": [
+                  "something"
+                ]
+              },
+              {
+                "id": "4",
+                "prompt": "_____ in our group agreed, so the decision was unanimous.",
+                "answers": [
+                  "Everyone",
+                  "Everybody"
+                ]
+              }
+            ]
+          },
+          "style": {}
+        }
+      ]
+    },
+    {
+      "id": "u12-s16",
+      "stage": "Transfer",
+      "title": "Interview a nature photographer",
+      "instruction": "Take turns asking and answering questions.",
+      "layout": "standard",
+      "blocks": [
+        {
+          "id": "u12-s16-b1",
+          "type": "discussion",
+          "activity": {
+            "id": "u12-s16-b1-activity",
+            "type": "discussion",
+            "prompt": "Ask two questions using any-. Answer using at least one compound with some- or no-.",
+            "modelAnswer": "Did you see anything unusual? Yes, I saw something moving near the river. Did anyone photograph it? No, nobody had a camera.",
+            "rubric": "Use two any- questions and a natural reply with a compound."
+          },
+          "style": {}
+        }
+      ]
+    },
+    {
+      "id": "u12-s17",
+      "stage": "Reflect",
+      "title": "One small place, two language targets",
+      "instruction": "Write a short exit ticket.",
+      "layout": "standard",
+      "blocks": [
+        {
+          "id": "u12-s17-b1",
+          "type": "writing",
+          "activity": {
+            "id": "u12-s17-b1-activity",
+            "type": "writing",
+            "prompt": "Where would you look for nature if you had one hour? Say what someone might find there.",
+            "modelAnswer": "If I had one hour, I would look in the school garden. Someone might find something surprising under the leaves.",
+            "rubric": "Include one accurate second conditional and two appropriate indefinite compounds."
+          },
+          "style": {}
+        }
+      ]
+    }
+  ]
+}
