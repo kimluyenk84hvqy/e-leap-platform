@@ -48,10 +48,13 @@ async function mediaCache(req,url,event){
 }
 self.addEventListener('fetch',event=>{
   const req=event.request;
-  if(req.method!=='GET'||req.mode==='navigate'&&req.credentials==='include')return;
+  // Never intercept navigations: identity/role changes must reach the server.
+  if(req.method!=='GET'||req.mode==='navigate')return;
   const url=new URL(req.url);
   if(url.origin!==self.location.origin||isPrivate(req,url))return;
   if(MEDIA_RE.test(url.pathname)){event.respondWith(mediaCache(req,url,event));return;}
-  // Keep code / HTML / JSON fresh while retaining an offline fallback for public assets.
-  event.respondWith(networkFirst(req));
+  // Only version-independent public code assets use the offline fallback.
+  // Do not cache HTML, API JSON, role-bound pages or student data.
+  if(/\.(?:js|css)$/i.test(url.pathname)){event.respondWith(networkFirst(req));return;}
+  // All other requests follow standard browser/network policy.
 });
