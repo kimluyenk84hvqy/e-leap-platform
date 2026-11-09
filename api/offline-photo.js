@@ -4,6 +4,10 @@ const names={
  polar:"Polar bear silently stepping from an ice floe.jpg",
  tiger:"Tiger walking through grass.jpg",
  orangutan:"Orangutan and infant Sumatra.jpg",
+ snow:"Snow Leopard on Snowy Rocks (23966719139).jpg",
+ koala:"Koala 2026.jpg",
+ parrot:"Rhynchopsitta-pachyrhyncha.jpg",
+ shark:"Tiger Shark Galeocerdo Cuvier (223179837).jpeg",
 };
 module.exports=async function handler(req,res){
  const key=String(req.query?.image||"");
