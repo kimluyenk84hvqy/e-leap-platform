@@ -1,0 +1,13 @@
+{
+  "course": "Objective First B2",
+  "unit": "4",
+  "lesson": "4.1",
+  "status": "teacher-review-offline",
+  "screens": 14,
+  "photos": 6,
+  "reader": "two independent vertical scroll panes; all texts A-E always visible in left pane",
+  "bookReadingQuestions": 10,
+  "bookWordForms": 10,
+  "sourceVerified": true,
+  "browserAutomatedQA": false
+}
