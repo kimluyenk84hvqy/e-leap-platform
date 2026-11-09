@@ -1,0 +1,14 @@
+{
+  "id": "objective-first-b2-u06-l02",
+  "parentId": "objective-first-b2-u06",
+  "courseId": "objective-first-b2",
+  "unitId": "objective-first-b2-u06",
+  "lessonNumber": "U6.2",
+  "title": "U6.2 · Lesson 2",
+  "type": "lesson-shell",
+  "status": "awaiting-resource",
+  "resourceId": null,
+  "contentReady": false,
+  "visibility": "course-navigation",
+  "privateMediaPrefix": "u06/l02/"
+}

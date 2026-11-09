@@ -1,0 +1,22 @@
+{
+  "id": "objective-first-b2-u03",
+  "courseId": "objective-first-b2",
+  "title": "Unit 3",
+  "subtitle": "Going Places",
+  "status": "published",
+  "lessons": [
+    {
+      "shellId": "objective-first-b2-u03-l01",
+      "resourceId": "res-objective-first-b2-u03-l01",
+      "order": 1,
+      "status": "approved"
+    },
+    {
+      "shellId": "objective-first-b2-u03-l02",
+      "resourceId": "res-objective-first-b2-u03-l02",
+      "order": 2,
+      "status": "approved"
+    }
+  ],
+  "rule": "Lesson shell is the navigation container; the resourceId is added only after content integration."
+}

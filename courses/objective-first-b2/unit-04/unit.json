@@ -1,0 +1,25 @@
+{
+  "id": "objective-first-b2-u04",
+  "courseId": "objective-first-b2",
+  "title": "Unit 4",
+  "status": "shell-ready",
+  "lessons": [
+    {
+      "shellId": "objective-first-b2-u04-l01",
+      "title": "U4.1 · Lesson 1",
+      "resourceId": null,
+      "order": 1,
+      "status": "awaiting-resource",
+      "path": "lesson-01/shell.json"
+    },
+    {
+      "shellId": "objective-first-b2-u04-l02",
+      "title": "U4.2 · Lesson 2",
+      "resourceId": null,
+      "order": 2,
+      "status": "awaiting-resource",
+      "path": "lesson-02/shell.json"
+    }
+  ],
+  "rule": "A lesson shell is not an interactive resource. Add a real lesson manifest/media and resource placement only when approved."
+}
