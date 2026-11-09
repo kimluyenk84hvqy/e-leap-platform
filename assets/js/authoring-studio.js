@@ -30,11 +30,21 @@ if(!ctx.can('content:edit')){
   ensureSchema();
   draftKey=`e-leap-studio-v1:${source||lesson.id||'new'}`;
   const saved=localStorage.getItem(draftKey);
-  if(saved && !qs.get('fresh')){try{lesson=JSON.parse(saved);ensureSchema();}catch{}}
+  if(saved && !qs.get('fresh') && !qs.get('draft')){try{lesson=JSON.parse(saved);ensureSchema();}catch{}}
   render();
 }
 
 async function loadLesson(){
+  const draftId=qs.get('draft');
+  if(draftId){
+    try{
+      const record=await saveService.loadServer(draftId);
+      if(record?.lesson)return record.lesson;
+      console.warn('Studio draft does not exist on server',draftId);
+    }catch(err){console.warn('Could not load server draft',err);}
+    const local=saveService.loadLocal(draftId);
+    if(local?.lesson)return local.lesson;
+  }
   if(source){
     try{const r=await fetch(source,{cache:'no-store'});if(r.ok)return await r.json();}catch{}
   }
@@ -49,7 +59,25 @@ function defaultPrompt(type){return defaultActivityPrompt(type);}
 function currentScreen(){return lesson.screens[selectedScreen]}
 function currentBlock(){return currentScreen().blocks[selectedBlock]||currentScreen().blocks[0]}
 function markDirty(){dirty=true;status('Unsaved changes');clearTimeout(autosaveTimer);autosaveTimer=setTimeout(saveDraft,700)}
-function saveDraft(){localStorage.setItem(draftKey,JSON.stringify(lesson));dirty=false;status('Saving draft…');saveService.saveDraft(lesson).then(r=>status(r.mode==='server'?'Draft saved to server':'Draft saved locally')).catch(()=>status('Draft saved locally'))}
+async function saveDraft(){
+  const snapshot=clone(lesson);
+  try{localStorage.setItem(draftKey,JSON.stringify(snapshot));}catch(_){}
+  dirty=false;
+  status('Saving draft…');
+  try{
+    const result=await saveService.saveDraft(snapshot);
+    if(result.mode==='server'){
+      status('Saved to server · '+snapshot.id+' · Open again using ?draft='+encodeURIComponent(snapshot.id));
+    }else if(result.mode==='conflict'){
+      status('Save conflict — copy preserved locally. Reload server version before saving again.');
+    }else if(result.mode==='local'){
+      status('Saved on this device only — server unavailable. Export JSON for backup.');
+    }else{
+      status('Save failed — use Export JSON to back up this lesson.');
+    }
+    return result;
+  }catch(_){status('Save failed — use Export JSON to back up this lesson.');}
+}
 function status(msg){const e=document.querySelector('[data-studio-status]');if(e)e.textContent=msg}
 
 function render(){
@@ -148,7 +176,20 @@ function wire(){
   document.querySelector('[data-export]')?.addEventListener('click',exportJSON);
   document.querySelector('[data-quality]')?.addEventListener('click',()=>document.querySelector('[data-quality-panel]').classList.add('open'));
   document.querySelector('[data-close-quality]')?.addEventListener('click',()=>document.querySelector('[data-quality-panel]').classList.remove('open'));
-  document.querySelector('[data-publish]')?.addEventListener('click',()=>{const blocking=runQuality().filter(x=>x[0]==='error');status(blocking.length?`Fix ${blocking.length} blocking issue(s) before publish`:(ctx.can('content:publish')?'Publishing candidate…':'Publish request staged for review'));if(blocking.length){document.querySelector('[data-quality-panel]').classList.add('open')}else if(ctx.can('content:publish')){saveService.publish(lesson).then(r=>status(r.mode==='server'?'Published as a new version':'Publish candidate staged locally'))}});
+  document.querySelector('[data-publish]')?.addEventListener('click',async()=>{
+    const blocking=runQuality().filter(x=>x[0]==='error');
+    if(blocking.length){
+      status(`Fix ${blocking.length} blocking issue(s) before publishing`);
+      document.querySelector('[data-quality-panel]')?.classList.add('open');
+      return;
+    }
+    if(!ctx.can('content:publish')){status('Publishing requires Admin approval');return;}
+    status('Sending lesson for review…');
+    const result=await saveService.publish(clone(lesson));
+    status(result.mode==='server'
+      ?'Publish review requested — not yet live in Courses'
+      :'Publish request not saved to server — '+(result.error||'try again'));
+  });
   document.querySelector('[data-new]')?.addEventListener('click',()=>{if(!confirm('Start a new lesson? Your current draft remains saved locally.'))return;lesson=modelCreateLesson();selectedScreen=selectedBlock=0;draftKey=`e-leap-studio-v1:${lesson.id}`;markDirty();render()});
   document.querySelector('[data-duplicate-lesson]')?.addEventListener('click',()=>{lesson=modelDuplicateLesson(lesson);draftKey=`e-leap-studio-v1:${lesson.id}`;markDirty();render()});
 }
