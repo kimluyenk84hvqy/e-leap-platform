@@ -24,6 +24,7 @@ for(const family of Object.keys(CERTIFIED_TEMPLATES)){
 }
 const cover=makeCertifiedTemplate('cover');
 Object.assign(cover.values,{unit:'Unit 12',topic:'Nature',imageSrc:'https://images.example.edu/nature.jpg',imageAlt:'Natural landscape'});
+cover.values.imageSrc='/assets/media/nature.webp';cover.values.imageAlt='Mountain and forest landscape';cover.mediaCheck={src:cover.values.imageSrc,loaded:true};
 assert.deepEqual(validateCertifiedTemplate(cover),[]);
 const aims=makeCertifiedTemplate('aims');
 Object.assign(aims.values,{
@@ -43,6 +44,7 @@ Object.assign(opener.values,{
  q3:'What is it called?',a3:'A tornado.',
  target:'tornado',concept:'A rapidly rotating column of air.'
 });
+opener.values.imageSrc='/assets/media/tornado.webp';opener.values.imageAlt='Tornado over a field';opener.mediaCheck={src:opener.values.imageSrc,loaded:true};
 assert.deepEqual(validateCertifiedTemplate(opener),[]);
 const student=renderCertifiedVisual({certifiedTemplate:opener},'student',2,true);
 const teacher=renderCertifiedVisual({certifiedTemplate:opener},'teacher',2,true);
@@ -62,5 +64,13 @@ opener.values.instruction='What can you see?';
 assert.ok(validateCertifiedTemplate(opener).some(s=>s.includes('Separate')));
 opener.values.instruction='Look at the photo.';
 opener.values.imageSrc='book_page_142.png';
-assert.ok(validateCertifiedTemplate(opener).some(s=>s.includes('textbook')));
+assert.ok(validateCertifiedTemplate(opener).some(s=>s.includes('full-page')||s.includes('Image source')));
+const invalid=makeCertifiedTemplate('cover');Object.assign(invalid.values,{unit:'Unit 12',topic:'Nature',imageSrc:'not-a-url',imageAlt:'Photo'});
+assert.ok(validateCertifiedTemplate(invalid).some(x=>x.includes('Image source')));
+const unverified=makeCertifiedTemplate('cover');Object.assign(unverified.values,{unit:'Unit 12',topic:'Nature',imageSrc:'/assets/photo.webp',imageAlt:'Photo'});
+assert.ok(validateCertifiedTemplate(unverified).some(x=>x.includes('not been loaded')));
+const generic=makeCertifiedTemplate('aims');for(const k of Object.keys(generic.values))generic.values[k]='Identify something.';
+assert.ok(validateCertifiedTemplate(generic).some(x=>x.includes('concrete learning')));
+const converted=applyCertifiedTemplate({blocks:[{type:'text',content:{text:'Original activity 1'}}]},makeCertifiedTemplate('opener')).screen;
+assert.ok(validateCertifiedTemplate(converted.certifiedTemplate).some(x=>x.includes('source needs review')));
 console.log('Certified Cover / Aims / Opener fixed-slot and role-policy contracts passed.');
