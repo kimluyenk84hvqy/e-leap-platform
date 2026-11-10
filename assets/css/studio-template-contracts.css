@@ -185,3 +185,13 @@
 @media(max-width:850px){
  .lesson-canvas:has(.combo-step-nav) .canvas-body>.block[data-slot]{grid-column:auto}
 }
+
+/* Editor-only learning arc: shown as a quiet navigation aid, never on lesson canvas. */
+.studio-arc-strip{display:flex;gap:4px;flex-wrap:wrap;padding:10px 12px;border-bottom:1px solid #dce8df}
+.studio-arc-strip span{border-radius:8px;padding:5px 8px;font-size:11px;font-weight:700;background:#eef5ef;color:#416151}
+.studio-arc-strip span.active{background:#16583d;color:#fff}
+/* Compact reading completion uses Evidence and Why directly beneath each item. */
+.lesson-canvas.template-reading-task .evidence-question{min-width:0}
+.lesson-canvas.template-reading-task .evidence-actions{margin:2px 0 10px}
+.lesson-canvas.template-reading-task .evidence-actions .studio-btn{background:#f0f7f1;color:#174d37;border:1px solid #a8cab5;border-radius:10px}
+.lesson-canvas.template-reading-task .evidence-actions .studio-btn:hover{background:#d9ecdc}
