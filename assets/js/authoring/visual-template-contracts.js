@@ -40,6 +40,13 @@ export function validateVisualContracts(lesson){
    }
   }
   for(const block of slide.blocks||[]){
+   if(block.type==='vocabulary'){
+    const words=block.content?.items||[];
+    if(!words.length)issues.push(['error',at+': vocabulary activity is empty']);
+    words.forEach((w,i)=>{
+     if(!String(w.word||'').trim()||!String(w.meaning||'').trim())issues.push(['error',at+': vocabulary item '+(i+1)+' needs a word and meaning']);
+    });
+   }
    if(block.audience==='teacher'||block.audience==='internal')issues.push(['error',at+': internal-only block must be moved into teacherNotes']);
    for(const v of [block.content?.src,block.content?.assetId]){
     if(typeof v==='string'&&BOOK_PAGE_ASSET.test(v))issues.push(['error',at+': full-page textbook scan is not allowed as a slide image']);
