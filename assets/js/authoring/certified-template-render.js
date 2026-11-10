@@ -1,0 +1,61 @@
+/* Fixed HTML renderers for certified template families.
+ * Data is always escaped. Student mode never exposes keys.
+ */
+import {CERTIFIED_TEMPLATES,validateCertifiedTemplate} from './certified-templates.js';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const safeMedia=s=>/^https:\/\/[^\s"'<>]+$/i.test(String(s||''))||/^(?:\/(?!\/)|\.\.?\/)[^\s"'<>]+$/.test(String(s||''))?String(s):'';
+const photo=(src,alt,editor)=>{
+ const url=safeMedia(src);
+ return url?'<img class="cert-photo" loading="lazy" src="'+esc(url)+'" alt="'+esc(alt)+'">':
+   '<div class="cert-photo-missing">'+(editor?'Add licensed real photograph in Template Slots':'')+'</div>';
+};
+const blank=x=>esc(x||'');
+export function renderCertifiedVisual(s,role,qIndex=0,revealed=false){
+ const data=s.certifiedTemplate||{},v=data.values||{},family=data.family,editor=['teacher','admin'].includes(role),canReveal=['teacher','admin','presentation'].includes(role);
+ let inner='';
+ if(family==='cover'){
+  inner='<div class="cert-cover-layout"><div class="cert-cover-identity">'+
+   '<div class="cert-institution">'+blank(v.institution)+'</div>'+
+   '<div class="cert-faculty">'+blank(v.faculty)+'</div>'+
+   '<div class="cert-cover-content"><div class="cert-unit">'+blank(v.unit)+'</div><h1>'+blank(v.topic)+'</h1><p>'+blank(v.course)+'</p></div></div>'+
+   '<div class="cert-cover-photo">'+photo(v.imageSrc,v.topic,editor)+'</div></div>';
+ }else if(family==='aims'){
+  const group=(label,key,n)=>'<section class="cert-aim-card"><span class="cert-aim-number">'+n+'</span><h2>'+label+'</h2><ol><li>'+blank(v[key+'1'])+'</li><li>'+blank(v[key+'2'])+'</li></ol></section>';
+  inner='<div class="cert-aims-head">LEARNING AIMS</div><div class="cert-aims-grid">'+
+   group('KNOWLEDGE','knowledge','01')+group('SKILLS','skills','02')+group('ATTITUDES','attitudes','03')+'</div>';
+ }else if(family==='opener'){
+  const i=Math.max(0,Math.min(2,Number(qIndex)||0)),show=revealed&&canReveal;
+  const image='<div class="cert-opener-photo">'+photo(v.imageSrc,v.target,editor)+'</div>';
+  const task='<div class="cert-opener-task"><div class="cert-task-label">ACTIVITY '+blank(v.activityNumber)+'</div>'+
+   '<p class="cert-instruction">'+blank(v.instruction)+'</p>'+
+   '<div class="cert-question-counter">QUESTION '+(i+1)+' / 3</div>'+
+   '<div class="cert-question">'+blank(v['q'+(i+1)])+'</div>'+
+   (show?'<div class="cert-revealed-key">'+blank(v['a'+(i+1)])+'</div>':'')+
+   '<div class="cert-opener-actions"><div class="cert-step-buttons">'+[0,1,2].map(x=>
+      '<button type="button" data-certified-question="'+x+'" class="'+(x===i?'active':'')+'">'+(x+1)+'</button>').join('')+'</div>'+
+    (canReveal?'<button type="button" data-certified-reveal>'+(show?'Hide answer':'Show answer')+'</button>':'')+'</div>'+
+   (show&&i===2?'<div class="cert-target"><strong>'+blank(v.target)+'</strong><span>'+blank(v.concept)+'</span></div>':'')+'</div>';
+  inner='<div class="cert-opener-grid">'+(data.variant==='hot-seat'?task+image:image+task)+'</div>';
+ }
+ const issues=validateCertifiedTemplate(data);
+ return '<div class="canvas-wrap certified-wrap"><section class="lesson-canvas certified-canvas certified-'+esc(family)+' design-'+esc(data.variant)+'">'+inner+'</section>'+
+  (editor&&issues.length?'<div class="cert-editor-warning">'+issues.length+' slot checks incomplete. Finish Template Slots before Publish.</div>':'')+'</div>';
+}
+export function renderCertifiedEditor(s){
+ const data=s.certifiedTemplate;
+ if(!data)return '';
+ const spec=CERTIFIED_TEMPLATES[data.family];if(!spec)return '';
+ const options=spec.variants.map(v=>'<button class="cert-variant-choice '+(data.variant===v.id?'active':'')+
+  '" type="button" data-certified-variant="'+esc(v.id)+'"><b>'+esc(v.label)+'</b><small>'+esc(v.description)+'</small></button>').join('');
+ const fields=Object.entries(spec.slots).map(([key,def])=>{
+  const value=blank(data.values?.[key]);
+  return '<div class="studio-field"><label>'+esc(def.label)+(spec.required.includes(key)?' *':'')+'</label>'+
+   (def.kind==='textarea'?'<textarea data-certified-slot="'+key+'" maxlength="'+def.limit+'">'+value+'</textarea>':
+    '<input type="text" data-certified-slot="'+key+'" maxlength="'+def.limit+'" value="'+value+'">')+'</div>';
+ }).join('');
+ const issues=validateCertifiedTemplate(data);
+ return '<section class="property-section certified-props"><h3>'+esc(spec.label)+'</h3>'+
+  '<p class="helper">Switch designs without losing data. Only slots appear on the learner slide.</p>'+
+  '<div class="cert-variant-picker">'+options+'</div><h4>Template Slots</h4>'+fields+
+  '<p class="helper">'+(issues.length?esc(issues.join(' · ')):'Certified slot checks passed.')+'</p></section>';
+}
