@@ -44,8 +44,9 @@ export function methodTemplateIssues(screen){
  const issues=[];
  if(!METHOD_COMBOS[draft.methodId])issues.push('Method is not available in the approved catalog.');
  if(!Array.isArray(draft.steps)||!draft.steps.length)issues.push('Method steps missing.');
- if(draft.publishStatus!=='published-verified'||draft.sourceMapped!==true)
-  issues.push('Method template has no verified textbook content or runtime acceptance; do not publish.');
+ // This template-only screen has no activity runtime. No client-side flag may
+ // authorize publication until the separate server-verified runtime is built.
+ issues.push('Method template is structure-only; runtime, textbook fidelity and role-based QA are not implemented. Publish is blocked.');
  // Review-only placeholders cannot be mistaken for actual lesson content.
  if(draft.steps?.some(s=>Object.keys(s.values||{}).length>0)&&draft.sourceMapped!==true)
   issues.push('Unreviewed slot content exists without textbook mapping approval.');
