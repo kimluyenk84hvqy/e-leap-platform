@@ -75,7 +75,7 @@ export function makeCertifiedTemplate(family){
  const spec=CERTIFIED_TEMPLATES[family];if(!spec)return null;
  const values=Object.fromEntries(Object.keys(spec.slots).map(k=>[k,'']));
  if(family==='cover'){values.institution='VIETNAM MILITARY MEDICAL UNIVERSITY';values.faculty='FACULTY OF FOREIGN LANGUAGES';}
- return {family,variant:spec.variants[0].id,values};
+ return {family,variant:spec.variants[0].id,values,mediaCheck:null};
 }
 export function certifiedVariantOptions(family){return CERTIFIED_TEMPLATES[family]?.variants||[];}
 export function changeCertifiedVariant(data,nextVariant){
@@ -94,10 +94,12 @@ export function validateCertifiedTemplate(data,{draft=false}={}){
  if(isReal(v.imageSrc)&&!isSupportedImageSource(v.imageSrc))issues.push('Image source must be an approved HTTPS URL or a relative image path; full-page scans and placeholders are blocked.');
  if(isReal(v.imageSrc)&&!/^https:\/\//i.test(v.imageSrc)&&ASSET_IMAGE_EXT.test(v.imageSrc)===false)issues.push('Local image path must end in PNG, JPEG, WebP, or AVIF.');
  if(isReal(v.imageSrc)&&!isReal(v.imageAlt))issues.push('Image alt description is required.');
+ if(isReal(v.imageSrc)&&(!data.mediaCheck||data.mediaCheck.src!==v.imageSrc||data.mediaCheck.loaded!==true))issues.push('Image has not been loaded and verified in Studio Preview.');
  if(data.family==='aims')for(const key of Object.keys(spec.slots)){
   if(isReal(v[key])&&!bloom.test(v[key].trim()))issues.push(key+': start with an observable action verb (Bloom).');
   if(isReal(v[key])&&VAGUE_GOAL.test(v[key].trim()))issues.push(key+': specify the concrete learning content or performance.');
  }
+ if(data.sourceReview?.required===true&&(!data.sourceReview.approved||data.sourceReview.contentSignature!==JSON.stringify(v)))issues.push('Converted source needs review and sign-off after mapping to certified slots.');
  if(data.family==='aims'){
   const complete=Object.values(spec.slots).length===6&&Object.keys(spec.slots).every(k=>isReal(v[k]));
   if(complete&&new Set(Object.keys(spec.slots).map(k=>String(v[k]).trim().toLowerCase())).size<6)issues.push('All six aims must be distinct and specific.');
@@ -113,6 +115,8 @@ export function applyCertifiedTemplate(screen,data){
  if(!data||!CERTIFIED_TEMPLATES[data.family])return {ok:false,error:'Unknown template.'};
  const next=clone(screen);
  next.certifiedTemplate=clone(data);
+ const hasSource=(next.blocks||[]).some(b=>String(b.content?.text||b.content?.src||b.activity?.prompt||'').trim());
+ next.certifiedTemplate.sourceReview=hasSource?{required:true,approved:false,contentSignature:''}:{required:false,approved:true,contentSignature:''};
  next.templateId=CERTIFIED_TEMPLATES[data.family].templateId;
  next.layout=data.family==='cover'?'hero':data.family==='aims'?'three-cards':'media-left';
  // Legacy blocks remain in the editor as preserved source; certified projection
