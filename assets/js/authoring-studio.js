@@ -9,6 +9,7 @@ import {controlModelForRole} from './controls/control-shell.js';
 import {createLesson as modelCreateLesson,ensureLessonSchema as modelEnsureLessonSchema,createScreen as modelCreateScreen,createBlock as modelCreateBlock,normaliseActivity as modelNormaliseActivity,defaultActivityPrompt,legacyToBlocks as modelLegacyToBlocks,clone as modelClone,uid as modelUid,parsePipeLines,duplicateLesson as modelDuplicateLesson} from './authoring/lesson-model.js';
 import {E_LEAP_LAYOUT_IDS} from './authoring/layout-registry.js';
 import {TEACHING_COMBOS,createTeachingCombo} from './authoring/teaching-combo-registry.js';
+import {CONTENT_SLOT_SCHEMAS,readTemplateSlots,applyMappedContent} from './authoring/content-mapper.js';
 
 const root=document.getElementById('studio');
 const ctx=new ELeapRuntimeContext();
@@ -99,7 +100,16 @@ function activityDemo(type,a){
   return `<div class="media-placeholder">Activity preview</div>`;
 }
 function controlChips(type,a){const objective=['mcq','multi-select','true-false','fill','matching','ordering','categorising','listening','video-question'].includes(type);const productive=['writing','discussion','speaking-record'].includes(type);const role=previewRole==='presentation'?'teacher':previewRole;const model=controlModelForRole({role,presentation:previewRole==='presentation',capabilities:{check:objective,reset:true,reveal:objective||Boolean(a?.modelAnswer||a?.answerKey),submit:objective||productive,score:objective}});return model.map(c=>({label:c.label,on:c.enabled}));}
-function renderProperties(){return `${lessonProps()}${slideProps()}${blockProps()}`}
+function renderProperties(){return `${lessonProps()}${slideProps()}${renderContentMapper()}${blockProps()}`}
+function renderContentMapper(){
+  const s=currentScreen(),schema=CONTENT_SLOT_SCHEMAS[s.templateId];if(!schema)return '';
+  const existing=readTemplateSlots(s);
+  const fields=Object.entries(schema.slots).map(([key,slot])=>{
+    const v=esc(existing[key]||'');
+    return `<div class="studio-field"><label>${esc(slot.label)}</label>${['textarea','rows'].includes(slot.kind)?`<textarea data-map-key="${esc(key)}" maxlength="${slot.max}">${v}</textarea>`:`<input type="text" data-map-key="${esc(key)}" maxlength="${slot.max}" value="${v}">`}</div>`;
+  }).join('');
+  return `<section class="property-section studio-mapper"><h3>Fill template · ${esc(schema.label)}</h3>${fields}<button class="studio-btn primary" type="button" data-apply-mapping>Apply to slide</button><p class="helper">Teacher notes are edited separately and never inserted into learner content.</p></section>`;
+}
 function lessonProps(){const t=lesson.theme;return `<section class="property-section"><h3>Lesson</h3>${field('Lesson title','lesson.title',lesson.title)}<div class="field-row">${field('Course','lesson.courseLabel',lesson.courseLabel||'')}${field('Lesson no.','lesson.lessonNumber',lesson.lessonNumber||'')}</div></section><section class="property-section"><h3>Theme & typography</h3>${select('Theme preset','theme.preset',t.preset,Object.keys(THEMES))}${select('Font','theme.fontFamily',t.fontFamily,E_LEAP_ALLOWED_FONTS)}${select('Use as','lesson.deliveryPolicy',lesson.deliveryPolicy?.id||'practice',Object.keys(E_LEAP_DELIVERY_POLICIES))}<div class="field-row">${numField('Title size','theme.titleSize',t.titleSize,28,52)}${numField('Body size','theme.bodySize',t.bodySize,14,26)}</div><div class="field-row">${colorField('Text','theme.textColor',t.textColor)}${colorField('Accent','theme.accentColor',t.accentColor)}</div>${colorField('Background','theme.backgroundColor',t.backgroundColor)}<div class="token-note">Default styling is inherited by every slide. Use overrides only when necessary so lessons stay consistent.</div></section>`}
 function slideProps(){const s=currentScreen();return `<section class="property-section"><h3>Current slide</h3>${field('Stage','screen.stage',s.stage||'')}${field('Title','screen.title',s.title||'')}${area('Instruction for learners','screen.instruction',s.instruction||'')}${area('Teacher notes (not shown to learners)','screen.teacherNotes',s.teacherNotes||'')}${select('Layout','screen.layout',s.layout||'standard',E_LEAP_LAYOUT_IDS)}<div class="studio-inline-actions"><button class="studio-btn" data-slide-up ${selectedScreen===0?'disabled':''}>↑</button><button class="studio-btn" data-slide-down ${selectedScreen===lesson.screens.length-1?'disabled':''}>↓</button><button class="studio-btn" data-duplicate-slide>Duplicate</button><button class="studio-btn danger" data-delete-slide ${lesson.screens.length===1?'disabled':''}>Delete</button></div></section>`}
 function blockProps(){const b=currentBlock();if(!b)return '';let body=`<section class="property-section"><h3>Selected block</h3><div class="helper">${esc(typeLabel(b.type))}</div>`;
@@ -137,6 +147,12 @@ function wire(){
   document.querySelector('[data-open-library]')?.addEventListener('click',()=>document.querySelector('[data-add-panel]').classList.add('open'));
   document.querySelector('[data-close-library]')?.addEventListener('click',()=>document.querySelector('[data-add-panel]').classList.remove('open'));
   document.querySelectorAll('[data-add-type]').forEach(b=>b.onclick=()=>{currentScreen().blocks.splice(selectedBlock+1,0,newBlock(b.dataset.addType));selectedBlock++;markDirty();render()});
+  document.querySelector('[data-apply-mapping]')?.addEventListener('click',()=>{
+    const values={};document.querySelectorAll('[data-map-key]').forEach(el=>values[el.dataset.mapKey]=el.value);
+    const result=applyMappedContent(currentScreen(),values);
+    if(!result.ok){status(result.errors.join(' '));return;}
+    lesson.screens[selectedScreen]=result.screen;markDirty();render();status('Template content updated');
+  });
   document.querySelectorAll('[data-add-combo]').forEach(b=>b.onclick=()=>{const slides=createTeachingCombo(b.dataset.addCombo);if(!slides.length)return;lesson.screens.splice(selectedScreen+1,0,...slides);selectedScreen++;selectedBlock=0;markDirty();render()});
   document.querySelectorAll('[data-add-template]').forEach(b=>b.onclick=()=>{const s=createSmartTemplate(b.dataset.addTemplate);if(!s)return;lesson.screens.splice(selectedScreen+1,0,s);selectedScreen++;selectedBlock=0;markDirty();render()});
   document.querySelectorAll('[data-path]').forEach(el=>el.addEventListener('input',()=>{applyPath(el.dataset.path,el.type==='number'?Number(el.value):el.value);markDirty();renderSoft()}));
@@ -164,7 +180,7 @@ function applyPath(path,value){
   if(path==='theme.preset'){lesson.theme=applyThemePreset(lesson.theme,value);render();return}
   if(path==='lesson.deliveryPolicy'){lesson.deliveryPolicy=normaliseDeliveryPolicy({id:value});render();return}
   const b=currentBlock(),a=b?.activity;
-  if(path==='lesson.title')lesson.title=value;else if(path==='lesson.courseLabel')lesson.courseLabel=value;else if(path==='lesson.lessonNumber')lesson.lessonNumber=value;else if(path.startsWith('theme.'))lesson.theme[path.split('.')[1]]=value;else if(path==='screen.stage')currentScreen().stage=value;else if(path==='screen.title')currentScreen().title=value;else if(path==='screen.instruction')currentScreen().instruction=value;else if(path==='screen.layout')currentScreen().layout=value;
+  if(path==='lesson.title')lesson.title=value;else if(path==='lesson.courseLabel')lesson.courseLabel=value;else if(path==='lesson.lessonNumber')lesson.lessonNumber=value;else if(path.startsWith('theme.'))lesson.theme[path.split('.')[1]]=value;else if(path==='screen.stage')currentScreen().stage=value;else if(path==='screen.title')currentScreen().title=value;else if(path==='screen.instruction')currentScreen().instruction=value;else if(path==='screen.teacherNotes')currentScreen().teacherNotes=value;else if(path==='screen.layout')currentScreen().layout=value;
   else if(path==='block.content.text')b.content.text=value;else if(path==='block.content.role')b.content.role=value;else if(path.startsWith('block.content.'))b.content[path.split('.')[2]]=value;
   else if(path==='block.vocabulary')b.content.items=parseLines(value,3).map(x=>({word:x[0],meaning:x[1],example:x[2]}));else if(path==='block.grammarExamples')b.content.examples=value.split('\n').map(x=>x.trim()).filter(Boolean);
   else if(path==='activity.prompt')a.prompt=value;else if(path==='activity.points')a.points=Number(value)||0;else if(path==='activity.placeholder')a.placeholder=value;else if(path==='activity.rubric')a.rubric=value;else if(path==='activity.modelAnswer')a.modelAnswer=value;else if(path==='activity.maxSeconds')a.maxSeconds=Number(value)||120;
