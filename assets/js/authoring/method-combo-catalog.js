@@ -111,6 +111,12 @@ export function checkMethodSource(id,source={}){
    else if(v.some(item=>!nonblank(typeof item==='string'?item:item?.text||item?.content||item?.label)))issues.push('Original '+key+' includes a blank item.');
   }else if(!nonblank(v))issues.push('Missing original '+key+'.');
  }
+ if(method.group==='Reading'&&Array.isArray(source.questions)){
+  source.questions.forEach((q,i)=>{
+   if(!nonblank(q.evidenceQuote))issues.push('Reading question '+(i+1)+' needs verified evidence text or a precise source locator.');
+   if(!nonblank(q.why))issues.push('Reading question '+(i+1)+' needs a source-grounded Why explanation.');
+  });
+ }
  if(Array.isArray(source.questions)&&Number.isInteger(source.expectedQuestionCount)&&source.questions.length!==source.expectedQuestionCount)issues.push('Question count mismatch: source requires '+source.expectedQuestionCount+' but provided '+source.questions.length+'.');
  if(source.audioSrc&&!/^(https:\/\/|\/(?!\/)|\.\.?\/)/i.test(source.audioSrc))issues.push('Audio must use a valid HTTPS URL or relative path.');
  if(id.includes('listening')&&Array.isArray(source.questions)&&!source.questions.every(q=>q.sourceRef))issues.push('Every listening question needs a textbook source reference.');
