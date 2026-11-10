@@ -186,6 +186,40 @@ function revealEvidence(quote){
   return true;
 }
 function wire(){
+  const currentCertified=currentScreen().certifiedTemplate;
+  if(currentCertified){
+    const img=document.querySelector('.certified-canvas .cert-photo');
+    if(img){
+      const src=currentCertified.values.imageSrc;
+      const record=loaded=>{
+        if(currentScreen().certifiedTemplate!==currentCertified||currentCertified.values.imageSrc!==src)return;
+        const was=currentCertified.mediaCheck?.loaded===true&&currentCertified.mediaCheck?.src===src;
+        currentCertified.mediaCheck={src,loaded:Boolean(loaded)};
+        if(!was&&loaded){markDirty();status('Image loaded. Quality check can validate this source.');}
+        if(!loaded)status('Image failed to load. Replace the image before Publish.');
+      };
+      img.addEventListener('load',()=>record(img.naturalWidth>0));
+      img.addEventListener('error',()=>record(false));
+      if(img.complete)record(img.naturalWidth>0);
+    }
+    document.querySelector('[data-certify-review-source]')?.addEventListener('click',()=>{
+      const data=currentScreen().certifiedTemplate;
+      if(!data?.sourceReview?.required)return;
+      const confirmed=confirm('Confirm every textbook activity and key idea is represented in the certified slots? Content omitted from the learner slide will not be displayed.');
+      if(!confirmed)return;
+      data.sourceReview={required:true,approved:true,contentSignature:JSON.stringify(data.values)};
+      markDirty();render();
+    });
+    const visual=document.querySelector('.certified-canvas');
+    if(visual){
+      requestAnimationFrame(()=>{
+        if(!visual.isConnected)return;
+        const parts=visual.querySelectorAll('.cert-aim-card,.cert-opener-task,.cert-cover-identity');
+        const overflow=[...parts].some(el=>el.scrollHeight>el.clientHeight+3||el.scrollWidth>el.clientWidth+3);
+        if(overflow){visual.dataset.visualOverflow='true';status('Layout overflow detected: shorten content or choose another design.');}
+      });
+    }
+  }
   document.querySelector('[data-open-template-gallery]')?.addEventListener('click',()=>document.querySelector('[data-add-panel]')?.classList.add('open'));
   document.querySelectorAll('[data-add-certified]').forEach(b=>b.onclick=()=>{
     const family=b.dataset.addCertified;
@@ -212,7 +246,11 @@ function wire(){
   });
   document.querySelectorAll('[data-certified-slot]').forEach(el=>el.addEventListener('change',()=>{
     const data=currentScreen().certifiedTemplate;
-    data.values[el.dataset.certifiedSlot]=el.value;markDirty();render();
+    const key=el.dataset.certifiedSlot;
+    data.values[key]=el.value;
+    if(key==='imageSrc')data.mediaCheck=null;
+    if(data.sourceReview?.required){data.sourceReview.approved=false;data.sourceReview.contentSignature='';}
+    markDirty();render();
   }));
   document.querySelector('[data-certified-response]')?.addEventListener('input',e=>{const s=currentScreen();certifiedResponses.set(s.id+':'+(certifiedQuestionIndex.get(s.id)||0),e.target.value)});
   document.querySelector('[data-certified-reset]')?.addEventListener('click',()=>{const id=currentScreen().id;certifiedResponses.delete(id+':'+(certifiedQuestionIndex.get(id)||0));certifiedAnswers.delete(id);render()});
