@@ -62,3 +62,22 @@
 .gallery-method-support b{font-size:14px;color:#13583d}
 .gallery-method-support p{font-size:15px;line-height:1.45;color:#253f33;margin:8px 0 0}
 @media(max-width:700px){.gallery-method-support{grid-template-columns:1fr}}
+
+/* 29 combo method draft slides. Slots intentionally blank until textbook source mapping. */
+.method-template-canvas{background:#f7fbf8;color:#153f2b;display:flex;flex-direction:column;padding:clamp(15px,2vw,32px);gap:14px;overflow:auto}
+.method-draft-heading small{font-size:13px;font-weight:800;letter-spacing:.055em;color:#286243}
+.method-draft-heading h1{font-family:Poppins,Arial,sans-serif;font-size:clamp(26px,2.8vw,43px);margin:4px 0 0;color:#10402c}
+.method-template-canvas .combo-step-nav{display:flex;flex-wrap:wrap;gap:6px}
+.method-template-canvas .combo-step-button{flex:1 1 110px;min-height:44px;font-size:clamp(13px,1.08vw,16px)}
+.method-draft-detail{background:#eaf5ed;border-left:5px solid #24835a;padding:10px 15px;border-radius:7px}
+.method-draft-detail strong{font-size:clamp(16px,1.5vw,21px)}
+.method-draft-detail p{font-size:clamp(14px,1.2vw,17px);margin:5px 0 0}
+.method-slot-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.method-slot{background:#fff;border:1px dashed #91b9a4;border-radius:11px;padding:12px;min-height:75px;display:flex;flex-direction:column;gap:9px}
+.method-slot strong{font-size:clamp(14px,1.17vw,17px);color:#1e6344}
+.method-slot span{font-size:clamp(12px,1.06vw,15px);color:#657f6d}
+.method-teacher-reserved{border-top:1px solid #a7c4b0;padding-top:10px}
+.method-teacher-reserved>b{font-size:13px;color:#5e735f}
+.method-teacher-reserved>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:6px}
+.method-draft-hidden{display:flex;align-items:center;justify-content:center}
+@media(max-width:760px){.method-slot-grid,.method-teacher-reserved>div{grid-template-columns:repeat(2,minmax(0,1fr))}}
