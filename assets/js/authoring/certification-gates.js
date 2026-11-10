@@ -2,15 +2,15 @@
  * Static checks are separate from human projection acceptance and runtime E2E.
  * Never label a template 'approved' solely because source strings are present.
  */
-import {validateCertifiedTemplate} from './certified-templates.js';
+import {validateCertifiedTemplate,certifiedSourceSignature} from './certified-templates.js';
 export function evaluateCertifiedGates(screen){
  const data=screen?.certifiedTemplate;
  if(!data)return [];
  const v=data.values||{};
- const issues=validateCertifiedTemplate(data);
+ const issues=validateCertifiedTemplate(data,{sourceBlocks:screen.blocks});
  const mediaRequired=['cover','opener'].includes(data.family);
  const mediaOK=!mediaRequired||Boolean(data.mediaCheck?.loaded===true&&data.mediaCheck?.src===v.imageSrc);
- const sourceOK=!data.sourceReview?.required||(data.sourceReview?.approved===true&&data.sourceReview.contentSignature===JSON.stringify(v));
+ const sourceOK=!data.sourceReview?.required||(data.sourceReview?.approved===true&&data.sourceReview.contentSignature===JSON.stringify(v)&&data.sourceReview.sourceSignature===certifiedSourceSignature(screen.blocks));
  const contentIssues=issues.filter(s=>!/Image|image|source needs review/i.test(s));
  const rows=[
   {id:'slots',label:'Required slots and content rules',status:contentIssues.length?'fail':'pass',note:contentIssues.length?contentIssues.slice(0,3).join(' · '):'Automated checks passed'},
