@@ -13,6 +13,15 @@ assert.equal(coverage.withoutSource,0,'All slide content must trace to the origi
 assert.deepEqual(coverage.audioTracks,[93,95,96]);
 assert.ok(coverage.missingMedia.length>0,'Audio/photos intentionally unlinked before private upload');
 assert.equal(lesson.screens[0].templateId,'lesson-cover');
+const evidenceScreen=lesson.screens.find(s=>s.title==='Find your evidence');
+assert.ok(evidenceScreen,'Reading Evidence screen missing');
+const passage=evidenceScreen.blocks.find(b=>b.type==='text')?.content?.text||'';
+const evidenceActivity=evidenceScreen.blocks.find(b=>b.activity?.evidenceByItem)?.activity;
+assert.equal(Object.keys(evidenceActivity?.evidenceByItem||{}).length,6);
+for(const entry of Object.values(evidenceActivity.evidenceByItem)){
+ assert.ok(passage.includes(entry.quote),'Evidence must locate a real passage span');
+ assert.ok(entry.why.length>15,'Why must explain the answer');
+}
 for(const slide of lesson.screens){
  assert.equal(slide.audience,'student');
  assert.ok(slide.sourceRefs.bookPages.length,'Missing source reference');
