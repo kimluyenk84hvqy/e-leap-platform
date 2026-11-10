@@ -1,4 +1,5 @@
 import {EXPANDED_METHOD_COMBOS} from './method-combo-expansions.js';
+import {hybridStepContract,evaluateHybridCombo} from './hybrid-pedagogy-contract.js';
 /* E-LEAP evidence-informed method/teaching combo contracts.
  * Design adaptation; source materials always remain authoritative.
  * Do NOT call a filled activity "ready" without supplied original items.
@@ -118,9 +119,10 @@ export function checkMethodSource(id,source={}){
 export function mapMethodToStates(id,source={}){
  const method=METHOD_COMBOS[id];if(!method)return {ok:false,errors:['Unknown teaching method.']};
  const errors=checkMethodSource(id,source);
+ errors.push(...evaluateHybridCombo(method).errors);
  if(errors.length)return {ok:false,errors};
  const states=method.steps.map(step=>({
-  ...step,
+  ...hybridStepContract(step),
   // Missing optional scaffolding is intentionally empty and remains editable by teacher.
   material:step.slot==='questions'?source.questions.map(q=>({...q})):source[step.slot]??null,
   media:source.audioSrc||null,
