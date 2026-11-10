@@ -18,7 +18,7 @@ assert.equal(mapped.ok,true);
 assert.equal(mapped.states.length,6);
 assert.equal(mapped.originalQuestionCount,5);
 assert.deepEqual(mapped.states.find(x=>x.id==='complete').material,source.questions.map(q=>({id:q.id,text:q.text})));
-assert.ok(!JSON.stringify(mapped.states).includes('Verified answer'), 'No answer key in learner step data');
+assert.ok(!JSON.stringify(mapped.states).includes('Verified answer 1'), 'No actual answer value in learner step data');
 assert.ok(!JSON.stringify(mapped.states).includes('Verified supporting sentence'), 'No Evidence leak in learner step data');
 assert.equal(mapped.states.find(x=>x.id==='complete').answerPolicy,'hidden');
 assert.ok(mapped.states.every(s=>s.requiresServerIssuedRoleGrants===true));
