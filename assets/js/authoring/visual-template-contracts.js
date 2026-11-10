@@ -30,6 +30,15 @@ export function validateVisualContracts(lesson){
    if(AUTHORING_COPY.test(v))issues.push(['error',at+': authoring instructions or placeholders are visible to learners']);
    if(FLOATING_PHRASES.test(v.trim()))issues.push(['warn',at+': unfinished example text is still present']);
   }
+  const passage=(slide.blocks||[]).filter(b=>b.type==='text').map(b=>b.content?.text||'').join('\\n');
+  for(const b of slide.blocks||[]){
+   const a=b.activity;if(!a?.evidenceByItem)continue;
+   for(const item of a.items||[]){
+    const entry=a.evidenceByItem[item.id];
+    if(!entry?.quote||!entry?.why)issues.push(['error',at+': Evidence and Why are required for item '+item.id]);
+    else if(!passage.includes(entry.quote))issues.push(['error',at+': Evidence text not found for item '+item.id]);
+   }
+  }
   for(const block of slide.blocks||[]){
    if(block.audience==='teacher'||block.audience==='internal')issues.push(['error',at+': internal-only block must be moved into teacherNotes']);
    for(const v of [block.content?.src,block.content?.assetId]){
