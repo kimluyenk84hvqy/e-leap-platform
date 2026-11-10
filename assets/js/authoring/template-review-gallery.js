@@ -51,6 +51,11 @@ export function showTemplateReviewGallery(root,{backUrl='./index.html'}={}){
   root.querySelectorAll('[data-gallery-question]').forEach(b=>b.onclick=()=>{q=+b.dataset.galleryQuestion;visibleAnswer=false;draw()});
   root.querySelector('[data-gallery-answer]')?.addEventListener('click',()=>{visibleAnswer=!visibleAnswer;draw()});
   root.querySelector('[data-gallery-photo]')?.addEventListener('change',e=>{photoSrc=e.target.value.trim();draw()});
+  root.querySelector('[data-gallery-notes]')?.addEventListener('input',e=>{
+   const key=selected.family+':'+selected.id;
+   reviews[key]={...(reviews[key]||{}),notes:e.target.value,at:new Date().toISOString()};
+   localStorage.setItem(KEY,JSON.stringify(reviews));
+  });
   root.querySelectorAll('[data-gallery-decision]').forEach(b=>b.onclick=()=>{
    const key=selected.family+':'+selected.id,decision=b.dataset.galleryDecision;
    const notes=root.querySelector('[data-gallery-notes]')?.value||'';
