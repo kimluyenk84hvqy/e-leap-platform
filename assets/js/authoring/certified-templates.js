@@ -14,7 +14,7 @@ export const CERTIFIED_TEMPLATES={
   slots:{
    institution:field('Institution', 'text',100),faculty:field('Faculty','text',100),
    unit:field('Unit number','text',65),topic:field('Official unit / lesson title','text',120),
-   course:field('Course / level','text',100),imageSrc:field('Real photograph URL / licensed path','asset',800)
+   course:field('Course / level','text',100),imageSrc:field('Real photograph URL / licensed path','asset',800),imageAlt:field('Image description for accessibility','text',180)
   },
   required:['institution','faculty','unit','topic','imageSrc'],
   behaviors:['No invented activity title','Preserve official topic wording','Image is sourced separately, never a textbook page scan']
@@ -43,7 +43,7 @@ export const CERTIFIED_TEMPLATES={
   slots:{
    activityNumber:field('Textbook activity no.','text',30),
    instruction:field('Learner instruction (not a question)','textarea',220),
-   imageSrc:field('Real photo URL / path','asset',800),
+   imageSrc:field('Real photo URL / path','asset',800),imageAlt:field('Image description for accessibility','text',180),
    q1:field('Guiding question 1','textarea',220),a1:field('Answer 1','textarea',220),
    q2:field('Guiding question 2','textarea',220),a2:field('Answer 2','textarea',220),
    q3:field('Guiding question 3','textarea',220),a3:field('Answer 3','textarea',220),
@@ -63,6 +63,13 @@ const clone=x=>JSON.parse(JSON.stringify(x));
 const isReal=s=>typeof s==='string'&&!!s.trim();
 const srcBad=/\b(?:textbook|life_page|book_page|page_scan)[_-]?\d{1,4}\.(?:png|jpe?g|webp)(?:$|[?#])/i;
 const instructionQuestion=/\?/;
+
+const MEDIA_SOURCE=/^(?:https:\/\/[^\s"'<>]+|\.\.?\/[^\s"'<>]+|\/(?!\/)[^\s"'<>]+)$/i;
+const ASSET_IMAGE_EXT=/\.(?:png|jpe?g|webp|avif)(?:[?#].*)?$/i;
+const VAGUE_GOAL=/^(?:identify|describe|explain|apply|use|interpret|demonstrate|collaborate|discuss|reflect|evaluate|analyse|analyze)\s+(?:something|anything|the lesson|the topic|the material|things|it)\b/i;
+const placeholder=/\b(?:lorem ipsum|your text here|insert|add an image|test image|example\.com|example\.org|placeholder)\b/i;
+export const isSupportedImageSource=src=>MEDIA_SOURCE.test(String(src||'').trim())&&!srcBad.test(src)&&!placeholder.test(src);
+
 const bloom=/^(identify|describe|explain|compare|classify|recognize|recognise|apply|use|interpret|analyse|analyze|evaluate|construct|formulate|demonstrate|produce|present|collaborate|participate|justify|support|share|reflect|respond|respect|contribute|show|select|distinguish|summarize|summarise|organize|organise|discuss)\b/i;
 export function makeCertifiedTemplate(family){
  const spec=CERTIFIED_TEMPLATES[family];if(!spec)return null;
@@ -84,9 +91,16 @@ export function validateCertifiedTemplate(data,{draft=false}={}){
   if(!draft&&spec.required.includes(key)&&!isReal(value))issues.push(slot.label+' is required.');
   if(value.length>slot.limit)issues.push(slot.label+' exceeds '+slot.limit+' characters.');
  }
- if(isReal(v.imageSrc)&&srcBad.test(v.imageSrc))issues.push('Full textbook page screenshots are not allowed.');
+ if(isReal(v.imageSrc)&&!isSupportedImageSource(v.imageSrc))issues.push('Image source must be an approved HTTPS URL or a relative image path; full-page scans and placeholders are blocked.');
+ if(isReal(v.imageSrc)&&ASSET_IMAGE_EXT.test(v.imageSrc)===false)issues.push('Image URL must point to a supported image extension (PNG, JPEG, WebP, AVIF); verify access before publishing.');
+ if(isReal(v.imageSrc)&&/^https:\/\//i.test(v.imageSrc)&&!isReal(v.imageAlt))issues.push('Image alt description is required.');
  if(data.family==='aims')for(const key of Object.keys(spec.slots)){
   if(isReal(v[key])&&!bloom.test(v[key].trim()))issues.push(key+': start with an observable action verb (Bloom).');
+  if(isReal(v[key])&&VAGUE_GOAL.test(v[key].trim()))issues.push(key+': specify the concrete learning content or performance.');
+ }
+ if(data.family==='aims'){
+  const complete=Object.values(spec.slots).length===6&&Object.keys(spec.slots).every(k=>isReal(v[k]));
+  if(complete&&new Set(Object.keys(spec.slots).map(k=>String(v[k]).trim().toLowerCase())).size<6)issues.push('All six aims must be distinct and specific.');
  }
  if(data.family==='opener'){
   if(instructionQuestion.test(v.instruction||''))issues.push('Separate the instruction from questions; use dedicated question slots.');
