@@ -35,3 +35,22 @@
 .gallery-actions button:nth-child(2){background:#155d3e;color:#fff}
 .gallery-caution{font-size:13px;line-height:1.5;color:#68776b;background:#f5f7f5;padding:12px;border-radius:9px}
 @media(max-width:850px){.studio-gallery{padding:14px}.gallery-layout{grid-template-columns:1fr}.gallery-list{max-height:260px}.gallery-top{flex-direction:column}.gallery-preview-head{flex-direction:column}}
+
+/* Teaching Method gallery review */
+.studio-method-gallery{min-height:100vh;background:#f3f7f4;color:#163d2a;font-family:Poppins,Arial,sans-serif;padding:26px 30px}
+.gallery-method-subtitle{color:#54705c;font-size:15px;line-height:1.5}
+.gallery-method-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:19px 0}
+.gallery-method-step{cursor:pointer;display:flex;align-items:center;gap:10px;text-align:left;background:#f8fbf8;border:1px solid #b8d1be;border-radius:11px;padding:13px;color:#25563a;min-height:62px}
+.gallery-method-step span{display:grid;place-items:center;border-radius:7px;background:#e5f2e8;padding:8px;font-size:14px;font-weight:800}
+.gallery-method-step strong{font-size:14px}
+.gallery-method-step.active{background:#e4f5e6;border:2px solid #176947}
+.gallery-method-detail{border:1px solid #b9d3c3;background:#f8fcf9;border-radius:16px;padding:22px}
+.gallery-method-detail h3{font-size:clamp(22px,2.2vw,32px);margin:9px 0}
+.gallery-method-detail>p{font-size:clamp(19px,1.8vw,27px);line-height:1.4;font-weight:650}
+.gallery-method-zone{background:#fff;border-left:6px solid #1f6b46;border-radius:11px;padding:16px;margin-top:16px}
+.gallery-method-zone p{font-size:15px;color:#55715e}
+.gallery-method-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;font-size:13px;color:#446953;font-weight:700}
+.gallery-method-contract{margin-top:18px;padding:16px;border-radius:13px;border:1px solid #d1e2d7}
+.gallery-method-contract h3{font-size:19px;margin:0}
+.gallery-method-contract p{line-height:1.45;font-size:14px}
+@media(max-width:850px){.studio-method-gallery{padding:14px}.gallery-method-steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
