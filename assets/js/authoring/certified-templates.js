@@ -115,6 +115,7 @@ export function applyCertifiedTemplate(screen,data){
  if(!data||!CERTIFIED_TEMPLATES[data.family])return {ok:false,error:'Unknown template.'};
  const next=clone(screen);
  next.certifiedTemplate=clone(data);
+ if(screen.certifiedTemplate?.family===data.family)return {ok:true,screen:next};
  const hasSource=(next.blocks||[]).some(b=>String(b.content?.text||b.content?.src||b.activity?.prompt||'').trim());
  next.certifiedTemplate.sourceReview=hasSource?{required:true,approved:false,contentSignature:''}:{required:false,approved:true,contentSignature:''};
  next.templateId=CERTIFIED_TEMPLATES[data.family].templateId;
