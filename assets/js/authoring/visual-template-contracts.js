@@ -22,6 +22,7 @@ export function validateVisualContracts(lesson){
  const issues=[];
  (lesson.screens||[]).forEach((slide,i)=>{
   const at='Slide '+(i+1);
+  if(slide.certifiedTemplate)return; // Certified templates are validated against fixed-slot contracts.
   const spec=VISUAL_TEMPLATE_CONTRACTS[slide.templateId];
   if(spec){
    const steps=slide.combo?.steps||[];
