@@ -85,3 +85,10 @@
  .lesson-canvas.template-lead-in.variant-photo-left .block:has(.studio-asset),
  .lesson-canvas.template-vocabulary-presentation.variant-word-and-photo .block:has(.studio-asset){grid-column:auto;grid-row:auto}
 }
+
+/* Evidence–Why interaction is rendered from item metadata, not from editor notes. */
+.lesson-canvas .evidence-question{display:grid;gap:6px;margin-bottom:12px}
+.lesson-canvas .evidence-actions{display:flex;gap:8px;flex-wrap:wrap}
+.lesson-canvas .evidence-actions .studio-btn{padding:6px 12px;min-width:82px}
+.lesson-canvas .studio-evidence-highlight{background:#cbea7b;color:#102e25;padding:2px 3px;border-radius:3px}
+.lesson-canvas .studio-evidence-note{background:#eaf5ed;border-left:3px solid #18704b;padding:10px 13px;border-radius:8px;font-size:16px;line-height:1.5}
