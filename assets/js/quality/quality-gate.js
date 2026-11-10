@@ -3,6 +3,7 @@ import {E_LEAP_LAYOUTS} from '../authoring/layout-registry.js';
 import {isContentBlock} from '../authoring/content-block-registry.js';
 import {validateVisualContracts} from '../authoring/visual-template-contracts.js';
 import {learnerBlockReady} from '../authoring/learner-preview-policy.js';
+import {validateCertifiedTemplate} from '../authoring/certified-templates.js';
 
 const hasAnswer=(a,t)=>{if(['mcq','multi-select','true-false','listening','video-question'].includes(t))return (a.answerKey||[]).length>0;if(t==='fill')return (a.items||[]).every(x=>(x.answers||[]).length);if(t==='matching')return (a.pairs||[]).length>0;if(t==='ordering')return (a.answerKey||[]).length>0;if(t==='categorising')return (a.items||[]).every(x=>x.category);return true};
 const pushDup=(issues,seen,id,where)=>{if(!id)return;if(seen.has(id))issues.push(['error',`${where}: duplicate id ${id}`]);else seen.add(id)};
@@ -15,16 +16,18 @@ export function auditLesson(lesson={}){
   const cover=(lesson.screens||[])[0];
   if(!cover||cover.templateId!=='lesson-cover')issues.push(['error','Slide 1 must use the official Lesson Cover template']);
   else{
-    const coverText=(cover.blocks||[]).map(b=>b.content?.text||'').join(' | ');
+    const coverText=cover.certifiedTemplate?Object.values(cover.certifiedTemplate.values||{}).join(' | '):(cover.blocks||[]).map(b=>b.content?.text||'').join(' | ');
     if(!coverText.includes('VIETNAM MILITARY MEDICAL UNIVERSITY'))issues.push(['error','Lesson Cover: VMMU institution line is missing']);
     if(!coverText.includes('FACULTY OF FOREIGN LANGUAGES'))issues.push(['error','Lesson Cover: Faculty of Foreign Languages line is missing']);
   }
   if((lesson.theme?.fontFamily||'')!=='Poppins')issues.push(['warn','Template Contract: Poppins is the default lesson font']);
   (lesson.screens||[]).forEach((s,si)=>{
     const sw=`Slide ${si+1}`;pushDup(issues,seen,s.id,sw);
-    if(!String(s.title||'').trim())issues.push(['error',`${sw}: missing title`]);
+    if(!s.certifiedTemplate&&!String(s.title||'').trim())issues.push(['error',`${sw}: missing title`]);
+    if(s.certifiedTemplate){for(const message of validateCertifiedTemplate(s.certifiedTemplate))issues.push(['error',`${sw}: ${message}`]);}
     if(!E_LEAP_LAYOUTS[s.layout||'standard'])issues.push(['error',`${sw}: unsupported layout ${s.layout}`]);
-    if(!(s.blocks||[]).length)issues.push(['warn',`${sw}: no content blocks`]);
+    if(!(s.blocks||[]).length&&!s.certifiedTemplate)issues.push(['warn',`${sw}: no content blocks`]);
+    if(s.certifiedTemplate)return;
     (s.blocks||[]).forEach((b,bi)=>{
       const where=`${sw}, block ${bi+1}`;pushDup(issues,seen,b.id,where);
       const content=isContentBlock(b.type),activity=isSupportedActivity(b.type);
