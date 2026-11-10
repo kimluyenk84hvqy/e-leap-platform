@@ -1,9 +1,11 @@
+import {EXPANDED_METHOD_COMBOS} from './method-combo-expansions.js';
 /* E-LEAP evidence-informed method/teaching combo contracts.
  * Design adaptation; source materials always remain authoritative.
  * Do NOT call a filled activity "ready" without supplied original items.
  */
 const step=(id,label,instruction,slot,mode,showSource=false)=>({id,label,instruction,slot,mode,showSource});
 export const METHOD_COMBOS={
+ ...EXPANDED_METHOD_COMBOS,
  'tbl-listening':{
   label:'Task-Based Listening',group:'Listening',method:'Task-Based Learning + staged listening',
   sourceLabels:['British Council: task cycle','British Council: listening framework'],
