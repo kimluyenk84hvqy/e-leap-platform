@@ -10,7 +10,7 @@ const photo=(src,alt,editor)=>{
    '<div class="cert-photo-missing">'+(editor?'Add licensed real photograph in Template Slots':'')+'</div>';
 };
 const blank=x=>esc(x||'');
-export function renderCertifiedVisual(s,role,qIndex=0,revealed=false){
+export function renderCertifiedVisual(s,role,qIndex=0,revealed=false,response=''){
  const data=s.certifiedTemplate||{},v=data.values||{},family=data.family,editor=['teacher','admin'].includes(role),canReveal=['teacher','admin','presentation'].includes(role);
  let inner='';
  if(family==='cover'){
@@ -31,6 +31,7 @@ export function renderCertifiedVisual(s,role,qIndex=0,revealed=false){
    '<p class="cert-instruction">'+blank(v.instruction)+'</p>'+
    '<div class="cert-question-counter">QUESTION '+(i+1)+' / 3</div>'+
    '<div class="cert-question">'+blank(v['q'+(i+1)])+'</div>'+
+   '<label class="cert-answer-label">Your answer <textarea data-certified-response rows="2" placeholder="Type or discuss your answer...">'+blank(response)+'</textarea></label>'+
    (show?'<div class="cert-revealed-key">'+blank(v['a'+(i+1)])+'</div>':'')+
    '<div class="cert-opener-actions"><div class="cert-step-buttons">'+[0,1,2].map(x=>
       '<button type="button" data-certified-question="'+x+'" class="'+(x===i?'active':'')+'">'+(x+1)+'</button>').join('')+'</div>'+
