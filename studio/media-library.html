@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>E-LEAP · Media Library</title>
+<style>
+:root{font-family:Inter,Arial,sans-serif;color:#113d30;background:#f3f7f4}*{box-sizing:border-box}body{margin:0}
+header{background:#0d5038;color:white;padding:22px max(22px,calc((100vw - 1100px)/2))}header a{color:#d8f5e4}
+main{max-width:1100px;margin:28px auto;padding:0 18px}h1{margin:0 0 5px;font-size:26px}
+p{line-height:1.5}.muted{color:#5c7167}.panel{background:white;border:1px solid #d7e6dd;padding:24px;border-radius:18px;margin:18px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+label{display:block;font-weight:650;margin-bottom:8px}input,select,button{font:inherit;border-radius:10px;padding:12px;border:1px solid #c5d8cc;width:100%}
+button{cursor:pointer;background:#0d6243;color:white;font-weight:700;border:0}button:disabled{opacity:.45;cursor:not-allowed}
+button.secondary{background:white;color:#0d6243;border:1px solid #b7d1c0}
+.badge{border-radius:30px;padding:6px 10px;font-size:12px;background:#e5f0e9;display:inline-block}
+.warn{background:#fff5de;padding:12px;border-radius:10px;color:#77551a}
+progress{width:100%;accent-color:#16805a;height:15px}table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:12px;border-bottom:1px solid #e1eae4}
+td button{max-width:116px;padding:8px}code{word-break:break-all}
+@media(max-width:700px){table{font-size:13px}td,th{padding:6px}}
+</style></head>
+<body><header><a href="./">← Studio</a><h1>E-LEAP · Media Library</h1><small>Master textbooks & audio · Temporary PPT · Reusable images</small></header>
+<main>
+<section class="panel">
+<h2>Learning materials</h2><div id="status">Checking access…</div><p class="muted">Upload once; reuse by Asset ID. Original PPT stays temporary until its extracted assets are verified.</p>
+<div class="grid"><div><label for="category">Material type</label><select id="category"><option value="textbook">Textbook — keep</option><option value="audio">Audio — keep</option><option value="temporary">PowerPoint — temporary</option><option value="image">Image — reuse</option><option value="video">Video — reuse</option></select></div>
+<div><label for="file">Select a file</label><input id="file" type="file" accept=".pdf,.pptx,.docx,.jpg,.jpeg,.png,.webp,.mp3,.wav,.m4a,.mp4"></div></div>
+<p><button id="upload" disabled>Upload selected file</button></p><p id="message" role="status" class="muted"></p>
+<div class="warn" id="warning">Uploading is disabled until private access, the completion callback, the quota controls and download permissions pass Preview testing. Do not upload copyrighted textbooks into an unverified public store.</div>
+</section>
+<section class="panel"><h2>Storage usage</h2><p id="usage">—</p><progress id="meter" value="0" max="100"></progress><p class="muted">Archive does not free physical Blob storage. Physical deletion is intentionally not available before a dependency audit.</p></section>
+<section class="panel"><h2>My materials</h2><div style="overflow-x:auto"><table><thead><tr><th>File</th><th>Type</th><th>Size</th><th>Actions</th></tr></thead><tbody id="records"><tr><td colspan="4">Loading…</td></tr></tbody></table></div></section>
+</main>
+<script type="module">
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const mb=x=>(Number(x||0)/1e6).toFixed(1)+' MB';
+let uploadEnabled=false;
+async function refresh(){
+ try{
+ const r=await fetch('/api/studio-media',{credentials:'same-origin',cache:'no-store'});
+ const data=await r.json(); if(!r.ok)throw Error(data.error||'Access denied');
+ uploadEnabled=Boolean(data.uploadEnabled);
+ $('status').textContent=uploadEnabled?'Teacher/Administrator · Upload available':'Teacher/Administrator · Library preview';
+ const usage=data.usage||{};
+ $('usage').textContent=mb(usage.bytes)+' / '+mb(usage.limit);
+ $('meter').value=usage.limit?Math.min(100,usage.bytes/usage.limit*100):0;
+ $('upload').disabled=!uploadEnabled;
+ $('warning').hidden=uploadEnabled;
+ $('records').innerHTML=(data.files||[]).map(a=>
+ '<tr><td>'+esc(a.original_name)+'</td><td>'+esc(a.category)+'</td><td>'+mb(a.bytes)+'</td><td><button class="secondary" data-open="'+esc(a.asset_id)+'">Open</button> <button class="secondary" data-archive="'+esc(a.asset_id)+'">Archive</button></td></tr>'
+ ).join('')||'<tr><td colspan="4">No uploaded materials yet.</td></tr>';
+ }catch(e){$('status').textContent='Cannot open library: '+e.message;$('records').innerHTML='<tr><td colspan="4">Sign in as Teacher/Admin or check database access.</td></tr>'}
+}
+$('records').addEventListener('click',async e=>{
+ const id=e.target?.dataset?.open;if(id){window.open('/api/studio-media?open='+encodeURIComponent(id),'_blank','noopener');return}
+ const archive=e.target?.dataset?.archive;if(!archive)return;
+ if(!confirm('Archive this item? This does NOT free Blob storage.'))return;
+ const r=await fetch('/api/studio-media',{method:'PATCH',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify({assetId:archive})});
+ const out=await r.json();$('message').textContent=out.note||out.error||'';await refresh();
+});
+$('upload').addEventListener('click',async()=>{
+ if(!uploadEnabled)return;
+ const file=$('file').files?.[0];if(!file)return void($('message').textContent='Please select a file.');
+ const types={pdf:'application/pdf',pptx:'application/vnd.openxmlformats-officedocument.presentationml.presentation',docx:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',webp:'image/webp',mp3:'audio/mpeg',wav:'audio/wav',m4a:'audio/mp4',mp4:'video/mp4'};
+ const extension=file.name.split('.').pop().toLowerCase(),mime=types[extension];
+ if(!mime)return void($('message').textContent='Unsupported file type.');
+ $('upload').disabled=true;$('message').textContent='Preparing secure upload…';
+ try{
+ const sha=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',await file.arrayBuffer()))).map(x=>x.toString(16).padStart(2,'0')).join('');
+ const {upload}=await import('https://esm.sh/@vercel/blob@2.6.1/client?bundle');
+ const path='studio-library/'+crypto.randomUUID().slice(0,16)+'/'+crypto.randomUUID()+'-'+extension;
+ await upload(path,file,{access:'private',handleUploadUrl:'/api/studio-media',contentType:mime,
+ clientPayload:JSON.stringify({name:file.name,bytes:file.size,mime,sha256:sha,category:$('category').value})});
+ $('message').textContent='Upload received. Refresh the list after completion callback.';
+ await refresh();
+ }catch(e){$('message').textContent='Upload failed: '+e.message}finally{$('upload').disabled=!uploadEnabled}
+});
+refresh();
+</script></body></html>
