@@ -1,10 +1,10 @@
 import { handleUpload } from '@vercel/blob/client';
 import { get, head } from '@vercel/blob';
 import { getResearchDb } from '../server/_research-db.js';
-import { requireAuth, requireSameOrigin } from '../server/_auth.js';
+import { requireAuth, requireSameOrigin, getAuth } from '../server/_auth.js';
 
 // Feature is OFF until private-store upload and callback are verified on Preview.
-const enabled=()=>process.env.STUDIO_MEDIA_UPLOAD_ENABLED==='true';
+const enabled=()=>process.env.STUDIO_MEDIA_UPLOAD_ENABLED==='true' && process.env.STUDIO_MEDIA_PRIVATE_STORE_VERIFIED==='true';
 const limits={
  'application/pdf':150e6,
  'application/vnd.openxmlformats-officedocument.presentationml.presentation':200e6,
@@ -49,9 +49,11 @@ export default async function handler(req,res){
    const response=await handleUpload({
     body:req.body,request:req,
     onBeforeGenerateToken:async(pathname,clientPayload)=>{
-     if(!requireSameOrigin(req,res))throw Error('Origin not allowed');
-     const user=await requireAuth(req,res,['teacher','admin']);
-     if(!user)throw Error('Login required');
+     const origin=req.headers?.origin;
+     const base=(req.headers?.['x-forwarded-proto']||'https')+'://'+(req.headers?.['x-forwarded-host']||req.headers?.host);
+     if(origin && origin!==base)throw Error('Origin not allowed');
+     const user=await getAuth(req);
+     if(!user||!['teacher','admin'].includes(user.role))throw Error('Teacher/Admin login required');
      const meta=JSON.parse(clientPayload||'{}');
      const mime=String(meta.mime||''),bytes=Number(meta.bytes),name=meta.name;
      const category=String(meta.category||'temporary');
