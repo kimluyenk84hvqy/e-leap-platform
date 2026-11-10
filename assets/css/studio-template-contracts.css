@@ -1,0 +1,53 @@
+/* E-LEAP Studio: bounded pedagogical canvas. Applies to new contract templates only. */
+.lesson-canvas.template-lead-in,
+.lesson-canvas.template-vocabulary-presentation,
+.lesson-canvas.template-grammar-presentation,
+.lesson-canvas.template-reading-task,
+.lesson-canvas.template-listening-task,
+.lesson-canvas.template-speaking-task,
+.lesson-canvas.template-controlled-practice,
+.lesson-canvas.template-consolidation,
+.lesson-canvas.template-lesson-aims{
+ aspect-ratio:16 / 9;
+ min-height:0;
+ display:flex;
+ flex-direction:column;
+ overflow:hidden;
+}
+.lesson-canvas[class*="template-"] .canvas-title{
+ font-size:clamp(26px,2.5vw,42px);
+ line-height:1.1;
+ max-width:100%;
+ overflow-wrap:anywhere;
+}
+.lesson-canvas[class*="template-"] .canvas-instruction{
+ font-size:clamp(19px,1.65vw,27px);
+ line-height:1.35;
+ max-width:100%;
+ overflow-wrap:anywhere;
+}
+.lesson-canvas.template-lead-in .canvas-body,
+.lesson-canvas.template-vocabulary-presentation .canvas-body,
+.lesson-canvas.template-grammar-presentation .canvas-body,
+.lesson-canvas.template-reading-task .canvas-body,
+.lesson-canvas.template-listening-task .canvas-body,
+.lesson-canvas.template-speaking-task .canvas-body,
+.lesson-canvas.template-controlled-practice .canvas-body,
+.lesson-canvas.template-consolidation .canvas-body,
+.lesson-canvas.template-lesson-aims .canvas-body{
+ min-height:0;
+ padding:18px 24px 28px;
+ flex:1;
+ overflow:auto;
+ scrollbar-gutter:stable;
+}
+.lesson-canvas[class*="template-"] .canvas-hero{padding:16px 24px 12px}
+.lesson-canvas[class*="template-"] .block{margin-bottom:8px;padding:9px;min-width:0}
+.lesson-canvas[class*="template-"] .block p,
+.lesson-canvas[class*="template-"] .option-demo{overflow-wrap:anywhere}
+.lesson-canvas[class*="template-"] .media-placeholder{min-height:105px}
+.lesson-canvas[class*="template-"] .block-label[hidden]{display:none!important}
+@media(max-width:800px){
+ .lesson-canvas[class*="template-"]{aspect-ratio:auto!important;min-height:500px!important}
+ .lesson-canvas[class*="template-"] .canvas-body{padding:12px}
+}
