@@ -14,7 +14,7 @@ import {variantOptions,setVisualVariant} from './authoring/visual-variants.js';
 import {makeLifeU12AcceptanceFixture,LIFE_U12_FIXTURE_ID} from './authoring/pilot-life-u12.js';
 import {learnerBlockReady} from './authoring/learner-preview-policy.js';
 import {LEARNING_ARC,phaseForScreen,lessonArcSummary} from './authoring/learning-arc.js';
-import {CERTIFIED_TEMPLATES,TEMPLATE_TOKENS,makeCertifiedTemplate,changeCertifiedVariant,validateCertifiedTemplate,applyCertifiedTemplate,draftSourceFromScreen} from './authoring/certified-templates.js';
+import {CERTIFIED_TEMPLATES,TEMPLATE_TOKENS,makeCertifiedTemplate,changeCertifiedVariant,validateCertifiedTemplate,applyCertifiedTemplate,draftSourceFromScreen,certifiedLayoutSignature} from './authoring/certified-templates.js';
 import {renderCertifiedVisual,renderCertifiedEditor} from './authoring/certified-template-render.js';
 import {evaluateCertifiedGates,certifiedGroupStatus} from './authoring/certification-gates.js';
 
@@ -223,8 +223,16 @@ function wire(){
     if(visual){
       requestAnimationFrame(()=>{
         if(!visual.isConnected)return;
-        const parts=visual.querySelectorAll('.cert-aim-card,.cert-opener-task,.cert-cover-identity');
-        const overflow=[...parts].some(el=>el.scrollHeight>el.clientHeight+3||el.scrollWidth>el.clientWidth+3);
+        const parts=visual.querySelectorAll('.cert-aim-card,.cert-opener-task,.cert-cover-identity,.cert-cover-content,.cert-aim-card ol,.cert-target');
+        const nodes=[visual,...parts];
+        const overflow=nodes.some(el=>el.scrollHeight>el.clientHeight+3||el.scrollWidth>el.clientWidth+3);
+        // Layout sign-off is tied to the exact design and content; switching
+        // variants or editing text invalidates the previous check automatically.
+        const signature=certifiedLayoutSignature(currentCertified);
+        const last=currentCertified.layoutReview;
+        const changed=last?.signature!==signature||last?.passed!==!overflow;
+        currentCertified.layoutReview={signature,passed:!overflow,checkedAt:new Date().toISOString()};
+        if(changed)markDirty();
         if(overflow){visual.dataset.visualOverflow='true';status('Layout overflow detected: shorten content or choose another design.');}
       });
     }
