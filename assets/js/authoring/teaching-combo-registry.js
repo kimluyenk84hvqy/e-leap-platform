@@ -66,13 +66,12 @@ export const TEACHING_COMBOS={
  },
  'reading-jigsaw':{
   label:'Jigsaw group reading',group:'Reading',template:'reading-task',
-  description:'Read → Expert → Share → Complete → Evidence (one slide)',
+  description:'Read → Expert → Share → Complete (Evidence & Why per answer)',
   build:()=>sequence('Reading','Jigsaw reading','reading-task','reading-split',[
    state('read','Read','Read your assigned section silently.',[text('')]),
    state('expert','Expert group','Discuss three key ideas with students who read your section.',[activity('discussion','What are the three key ideas?')]),
    state('share','Share','Teach your home group what you learned.',[activity('discussion','What did your section explain?')]),
-   state('complete','Complete','Work together to complete the reading task.',[activity('matching','Match each idea with its section.')]),
-   state('evidence','Evidence & Why','Find supporting sentences and explain your answers.',[activity('discussion','Which sentence supports your answer? Why?')])
+   state('complete','Complete','Complete the task together. Check each answer, then discuss the evidence and why it fits.',[activity('matching','Match each idea with its section.')])
   ])
  },
  'listening-3pass':{
