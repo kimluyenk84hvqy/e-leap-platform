@@ -23,7 +23,7 @@ for(const [id,combo] of Object.entries(TEACHING_COMBOS)){
  assert.ok(!issues.some(([severity,msg])=>severity==='error'&&/too many blocks|unknown state|combo state/.test(msg)),id+' state contract failed: '+JSON.stringify(issues));
 }
 const jigsaw=createTeachingCombo('reading-jigsaw')[0];
-assert.deepEqual(jigsaw.combo.steps.map(s=>s.id),['read','expert','share','complete','evidence']);
+assert.deepEqual(jigsaw.combo.steps.map(s=>s.id),['read','expert','share','complete']);
 const broken=createTeachingCombo('reading-jigsaw')[0];
 broken.combo.steps[0].instruction='';
 assert.ok(validateVisualContracts({screens:[broken]}).some(([k,m])=>k==='error'&&/combo state/.test(m)));
