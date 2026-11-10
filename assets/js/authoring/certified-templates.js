@@ -122,8 +122,12 @@ export function draftSourceFromScreen(screen,family){
   data.values.activityNumber=screen?.activityNumber||'';
  }
  if(family==='aims'){
-  const aims=blocks.filter(b=>b.type==='text').map(b=>b.content?.text||'').filter(Boolean);
-  ['knowledge1','knowledge2','skills1','skills2','attitudes1','attitudes2'].forEach((k,i)=>{data.values[k]=aims[i]||''});
+  // Only explicitly tagged outcome slots can be transferred without guessing
+  // whether a sentence belongs to Knowledge, Skills, or Attitudes.
+  for(const key of ['knowledge1','knowledge2','skills1','skills2','attitudes1','attitudes2']){
+   const found=blocks.find(b=>b.content?.aimSlot===key);
+   if(found)data.values[key]=found.content?.text||'';
+  }
  }
  return data;
 }
