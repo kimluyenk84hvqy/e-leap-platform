@@ -97,7 +97,10 @@ function blockPreview(b){
 }
 function activityDemo(type,a){
   if(['mcq','multi-select','true-false','poll','listening','video-question'].includes(type))return `<div class="option-list">${(a.options||[]).map(o=>`<div class="option-demo"><i>${esc(o.id||'')}</i><span>${esc(o.label||'')}</span></div>`).join('')}</div>`;
-  if(type==='fill')return (a.items||[]).map(x=>`<div class="option-demo">${esc(x.prompt||'')} <b>[ answer ]</b></div>`).join('');
+  if(type==='fill')return (a.items||[]).map(x=>{
+    const e=a.evidenceByItem?.[x.id],authorised=['teacher','admin','presentation'].includes(previewRole);
+    return `<div class="evidence-question"><div class="option-demo">${esc(x.prompt||'')} <b>[ answer ]</b></div>${e&&authorised?`<div class="evidence-actions"><button type="button" class="studio-btn" data-evidence-quote="${esc(e.quote)}">Evidence</button><button type="button" class="studio-btn" data-evidence-why="${esc(e.why)}">Why?</button></div>`:''}</div>`;
+   }).join('')+`<div class="studio-evidence-note" aria-live="polite" hidden></div>`;
   if(type==='matching')return `<div class="option-list">${(a.pairs||[]).map(x=>`<div class="option-demo"><b>${esc(x.left)}</b><span>↔ ${esc(x.right)}</span></div>`).join('')}</div>`;
   if(type==='ordering')return `<div class="option-list">${(a.items||[]).map((x,i)=>`<div class="option-demo"><i>${i+1}</i>${esc(x.text)}</div>`).join('')}</div>`;
   if(type==='categorising')return `<div class="option-list">${(a.categories||[]).map(c=>`<div class="option-demo"><b>${esc(c)}</b></div>`).join('')}</div>`;
@@ -147,9 +150,30 @@ function select(label,path,val,opts){return `<div class="studio-field"><label>${
 function renderAddDialog(){return `<div class="add-panel" data-add-panel><div class="add-dialog"><div class="add-dialog-head"><div><h2>Add content or activity</h2><small>Choose a reusable E-LEAP block. Behavior comes from the shared engine.</small></div><button class="studio-btn" data-close-library>Close</button></div><div class="activity-library"><section class="library-group"><h3>Teaching combos</h3><div class="library-grid">${Object.entries(TEACHING_COMBOS).map(([key,t])=>`<button class="library-card" data-add-combo="${key}"><div class="library-icon">◈</div><b>${esc(t.label)}</b><small>${esc(t.description)}</small></button>`).join('')}</div></section><section class="library-group"><h3>Smart templates</h3><div class="library-grid">${Object.entries(E_LEAP_SMART_TEMPLATES).map(([key,t])=>`<button class="library-card" data-add-template="${key}"><div class="library-icon">✦</div><b>${esc(t.label)}</b><small>${esc(t.description)}</small></button>`).join('')}</div></section>${Object.entries(LIBRARY).map(([group,items])=>`<section class="library-group"><h3>${esc(group)}</h3><div class="library-grid">${items.map(([type,icon,label,desc])=>`<button class="library-card" data-add-type="${type}"><div class="library-icon">${icon}</div><b>${esc(label)}</b><small>${esc(desc)}</small></button>`).join('')}</div></section>`).join('')}</div></div></div>`}
 function runQuality(){return auditLesson(lesson);}
 function renderQualityPanel(){const issues=runQuality();const good=issues.filter(x=>x[0]==='error').length===0;return `<aside class="quality-panel" data-quality-panel><div class="quality-head"><b>Quality check</b><button class="studio-btn ghost" data-close-quality>×</button></div><div class="quality-body">${good?'<div class="quality-item ok">No blocking issues. Lesson can be staged for publishing.</div>':''}${issues.map(([k,m])=>`<div class="quality-item ${k}">${esc(m)}</div>`).join('')||'<div class="quality-item ok">All checks passed.</div>'}</div></aside>`}
+function revealEvidence(quote){
+  const textNode=document.querySelector('.lesson-canvas.template-reading-task .studio-text-role.role-body');
+  if(!textNode)return false;
+  textNode.querySelectorAll('mark.studio-evidence-highlight').forEach(mark=>mark.replaceWith(document.createTextNode(mark.textContent)));
+  textNode.normalize();
+  const target=Array.from(textNode.childNodes).find(n=>n.nodeType===3&&n.textContent.includes(quote));
+  if(!target)return false;
+  const i=target.textContent.indexOf(quote),range=document.createRange();
+  range.setStart(target,i);range.setEnd(target,i+quote.length);
+  const mark=document.createElement('mark');mark.className='studio-evidence-highlight';
+  range.surroundContents(mark);mark.scrollIntoView({behavior:'smooth',block:'nearest'});
+  return true;
+}
 function wire(){
+  document.querySelectorAll('[data-evidence-quote]').forEach(button=>button.addEventListener('click',()=>{
+    const ok=revealEvidence(button.dataset.evidenceQuote);
+    const note=document.querySelector('.studio-evidence-note');
+    if(note){note.hidden=false;note.textContent=ok?'Evidence highlighted in the reading.':'Evidence source not found; review the reading text.';}
+  }));
+  document.querySelectorAll('[data-evidence-why]').forEach(button=>button.addEventListener('click',()=>{
+    const note=document.querySelector('.studio-evidence-note');if(note){note.hidden=false;note.textContent=button.dataset.evidenceWhy;}
+  }));
   document.querySelectorAll('[data-slide]').forEach(b=>b.onclick=()=>{selectedScreen=+b.dataset.slide;selectedBlock=0;render()});
-  document.querySelectorAll('[data-block]').forEach(b=>b.onclick=e=>{if(e.target.closest('[contenteditable]'))return;selectedBlock=+b.dataset.block;render()});
+  document.querySelectorAll('[data-block]').forEach(b=>b.onclick=e=>{if(e.target.closest('[contenteditable],[data-evidence-quote],[data-evidence-why]'))return;selectedBlock=+b.dataset.block;render()});
   document.querySelectorAll('[data-preview-role]').forEach(b=>b.onclick=()=>{previewRole=b.dataset.previewRole;render()});
   document.querySelector('[data-open-library]')?.addEventListener('click',()=>document.querySelector('[data-add-panel]').classList.add('open'));
   document.querySelector('[data-close-library]')?.addEventListener('click',()=>document.querySelector('[data-add-panel]').classList.remove('open'));
