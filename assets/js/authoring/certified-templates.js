@@ -92,8 +92,8 @@ export function validateCertifiedTemplate(data,{draft=false}={}){
   if(value.length>slot.limit)issues.push(slot.label+' exceeds '+slot.limit+' characters.');
  }
  if(isReal(v.imageSrc)&&!isSupportedImageSource(v.imageSrc))issues.push('Image source must be an approved HTTPS URL or a relative image path; full-page scans and placeholders are blocked.');
- if(isReal(v.imageSrc)&&ASSET_IMAGE_EXT.test(v.imageSrc)===false)issues.push('Image URL must point to a supported image extension (PNG, JPEG, WebP, AVIF); verify access before publishing.');
- if(isReal(v.imageSrc)&&/^https:\/\//i.test(v.imageSrc)&&!isReal(v.imageAlt))issues.push('Image alt description is required.');
+ if(isReal(v.imageSrc)&&!/^https:\/\//i.test(v.imageSrc)&&ASSET_IMAGE_EXT.test(v.imageSrc)===false)issues.push('Local image path must end in PNG, JPEG, WebP, or AVIF.');
+ if(isReal(v.imageSrc)&&!isReal(v.imageAlt))issues.push('Image alt description is required.');
  if(data.family==='aims')for(const key of Object.keys(spec.slots)){
   if(isReal(v[key])&&!bloom.test(v[key].trim()))issues.push(key+': start with an observable action verb (Bloom).');
   if(isReal(v[key])&&VAGUE_GOAL.test(v[key].trim()))issues.push(key+': specify the concrete learning content or performance.');
