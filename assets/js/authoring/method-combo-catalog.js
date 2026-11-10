@@ -105,8 +105,9 @@ export function checkMethodSource(id,source={}){
   if(key==='questions'){
    if(!Array.isArray(v)||!v.length)issues.push('Original textbook questions are required; no questions may be invented.');
    else for(const [i,q] of v.entries())if(!nonblank(q.text)||!Array.isArray(q.answers)||!q.answers.length)issues.push('Question '+(i+1)+' requires original text and verified answer(s).');
-  }else if(key==='items'){
-   if(!Array.isArray(v)||!v.length)issues.push('Vocabulary items are required.');
+  }else if(['items','sections','events'].includes(key)){
+   if(!Array.isArray(v)||!v.length)issues.push('Original '+key+' must contain at least one item.');
+   else if(v.some(item=>!nonblank(typeof item==='string'?item:item?.text||item?.content||item?.label)))issues.push('Original '+key+' includes a blank item.');
   }else if(!nonblank(v))issues.push('Missing original '+key+'.');
  }
  if(Array.isArray(source.questions)&&Number.isInteger(source.expectedQuestionCount)&&source.questions.length!==source.expectedQuestionCount)issues.push('Question count mismatch: source requires '+source.expectedQuestionCount+' but provided '+source.questions.length+'.');
