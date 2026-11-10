@@ -16,6 +16,7 @@ import {learnerBlockReady} from './authoring/learner-preview-policy.js';
 import {LEARNING_ARC,phaseForScreen,lessonArcSummary} from './authoring/learning-arc.js';
 import {CERTIFIED_TEMPLATES,TEMPLATE_TOKENS,makeCertifiedTemplate,changeCertifiedVariant,validateCertifiedTemplate,applyCertifiedTemplate,draftSourceFromScreen} from './authoring/certified-templates.js';
 import {renderCertifiedVisual,renderCertifiedEditor} from './authoring/certified-template-render.js';
+import {evaluateCertifiedGates,certifiedGroupStatus} from './authoring/certification-gates.js';
 
 const root=document.getElementById('studio');
 let verifiedUser=null;
@@ -131,7 +132,15 @@ function activityDemo(type,a){
   return `<div class="media-placeholder">Activity preview</div>`;
 }
 function controlChips(type,a){const objective=['mcq','multi-select','true-false','fill','matching','ordering','categorising','listening','video-question'].includes(type);const productive=['writing','discussion','speaking-record'].includes(type);const role=previewRole==='presentation'?'teacher':previewRole;const model=controlModelForRole({role,presentation:previewRole==='presentation',capabilities:{check:objective,reset:true,reveal:objective||Boolean(a?.modelAnswer||a?.answerKey),submit:objective||productive,score:objective}});return model.map(c=>({label:c.label,on:c.enabled}));}
-function renderCertifiedProperties(){const s=currentScreen();if(s.certifiedTemplate)return renderCertifiedEditor(s);const family=({'lesson-cover':'cover','lesson-aims':'aims','lead-in':'opener'})[s.templateId];return family?'<section class="property-section"><h3>Certified template</h3><button class="studio-btn primary" data-certify-current="'+family+'">Convert slide to certified '+family+' template</button><p class="helper">Existing source blocks are preserved. Complete the fixed template slots before publishing.</p></section>':'';}
+function renderCertifiedGatePanel(screen){
+ const data=screen.certifiedTemplate;if(!data)return '';
+ const items=evaluateCertifiedGates(screen);
+ const outcome=certifiedGroupStatus(screen);
+ return '<section class="property-section cert-qa-panel"><h3>Template QA · '+esc(outcome)+'</h3>'+
+ items.map(item=>'<div class="cert-qa-item"><strong>'+esc(item.label)+'</strong><span class="cert-qa-status '+esc(item.status)+'">'+esc(item.status)+'</span><p>'+esc(item.note)+'</p></div>').join('')+
+ '</section>';
+}
+function renderCertifiedProperties(){const s=currentScreen();if(s.certifiedTemplate)return renderCertifiedEditor(s)+renderCertifiedGatePanel(s);const family=({'lesson-cover':'cover','lesson-aims':'aims','lead-in':'opener'})[s.templateId];return family?'<section class="property-section"><h3>Certified template</h3><button class="studio-btn primary" data-certify-current="'+family+'">Convert slide to certified '+family+' template</button><p class="helper">Existing source blocks are preserved. Complete the fixed template slots before publishing.</p></section>':'';}
 function renderProperties(){return `${lessonProps()}${slideProps()}${renderCertifiedProperties()}${currentScreen().certifiedTemplate?'':renderContentMapper()+blockProps()}`}
 function renderContentMapper(){
   const s=currentScreen(),schema=CONTENT_SLOT_SCHEMAS[s.templateId];if(!schema)return '';
