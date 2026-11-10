@@ -67,15 +67,22 @@ export function makeLifeU12AcceptanceFixture(){
   discuss('Which scientific explanation surprised you? Explain your answer.')
  ],src([142],[17,19,23]),'Adapted teaching summary, NOT a reproduction of the source reading. Group into four expert sections.'));
  slides.push(screen('12A · Reading','Find your evidence','Discuss each answer. Identify the supporting part of the text.','reading-task','reading-split',[
-  txt('A scientist who used to work for NASA explains unlikely situations on a question-and-answer blog. A person is safer underwater in a submarine than on an exposed boat; lightning energy can travel through water. Hail may damage a windscreen.'),
-  fill('Write Yes or No for each statement.',[
+  txt('Randall used to work for NASA. He answers hypothetical questions using scientific reasoning. A submarine gives more protection from lightning than an exposed boat. Electricity from lightning can spread through water. Large hailstones can break a car windscreen.'),
+  (()=>{const b=fill('Write Yes or No for each statement.',[
    ['Randall currently works for NASA.','No'],
    ['The blog answers only events that really happened.','No'],
    ['The answers are based on science.','Yes'],
    ['A submarine is safer than an exposed boat during lightning.','Yes'],
    ['Lightning electricity can spread across water.','Yes'],
    ['Hail can break a car windscreen.','Yes']
-  ])
+  ]);b.activity.evidenceByItem={
+   '1':{quote:'Randall used to work for NASA.',why:'Used to means he previously worked there, not that he currently does.'},
+   '2':{quote:'He answers hypothetical questions using scientific reasoning.',why:'Hypothetical questions are not limited to events that really happened.'},
+   '3':{quote:'using scientific reasoning',why:'The reading explicitly identifies scientific reasoning as his method.'},
+   '4':{quote:'A submarine gives more protection from lightning than an exposed boat.',why:'The submarine is underwater, while a boat is more exposed.'},
+   '5':{quote:'Electricity from lightning can spread through water.',why:'Electrical energy can travel outward through water.'},
+   '6':{quote:'Large hailstones can break a car windscreen.',why:'Hail can damage glass when conditions are severe.'}
+  };return b;})()
  ],src([142],[18,19,20,21,22,23,24]),'Future Evidence–Why UI must link each of six items to source spans. Never fabricate verified interactive evidence.'));
  slides.push(screen('12A · Grammar','Second conditional','Study the examples. What pattern do you notice?','grammar-presentation','two-column',[
   grammar('We use the second conditional for unlikely or imaginary situations now or in the future.','If + past simple, would + base verb.',[
