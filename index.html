@@ -35,7 +35,7 @@
     signOut.onclick=async()=>{signOut.disabled=true;try{await fetch('/api/auth/logout',{method:'POST',credentials:'same-origin'});}finally{try{sessionStorage.removeItem('e-leap-guest-entry');localStorage.removeItem('e-leap-admin-view-role')}catch{}location.replace('signin.html');}};
   }
   await window.ELEAPCourseShellExtensionReady;
-  const script=document.createElement('script');script.src='assets/js/app.js?v=assessment-research-v1-role-lock-admin-student-preview';
+  const script=document.createElement('script');script.src='assets/js/app.js?v=studio-nav-server-auth-20261110';
   script.onload=()=>{
     const extras=[
       ['assets/js/student-portal-tools.js?v=student-pin-v1','studentPortal'],
