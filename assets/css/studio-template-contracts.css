@@ -51,3 +51,37 @@
  .lesson-canvas[class*="template-"]{aspect-ratio:auto!important;min-height:500px!important}
  .lesson-canvas[class*="template-"] .canvas-body{padding:12px}
 }
+
+
+/* Variant-aware layout: functional slots keep stable positions across lessons. */
+.lesson-canvas[class*="template-"] .studio-asset{margin:0;display:grid;gap:6px;min-width:0}
+.lesson-canvas[class*="template-"] .studio-asset img{display:block;width:100%;max-height:280px;object-fit:cover;border-radius:14px}
+.lesson-canvas[class*="template-"] .studio-asset figcaption{font-size:14px;color:#536f62}
+.lesson-canvas[class*="template-"] audio{width:100%;max-width:500px}
+.lesson-canvas[class*="template-"] video{width:100%;max-height:300px;object-fit:contain;background:#0b3328;border-radius:12px}
+.lesson-canvas[class*="template-"] .canvas-body{gap:12px}
+.lesson-canvas.template-lead-in.variant-photo-left .block:has(.studio-asset),
+.lesson-canvas.template-lead-in.variant-photo-right .block:has(.studio-asset),
+.lesson-canvas.template-vocabulary-presentation.variant-word-and-photo .block:has(.studio-asset){
+ grid-row:1 / span 2;
+}
+.lesson-canvas.template-lead-in.variant-photo-left .block:has(.studio-asset){grid-column:1}
+.lesson-canvas.template-lead-in.variant-photo-right .block:has(.studio-asset){grid-column:2}
+.lesson-canvas.template-vocabulary-presentation.variant-word-and-photo .block:has(.studio-asset){grid-column:2}
+.lesson-canvas.template-reading-task.variant-evidence-board .block:first-child{border-left:4px solid #18704b;background:#f4faf6}
+.lesson-canvas.template-reading-task .studio-text-role.role-body{white-space:pre-wrap;max-height:310px;overflow:auto;line-height:1.4}
+.lesson-canvas.template-grammar-presentation.variant-discovery-board .canvas-body{display:flex;flex-direction:column}
+.lesson-canvas.template-grammar-presentation.variant-discovery-board .block{width:100%}
+.lesson-canvas.template-listening-task.variant-focus-listening .canvas-body{display:flex;flex-direction:column;align-items:stretch}
+.lesson-canvas.template-listening-task.variant-focus-listening audio{max-width:100%}
+.lesson-canvas.template-speaking-task.variant-discussion-cards .canvas-body{display:grid;grid-template-columns:1fr 1fr}
+.lesson-canvas.template-controlled-practice.variant-compact-practice .canvas-body{display:flex;flex-direction:column}
+.lesson-canvas.template-consolidation.variant-reflection .canvas-body{display:flex;flex-direction:column}
+.lesson-canvas.template-lesson-aims.variant-aims-steps .canvas-body{display:flex;flex-direction:column}
+.lesson-canvas.template-lesson-cover.variant-split-cover .canvas-body{display:grid;grid-template-columns:1fr 1fr}
+.studio-mapper .studio-field textarea{min-height:84px;max-height:190px}
+@media(max-width:850px){
+ .lesson-canvas.template-lead-in.variant-photo-right .block:has(.studio-asset),
+ .lesson-canvas.template-lead-in.variant-photo-left .block:has(.studio-asset),
+ .lesson-canvas.template-vocabulary-presentation.variant-word-and-photo .block:has(.studio-asset){grid-column:auto;grid-row:auto}
+}
