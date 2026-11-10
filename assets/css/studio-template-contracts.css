@@ -120,3 +120,46 @@
  .lesson-canvas .combo-step-nav{flex-wrap:nowrap;overflow-x:auto;padding-bottom:8px}
  .lesson-canvas .combo-step-button{white-space:nowrap;flex:none}
 }
+
+
+/* Functional slots: layout is driven by pedagogy, not the insertion order. */
+.lesson-canvas.template-lead-in .canvas-body,
+.lesson-canvas.template-vocabulary-presentation .canvas-body,
+.lesson-canvas.template-grammar-presentation .canvas-body,
+.lesson-canvas.template-reading-task .canvas-body{
+ display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+ grid-auto-flow:row;gap:14px;align-content:start;
+}
+.lesson-canvas.template-lead-in .block[data-slot="media"]{grid-column:1;grid-row:auto;align-self:start}
+.lesson-canvas.template-lead-in .block[data-slot="activity"]{grid-column:2}
+.lesson-canvas.template-lead-in.variant-photo-right .block[data-slot="media"]{grid-column:2}
+.lesson-canvas.template-lead-in.variant-photo-right .block[data-slot="activity"]{grid-column:1}
+.lesson-canvas.template-vocabulary-presentation .block[data-slot="word-list"]{grid-column:1}
+.lesson-canvas.template-vocabulary-presentation .block[data-slot="media"]{grid-column:2}
+.lesson-canvas.template-grammar-presentation .block[data-slot="grammar"]{grid-column:1}
+.lesson-canvas.template-grammar-presentation .block[data-slot="activity"]{grid-column:2}
+.lesson-canvas.template-reading-task .block[data-slot="passage"]{grid-column:1}
+.lesson-canvas.template-reading-task .block[data-slot="activity"]{grid-column:2}
+.lesson-canvas.template-reading-task .block[data-slot="passage"] .studio-text-role{
+ font-size:clamp(20px,1.5vw,26px);line-height:1.48;
+ max-height:340px;overflow-y:auto;
+}
+.lesson-canvas.template-lesson-aims .block{border-radius:15px;border:1px solid #d5e8dc}
+.lesson-canvas.template-vocabulary-presentation .block[data-slot="word-list"] .activity-card p{
+ margin:0;padding:7px 4px;border-bottom:1px solid #e4ede8;line-height:1.35;
+}
+.lesson-canvas.template-vocabulary-presentation .block[data-slot="word-list"] .activity-card p:last-child{border-bottom:0}
+.lesson-canvas.template-grammar-presentation .block[data-slot="grammar"] .activity-card{
+ border-left:5px solid #16583d;background:#f2f9f4
+}
+.lesson-canvas.template-lead-in .studio-asset img{aspect-ratio:4/3;max-height:340px;object-fit:cover}
+.lesson-canvas.template-reading-task .block[data-slot="activity"]{min-width:0}
+.lesson-canvas.template-listening-task .block[data-slot="media"]{grid-column:1/-1}
+.lesson-canvas.template-speaking-task .block[data-slot="activity"] .activity-prompt{font-size:clamp(22px,1.75vw,29px)}
+@media(max-width:850px){
+ .lesson-canvas.template-lead-in .canvas-body,
+ .lesson-canvas.template-vocabulary-presentation .canvas-body,
+ .lesson-canvas.template-grammar-presentation .canvas-body,
+ .lesson-canvas.template-reading-task .canvas-body{grid-template-columns:1fr!important}
+ .lesson-canvas[class*="template-"] .block[data-slot]{grid-column:auto!important;grid-row:auto!important}
+}
