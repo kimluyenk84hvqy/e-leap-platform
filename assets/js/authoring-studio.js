@@ -36,7 +36,7 @@ const DEFAULT_THEME=E_LEAP_THEME_DEFAULT;
 const THEMES=E_LEAP_THEME_PRESETS;
 const LIBRARY=E_LEAP_AUTHORING_LIBRARY;
 const saveService=new ELeapAuthoringSaveService();
-let lesson=null, selectedScreen=0, selectedBlock=0, dirty=false, previewRole='student', autosaveTimer=null;
+let lesson=null, selectedScreen=0, selectedBlock=0, dirty=false, previewRole='teacher', autosaveTimer=null;
 let draftKey='';
 const certifiedQuestionIndex=new Map(),certifiedAnswers=new Set();
 
@@ -78,7 +78,7 @@ function render(){
     <header class="studio-topbar">
       <div class="studio-brand"><div class="studio-logo">E</div><div><b>E-LEAP Authoring Studio</b><small data-studio-status>${dirty?'Unsaved changes':'Draft ready'}</small></div></div>
       <div class="studio-top-actions">
-        <a class="studio-btn" href="../index.html">← Platform</a><a class="studio-btn" href="?pilot=life-u12" title="Open the canonical LIFE Unit 12 acceptance draft">LIFE U12 pilot</a><button class="studio-btn" data-new>New lesson</button><button class="studio-btn" data-duplicate-lesson>Duplicate</button><button class="studio-btn" data-quality>Quality check</button><button class="studio-btn" data-export>Export JSON</button><button class="studio-btn" data-save>Save draft</button><button class="studio-btn primary" data-publish>${verifiedUser?.role==='admin'?'Publish candidate':'Request publish'}</button>
+        <button class="studio-btn primary" data-open-template-gallery>Choose Template</button><a class="studio-btn" href="../index.html">← Platform</a><a class="studio-btn" href="?pilot=life-u12" title="Open the canonical LIFE Unit 12 acceptance draft">LIFE U12 pilot</a><button class="studio-btn" data-new>New lesson</button><button class="studio-btn" data-duplicate-lesson>Duplicate</button><button class="studio-btn" data-quality>Quality check</button><button class="studio-btn" data-export>Export JSON</button><button class="studio-btn" data-save>Save draft</button><button class="studio-btn primary" data-publish>${verifiedUser?.role==='admin'?'Publish candidate':'Request publish'}</button>
       </div>
     </header>
     <div class="studio-layout">
@@ -186,6 +186,7 @@ function revealEvidence(quote){
   return true;
 }
 function wire(){
+  document.querySelector('[data-open-template-gallery]')?.addEventListener('click',()=>document.querySelector('[data-add-panel]')?.classList.add('open'));
   document.querySelectorAll('[data-add-certified]').forEach(b=>b.onclick=()=>{
     const family=b.dataset.addCertified,data=makeCertifiedTemplate(family);if(!data)return;
     const s=modelCreateScreen(family==='cover'?'Cover':family==='aims'?'Aims':'Opener',family==='cover'?'':family==='aims'?'Learning aims':'');
