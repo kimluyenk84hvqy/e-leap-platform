@@ -59,5 +59,6 @@ export function renderCertifiedEditor(s){
  return '<section class="property-section certified-props"><h3>'+esc(spec.label)+'</h3>'+
   '<p class="helper">Switch designs without losing data. Only slots appear on the learner slide.</p>'+
   '<div class="cert-variant-picker">'+options+'</div><h4>Template Slots</h4>'+fields+
+  (data.sourceReview?.required?'<button type="button" class="studio-btn" data-certify-review-source>Confirm source activity mapping</button><p class="helper">Check original textbook content and all learner-facing slots before confirming.</p>':'')+
   '<p class="helper">'+(issues.length?esc(issues.join(' · ')):'Certified slot checks passed.')+'</p></section>';
 }
