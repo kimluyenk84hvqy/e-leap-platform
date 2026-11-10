@@ -103,7 +103,7 @@
 .lesson-canvas .combo-step-button{
  display:flex;gap:8px;align-items:center;justify-content:center;
  border:1px solid #c7ddcf;border-radius:13px;background:#f1f8f4;
- padding:9px 13px;color:#174b37;font:700 clamp(14px,1.12vw,17px)/1.2 inherit;
+ padding:9px 13px;color:#174b37;font-family:inherit;font-weight:700;font-size:clamp(14px,1.12vw,17px);line-height:1.2;
  cursor:pointer;min-height:44px;
 }
 .lesson-canvas .combo-step-button small{
