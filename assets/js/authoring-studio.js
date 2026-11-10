@@ -14,6 +14,7 @@ import {variantOptions,setVisualVariant} from './authoring/visual-variants.js';
 import {makeLifeU12AcceptanceFixture,LIFE_U12_FIXTURE_ID} from './authoring/pilot-life-u12.js';
 import {learnerBlockReady} from './authoring/learner-preview-policy.js';
 import {LEARNING_ARC,phaseForScreen,lessonArcSummary} from './authoring/learning-arc.js';
+import {CERTIFIED_TEMPLATES,TEMPLATE_TOKENS,makeCertifiedTemplate,changeCertifiedVariant,validateCertifiedTemplate,applyCertifiedTemplate,draftSourceFromScreen} from './authoring/certified-templates.js';
 
 const root=document.getElementById('studio');
 let verifiedUser=null;
@@ -36,6 +37,7 @@ const LIBRARY=E_LEAP_AUTHORING_LIBRARY;
 const saveService=new ELeapAuthoringSaveService();
 let lesson=null, selectedScreen=0, selectedBlock=0, dirty=false, previewRole='student', autosaveTimer=null;
 let draftKey='';
+const certifiedQuestionIndex=new Map(),certifiedAnswers=new Set();
 
 if(!canOpenStudio){
   const next=encodeURIComponent(location.pathname+location.search);
@@ -88,7 +90,7 @@ function render(){
   wire();
 }
 function slideItem(s,i){return `<button class="slide-item ${i===selectedScreen?'active':''}" data-slide="${i}"><span class="slide-thumb">${i+1}</span><span class="slide-title"><b>${esc(s.title||'Untitled')}</b><small>${esc(s.stage||'Slide')}</small></span><span class="slide-more">⋮</span></button>`}
-function renderCanvas(s){const t=lesson.theme;return `<div class="canvas-wrap" style="--canvas-font:${cssFont(t.fontFamily)};--canvas-title-size:${Number(t.titleSize)||36}px;--canvas-body-size:${Number(t.bodySize)||18}px;--canvas-text:${safeColor(t.textColor,'#173f38')};--canvas-accent:${safeColor(t.accentColor,'#0d7d6d')};--canvas-bg:${safeColor(t.backgroundColor,'#fff')}"><div class="preview-strip"><b>${cap(previewRole)} preview</b><span>${esc(t.preset)} · ${esc(t.fontFamily)}</span></div><section class="lesson-canvas layout-${esc(s.layout||'standard')} template-${esc(s.templateId||'custom')} variant-${esc(s.visualVariant||'default')} preview-${esc(previewRole)}"><header class="canvas-hero"><div class="canvas-kicker">${esc(s.stage||'')}</div><h1 class="canvas-title" contenteditable="${!['student','guest','presentation'].includes(previewRole)}" data-edit="screen-title">${esc(s.title||'')}</h1><p class="canvas-instruction" contenteditable="${!['student','guest','presentation'].includes(previewRole)}" data-edit="screen-instruction">${esc(s.instruction||'')}</p></header><div class="canvas-body">${renderComboSteps(s)}${s.blocks.map((b,i)=>renderBlock(b,i)).join('')}${['student','guest','presentation'].includes(previewRole)&&!s.blocks.some(b=>(!b.comboStep||b.comboStep===comboStep(s)?.id)&&learnerBlockReady(b))?'<p class="studio-no-content">This activity is not yet available.</p>':''}${['student','guest','presentation'].includes(previewRole)?'':'<div class="add-block"><button class="studio-btn primary" data-open-library>+ Add content / activity</button></div>'}</div></section></div>`}
+function renderCanvas(s){if(s.certifiedTemplate)return renderCertifiedCanvas(s);const t=lesson.theme;return `<div class="canvas-wrap" style="--canvas-font:${cssFont(t.fontFamily)};--canvas-title-size:${Number(t.titleSize)||36}px;--canvas-body-size:${Number(t.bodySize)||18}px;--canvas-text:${safeColor(t.textColor,'#173f38')};--canvas-accent:${safeColor(t.accentColor,'#0d7d6d')};--canvas-bg:${safeColor(t.backgroundColor,'#fff')}"><div class="preview-strip"><b>${cap(previewRole)} preview</b><span>${esc(t.preset)} · ${esc(t.fontFamily)}</span></div><section class="lesson-canvas layout-${esc(s.layout||'standard')} template-${esc(s.templateId||'custom')} variant-${esc(s.visualVariant||'default')} preview-${esc(previewRole)}"><header class="canvas-hero"><div class="canvas-kicker">${esc(s.stage||'')}</div><h1 class="canvas-title" contenteditable="${!['student','guest','presentation'].includes(previewRole)}" data-edit="screen-title">${esc(s.title||'')}</h1><p class="canvas-instruction" contenteditable="${!['student','guest','presentation'].includes(previewRole)}" data-edit="screen-instruction">${esc(s.instruction||'')}</p></header><div class="canvas-body">${renderComboSteps(s)}${s.blocks.map((b,i)=>renderBlock(b,i)).join('')}${['student','guest','presentation'].includes(previewRole)&&!s.blocks.some(b=>(!b.comboStep||b.comboStep===comboStep(s)?.id)&&learnerBlockReady(b))?'<p class="studio-no-content">This activity is not yet available.</p>':''}${['student','guest','presentation'].includes(previewRole)?'':'<div class="add-block"><button class="studio-btn primary" data-open-library>+ Add content / activity</button></div>'}</div></section></div>`}
 function renderComboSteps(s){if(!s.combo?.steps?.length)return '';return `<nav class="combo-step-nav" aria-label="Learning steps">${s.combo.steps.map((step,i)=>`<button type="button" data-combo-step="${esc(step.id)}" class="combo-step-button ${comboStep(s)?.id===step.id?'active':''}" aria-current="${comboStep(s)?.id===step.id?'step':'false'}"><small>${i+1}</small>${esc(step.label)}</button>`).join('')}</nav>`}
 function slotForBlock(b){return ['image','video','audio'].includes(b.type)?'media':b.type==='vocabulary'?'word-list':b.type==='grammar-note'?'grammar':b.type==='text'?'passage':'activity'}
 function renderBlock(b,i){if(b.audience==='teacher'||b.audience==='internal')return '';if(b.comboStep&&comboStep(currentScreen())?.id!==b.comboStep)return '';if(!learnerBlockReady(b)&&['student','guest','presentation'].includes(previewRole))return '';return `<section class="block ${i===selectedBlock?'selected':''}" data-slot="${slotForBlock(b)}" data-block="${i}">${blockPreview(b)}</section>`}
@@ -128,7 +130,7 @@ function activityDemo(type,a){
   return `<div class="media-placeholder">Activity preview</div>`;
 }
 function controlChips(type,a){const objective=['mcq','multi-select','true-false','fill','matching','ordering','categorising','listening','video-question'].includes(type);const productive=['writing','discussion','speaking-record'].includes(type);const role=previewRole==='presentation'?'teacher':previewRole;const model=controlModelForRole({role,presentation:previewRole==='presentation',capabilities:{check:objective,reset:true,reveal:objective||Boolean(a?.modelAnswer||a?.answerKey),submit:objective||productive,score:objective}});return model.map(c=>({label:c.label,on:c.enabled}));}
-function renderProperties(){return `${lessonProps()}${slideProps()}${renderContentMapper()}${blockProps()}`}
+function renderProperties(){return `${lessonProps()}${slideProps()}${renderCertifiedProperties()}${renderContentMapper()}${blockProps()}`}
 function renderContentMapper(){
   const s=currentScreen(),schema=CONTENT_SLOT_SCHEMAS[s.templateId];if(!schema)return '';
   const existing=readTemplateSlots(s);
@@ -165,7 +167,7 @@ function numField(label,path,val,min,max){return `<div class="studio-field"><lab
 function colorField(label,path,val){return `<div class="studio-field"><label>${esc(label)}</label><input type="color" data-path="${esc(path)}" value="${safeColor(val,'#000000')}"></div>`}
 function area(label,path,val){return `<div class="studio-field"><label>${esc(label)}</label><textarea data-path="${esc(path)}">${esc(val??'')}</textarea></div>`}
 function select(label,path,val,opts){return `<div class="studio-field"><label>${esc(label)}</label><select data-path="${esc(path)}">${opts.map(o=>`<option value="${esc(o)}" ${String(o)===String(val)?'selected':''}>${esc(o)}</option>`).join('')}</select></div>`}
-function renderAddDialog(){return `<div class="add-panel" data-add-panel><div class="add-dialog"><div class="add-dialog-head"><div><h2>Add content or activity</h2><small>Choose a reusable E-LEAP block. Behavior comes from the shared engine.</small></div><button class="studio-btn" data-close-library>Close</button></div><div class="activity-library"><section class="library-group"><h3>Teaching combos</h3><div class="library-grid">${Object.entries(TEACHING_COMBOS).map(([key,t])=>`<button class="library-card" data-add-combo="${key}"><div class="library-icon">◈</div><b>${esc(t.label)}</b><small>${esc(t.description)}</small></button>`).join('')}</div></section><section class="library-group"><h3>Smart templates</h3><div class="library-grid">${Object.entries(E_LEAP_SMART_TEMPLATES).map(([key,t])=>`<button class="library-card" data-add-template="${key}"><div class="library-icon">✦</div><b>${esc(t.label)}</b><small>${esc(t.description)}</small></button>`).join('')}</div></section>${Object.entries(LIBRARY).map(([group,items])=>`<section class="library-group"><h3>${esc(group)}</h3><div class="library-grid">${items.map(([type,icon,label,desc])=>`<button class="library-card" data-add-type="${type}"><div class="library-icon">${icon}</div><b>${esc(label)}</b><small>${esc(desc)}</small></button>`).join('')}</div></section>`).join('')}</div></div></div>`}
+function renderAddDialog(){return `<div class="add-panel" data-add-panel><div class="add-dialog"><div class="add-dialog-head"><div><h2>Add content or activity</h2><small>Choose a reusable E-LEAP block. Behavior comes from the shared engine.</small></div><button class="studio-btn" data-close-library>Close</button></div><div class="activity-library"><section class="library-group"><h3>Certified slide templates</h3><div class="library-grid">${Object.entries(CERTIFIED_TEMPLATES).map(([id,t])=>`<button class="library-card" data-add-certified="${id}"><div class="library-icon">▣</div><b>${esc(t.label)}</b><small>${esc(t.variants.map(v=>v.label).join(' · '))}</small></button>`).join('')}</div></section><section class="library-group"><h3>Teaching combos</h3><div class="library-grid">${Object.entries(TEACHING_COMBOS).map(([key,t])=>`<button class="library-card" data-add-combo="${key}"><div class="library-icon">◈</div><b>${esc(t.label)}</b><small>${esc(t.description)}</small></button>`).join('')}</div></section><section class="library-group"><h3>Smart templates</h3><div class="library-grid">${Object.entries(E_LEAP_SMART_TEMPLATES).map(([key,t])=>`<button class="library-card" data-add-template="${key}"><div class="library-icon">✦</div><b>${esc(t.label)}</b><small>${esc(t.description)}</small></button>`).join('')}</div></section>${Object.entries(LIBRARY).map(([group,items])=>`<section class="library-group"><h3>${esc(group)}</h3><div class="library-grid">${items.map(([type,icon,label,desc])=>`<button class="library-card" data-add-type="${type}"><div class="library-icon">${icon}</div><b>${esc(label)}</b><small>${esc(desc)}</small></button>`).join('')}</div></section>`).join('')}</div></div></div>`}
 function runQuality(){return auditLesson(lesson);}
 function renderQualityPanel(){const issues=runQuality();const good=issues.filter(x=>x[0]==='error').length===0;return `<aside class="quality-panel" data-quality-panel><div class="quality-head"><b>Quality check</b><button class="studio-btn ghost" data-close-quality>×</button></div><div class="quality-body">${good?'<div class="quality-item ok">No blocking issues. Lesson can be staged for publishing.</div>':''}${issues.map(([k,m])=>`<div class="quality-item ${k}">${esc(m)}</div>`).join('')||'<div class="quality-item ok">All checks passed.</div>'}</div></aside>`}
 function revealEvidence(quote){
@@ -182,6 +184,33 @@ function revealEvidence(quote){
   return true;
 }
 function wire(){
+  document.querySelectorAll('[data-add-certified]').forEach(b=>b.onclick=()=>{
+    const family=b.dataset.addCertified,data=makeCertifiedTemplate(family);if(!data)return;
+    const s=modelCreateScreen(family==='cover'?'Cover':family==='aims'?'Aims':'Opener',family==='cover'?'':family==='aims'?'Learning aims':'');
+    const result=applyCertifiedTemplate(s,data);if(!result.ok)return;
+    lesson.screens.splice(selectedScreen+1,0,result.screen);selectedScreen++;selectedBlock=0;markDirty();render();
+  });
+  document.querySelectorAll('[data-certify-current]').forEach(b=>b.onclick=()=>{
+    const data=draftSourceFromScreen(currentScreen(),b.dataset.certifyCurrent);
+    const result=applyCertifiedTemplate(currentScreen(),data);if(!result.ok)return;
+    lesson.screens[selectedScreen]=result.screen;markDirty();render();
+  });
+  document.querySelectorAll('[data-certified-variant]').forEach(b=>b.onclick=()=>{
+    const next=changeCertifiedVariant(currentScreen().certifiedTemplate,b.dataset.certifiedVariant);
+    if(!next)return;currentScreen().certifiedTemplate=next;markDirty();render();
+  });
+  document.querySelectorAll('[data-certified-slot]').forEach(el=>el.addEventListener('change',()=>{
+    const data=currentScreen().certifiedTemplate;
+    data.values[el.dataset.certifiedSlot]=el.value;markDirty();render();
+  }));
+  document.querySelectorAll('[data-certified-question]').forEach(b=>b.onclick=()=>{
+    const key=currentScreen().id;
+    certifiedQuestionIndex.set(key,Number(b.dataset.certifiedQuestion));certifiedAnswers.delete(key);render();
+  });
+  document.querySelector('[data-certified-reveal]')?.addEventListener('click',()=>{
+    if(!['teacher','admin','presentation'].includes(previewRole))return;
+    const key=currentScreen().id;certifiedAnswers.has(key)?certifiedAnswers.delete(key):certifiedAnswers.add(key);render();
+  });
   document.querySelectorAll('[data-combo-step]').forEach(b=>b.onclick=()=>{if(!setComboStep(currentScreen(),b.dataset.comboStep))return;const blocks=activeComboBlocks(currentScreen());selectedBlock=Math.max(0,currentScreen().blocks.indexOf(blocks[0]));markDirty();render()});
   document.querySelectorAll('[data-evidence-quote]').forEach(button=>button.addEventListener('click',()=>{
     const ok=revealEvidence(button.dataset.evidenceQuote);
