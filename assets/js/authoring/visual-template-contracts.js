@@ -47,7 +47,7 @@ export function validateVisualContracts(lesson){
   const passage=(slide.blocks||[]).filter(b=>b.type==='text').map(b=>b.content?.text||'').join('\\n');
   for(const b of slide.blocks||[]){
    const a=b.activity;if(!a?.evidenceByItem)continue;
-   for(const item of a.items||[]){
+   for(const item of (a.items?.length?a.items:a.pairs)||[]){
     const entry=a.evidenceByItem[item.id];
     if(!entry?.quote||!entry?.why)issues.push(['error',at+': Evidence and Why are required for item '+item.id]);
     else if(!passage.includes(entry.quote))issues.push(['error',at+': Evidence text not found for item '+item.id]);
