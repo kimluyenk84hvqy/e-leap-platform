@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import {makeLifeU12AcceptanceFixture,lifeU12FixtureCoverage,LIFE_U12_FIXTURE_ID} from '../assets/js/authoring/pilot-life-u12.js';
 import {auditLesson} from '../assets/js/quality-gate.js';
+import {learnerBlockReady} from '../assets/js/authoring/learner-preview-policy.js';
+import {validateVisualContracts} from '../assets/js/authoring/visual-template-contracts.js';
 
 const lesson=makeLifeU12AcceptanceFixture();
 const coverage=lifeU12FixtureCoverage(lesson);
@@ -22,6 +24,22 @@ for(const entry of Object.values(evidenceActivity.evidenceByItem)){
  assert.ok(passage.includes(entry.quote),'Evidence must locate a real passage span');
  assert.ok(entry.why.length>15,'Why must explain the answer');
 }
+const jigsaw=lesson.screens.find(s=>s.combo?.steps?.length===5);
+assert.ok(jigsaw,'Reading Jigsaw combo missing');
+assert.equal(jigsaw.templateId,'reading-task');
+assert.deepEqual(jigsaw.combo.steps.map(s=>s.id),['read','expert','share','complete','evidence']);
+assert.ok(jigsaw.blocks.some(b=>b.type==='text'&&!b.comboStep&&learnerBlockReady(b)),
+ 'Reading summary must remain visible on every Jigsaw stage');
+const matching=jigsaw.blocks.find(b=>b.comboStep==='complete'&&b.type==='matching');
+assert.equal(matching.activity.pairs.length,4,'Four reading expert sections must be matched');
+const grammar=lesson.screens.find(s=>s.combo?.steps?.length===3&&s.templateId==='grammar-presentation');
+assert.ok(grammar,'Grammar Discovery combo missing');
+assert.deepEqual(grammar.combo.steps.map(s=>s.id),['notice','discover','practise']);
+const mcq=grammar.blocks.find(b=>b.comboStep==='practise'&&b.type==='mcq');
+assert.ok(learnerBlockReady(mcq));
+assert.deepEqual(mcq.activity.answerKey,['B']);
+assert.equal(validateVisualContracts(lesson).filter(([kind])=>kind==='error').length,0,
+ 'U12 fixture must pass reusable visual and combo contracts');
 for(const slide of lesson.screens){
  assert.equal(slide.audience,'student');
  assert.ok(slide.sourceRefs.bookPages.length,'Missing source reference');
