@@ -14,7 +14,7 @@ import {variantOptions,setVisualVariant} from './authoring/visual-variants.js';
 import {makeLifeU12AcceptanceFixture,LIFE_U12_FIXTURE_ID} from './authoring/pilot-life-u12.js';
 import {learnerBlockReady} from './authoring/learner-preview-policy.js';
 import {LEARNING_ARC,phaseForScreen,lessonArcSummary} from './authoring/learning-arc.js';
-import {CERTIFIED_TEMPLATES,TEMPLATE_TOKENS,makeCertifiedTemplate,changeCertifiedVariant,validateCertifiedTemplate,applyCertifiedTemplate,draftSourceFromScreen,certifiedLayoutSignature} from './authoring/certified-templates.js';
+import {CERTIFIED_TEMPLATES,TEMPLATE_TOKENS,makeCertifiedTemplate,changeCertifiedVariant,validateCertifiedTemplate,applyCertifiedTemplate,draftSourceFromScreen,certifiedLayoutSignature,certifiedSourceSignature} from './authoring/certified-templates.js';
 import {renderCertifiedVisual,renderCertifiedEditor} from './authoring/certified-template-render.js';
 import {evaluateCertifiedGates,certifiedGroupStatus} from './authoring/certification-gates.js';
 
@@ -216,7 +216,7 @@ function wire(){
       if(!data?.sourceReview?.required)return;
       const confirmed=confirm('Confirm every textbook activity and key idea is represented in the certified slots? Content omitted from the learner slide will not be displayed.');
       if(!confirmed)return;
-      data.sourceReview={required:true,approved:true,contentSignature:JSON.stringify(data.values)};
+      data.sourceReview={required:true,approved:true,contentSignature:JSON.stringify(data.values),sourceSignature:certifiedSourceSignature(currentScreen().blocks)};
       markDirty();render();
     });
     const visual=document.querySelector('.certified-canvas');
