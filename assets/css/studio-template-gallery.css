@@ -54,3 +54,11 @@
 .gallery-method-contract h3{font-size:19px;margin:0}
 .gallery-method-contract p{line-height:1.45;font-size:14px}
 @media(max-width:850px){.studio-method-gallery{padding:14px}.gallery-method-steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Pedagogy purpose and scaffold panel for each state (review-only, not learner output) */
+.gallery-method-support{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}
+.gallery-method-support>div{background:#fff;border:1px solid #d9e7dd;border-radius:12px;padding:12px;min-width:0}
+.gallery-method-support>div:nth-child(2){background:#e9f4ec;border-color:#bad4c2}
+.gallery-method-support b{font-size:14px;color:#13583d}
+.gallery-method-support p{font-size:15px;line-height:1.45;color:#253f33;margin:8px 0 0}
+@media(max-width:700px){.gallery-method-support{grid-template-columns:1fr}}
