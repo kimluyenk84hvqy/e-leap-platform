@@ -19,28 +19,48 @@ const classify=s=>{
  if(/group|pair|exchange|discuss|reconstruct|rebuild|plan|draft|write|role|task|collaborate/.test(x+' '+t))return 'collaborate';
  return 'apply';
 };
+/* Slot schema only: learner wording is authored later against real textbook content. */
 const SUPPORT={
- predict:{purpose:'Activate prior knowledge and build a low-stakes prediction before the source task.',frame:'I think ___ because I can see / already know ___.',output:'One prediction and one reason',feedback:'Invite two different hypotheses; do not reveal the final answer yet.'},
- notice:{purpose:'Notice key information before evaluating the whole textbook task.',frame:'I noticed / heard / read ___; the clue is ___.',output:'Two key details or a brief evidence note',feedback:'Ask a learner to point to the relevant image, sound or text segment.'},
- collaborate:{purpose:'Use complementary contributions to co-construct meaning.',frame:'My part says ___. What did you find? Let’s agree on ___.',output:'A jointly agreed note or explanation',feedback:'Check that every member contributes before moving on.'},
- report:{purpose:'Rehearse and publicly share a group outcome.',frame:'Our group decided ___ because ___. We also considered ___.',output:'A short oral report and supporting reason',feedback:'Ask another group to question or add to the report.'},
- evidence:{purpose:'Compare interpretations and justify them with the source.',frame:'Our answer is ___; the evidence is ___; this means ___.',output:'An answer, an evidence location and a why-explanation',feedback:'Only verified source evidence may be shown; no invented quotations.'},
- complete:{purpose:'Complete all original textbook items after supported preparation.',frame:'I choose ___ because the text / recording says ___.',output:'Original responses plus teacher-verified explanation',feedback:'Teacher checks every original item, reveals the verified key, and discusses Evidence and Why.'},
- apply:{purpose:'Apply the target learning to a new meaningful use.',frame:'In my example, ___; I used ___ because ___.',output:'A learner-created example, sentence or response',feedback:'Give a model of form, not the answer to the textbook question.'}
+ predict:{purpose:'Activate prior knowledge and build supported predictions.',output:'Prediction / rationale'},
+ notice:{purpose:'Identify source clues and relevant information.',output:'Observation / notes'},
+ collaborate:{purpose:'Co-construct understanding using individual contributions.',output:'Collaborative response'},
+ report:{purpose:'Share and justify an outcome.',output:'Short oral/written report'},
+ evidence:{purpose:'Locate reliable evidence and justify an interpretation.',output:'Evidence / explanation'},
+ complete:{purpose:'Complete and verify original textbook tasks.',output:'Original task responses / verified rationale'},
+ apply:{purpose:'Transfer learning into meaningful language use.',output:'Learner-created example'}
 };
+export const HYBRID_SLOT_SCHEMA=Object.freeze({
+ instruction:{label:'Learner-facing instruction',required:true},
+ guidedSteps:{label:'Step-by-step learner guidance',required:true},
+ workedExample:{label:'Worked example / demonstration',required:true},
+ sentenceSupport:{label:'Sentence frames / language support',required:true},
+ sourceMaterial:{label:'Source image / passage / audio / cards',required:true},
+ learnerResponse:{label:'Learner response / work area',required:true},
+ peerTask:{label:'Individual / pair / group accountability',required:true},
+ reportShare:{label:'Share / report area',required:true},
+ feedback:{label:'Teacher feedback / checking',required:true},
+ answerKey:{label:'Verified answer key (teacher only)',required:false},
+ evidence:{label:'Verified evidence per item',required:false},
+ why:{label:'Why this answer is supported',required:false}
+});
 export function hybridStepContract(step){
- const mode=MODE[step?.mode]||null,key=classify(step);
- const support=SUPPORT[key];
+ const mode=MODE[step?.mode]||null,key=classify(step),support=SUPPORT[key];
+ const requiredSlots=['instruction','guidedSteps','workedExample','sentenceSupport','sourceMaterial','learnerResponse','peerTask','reportShare','feedback'];
+ if(key==='complete'||key==='evidence')requiredSlots.push('answerKey','evidence','why');
  return {
   ...step,
+  // These are layout contracts, NOT learner-facing text or a pre-written scaffold.
   pedagogicalPurpose:support.purpose,
-  learnerSupport:{sentenceFrame:support.frame,examplePolicy:'Model the response format using a different example; never reveal the original answer.',difficulty:'Allow keyword / partial sentence / complete sentence depending on learner level.'},
-  expectedOutput:support.output,
-  organisation:mode?.interaction||'UNKNOWN',
-  accountability:mode?.accountability||'UNKNOWN',
-  teacherCheck:support.feedback,
+  expectedOutputType:support.output,
+  slotSchema:HYBRID_SLOT_SCHEMA,
+  requiredSlots,
+  slotValues:Object.fromEntries(Object.keys(HYBRID_SLOT_SCHEMA).map(name=>[name,null])),
+  sourceInstruction:step?.instruction||'', // metadata for pedagogy review only
+  instruction:null,
+  organisationMode:mode?.interaction||'UNKNOWN',
+  accountabilityType:mode?.artifact||'UNKNOWN',
   readyForPublish:false,
-  requiresTeacherAdaptation:true
+  requiresLessonMapping:true
  };
 }
 export function evaluateHybridCombo(combo){
@@ -49,9 +69,9 @@ export function evaluateHybridCombo(combo){
  const modes=new Set();
  for(const [i,raw] of steps.entries()){
   const s=hybridStepContract(raw);if(!MODE[s.mode])errors.push('Step '+(i+1)+' has unsupported work mode.');
-  if(!s.instruction?.trim())errors.push('Step '+(i+1)+' lacks learner instruction.');
+  if(!s.slotSchema?.instruction||!s.slotSchema?.sentenceSupport||!s.slotSchema?.workedExample)errors.push('Step '+(i+1)+' lacks instructional slot definitions.');
   if(!s.slot?.trim())errors.push('Step '+(i+1)+' has no content slot.');
-  if(!s.pedagogicalPurpose||!s.learnerSupport.sentenceFrame||!s.expectedOutput||!s.teacherCheck)errors.push('Step '+(i+1)+' lacks scaffolding or feedback.');
+  if(!s.pedagogicalPurpose||!s.requiredSlots.includes('learnerResponse')||!s.requiredSlots.includes('feedback'))errors.push('Step '+(i+1)+' lacks learner activity or feedback slots.');
   modes.add(s.mode);
  }
  if(!modes.has('individual'))errors.push('Add an individual accountability or preparation opportunity.');
