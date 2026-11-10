@@ -1,6 +1,7 @@
 import {isObjectiveActivity,isSupportedActivity} from '../activities/activity-registry.js';
 import {E_LEAP_LAYOUTS} from '../authoring/layout-registry.js';
 import {isContentBlock} from '../authoring/content-block-registry.js';
+import {validateVisualContracts} from '../authoring/visual-template-contracts.js';
 
 const hasAnswer=(a,t)=>{if(['mcq','multi-select','true-false','listening','video-question'].includes(t))return (a.answerKey||[]).length>0;if(t==='fill')return (a.items||[]).every(x=>(x.answers||[]).length);if(t==='matching')return (a.pairs||[]).length>0;if(t==='ordering')return (a.answerKey||[]).length>0;if(t==='categorising')return (a.items||[]).every(x=>x.category);return true};
 const pushDup=(issues,seen,id,where)=>{if(!id)return;if(seen.has(id))issues.push(['error',`${where}: duplicate id ${id}`]);else seen.add(id)};
@@ -49,5 +50,6 @@ export function auditLesson(lesson={}){
   if(lesson.deliveryPolicy?.id==='mock'){
     (lesson.screens||[]).forEach((s,si)=>(s.blocks||[]).forEach((b,bi)=>{if(b.activity?.policy?.studentReveal===true)issues.push(['error',`Slide ${si+1}, block ${bi+1}: Mock Test cannot reveal answers during attempt`]);}));
   }
+  issues.push(...validateVisualContracts(lesson));
   return issues;
 }
