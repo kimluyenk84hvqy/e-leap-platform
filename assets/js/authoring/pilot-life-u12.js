@@ -183,9 +183,12 @@ export function makeLifeU12AcceptanceFixture(){
   {id:'3',left:'Electricity spreading through water',right:'C'},
   {id:'4',left:'Rain, hail and windscreens',right:'D'}
  ];
- const why=jigsaw.blocks.find(b=>b.comboStep==='evidence'&&b.activity);
- why.activity.prompt='Which section supports each match? Explain your reasoning.';
- why.activity.rubric='Refer to a line in the group reading and explain the connection.';
+ match.activity.evidenceByItem={
+  '1':{quote:'Randall previously worked for NASA and uses science to answer imaginary questions.',why:'Group A explains Randall’s background and use of science.'},
+  '2':{quote:'A submarine is better protected from lightning than a boat exposed on the surface.',why:'Group B compares protection underwater and on the surface.'},
+  '3':{quote:'Lightning can send electricity outward through water near the strike.',why:'Group C explains electricity spreading through water.'},
+  '4':{quote:'Ordinary rain is unlikely to break a windscreen at normal speeds, but large hail can cause damage.',why:'Group D contrasts rain and large hail.'}
+ };
  const readingIndex=slides.findIndex(s=>s.stage==='12A · Reading'&&s.title==='What if…?');
  if(readingIndex>=0)slides.splice(readingIndex,1,jigsaw);
 
