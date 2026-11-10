@@ -105,7 +105,11 @@ function activityDemo(type,a){
     const e=a.evidenceByItem?.[x.id],authorised=['teacher','admin','presentation'].includes(previewRole);
     return `<div class="evidence-question"><div class="option-demo">${esc(x.prompt||'')} <b>[ answer ]</b></div>${e&&authorised?`<div class="evidence-actions"><button type="button" class="studio-btn" data-evidence-quote="${esc(e.quote)}">Evidence</button><button type="button" class="studio-btn" data-evidence-why="${esc(e.why)}">Why?</button></div>`:''}</div>`;
    }).join('')+`<div class="studio-evidence-note" aria-live="polite" hidden></div>`;
-  if(type==='matching')return `<div class="option-list">${(a.pairs||[]).map(x=>`<div class="option-demo"><b>${esc(x.left)}</b><span>↔ ${esc(x.right)}</span></div>`).join('')}</div>`;
+  if(type==='matching')return '<div class="option-list">'+(a.pairs||[]).map(x=>{
+    const e=a.evidenceByItem?.[x.id],authorised=['teacher','admin','presentation'].includes(previewRole);
+    return '<div class="evidence-question"><div class="option-demo"><b>'+esc(x.left)+'</b><span>↔ '+(authorised?esc(x.right):'?')+'</span></div>'+
+      (e&&authorised?'<div class="evidence-actions"><button type="button" class="studio-btn" data-evidence-quote="'+esc(e.quote)+'">Evidence</button><button type="button" class="studio-btn" data-evidence-why="'+esc(e.why)+'">Why?</button></div>':'')+'</div>';
+   }).join('')+'</div><div class="studio-evidence-note" aria-live="polite" hidden></div>';
   if(type==='ordering')return `<div class="option-list">${(a.items||[]).map((x,i)=>`<div class="option-demo"><i>${i+1}</i>${esc(x.text)}</div>`).join('')}</div>`;
   if(type==='categorising')return `<div class="option-list">${(a.categories||[]).map(c=>`<div class="option-demo"><b>${esc(c)}</b></div>`).join('')}</div>`;
   if(['writing','discussion'].includes(type))return `<div class="media-placeholder">${esc(a.placeholder||'Type response…')}</div>`;
