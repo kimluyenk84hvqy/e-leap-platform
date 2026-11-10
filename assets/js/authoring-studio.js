@@ -188,10 +188,18 @@ function revealEvidence(quote){
 function wire(){
   document.querySelector('[data-open-template-gallery]')?.addEventListener('click',()=>document.querySelector('[data-add-panel]')?.classList.add('open'));
   document.querySelectorAll('[data-add-certified]').forEach(b=>b.onclick=()=>{
-    const family=b.dataset.addCertified,data=makeCertifiedTemplate(family);if(!data)return;
-    const s=modelCreateScreen(family==='cover'?'Cover':family==='aims'?'Aims':'Opener',family==='cover'?'':family==='aims'?'Learning aims':'');
-    const result=applyCertifiedTemplate(s,data);if(!result.ok)return;
-    lesson.screens.splice(selectedScreen+1,0,result.screen);selectedScreen++;selectedBlock=0;markDirty();render();
+    const family=b.dataset.addCertified;
+    const templateId=CERTIFIED_TEMPLATES[family]?.templateId;if(!templateId)return;
+    // A cover is always the first slide. Converting a matching slide keeps its source.
+    // Adding an unrelated family creates only one new slide.
+    const same=currentScreen().templateId===templateId;
+    const index=family==='cover'?0:same?selectedScreen:-1;
+    const original=index>=0?lesson.screens[index]:modelCreateScreen(family==='aims'?'Aims':'Opener','');
+    const data=draftSourceFromScreen(original,family)||makeCertifiedTemplate(family);
+    const result=applyCertifiedTemplate(original,data);if(!result.ok)return;
+    if(index>=0){lesson.screens[index]=result.screen;selectedScreen=index;}
+    else {lesson.screens.splice(selectedScreen+1,0,result.screen);selectedScreen++;}
+    selectedBlock=0;markDirty();render();
   });
   document.querySelectorAll('[data-certify-current]').forEach(b=>b.onclick=()=>{
     const data=draftSourceFromScreen(currentScreen(),b.dataset.certifyCurrent);
