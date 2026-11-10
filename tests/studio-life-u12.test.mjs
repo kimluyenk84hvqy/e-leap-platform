@@ -24,14 +24,17 @@ for(const entry of Object.values(evidenceActivity.evidenceByItem)){
  assert.ok(passage.includes(entry.quote),'Evidence must locate a real passage span');
  assert.ok(entry.why.length>15,'Why must explain the answer');
 }
-const jigsaw=lesson.screens.find(s=>s.combo?.steps?.length===5);
+const jigsaw=lesson.screens.find(s=>s.combo?.steps?.length===4);
 assert.ok(jigsaw,'Reading Jigsaw combo missing');
 assert.equal(jigsaw.templateId,'reading-task');
-assert.deepEqual(jigsaw.combo.steps.map(s=>s.id),['read','expert','share','complete','evidence']);
+assert.deepEqual(jigsaw.combo.steps.map(s=>s.id),['read','expert','share','complete']);
 assert.ok(jigsaw.blocks.some(b=>b.type==='text'&&!b.comboStep&&learnerBlockReady(b)),
  'Reading summary must remain visible on every Jigsaw stage');
 const matching=jigsaw.blocks.find(b=>b.comboStep==='complete'&&b.type==='matching');
 assert.equal(matching.activity.pairs.length,4,'Four reading expert sections must be matched');
+assert.equal(Object.keys(matching.activity.evidenceByItem||{}).length,4,'Evidence–Why must be integrated into all four Complete items');
+const jigsawReading=jigsaw.blocks.find(b=>b.type==='text').content.text;
+for(const item of Object.values(matching.activity.evidenceByItem))assert.ok(jigsawReading.includes(item.quote)&&item.why.length>12);
 const grammar=lesson.screens.find(s=>s.combo?.steps?.length===3&&s.templateId==='grammar-presentation');
 assert.ok(grammar,'Grammar Discovery combo missing');
 assert.deepEqual(grammar.combo.steps.map(s=>s.id),['notice','discover','practise']);
