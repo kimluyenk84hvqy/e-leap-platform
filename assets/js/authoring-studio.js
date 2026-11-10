@@ -88,7 +88,7 @@ function render(){
   root.innerHTML=`<section class="studio-shell">
     <header class="studio-topbar">
       <div class="studio-brand"><div class="studio-logo">E</div><div><b>E-LEAP Authoring Studio</b><small data-studio-status>${dirty?'Unsaved changes':'Draft ready'}</small></div></div>
-      <div class="studio-top-actions">
+      <div class="studio-top-actions"><a class="studio-btn" href="/studio/u12a-pilot/">Life 12A pilot</a>
         <button class="studio-btn" data-new>New lesson</button><button class="studio-btn" data-duplicate-lesson>Duplicate</button><button class="studio-btn" data-quality>Quality check</button><button class="studio-btn" data-export>Export JSON</button><button class="studio-btn" data-save>Save draft</button><button class="studio-btn" data-copy-draft>Copy draft link</button><button class="studio-btn primary" data-publish>${ctx.can('content:publish')?'Publish candidate':'Request publish'}</button>
       </div>
     </header>
