@@ -25,7 +25,8 @@ export function renderCertifiedVisual(s,role,qIndex=0,revealed=false){
    group('KNOWLEDGE','knowledge','01')+group('SKILLS','skills','02')+group('ATTITUDES','attitudes','03')+'</div>';
  }else if(family==='opener'){
   const i=Math.max(0,Math.min(2,Number(qIndex)||0)),show=revealed&&canReveal;
-  const image='<div class="cert-opener-photo">'+photo(v.imageSrc,v.target,editor)+'</div>';
+  const cover=data.variant==='mystery-reveal'?'<div class="cert-mystery-tiles stage-'+i+'"><span></span><span></span><span></span><span></span></div>':data.variant==='hot-seat'&&!show&&i<2?'<div class="cert-hotseat-cover">Describe it without naming it!</div>':'';
+  const image='<div class="cert-opener-photo">'+photo(v.imageSrc,v.target,editor)+cover+'</div>';
   const task='<div class="cert-opener-task"><div class="cert-task-label">ACTIVITY '+blank(v.activityNumber)+'</div>'+
    '<p class="cert-instruction">'+blank(v.instruction)+'</p>'+
    '<div class="cert-question-counter">QUESTION '+(i+1)+' / 3</div>'+
