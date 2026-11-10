@@ -1,0 +1,37 @@
+/* E-LEAP pre-authoring template visual review gallery. */
+.studio-gallery{min-height:100vh;background:#f3f7f4;color:#173c2c;font-family:Poppins,Arial,sans-serif;padding:26px 30px}
+.gallery-top{display:flex;align-items:start;justify-content:space-between;gap:20px;padding-bottom:18px}
+.gallery-top h1{font-size:clamp(26px,2.8vw,40px);margin:7px 0;color:#103e2c}
+.gallery-top p{color:#476657;margin:3px 0;font-size:15px}
+.gallery-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0 18px}
+.gallery-controls button{border:1px solid #bdd3c4;border-radius:10px;padding:10px 14px;background:#fff;color:#1a583d;font-weight:700}
+.gallery-controls button:disabled{opacity:.6;cursor:not-allowed}
+.gallery-controls span{margin-left:auto;color:#637d69;font-size:13px}
+.gallery-layout{display:grid;grid-template-columns:minmax(225px,310px) minmax(0,1fr);gap:20px;max-width:1650px}
+.gallery-list{background:#fff;border:1px solid #d3e3d8;border-radius:16px;padding:14px;max-height:calc(100vh - 185px);overflow-y:auto}
+.gallery-list section{margin-bottom:18px}
+.gallery-list h2{font-size:15px;color:#1a593d;margin:7px 0 10px}
+.gallery-item{display:grid;text-align:left;width:100%;gap:5px;border:1px solid #d5e4db;background:#f9fbf9;padding:12px;margin-bottom:8px;border-radius:11px;cursor:pointer;color:#244635}
+.gallery-item strong{font-size:15px}
+.gallery-item small{font-size:12px;line-height:1.4;color:#547363}
+.gallery-item span{font-size:11px;font-weight:700;color:#387353}
+.gallery-item.active{background:#e5f4e9;border:2px solid #16754b}
+.gallery-review{min-width:0;background:#fff;border:1px solid #d3e3d8;border-radius:16px;padding:20px}
+.gallery-preview-head{display:flex;justify-content:space-between;gap:16px;align-items:start;margin-bottom:14px}
+.gallery-preview-head h2{font-size:24px;margin:0 0 5px}
+.gallery-preview-head p{margin:0;color:#617668;font-size:14px}
+.gallery-status{white-space:nowrap;padding:8px 12px;border-radius:999px;background:#edf3ee;color:#2c6348;font-size:12px;font-weight:800}
+.gallery-demo{width:100%;max-width:1100px;margin:auto}
+.gallery-demo .canvas-wrap{width:100%;margin:0}
+.gallery-demo .certified-canvas{width:100%;box-shadow:0 5px 20px #10382d26}
+.gallery-demo .cert-editor-warning{display:none}
+.gallery-demo-controls{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.gallery-demo-controls button{background:#eff8f0;border:1px solid #a3c8ac;border-radius:9px;padding:9px 12px;color:#164e34;font-weight:700;cursor:pointer}
+.gallery-review-fields{display:grid;gap:14px;margin-top:22px}
+.gallery-review-fields label{display:grid;gap:7px;font-size:14px;font-weight:700}
+.gallery-review-fields input,.gallery-review-fields textarea{border:1px solid #b2cbb8;border-radius:10px;padding:12px;font:500 15px Poppins,Arial,sans-serif;color:#1a4634;width:100%}
+.gallery-actions{display:flex;flex-wrap:wrap;gap:10px}
+.gallery-actions button{border:1px solid #8cbea0;background:#eaf4eb;color:#165537;padding:10px 16px;font-weight:700;border-radius:10px;cursor:pointer}
+.gallery-actions button:nth-child(2){background:#155d3e;color:#fff}
+.gallery-caution{font-size:13px;line-height:1.5;color:#68776b;background:#f5f7f5;padding:12px;border-radius:9px}
+@media(max-width:850px){.studio-gallery{padding:14px}.gallery-layout{grid-template-columns:1fr}.gallery-list{max-height:260px}.gallery-top{flex-direction:column}.gallery-preview-head{flex-direction:column}}
