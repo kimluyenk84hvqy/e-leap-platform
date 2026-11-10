@@ -23,7 +23,21 @@ export function validateVisualContracts(lesson){
  (lesson.screens||[]).forEach((slide,i)=>{
   const at='Slide '+(i+1);
   const spec=VISUAL_TEMPLATE_CONTRACTS[slide.templateId];
-  if(spec&&slide.blocks?.length>spec.maxBlocks)issues.push(['error',at+': too many blocks for '+spec.family+' template ('+slide.blocks.length+'/'+spec.maxBlocks+')']);
+  if(spec){
+   const steps=slide.combo?.steps||[];
+   const groups=steps.length?steps.map(step=>(slide.blocks||[]).filter(b=>!b.comboStep||b.comboStep===step.id)):[slide.blocks||[]];
+   groups.forEach((blocks,i)=>{if(blocks.length>spec.maxBlocks)issues.push(['error',at+(steps.length?' / '+steps[i].label:'')+': too many blocks for '+spec.family+' template ('+blocks.length+'/'+spec.maxBlocks+')']);});
+  }
+  if(slide.combo){
+   const steps=slide.combo.steps||[], ids=steps.map(x=>x.id);
+   if(steps.length<2||new Set(ids).size!==ids.length)issues.push(['error',at+': combo requires at least two unique learning states']);
+   if(!ids.includes(slide.combo.activeStep))issues.push(['error',at+': invalid active combo step']);
+   for(const step of steps){
+    if(!step.label?.trim()||!step.instruction?.trim())issues.push(['error',at+': combo state missing learner label or instruction']);
+    if(!(slide.blocks||[]).some(b=>b.comboStep===step.id))issues.push(['error',at+': empty combo state '+step.id]);
+   }
+   for(const block of slide.blocks||[])if(block.comboStep&&!ids.includes(block.comboStep))issues.push(['error',at+': content assigned to unknown state']);
+  }
   if(slide.audience==='teacher'||slide.audience==='internal')issues.push(['error',at+': teacher/internal notes must not be stored as a slide']);
   for(const v of [slide.title,slide.instruction,...(slide.blocks||[]).flatMap(textOf)]){
    if(typeof v!=='string')continue;
