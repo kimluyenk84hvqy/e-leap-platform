@@ -6,7 +6,7 @@
 import {METHOD_COMBOS} from './method-combo-catalog.js';
 import {hybridStepContract,evaluateHybridCombo} from './hybrid-pedagogy-contract.js';
 
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;':'&quot;',"'":'&#39;'}[c]));
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid=()=>('method-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8));
 const slotsFor=s=>[...new Set(hybridStepContract(s).requiredSlots)];
 const noStudentContent=role=>['student','guest','presentation'].includes(String(role||'').toLowerCase());
