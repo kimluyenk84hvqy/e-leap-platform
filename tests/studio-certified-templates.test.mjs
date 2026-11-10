@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {
  CERTIFIED_TEMPLATES,makeCertifiedTemplate,changeCertifiedVariant,validateCertifiedTemplate,
- applyCertifiedTemplate,draftSourceFromScreen
+ applyCertifiedTemplate,draftSourceFromScreen,certifiedLayoutSignature,certifiedSourceSignature
 } from '../assets/js/authoring/certified-templates.js';
 import {renderCertifiedVisual,renderCertifiedEditor} from '../assets/js/authoring/certified-template-render.js';
 assert.deepEqual(Object.keys(CERTIFIED_TEMPLATES),['cover','aims','opener']);
@@ -24,16 +24,21 @@ for(const family of Object.keys(CERTIFIED_TEMPLATES)){
 }
 const cover=makeCertifiedTemplate('cover');
 Object.assign(cover.values,{unit:'Unit 12',topic:'Nature',imageSrc:'https://images.example.edu/nature.jpg',imageAlt:'Natural landscape'});
-cover.values.imageSrc='/assets/media/nature.webp';cover.values.imageAlt='Mountain and forest landscape';cover.mediaCheck={src:cover.values.imageSrc,loaded:true};
+cover.values.imageSrc='/assets/media/nature.webp';cover.values.imageAlt='Mountain and forest landscape';cover.mediaCheck=null;
 assert.ok(validateCertifiedTemplate(cover).some(x=>x.includes('not been loaded')));
 cover.mediaCheck={src:cover.values.imageSrc,loaded:true};
+assert.ok(validateCertifiedTemplate(cover).some(x=>x.includes('layout')));
+cover.layoutReview={signature:certifiedLayoutSignature(cover),passed:true};
 assert.deepEqual(validateCertifiedTemplate(cover),[]);
+assert.ok(validateCertifiedTemplate(changeCertifiedVariant(cover,'split-editorial')).some(x=>x.includes('layout')));
 const aims=makeCertifiedTemplate('aims');
 Object.assign(aims.values,{
  knowledge1:'Identify extreme weather types.',knowledge2:'Explain the second conditional.',
  skills1:'Interpret evidence from texts.',skills2:'Apply conditional language in discussion.',
  attitudes1:'Collaborate with peers respectfully.',attitudes2:'Demonstrate curiosity about nature.'
 });
+assert.ok(validateCertifiedTemplate(aims).some(x=>x.includes('layout')));
+aims.layoutReview={signature:certifiedLayoutSignature(aims),passed:true};
 assert.deepEqual(validateCertifiedTemplate(aims),[]);
 aims.values.knowledge1='Understand the lesson.';
 assert.ok(validateCertifiedTemplate(aims).some(s=>s.includes('Bloom')));
@@ -46,9 +51,10 @@ Object.assign(opener.values,{
  q3:'What is it called?',a3:'A tornado.',
  target:'tornado',concept:'A rapidly rotating column of air.'
 });
-opener.values.imageSrc='/assets/media/tornado.webp';opener.values.imageAlt='Tornado over a field';opener.mediaCheck={src:opener.values.imageSrc,loaded:true};
+opener.values.imageSrc='/assets/media/tornado.webp';opener.values.imageAlt='Tornado over a field';opener.mediaCheck=null;
 assert.ok(validateCertifiedTemplate(opener).some(x=>x.includes('not been loaded')));
 opener.mediaCheck={src:opener.values.imageSrc,loaded:true};
+opener.layoutReview={signature:certifiedLayoutSignature(opener),passed:true};
 assert.deepEqual(validateCertifiedTemplate(opener),[]);
 const student=renderCertifiedVisual({certifiedTemplate:opener},'student',2,true);
 const teacher=renderCertifiedVisual({certifiedTemplate:opener},'teacher',2,true);
@@ -76,5 +82,12 @@ assert.ok(validateCertifiedTemplate(unverified).some(x=>x.includes('not been loa
 const generic=makeCertifiedTemplate('aims');for(const k of Object.keys(generic.values))generic.values[k]='Identify something.';
 assert.ok(validateCertifiedTemplate(generic).some(x=>x.includes('concrete learning')));
 const converted=applyCertifiedTemplate({blocks:[{type:'text',content:{text:'Original activity 1'}}]},makeCertifiedTemplate('opener')).screen;
-assert.ok(validateCertifiedTemplate(converted.certifiedTemplate).some(x=>x.includes('source needs review')));
+assert.ok(validateCertifiedTemplate(converted.certifiedTemplate).some(x=>x.includes('needs review')));
+converted.certifiedTemplate.sourceReview={
+ required:true,approved:true,contentSignature:JSON.stringify(converted.certifiedTemplate.values),
+ sourceSignature:certifiedSourceSignature(converted.blocks)
+};
+assert.ok(!validateCertifiedTemplate(converted.certifiedTemplate,{sourceBlocks:converted.blocks}).some(x=>x.includes('needs review')));
+converted.blocks[0].content.text='Changed original activity';
+assert.ok(validateCertifiedTemplate(converted.certifiedTemplate,{sourceBlocks:converted.blocks}).some(x=>x.includes('needs review')));
 console.log('Certified Cover / Aims / Opener fixed-slot and role-policy contracts passed.');
