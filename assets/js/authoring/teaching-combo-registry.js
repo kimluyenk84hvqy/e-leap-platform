@@ -59,7 +59,7 @@ export const TEACHING_COMBOS={
   label:'Evidence and why',group:'Reading',template:'reading-task',
   description:'Read → Evidence → Explain (one slide)',
   build:()=>sequence('Reading','Find the evidence','reading-task','reading-split',[
-   state('read','Read','Read the passage. Identify the main idea.',[text('Add the reading passage in Studio, then choose a question.')]),
+   state('read','Read','Read the passage. Identify the main idea.',[text('')]),
    state('evidence','Evidence','Find the sentence that supports your answer.',[activity('fill','Answer the question using evidence from the reading.')]),
    state('explain','Explain','Explain why the evidence supports your answer.',[activity('discussion','Why is this evidence relevant?')])
   ])
@@ -68,7 +68,7 @@ export const TEACHING_COMBOS={
   label:'Jigsaw group reading',group:'Reading',template:'reading-task',
   description:'Read → Expert → Share → Complete → Evidence (one slide)',
   build:()=>sequence('Reading','Jigsaw reading','reading-task','reading-split',[
-   state('read','Read','Read your assigned section silently.',[text('Add the assigned reading sections in Studio.')]),
+   state('read','Read','Read your assigned section silently.',[text('')]),
    state('expert','Expert group','Discuss three key ideas with students who read your section.',[activity('discussion','What are the three key ideas?')]),
    state('share','Share','Teach your home group what you learned.',[activity('discussion','What did your section explain?')]),
    state('complete','Complete','Work together to complete the reading task.',[activity('matching','Match each idea with its section.')]),
