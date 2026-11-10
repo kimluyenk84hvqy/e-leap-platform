@@ -22,6 +22,9 @@ try{
   if(response.ok){const data=await response.json();if(['admin','teacher'].includes(data?.user?.role))verifiedUser=data.user;}
 }catch(_){}
 const ctx=new ELeapRuntimeContext({role:verifiedUser?.role||'guest'});
+const teacherPermissions=[...(Array.isArray(verifiedUser?.permissions)?verifiedUser.permissions:[]),...(Array.isArray(verifiedUser?.capabilities)?verifiedUser.capabilities:[]),...(Array.isArray(verifiedUser?.grants)?verifiedUser.grants:[])];
+const canOpenStudio=verifiedUser?.role==='admin'||(verifiedUser?.role==='teacher'&&teacherPermissions.some(p=>['content:edit','content:manage','studio:edit'].includes(typeof p==='string'?p:p?.id||p?.name)));
+
 const qs=new URLSearchParams(location.search);
 const source=qs.get('source')||'';
 const esc=s=>String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));
@@ -34,9 +37,9 @@ const saveService=new ELeapAuthoringSaveService();
 let lesson=null, selectedScreen=0, selectedBlock=0, dirty=false, previewRole='student', autosaveTimer=null;
 let draftKey='';
 
-if(!verifiedUser){
+if(!canOpenStudio){
   const next=encodeURIComponent(location.pathname+location.search);
-  root.innerHTML=`<section class="studio-denied"><div class="studio-kicker">E-LEAP Studio</div><h1>Sign in to E-LEAP</h1><p>Use your Teacher or Administrator account to open Studio. Student and Guest accounts cannot edit lessons.</p><a class="studio-btn primary" href="../signin.html?next=${next}">Sign in</a><p><a href="../index.html">Back to Platform</a></p></section>`;
+  root.innerHTML=`<section class="studio-denied"><div class="studio-kicker">E-LEAP Studio</div><h1>${verifiedUser?'Studio permission required':'Sign in to E-LEAP'}</h1><p>${verifiedUser?'Your account is signed in but does not have the Studio content-edit grant. An administrator can assign this permission.':'Sign in with an Administrator account or an authorized Teacher account.'}</p>${!verifiedUser?`<a class="studio-btn primary" href="../signin.html?next=${next}">Sign in</a>`:''}<p><a href="../index.html">Back to Platform</a></p></section>`;
 }else{
   lesson=await loadLesson();
   ensureSchema();
