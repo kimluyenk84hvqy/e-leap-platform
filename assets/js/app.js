@@ -1,14 +1,14 @@
 const $=(s,c=document)=>c.querySelector(s);const $$=(s,c=document)=>[...c.querySelectorAll(s)];
 const app=$('.app'),content=$('#content'),nav=$('#mainNav');
 let role=window.ELEAPAccess?.role?.()||localStorage.getItem('e-leap-preview-role')||'teacher',route=['courses'],shellCache=null,resourceBase=null;
-const NAV=[['courses','▦','Courses'],['skills-lab','◫','Skills Lab'],['assignments','✓','Assignments'],['mock-tests','◉','Mock Tests'],['progress','↗','Progress'],['classes','◎','Classes'],['submissions','✎','Submissions']];
+const NAV=[['courses','▦','Courses'],['skills-lab','◫','Skills Lab'],['assignments','✓','Assignments'],['mock-tests','◉','Mock Tests'],['progress','↗','Progress'],['classes','◎','Classes'],['submissions','✎','Submissions'],['studio','▣','Studio']];
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 async function getJSON(p){const r=await fetch(p,{cache:'no-store'});if(!r.ok)throw new Error(`${p}: ${r.status}`);return r.json()}
 
 async function liveReq(path,options={}){const r=await fetch(`/api/research${path}`,{credentials:'same-origin',...options,headers:{'Content-Type':'application/json',...(options.headers||{})}});let d=null;try{d=await r.json()}catch{}if(!r.ok)throw new Error(d?.error||`Live request failed (${r.status})`);return d}
 function liveTeacher(){const k='e-leap-r4-teacher';let p=null;try{p=JSON.parse(localStorage.getItem(k)||'null')}catch{}if(!p){p={teacherId:`teacher-${crypto.randomUUID?.()||Date.now()}`,name:'Teacher'};localStorage.setItem(k,JSON.stringify(p))}return p}
 function go(r){route=r;render()}
-function renderNav(){nav.innerHTML='<div class="nav-group-label">WORKSPACE</div>'+NAV.filter(([id])=>!window.ELEAPAccess||ELEAPAccess.navAllowed(id)).map(([id,ic,n])=>`<button class="nav-btn ${route[0]===id?'active':''}" data-nav="${id}"><span class="nav-icon">${ic}</span>${role==='student'&&id==='submissions'?'Feedback':n}</button>`).join('');$$('[data-nav]',nav).forEach(b=>b.onclick=()=>go([b.dataset.nav]))}
+function renderNav(){nav.innerHTML='<div class="nav-group-label">WORKSPACE</div>'+NAV.filter(([id])=>(id!=='studio'||['admin','teacher'].includes(role))&&(!window.ELEAPAccess||ELEAPAccess.navAllowed(id))).map(([id,ic,n])=>`<button class="nav-btn ${route[0]===id?'active':''}" data-nav="${id}"><span class="nav-icon">${ic}</span>${role==='student'&&id==='submissions'?'Feedback':n}</button>`).join('');$('[data-nav]',nav).forEach(b=>b.onclick=()=>{if(b.dataset.nav==='studio'){location.href='studio/index.html';return;}go([b.dataset.nav]);})}
 function setHeader(title,crumb=[]){$('#pageTitle').textContent=title;$('#crumb').textContent=['E-LEAP',...crumb].join(' / ');renderNav()}
 function hero(title,eyebrow=''){return `<div class="hero">${eyebrow?`<div class="kicker">${esc(eyebrow)}</div>`:''}<h1>${esc(title)}</h1></div>`}
 async function shellData(force=false){if(!shellCache||force){const d=await getJSON('data/shells.json');d.shells=ELEAPShellManager.load(d.shells);shellCache=d}return shellCache}
