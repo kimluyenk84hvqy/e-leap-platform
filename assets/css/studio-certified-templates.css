@@ -63,3 +63,11 @@
 .certified-props .studio-field{margin-bottom:12px}
 .certified-props textarea{min-height:78px}
 @media(max-width:800px){.certified-canvas{min-height:0!important}.cert-opener-task{gap:5px}.cert-aim-card ol{gap:6px}}
+
+/* Interaction differences between certified Opener methods. */
+.cert-mystery-tiles{position:absolute;inset:0;pointer-events:none;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
+.cert-mystery-tiles span{background:#14563f;box-shadow:inset 0 0 0 3px #c8ed79}
+.cert-mystery-tiles.stage-0 span:first-child{background:transparent;box-shadow:none}
+.cert-mystery-tiles.stage-1 span:nth-child(-n+3){background:transparent;box-shadow:none}
+.cert-mystery-tiles.stage-2 span{background:transparent;box-shadow:none}
+.cert-hotseat-cover{position:absolute;inset:0;background:#154b36;color:#fff;display:grid;place-items:center;text-align:center;font-size:clamp(25px,2.7vw,42px);font-weight:800;padding:12%}
