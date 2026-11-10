@@ -82,6 +82,7 @@ export function changeCertifiedVariant(data,nextVariant){
  const s=CERTIFIED_TEMPLATES[data?.family];if(!s||!s.variants.some(v=>v.id===nextVariant))return null;
  return {...clone(data),variant:nextVariant};
 }
+export const certifiedLayoutSignature=data=>JSON.stringify({family:data?.family,variant:data?.variant,values:data?.values});
 export function validateCertifiedTemplate(data,{draft=false}={}){
  const spec=CERTIFIED_TEMPLATES[data?.family];if(!spec)return ['Unsupported certified template family.'];
  const v=data.values||{},issues=[];
@@ -99,6 +100,7 @@ export function validateCertifiedTemplate(data,{draft=false}={}){
   if(isReal(v[key])&&!bloom.test(v[key].trim()))issues.push(key+': start with an observable action verb (Bloom).');
   if(isReal(v[key])&&VAGUE_GOAL.test(v[key].trim()))issues.push(key+': specify the concrete learning content or performance.');
  }
+ if(!draft&&(!data.layoutReview||data.layoutReview.signature!==certifiedLayoutSignature(data)||data.layoutReview.passed!==true))issues.push('Slide layout has not passed 16:9 overflow check for the selected design and current content.');
  if(data.sourceReview?.required===true&&(!data.sourceReview.approved||data.sourceReview.contentSignature!==JSON.stringify(v)))issues.push('Converted source needs review and sign-off after mapping to certified slots.');
  if(data.family==='aims'){
   const complete=Object.values(spec.slots).length===6&&Object.keys(spec.slots).every(k=>isReal(v[k]));
@@ -115,7 +117,11 @@ export function applyCertifiedTemplate(screen,data){
  if(!data||!CERTIFIED_TEMPLATES[data.family])return {ok:false,error:'Unknown template.'};
  const next=clone(screen);
  next.certifiedTemplate=clone(data);
- if(screen.certifiedTemplate?.family===data.family)return {ok:true,screen:next};
+ if(screen.certifiedTemplate?.family===data.family){
+  next.templateId=CERTIFIED_TEMPLATES[data.family].templateId;
+  next.layout=data.family==='cover'?'hero':data.family==='aims'?'three-cards':'media-left';
+  return {ok:true,screen:next};
+ }
  const hasSource=(next.blocks||[]).some(b=>String(b.content?.text||b.content?.src||b.activity?.prompt||'').trim());
  next.certifiedTemplate.sourceReview=hasSource?{required:true,approved:false,contentSignature:''}:{required:false,approved:true,contentSignature:''};
  next.templateId=CERTIFIED_TEMPLATES[data.family].templateId;
