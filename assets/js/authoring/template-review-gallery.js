@@ -24,16 +24,17 @@ const sample=family=>{
  return d;
 };
 function readReviews(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch{return {}}}
+export function acceptedLayoutVariants(family){const reviews=readReviews();return (CERTIFIED_TEMPLATES[family]?.variants||[]).filter(v=>reviews[family+':'+v.id]?.decision==='layout-accepted').map(v=>v.id);}
 export function showTemplateReviewGallery(root,{backUrl='./index.html'}={}){
  let selected=all[0],q=0,visibleAnswer=false,reviews=readReviews(),photoSrc='',status='all';
  const template=()=>{const data=changeCertifiedVariant(sample(selected.family),selected.id);data.values.imageSrc=photoSrc;return data;};
  const count=()=>all.filter(a=>reviews[a.family+':'+a.id]?.decision==='layout-accepted').length;
  function draw(){
-  const filtered=all.filter(x=>(status==='all'||(reviews[x.family+':'+x.id]?.decision||'unreviewed')===status));
+  const filtered=all.filter(x=>status==='all'||x.family===status);
   const key=selected.family+':'+selected.id,record=reviews[key]||{};
   root.innerHTML='<section class="studio-gallery">'+
    '<header class="gallery-top"><div><div class="studio-kicker">E-LEAP STUDIO · TEMPLATE REVIEW</div><h1>Template Gallery & Review</h1><p>Xem và duyệt bố cục trước khi dùng mẫu cho bài giảng. Đang xem '+count()+' / '+all.length+' mẫu được chấp nhận bố cục tại trình duyệt này.</p></div><a class="studio-btn" href="'+esc(backUrl)+'">← Lesson Builder</a></header>'+
-   '<nav class="gallery-controls"><button data-gallery-filter="all" class="'+(status==='all'?'active':'')+'">All templates</button><button data-gallery-filter="cover" disabled>Cover · 3</button><button data-gallery-filter="aims" disabled>Aims · 2</button><button data-gallery-filter="opener" disabled>Opener · 3</button><span>Click a design below to compare</span></nav>'+
+   '<nav class="gallery-controls">'+['all','cover','aims','opener'].map(f=>'<button data-gallery-filter="'+f+'" class="'+(status===f?'active':'')+'">'+({all:'All templates',cover:'Cover · 3',aims:'Aims · 2',opener:'Opener · 3'}[f])+'</button>').join('')+'<span>Click a design below to compare</span></nav>'+
    '<div class="gallery-layout"><aside class="gallery-list">'+
    ['cover','aims','opener'].map(f=>'<section><h2>'+esc(CERTIFIED_TEMPLATES[f].label)+'</h2>'+
     filtered.filter(x=>x.family===f).map(x=>{const r=reviews[x.family+':'+x.id]||{};return '<button type="button" class="gallery-item '+(selected.family===x.family&&selected.id===x.id?'active':'')+'" data-gallery-select="'+esc(x.family+':'+x.id)+'"><strong>'+esc(x.label)+'</strong><small>'+esc(x.description)+'</small><span>'+esc(r.decision==='layout-accepted'?'Bố cục đã được chọn':r.decision==='needs-change'?'Cần sửa':'Chưa duyệt')+'</span></button>'}).join('')+'</section>').join('')+
@@ -45,6 +46,7 @@ export function showTemplateReviewGallery(root,{backUrl='./index.html'}={}){
    '<div class="gallery-actions"><button data-gallery-decision="needs-change">Cần chỉnh sửa</button><button data-gallery-decision="layout-accepted">Chấp nhận bố cục</button><button data-gallery-decision="unreviewed">Bỏ đánh dấu</button></div>'+
    '<p class="gallery-caution">Lưu ý: Chấp nhận bố cục chỉ ghi nhận ý kiến trên trình duyệt này, KHÔNG phải nghiệm thu chức năng, không tự động Publish và chưa đồng bộ sang tài khoản khác. Ảnh mặc định là ô dành cho ảnh thật, không phải ảnh đã được cấp quyền.</p>'+
    '</div></main></div></section>';
+  root.querySelectorAll('[data-gallery-filter]').forEach(b=>b.onclick=()=>{status=b.dataset.galleryFilter;draw()});
   root.querySelectorAll('[data-gallery-select]').forEach(b=>b.onclick=()=>{const [family,id]=b.dataset.gallerySelect.split(':');selected=all.find(x=>x.family===family&&x.id===id);q=0;visibleAnswer=false;photoSrc='';draw()});
   root.querySelectorAll('[data-gallery-question]').forEach(b=>b.onclick=()=>{q=+b.dataset.galleryQuestion;visibleAnswer=false;draw()});
   root.querySelector('[data-gallery-answer]')?.addEventListener('click',()=>{visibleAnswer=!visibleAnswer;draw()});
