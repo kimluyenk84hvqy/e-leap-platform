@@ -11,6 +11,7 @@ import {E_LEAP_LAYOUT_IDS} from './authoring/layout-registry.js';
 import {TEACHING_COMBOS,createTeachingCombo} from './authoring/teaching-combo-registry.js';
 import {CONTENT_SLOT_SCHEMAS,readTemplateSlots,applyMappedContent} from './authoring/content-mapper.js';
 import {variantOptions,setVisualVariant} from './authoring/visual-variants.js';
+import {makeLifeU12AcceptanceFixture,LIFE_U12_FIXTURE_ID} from './authoring/pilot-life-u12.js';
 
 const root=document.getElementById('studio');
 const ctx=new ELeapRuntimeContext();
@@ -38,6 +39,7 @@ if(!ctx.can('content:edit')){
 }
 
 async function loadLesson(){
+  if(qs.get('pilot')==='life-u12')return makeLifeU12AcceptanceFixture();
   if(source){
     try{const r=await fetch(source,{cache:'no-store'});if(r.ok)return await r.json();}catch{}
   }
@@ -61,7 +63,7 @@ function render(){
     <header class="studio-topbar">
       <div class="studio-brand"><div class="studio-logo">E</div><div><b>E-LEAP Authoring Studio</b><small data-studio-status>${dirty?'Unsaved changes':'Draft ready'}</small></div></div>
       <div class="studio-top-actions">
-        <button class="studio-btn" data-new>New lesson</button><button class="studio-btn" data-duplicate-lesson>Duplicate</button><button class="studio-btn" data-quality>Quality check</button><button class="studio-btn" data-export>Export JSON</button><button class="studio-btn" data-save>Save draft</button><button class="studio-btn primary" data-publish>${ctx.can('content:publish')?'Publish candidate':'Request publish'}</button>
+        <a class="studio-btn" href="?pilot=life-u12" title="Open the canonical LIFE Unit 12 acceptance draft">LIFE U12 pilot</a><button class="studio-btn" data-new>New lesson</button><button class="studio-btn" data-duplicate-lesson>Duplicate</button><button class="studio-btn" data-quality>Quality check</button><button class="studio-btn" data-export>Export JSON</button><button class="studio-btn" data-save>Save draft</button><button class="studio-btn primary" data-publish>${ctx.can('content:publish')?'Publish candidate':'Request publish'}</button>
       </div>
     </header>
     <div class="studio-layout">
