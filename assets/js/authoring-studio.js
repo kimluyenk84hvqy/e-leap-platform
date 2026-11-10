@@ -251,6 +251,7 @@ function wire(){
     const index=family==='cover'?0:same?selectedScreen:-1;
     const original=index>=0?lesson.screens[index]:modelCreateScreen(family==='aims'?'Aims':'Opener','');
     const data=original.certifiedTemplate?.family===family?clone(original.certifiedTemplate):(draftSourceFromScreen(original,family)||makeCertifiedTemplate(family));
+    if(!reviewed.includes(data.variant))data.variant=reviewed[0];
     const result=applyCertifiedTemplate(original,data);if(!result.ok)return;
     if(index>=0){lesson.screens[index]=result.screen;selectedScreen=index;}
     else {lesson.screens.splice(selectedScreen+1,0,result.screen);selectedScreen++;}
