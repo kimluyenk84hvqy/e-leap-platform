@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import {METHOD_COMBOS,checkMethodSource,mapMethodToStates} from '../assets/js/authoring/method-combo-catalog.js';
-assert.equal(Object.keys(METHOD_COMBOS).length,7);
+assert.equal(Object.keys(METHOD_COMBOS).length,29);
+assert.ok(Object.values(METHOD_COMBOS).filter(c=>c.group==='Listening').length>=5);
+assert.ok(Object.values(METHOD_COMBOS).filter(c=>c.group==='Reading').length>=4);
 for(const [id,combo] of Object.entries(METHOD_COMBOS)){
  assert.ok(combo.required.length>=1,id+' missing required schema');
  assert.ok(combo.steps.length>=4,id+' needs learning progression');
@@ -23,4 +25,15 @@ assert.ok(checkMethodSource('tbl-listening',shortened).some(s=>s.includes('misma
 assert.ok(checkMethodSource('tbl-listening',{...source,questions:[...source.questions.slice(0,4),{text:'Question 5',answers:[]}]}).length>0);
 assert.ok(checkMethodSource('tbl-listening',{...source,questions:source.questions.map((q,i)=>i===0?{...q,sourceRef:null}:q)}).some(s=>s.includes('source reference')));
 assert.ok(checkMethodSource('tbl-listening',{...source,audioSrc:''}).some(s=>s.includes('audioSrc')));
-console.log('Method combo catalog and source-fidelity tests passed');
+const item={text:'Original text for student A'};
+const splitSource={...source,sections:[item,{text:'Original text for student B'}]};
+assert.equal(mapMethodToStates('information-gap-listening',splitSource).ok,true);
+assert.ok(checkMethodSource('information-gap-listening',source).some(x=>x.includes('sections')));
+assert.ok(checkMethodSource('listening-sequence',{...source,events:[]}).some(x=>x.includes('events')));
+assert.ok(checkMethodSource('dictogloss-listening',source).some(x=>x.includes('transcript')));
+assert.equal(mapMethodToStates('dictogloss-listening',{...source,transcript:'Verified original audio transcript'}).ok,true);
+assert.equal(mapMethodToStates('reciprocal-reading',{passage:'Original reading text',questions:source.questions}).ok,true);
+assert.equal(mapMethodToStates('grammar-ttt',{grammarTarget:'Second conditional',examples:'Original examples',questions:source.questions}).ok,true);
+assert.equal(mapMethodToStates('vocabulary-hot-seat',{items:[{text:'Tornado'}],questions:source.questions}).ok,true);
+assert.equal(mapMethodToStates('warmup-picture-quiz',{photoSrc:'/media/nature.webp',targetWord:'tornado'}).ok,true);
+console.log('29 method combo variants and source-fidelity tests passed');
