@@ -13,7 +13,7 @@ const screen=(stage,title,instruction,templateId,layout,blocks,refs,notes='')=>(
 const src=(pages,ppt,track)=>({collection:'life-2e-a2b1',bookPages:pages,pptSlides:ppt,audioTrack:track||null});
 const audio=(track)=>{const b=createBlock('audio');b.content.label='Listen';b.content.assetId=null;b.content.src='';b.sourceTrack=track;return b};
 const image=()=>{const b=createBlock('image');b.content.alt='Topic photograph';b.content.assetId=null;b.content.src='';return b};
-const wordList=items=>{const b=createBlock('vocabulary');b.content.items=items.map(w=>({word:w,meaning:'',example:''}));return b};
+const wordList=items=>{const b=createBlock('vocabulary');b.content.items=items.map(([word,meaning])=>({word,meaning,example:''}));return b};
 const grammar=(rule,form,examples)=>{const b=createBlock('grammar-note');b.content={...b.content,rule,form,examples};return b};
 const question=(prompt,options,correct,extra={})=>activity('mcq',prompt,{options:options.map((v,i)=>({id:String.fromCharCode(65+i),label:v})),answerKey:[String.fromCharCode(65+correct)],...extra});
 const fill=(prompt,items)=>activity('fill',prompt,{items:items.map(([q,answers],i)=>({id:String(i+1),prompt:q,answers:Array.isArray(answers)?answers:[answers]}))});
@@ -57,7 +57,7 @@ export function makeLifeU12AcceptanceFixture(){
   discuss('Would you like to be a storm chaser? Why or why not?')
  ],src([141],[12])));
  slides.push(screen('12A · Vocabulary','Extreme weather','Read the words. Find a matching real-world photograph.','vocabulary-presentation','media-right',[
-  wordList(['flood','hail','snowstorm','thunder and lightning']),image()
+  wordList([['flood','water covering normally dry land'],['hail','small balls of ice falling from clouds'],['snowstorm','a storm with heavy snow and strong wind'],['thunder and lightning','the sound and flashes of an electrical storm']]),image()
  ],src([142],[14,15]),'Add four licensed photos and word meanings; do not use scanned book page.'));
  slides.push(screen('12A · Vocabulary','Weather where you live','Discuss with a partner. Give examples.','speaking-task','speaking-prompt',[
   discuss('Which kinds of extreme weather happen in your country? When?')
@@ -109,7 +109,7 @@ export function makeLifeU12AcceptanceFixture(){
   discuss('If you could live anywhere, where would you go and why?')
  ],src([143],[30])));
  slides.push(screen('12B · Vocabulary','Nature around us','Look at the photographs. Match each place to a word.','vocabulary-presentation','media-right',[
-  wordList(['forest','mountain','field','river','garden','ocean','park','desert']),image()
+  wordList([['forest','a large area with many trees'],['mountain','a very high natural landform'],['field','an open area of land for crops or grass'],['river','a natural stream of flowing water'],['garden','a planted outdoor space'],['ocean','a very large body of salt water'],['park','a public green space'],['desert','a very dry area with little rainfall']]),image()
  ],src([144],[32,33,34,35]),'Eight-word photo grid needs licensed images. Do not paste book images with captions.'));
  slides.push(screen('12B · Listening','One cubic foot of nature','Listen. What is the purpose of the green frame?','listening-task','question-options',[
   audio(96),
