@@ -17,6 +17,7 @@ import {LEARNING_ARC,phaseForScreen,lessonArcSummary} from './authoring/learning
 import {CERTIFIED_TEMPLATES,TEMPLATE_TOKENS,makeCertifiedTemplate,changeCertifiedVariant,validateCertifiedTemplate,applyCertifiedTemplate,draftSourceFromScreen,certifiedLayoutSignature,certifiedSourceSignature} from './authoring/certified-templates.js';
 import {renderCertifiedVisual,renderCertifiedEditor} from './authoring/certified-template-render.js';
 import {evaluateCertifiedGates,certifiedGroupStatus} from './authoring/certification-gates.js';
+import {showTemplateReviewGallery} from './authoring/template-review-gallery.js';
 
 const root=document.getElementById('studio');
 let verifiedUser=null;
@@ -44,6 +45,8 @@ const certifiedQuestionIndex=new Map(),certifiedAnswers=new Set(),certifiedRespo
 if(!canOpenStudio){
   const next=encodeURIComponent(location.pathname+location.search);
   root.innerHTML=`<section class="studio-denied"><div class="studio-kicker">E-LEAP Studio</div><h1>${verifiedUser?'Studio permission required':'Sign in to E-LEAP'}</h1><p>${verifiedUser?'Your account is signed in but does not have the Studio content-edit grant. An administrator can assign this permission.':'Sign in with an Administrator account or an authorized Teacher account.'}</p>${!verifiedUser?`<a class="studio-btn primary" href="../signin.html?next=${next}">Sign in</a>`:''}<p><a href="../index.html">Back to Platform</a></p></section>`;
+}else if(qs.get('view')==='gallery'){
+  showTemplateReviewGallery(root,{backUrl:'./index.html?view=builder'});
 }else{
   lesson=await loadLesson();
   ensureSchema();
@@ -79,7 +82,7 @@ function render(){
     <header class="studio-topbar">
       <div class="studio-brand"><div class="studio-logo">E</div><div><b>E-LEAP Authoring Studio</b><small data-studio-status>${dirty?'Unsaved changes':'Draft ready'}</small></div></div>
       <div class="studio-top-actions">
-        <button class="studio-btn primary" data-open-template-gallery>Choose Template</button><a class="studio-btn" href="../index.html">← Platform</a><a class="studio-btn" href="?pilot=life-u12" title="Open the canonical LIFE Unit 12 acceptance draft">LIFE U12 pilot</a><button class="studio-btn" data-new>New lesson</button><button class="studio-btn" data-duplicate-lesson>Duplicate</button><button class="studio-btn" data-quality>Quality check</button><button class="studio-btn" data-export>Export JSON</button><button class="studio-btn" data-save>Save draft</button><button class="studio-btn primary" data-publish>${verifiedUser?.role==='admin'?'Publish candidate':'Request publish'}</button>
+        <a class="studio-btn primary" href="./index.html?view=gallery">Template Gallery & Review</a><button class="studio-btn" data-open-template-gallery>Choose Template</button><a class="studio-btn" href="../index.html">← Platform</a><a class="studio-btn" href="?pilot=life-u12" title="Open the canonical LIFE Unit 12 acceptance draft">LIFE U12 pilot</a><button class="studio-btn" data-new>New lesson</button><button class="studio-btn" data-duplicate-lesson>Duplicate</button><button class="studio-btn" data-quality>Quality check</button><button class="studio-btn" data-export>Export JSON</button><button class="studio-btn" data-save>Save draft</button><button class="studio-btn primary" data-publish>${verifiedUser?.role==='admin'?'Publish candidate':'Request publish'}</button>
       </div>
     </header>
     <div class="studio-layout">
