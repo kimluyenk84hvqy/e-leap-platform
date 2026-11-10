@@ -4,6 +4,7 @@
  * Source locators and teacher notes are not learner-facing.
  */
 import {createLesson,createBlock,uid} from './lesson-model.js';
+import {createTeachingCombo} from './teaching-combo-registry.js';
 const txt=(value,role='body')=>{const b=createBlock('text');b.content.text=value;b.content.role=role;return b};
 const activity=(type,prompt,props={})=>{const b=createBlock(type);b.activity={...b.activity,prompt,...props};return b};
 const screen=(stage,title,instruction,templateId,layout,blocks,refs,notes='')=>({
@@ -155,6 +156,58 @@ export function makeLifeU12AcceptanceFixture(){
  slides.push(screen('Closing','Exit ticket','Write one useful sentence and one question.','consolidation','standard',[
   activity('writing','What did you learn? What would you like to practise next?',{rubric:'Provide a sentence and one question.'})
  ],src([143,145],[44,45])));
+ // Test the shared multi-state components using actual Unit 12 teaching topics.
+ // Passages below are short adapted teaching summaries, NOT scans/transcriptions.
+ const jigsaw=createTeachingCombo('reading-jigsaw')[0];
+ jigsaw.title='What if…? · Jigsaw reading';
+ jigsaw.sourceRefs=src([142],[17,19,20,21,22,23,24]);
+ jigsaw.teacherNotes='Source: LIFE 12A p.142. Adapted summaries for expert groups A–D. Four members share their assigned scientific explanation; use the original licensed passage in classroom where permitted.';
+ const readingText='GROUP A · Randall previously worked for NASA and uses science to answer imaginary questions.\n\nGROUP B · A submarine is better protected from lightning than a boat exposed on the surface.\n\nGROUP C · Lightning can send electricity outward through water near the strike.\n\nGROUP D · Ordinary rain is unlikely to break a windscreen at normal speeds, but large hail can cause damage.';
+ const readBlock=jigsaw.blocks.find(b=>b.comboStep==='read'&&b.type==='text');
+ readBlock.content.text=readingText;
+ // Shared reading stays visible in each state, while task blocks change.
+ delete readBlock.comboStep;
+ const expert=jigsaw.blocks.find(b=>b.comboStep==='expert'&&b.activity);
+ expert.activity.prompt='What is the scientific explanation in your assigned section? Choose two key facts.';
+ expert.activity.rubric='Identify two facts and tell your expert group why they matter.';
+ const share=jigsaw.blocks.find(b=>b.comboStep==='share'&&b.activity);
+ share.activity.prompt='Teach your home group the two facts from your assigned section.';
+ share.activity.rubric='Each learner reports, and group members listen and ask one question.';
+ const match=jigsaw.blocks.find(b=>b.comboStep==='complete'&&b.type==='matching');
+ match.activity.prompt='Match the topic to the correct expert section.';
+ match.activity.pairs=[
+  {id:'1',left:'Hypothetical questions and NASA',right:'A'},
+  {id:'2',left:'Protection underwater',right:'B'},
+  {id:'3',left:'Electricity spreading through water',right:'C'},
+  {id:'4',left:'Rain, hail and windscreens',right:'D'}
+ ];
+ const why=jigsaw.blocks.find(b=>b.comboStep==='evidence'&&b.activity);
+ why.activity.prompt='Which section supports each match? Explain your reasoning.';
+ why.activity.rubric='Refer to a line in the group reading and explain the connection.';
+ const readingIndex=slides.findIndex(s=>s.stage==='12A · Reading'&&s.title==='What if…?');
+ if(readingIndex>=0)slides.splice(readingIndex,1,jigsaw);
+
+ const grammarCombo=createTeachingCombo('grammar-discovery')[0];
+ grammarCombo.title='Second conditional · Guided discovery';
+ grammarCombo.sourceRefs=src([143],[25,26,27,28]);
+ grammarCombo.teacherNotes='Source grammar focus: LIFE 12A p.143. Pilot examples and practice sentences are newly composed.';
+ const notice=grammarCombo.blocks.find(b=>b.comboStep==='notice'&&b.type==='grammar-note');
+ notice.content.rule='Compare the two example sentences. How are they formed?';
+ notice.content.form='If I had more time, I would travel more.';
+ notice.content.examples=['If it snowed tomorrow, we would stay home.','I would learn to surf if I lived by the sea.'];
+ const discovery=grammarCombo.blocks.find(b=>b.comboStep==='discover'&&b.activity);
+ discovery.activity.prompt='What verb form follows if? What verb form follows would?';
+ discovery.activity.rubric='Describe the pattern: if + past simple, would + base verb. Explain its hypothetical meaning.';
+ const practise=grammarCombo.blocks.find(b=>b.comboStep==='practise'&&b.type==='mcq');
+ practise.activity.prompt='Which sentence uses the second conditional correctly?';
+ practise.activity.options=[
+  {id:'A',label:'If I have a boat, I would sail tomorrow.'},
+  {id:'B',label:'If I had a boat, I would sail tomorrow.'},
+  {id:'C',label:'If I had a boat, I will sail tomorrow.'}
+ ];
+ practise.activity.answerKey=['B'];
+ const grammarIndex=slides.findIndex(s=>s.stage==='12A · Grammar'&&s.title==='Second conditional');
+ if(grammarIndex>=0)slides.splice(grammarIndex,1,grammarCombo);
  const lesson=createLesson({
   id:LIFE_U12_FIXTURE_ID,courseLabel:'LIFE 2nd Edition · A2–B1',
   lessonNumber:'U12 · Opener + 12A + 12B',title:'Nature',
