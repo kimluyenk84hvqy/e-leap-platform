@@ -20,15 +20,15 @@ export function showMethodReviewGallery(root,{backUrl='./index.html?view=gallery
    '<p class="gallery-method-bestfor"><strong>Suitable for:</strong> '+esc(c.bestFor||'Select according to the textbook learning goal and learner level')+'</p>'+ 
    '<div class="gallery-method-steps">'+c.steps.map((s,i)=>'<button class="gallery-method-step '+(activeStep===i?'active':'')+'" data-method-step="'+i+'"><span>'+String(i+1).padStart(2,'0')+'</span><strong>'+esc(s.label)+'</strong></button>').join('')+'</div>'+
    '<section class="gallery-method-detail"><div class="studio-kicker">LEARNER ACTIVITY '+(activeStep+1)+' / '+c.steps.length+'</div>'+
-   '<h3>'+esc(c.steps[activeStep].label)+'</h3><p>'+esc(c.steps[activeStep].instruction)+'</p>'+
+   '<h3>'+esc(c.steps[activeStep].label)+'</h3><p class="gallery-caution">Instruction and guided support are authored only after selecting the textbook activity.</p>'+
    '<div class="gallery-method-zone"><b>CONTENT SLOT · '+esc(c.steps[activeStep].slot)+'</b>'+
    '<p>'+esc(c.steps[activeStep].showSource?'Hiển thị đúng phần học liệu liên quan theo sách.':'Chỉ hiện hỗ trợ/hoạt động ở bước này; đáp án chính được giữ kín.')+'</p></div>'+
    '<div class="gallery-method-support">'+
     '<div><b>Purpose</b><p>'+esc(active.pedagogicalPurpose)+'</p></div>'+
-    '<div><b>Sentence frame · Language support</b><p>'+esc(active.learnerSupport.sentenceFrame)+'</p></div>'+
-    '<div><b>Expected learner output</b><p>'+esc(active.expectedOutput)+'</p></div>'+
-    '<div><b>Participation / roles</b><p>'+esc(active.accountability)+'</p></div>'+
-    '<div><b>Teacher feedback / checking</b><p>'+esc(active.teacherCheck)+'</p></div>'+
+    '<div><b>Sentence Support slot</b><p>Reserved space – filled with lesson-specific language later.</p></div>'+
+    '<div><b>Learner Response slot</b><p>'+esc(active.expectedOutputType)+'</p></div>'+
+    '<div><b>Individual / Pair / Group slot</b><p>'+esc(active.organisationMode)+'</p></div>'+
+    '<div><b>Feedback · Evidence · Why slots</b><p>Reserved positions – filled from verified lesson evidence and answer keys.</p></div>'+
    '</div><div class="gallery-method-meta"><span>Work mode: '+esc(c.steps[activeStep].mode)+'</span><span>Answer: '+esc(c.steps[activeStep].id==='complete'?'teacher-controlled':'hidden')+'</span><span>Hybrid structure: '+esc(qa.ok?'PASS':'NEEDS REVISION')+'</span></div></section>'+
    '<section class="gallery-method-contract"><h3>Original-source mapping</h3><p><b>Required:</b> '+esc(c.required.join(' · '))+'</p>'+
    '<p><b>Optional scaffolding:</b> '+esc((c.optional||[]).join(' · '))+'</p>'+
