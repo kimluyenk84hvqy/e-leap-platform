@@ -163,3 +163,25 @@
  .lesson-canvas.template-reading-task .canvas-body{grid-template-columns:1fr!important}
  .lesson-canvas[class*="template-"] .block[data-slot]{grid-column:auto!important;grid-row:auto!important}
 }
+
+
+/* Learner projection never contains editable selection borders or authoring hints. */
+.lesson-canvas.preview-student .block,
+.lesson-canvas.preview-guest .block,
+.lesson-canvas.preview-presentation .block{
+ border-color:transparent;box-shadow:none;
+}
+.lesson-canvas.preview-student .block:hover,
+.lesson-canvas.preview-guest .block:hover,
+.lesson-canvas.preview-presentation .block:hover{border-color:transparent;background:transparent}
+.lesson-canvas:is(.preview-student,.preview-guest,.preview-presentation) .block-label,
+.lesson-canvas:is(.preview-student,.preview-guest,.preview-presentation) .interaction-row{display:none!important}
+.lesson-canvas .studio-no-content{font-size:19px;color:#365c4a;background:#f0f6f1;padding:20px 24px;border-radius:12px;grid-column:1/-1}
+/* One visual frame per state; reading text and task occupy stable functional zones. */
+.lesson-canvas:has(.combo-step-nav) .canvas-body>.block[data-slot="passage"]{grid-column:1}
+.lesson-canvas:has(.combo-step-nav) .canvas-body>.block[data-slot="activity"]{grid-column:2}
+.lesson-canvas.template-grammar-presentation:has(.combo-step-nav) .canvas-body>.block[data-slot="grammar"]{grid-column:1}
+.lesson-canvas.template-grammar-presentation:has(.combo-step-nav) .canvas-body>.block[data-slot="activity"]{grid-column:2}
+@media(max-width:850px){
+ .lesson-canvas:has(.combo-step-nav) .canvas-body>.block[data-slot]{grid-column:auto}
+}
