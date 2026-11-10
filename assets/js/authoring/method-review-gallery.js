@@ -16,6 +16,7 @@ export function showMethodReviewGallery(root,{backUrl='./index.html?view=gallery
     METHOD_GROUPS.map(g=>'<section><h2>'+esc(g)+'</h2>'+Object.entries(METHOD_COMBOS).filter(([,x])=>x.group===g).map(([id,x])=>
      '<button class="gallery-item '+(current===id?'active':'')+'" data-method-select="'+esc(id)+'"><strong>'+esc(x.label)+'</strong><small>'+esc(x.description)+'</small><span>'+esc(reviews[id]?.decision==='layout-accepted'?'Đã chọn phương pháp':reviews[id]?.decision==='needs-change'?'Cần chỉnh sửa':'Chưa duyệt')+'</span></button>').join('')+'</section>').join('')+
    '</aside><main class="gallery-review"><h2>'+esc(c.label)+'</h2><p class="gallery-method-subtitle"><strong>Method:</strong> '+esc(c.method)+' · '+esc(c.description)+'</p>'+
+   '<p class="gallery-method-bestfor"><strong>Suitable for:</strong> '+esc(c.bestFor||'Select according to the textbook learning goal and learner level')+'</p>'+ 
    '<div class="gallery-method-steps">'+c.steps.map((s,i)=>'<button class="gallery-method-step '+(activeStep===i?'active':'')+'" data-method-step="'+i+'"><span>'+String(i+1).padStart(2,'0')+'</span><strong>'+esc(s.label)+'</strong></button>').join('')+'</div>'+
    '<section class="gallery-method-detail"><div class="studio-kicker">LEARNER ACTIVITY '+(activeStep+1)+' / '+c.steps.length+'</div>'+
    '<h3>'+esc(c.steps[activeStep].label)+'</h3><p>'+esc(c.steps[activeStep].instruction)+'</p>'+
@@ -24,7 +25,7 @@ export function showMethodReviewGallery(root,{backUrl='./index.html?view=gallery
    '<div class="gallery-method-meta"><span>Work mode: '+esc(c.steps[activeStep].mode)+'</span><span>Answer: '+esc(c.steps[activeStep].id==='complete'?'teacher-controlled':'hidden')+'</span></div></section>'+
    '<section class="gallery-method-contract"><h3>Original-source mapping</h3><p><b>Required:</b> '+esc(c.required.join(' · '))+'</p>'+
    '<p><b>Optional scaffolding:</b> '+esc((c.optional||[]).join(' · '))+'</p>'+
-   '<p class="gallery-caution">Chưa có ngữ liệu đầu vào nên đây chỉ là bản thiết kế combo. E-LEAP không tự tạo audio, câu hỏi hoặc đáp án thay cho sách. Khi thiếu tài nguyên bắt buộc, không được đánh dấu bài giảng đã hoàn thành.</p></section>'+
+   '<p class="gallery-caution">Không có combo mặc định áp dụng cho mọi bài. Giáo viên chọn theo đích học tập, loại ngữ liệu, trình độ học viên và hình thức làm việc. Chưa có ngữ liệu đầu vào nên đây chỉ là bản thiết kế combo. E-LEAP không tự tạo audio, câu hỏi hoặc đáp án thay cho sách. Khi thiếu tài nguyên bắt buộc, không được đánh dấu bài giảng đã hoàn thành.</p></section>'+
    '<section class="gallery-review-fields"><label>Nhận xét / điều chỉnh các bước<textarea data-method-notes rows="3" placeholder="Ví dụ: cần thêm Pair Check trước Complete...">'+esc(review.notes||'')+'</textarea></label>'+
    '<div class="gallery-actions"><button data-method-review="needs-change">Cần chỉnh sửa</button><button data-method-review="layout-accepted">Chấp nhận hướng phương pháp</button><button data-method-review="unreviewed">Bỏ đánh dấu</button></div>'+
    '<p class="gallery-caution">Đánh dấu chỉ lưu trên trình duyệt này, KHÔNG phải chứng nhận tương tác hay quyền Publish trên server.</p></section></main></div></div>';
