@@ -57,7 +57,7 @@ export function renderCertifiedEditor(s){
  }).join('');
  const issues=validateCertifiedTemplate(data);
  return '<section class="property-section certified-props"><h3>'+esc(spec.label)+'</h3>'+
-  '<p class="helper">Switch designs without losing data. Only slots appear on the learner slide.</p>'+
+  '<p class="helper">Design preview only. Verify the source text and images; activity submissions are not connected to Live Class yet.</p>'+
   '<div class="cert-variant-picker">'+options+'</div><h4>Template Slots</h4>'+fields+
   (data.sourceReview?.required?'<button type="button" class="studio-btn" data-certify-review-source>Confirm source activity mapping</button><p class="helper">Check original textbook content and all learner-facing slots before confirming.</p>':'')+
   '<p class="helper">'+(issues.length?esc(issues.join(' · ')):'Certified slot checks passed.')+'</p></section>';
