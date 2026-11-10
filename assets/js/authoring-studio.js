@@ -16,7 +16,12 @@ import {learnerBlockReady} from './authoring/learner-preview-policy.js';
 import {LEARNING_ARC,phaseForScreen,lessonArcSummary} from './authoring/learning-arc.js';
 
 const root=document.getElementById('studio');
-const ctx=new ELeapRuntimeContext();
+let verifiedUser=null;
+try{
+  const response=await fetch('/api/auth/me',{credentials:'same-origin',cache:'no-store'});
+  if(response.ok){const data=await response.json();if(['admin','teacher'].includes(data?.user?.role))verifiedUser=data.user;}
+}catch(_){}
+const ctx=new ELeapRuntimeContext({role:verifiedUser?.role||'guest'});
 const qs=new URLSearchParams(location.search);
 const source=qs.get('source')||'';
 const esc=s=>String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));
@@ -29,8 +34,9 @@ const saveService=new ELeapAuthoringSaveService();
 let lesson=null, selectedScreen=0, selectedBlock=0, dirty=false, previewRole='student', autosaveTimer=null;
 let draftKey='';
 
-if(!ctx.can('content:edit')){
-  root.innerHTML=`<section class="studio-denied"><div class="studio-kicker">E-LEAP Studio</div><h1>Editing access required</h1><p>This workspace is available to Admins and Teachers with Content Edit permission.</p><a href="javascript:history.back()">← Back</a></section>`;
+if(!verifiedUser){
+  const next=encodeURIComponent(location.pathname+location.search);
+  root.innerHTML=`<section class="studio-denied"><div class="studio-kicker">E-LEAP Studio</div><h1>Sign in to E-LEAP</h1><p>Use your Teacher or Administrator account to open Studio. Student and Guest accounts cannot edit lessons.</p><a class="studio-btn primary" href="../signin.html?next=${next}">Sign in</a><p><a href="../index.html">Back to Platform</a></p></section>`;
 }else{
   lesson=await loadLesson();
   ensureSchema();
@@ -66,7 +72,7 @@ function render(){
     <header class="studio-topbar">
       <div class="studio-brand"><div class="studio-logo">E</div><div><b>E-LEAP Authoring Studio</b><small data-studio-status>${dirty?'Unsaved changes':'Draft ready'}</small></div></div>
       <div class="studio-top-actions">
-        <a class="studio-btn" href="?pilot=life-u12" title="Open the canonical LIFE Unit 12 acceptance draft">LIFE U12 pilot</a><button class="studio-btn" data-new>New lesson</button><button class="studio-btn" data-duplicate-lesson>Duplicate</button><button class="studio-btn" data-quality>Quality check</button><button class="studio-btn" data-export>Export JSON</button><button class="studio-btn" data-save>Save draft</button><button class="studio-btn primary" data-publish>${ctx.can('content:publish')?'Publish candidate':'Request publish'}</button>
+        <a class="studio-btn" href="?pilot=life-u12" title="Open the canonical LIFE Unit 12 acceptance draft">LIFE U12 pilot</a><button class="studio-btn" data-new>New lesson</button><button class="studio-btn" data-duplicate-lesson>Duplicate</button><button class="studio-btn" data-quality>Quality check</button><button class="studio-btn" data-export>Export JSON</button><button class="studio-btn" data-save>Save draft</button><button class="studio-btn primary" data-publish>${verifiedUser?.role==='admin'?'Publish candidate':'Request publish'}</button>
       </div>
     </header>
     <div class="studio-layout">
@@ -211,7 +217,7 @@ function wire(){
   document.querySelector('[data-export]')?.addEventListener('click',exportJSON);
   document.querySelector('[data-quality]')?.addEventListener('click',()=>document.querySelector('[data-quality-panel]').classList.add('open'));
   document.querySelector('[data-close-quality]')?.addEventListener('click',()=>document.querySelector('[data-quality-panel]').classList.remove('open'));
-  document.querySelector('[data-publish]')?.addEventListener('click',()=>{const blocking=runQuality().filter(x=>x[0]==='error');status(blocking.length?`Fix ${blocking.length} blocking issue(s) before publish`:(ctx.can('content:publish')?'Publishing candidate…':'Publish request staged for review'));if(blocking.length){document.querySelector('[data-quality-panel]').classList.add('open')}else if(ctx.can('content:publish')){saveService.publish(lesson).then(r=>status(r.mode==='server'?'Published as a new version':'Publish candidate staged locally'))}});
+  document.querySelector('[data-publish]')?.addEventListener('click',()=>{const blocking=runQuality().filter(x=>x[0]==='error');status(blocking.length?`Fix ${blocking.length} blocking issue(s) before publish`:(verifiedUser?.role==='admin'?'Publishing candidate…':'Publish request staged for review'));if(blocking.length){document.querySelector('[data-quality-panel]').classList.add('open')}else if(verifiedUser?.role==='admin'){saveService.publish(lesson).then(r=>status(r.mode==='server'?'Published as a new version':'Publish candidate staged locally'))}});
   document.querySelector('[data-new]')?.addEventListener('click',()=>{if(!confirm('Start a new lesson? Your current draft remains saved locally.'))return;lesson=modelCreateLesson();selectedScreen=selectedBlock=0;draftKey=`e-leap-studio-v1:${lesson.id}`;markDirty();render()});
   document.querySelector('[data-duplicate-lesson]')?.addEventListener('click',()=>{lesson=modelDuplicateLesson(lesson);draftKey=`e-leap-studio-v1:${lesson.id}`;markDirty();render()});
 }
