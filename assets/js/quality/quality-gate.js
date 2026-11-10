@@ -2,6 +2,7 @@ import {isObjectiveActivity,isSupportedActivity} from '../activities/activity-re
 import {E_LEAP_LAYOUTS} from '../authoring/layout-registry.js';
 import {isContentBlock} from '../authoring/content-block-registry.js';
 import {validateVisualContracts} from '../authoring/visual-template-contracts.js';
+import {learnerBlockReady} from '../authoring/learner-preview-policy.js';
 
 const hasAnswer=(a,t)=>{if(['mcq','multi-select','true-false','listening','video-question'].includes(t))return (a.answerKey||[]).length>0;if(t==='fill')return (a.items||[]).every(x=>(x.answers||[]).length);if(t==='matching')return (a.pairs||[]).length>0;if(t==='ordering')return (a.answerKey||[]).length>0;if(t==='categorising')return (a.items||[]).every(x=>x.category);return true};
 const pushDup=(issues,seen,id,where)=>{if(!id)return;if(seen.has(id))issues.push(['error',`${where}: duplicate id ${id}`]);else seen.add(id)};
@@ -34,6 +35,7 @@ export function auditLesson(lesson={}){
         if(String(b.content?.src||'').trim()&&!b.content?.assetId)issues.push(['info',`${where}: legacy path is supported, but new lessons should use a Media Asset ID`]);
       }
       if(['audio','video'].includes(b.type)&&!String(b.content?.transcript||b.content?.caption||'').trim())issues.push(['info',`${where}: consider transcript/caption for accessibility`]);
+      if(!learnerBlockReady(b)&&b.audience!=='internal'&&b.audience!=='teacher')issues.push(['error',`${where}: incomplete or placeholder content cannot be published`]);
       if(b.activity){
         const a=b.activity;pushDup(issues,seen,a.id,`${where} activity`);
         if(!String(a.prompt||'').trim())issues.push(['error',`${where}: activity prompt missing`]);
