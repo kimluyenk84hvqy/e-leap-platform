@@ -1,6 +1,7 @@
 /* Review-first Method Library. Method selection does not mutate a lesson.
    A complete original source must pass mapping checks before an actual lesson can be generated. */
 import {METHOD_COMBOS,METHOD_GROUPS,checkMethodSource,mapMethodToStates} from './method-combo-catalog.js';
+import {hybridStepContract,evaluateHybridCombo} from './hybrid-pedagogy-contract.js';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const KEY='eleap-method-review-v1';
 const getReviews=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch{return {}}};
@@ -8,7 +9,7 @@ export function showMethodReviewGallery(root,{backUrl='./index.html?view=gallery
  const reviews=getReviews();let current='tbl-listening',activeStep=0;
  const selected=()=>METHOD_COMBOS[current];
  function draw(){
-  const c=selected(),review=reviews[current]||{};
+  const c=selected(),review=reviews[current]||{},active=hybridStepContract(c.steps[activeStep]),qa=evaluateHybridCombo(c);
   root.innerHTML='<div class="studio-method-gallery">'+
    '<header class="gallery-top"><div><div class="studio-kicker">E-LEAP STUDIO · METHOD LIBRARY</div><h1>Teaching Methods & Combos</h1><p>Duyệt quy trình sư phạm trước; sau đó mới đưa học liệu của từng bài vào các ô tương ứng.</p></div>'+
    '<a class="studio-btn" href="'+esc(backUrl)+'">← Template Gallery</a></header>'+
@@ -22,7 +23,13 @@ export function showMethodReviewGallery(root,{backUrl='./index.html?view=gallery
    '<h3>'+esc(c.steps[activeStep].label)+'</h3><p>'+esc(c.steps[activeStep].instruction)+'</p>'+
    '<div class="gallery-method-zone"><b>CONTENT SLOT · '+esc(c.steps[activeStep].slot)+'</b>'+
    '<p>'+esc(c.steps[activeStep].showSource?'Hiển thị đúng phần học liệu liên quan theo sách.':'Chỉ hiện hỗ trợ/hoạt động ở bước này; đáp án chính được giữ kín.')+'</p></div>'+
-   '<div class="gallery-method-meta"><span>Work mode: '+esc(c.steps[activeStep].mode)+'</span><span>Answer: '+esc(c.steps[activeStep].id==='complete'?'teacher-controlled':'hidden')+'</span></div></section>'+
+   '<div class="gallery-method-support">'+
+    '<div><b>Purpose</b><p>'+esc(active.pedagogicalPurpose)+'</p></div>'+
+    '<div><b>Sentence frame · Language support</b><p>'+esc(active.learnerSupport.sentenceFrame)+'</p></div>'+
+    '<div><b>Expected learner output</b><p>'+esc(active.expectedOutput)+'</p></div>'+
+    '<div><b>Participation / roles</b><p>'+esc(active.accountability)+'</p></div>'+
+    '<div><b>Teacher feedback / checking</b><p>'+esc(active.teacherCheck)+'</p></div>'+
+   '</div><div class="gallery-method-meta"><span>Work mode: '+esc(c.steps[activeStep].mode)+'</span><span>Answer: '+esc(c.steps[activeStep].id==='complete'?'teacher-controlled':'hidden')+'</span><span>Hybrid structure: '+esc(qa.ok?'PASS':'NEEDS REVISION')+'</span></div></section>'+
    '<section class="gallery-method-contract"><h3>Original-source mapping</h3><p><b>Required:</b> '+esc(c.required.join(' · '))+'</p>'+
    '<p><b>Optional scaffolding:</b> '+esc((c.optional||[]).join(' · '))+'</p>'+
    '<p class="gallery-caution">Không có combo mặc định áp dụng cho mọi bài. Giáo viên chọn theo đích học tập, loại ngữ liệu, trình độ học viên và hình thức làm việc. Chưa có ngữ liệu đầu vào nên đây chỉ là bản thiết kế combo. E-LEAP không tự tạo audio, câu hỏi hoặc đáp án thay cho sách. Khi thiếu tài nguyên bắt buộc, không được đánh dấu bài giảng đã hoàn thành.</p></section>'+
