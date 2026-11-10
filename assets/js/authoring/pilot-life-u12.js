@@ -167,6 +167,8 @@ export function makeLifeU12AcceptanceFixture(){
  readBlock.content.text=readingText;
  // Shared reading stays visible in each state, while task blocks change.
  delete readBlock.comboStep;
+ const readQuestion=discuss('What is the main idea of your assigned group section?');
+ readQuestion.comboStep='read';jigsaw.blocks.push(readQuestion);
  const expert=jigsaw.blocks.find(b=>b.comboStep==='expert'&&b.activity);
  expert.activity.prompt='What is the scientific explanation in your assigned section? Choose two key facts.';
  expert.activity.rubric='Identify two facts and tell your expert group why they matter.';
