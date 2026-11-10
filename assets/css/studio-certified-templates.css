@@ -71,3 +71,7 @@
 .cert-mystery-tiles.stage-1 span:nth-child(-n+3){background:transparent;box-shadow:none}
 .cert-mystery-tiles.stage-2 span{background:transparent;box-shadow:none}
 .cert-hotseat-cover{position:absolute;inset:0;background:#154b36;color:#fff;display:grid;place-items:center;text-align:center;font-size:clamp(25px,2.7vw,42px);font-weight:800;padding:12%}
+
+.cert-answer-label{display:grid;gap:5px;font-size:15px;font-weight:700;color:#365e4a}
+.cert-answer-label textarea{width:100%;min-height:64px;max-height:110px;resize:vertical;border:2px solid #a7cbb1;background:#fff;border-radius:11px;padding:9px 12px;font:600 clamp(19px,1.5vw,24px) Poppins,Arial,sans-serif;color:#153c2d}
+.cert-answer-label textarea:focus{outline:3px solid #b7e589}
