@@ -127,13 +127,27 @@ export function mapMethodToStates(id,source={}){
  const errors=checkMethodSource(id,source);
  errors.push(...evaluateHybridCombo(method).errors);
  if(errors.length)return {ok:false,errors};
- const states=method.steps.map(step=>({
-  ...hybridStepContract(step),
-  // Missing optional scaffolding is intentionally empty and remains editable by teacher.
-  material:step.slot==='questions'?source.questions.map(q=>({...q})):source[step.slot]??null,
-  media:source.audioSrc||null,
-  transcript:step.id==='complete'?source.transcript||null:null,
-  answerPolicy:step.id==='complete'?'teacher-controlled':'hidden'
- }));
+ const questionForReview=q=>({
+  id:q.id??null,text:q.text,
+  ...(Array.isArray(q.options)?{options:q.options.map(o=>typeof o==='string'?o:{id:o.id,label:o.label})}:{})
+ });
+ // Never serialize an answer key, Evidence/Why, the unseen A/B side or an
+ // unapproved transcript into a learner-renderable method state.
+ const states=method.steps.map(step=>{
+  const hiddenSource=!step.showSource;
+  const sensitiveSplit=step.slot==='sections';
+  const material=hiddenSource||sensitiveSplit?null:
+   step.slot==='questions'?source.questions.map(questionForReview):
+   step.slot==='transcript'?null:(source[step.slot]??null);
+  return {
+   ...hybridStepContract(step),
+   material,
+   media:step.slot==='audioSrc'?(source.audioSrc||null):null,
+   transcript:null,
+   answerPolicy:'hidden',
+   requiresServerIssuedRoleGrants:true,
+   privateSourceRequired:sensitiveSplit||step.slot==='transcript'
+  };
+ });
  return {ok:true,id,label:method.label,states,originalQuestionCount:source.questions?.length||0,sourceRefs:source.sourceRefs||[],status:'needs-teacher-review'};
 }
