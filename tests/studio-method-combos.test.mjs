@@ -1,0 +1,26 @@
+import assert from 'node:assert/strict';
+import {METHOD_COMBOS,checkMethodSource,mapMethodToStates} from '../assets/js/authoring/method-combo-catalog.js';
+assert.equal(Object.keys(METHOD_COMBOS).length,7);
+for(const [id,combo] of Object.entries(METHOD_COMBOS)){
+ assert.ok(combo.required.length>=1,id+' missing required schema');
+ assert.ok(combo.steps.length>=4,id+' needs learning progression');
+ assert.equal(new Set(combo.steps.map(x=>x.id)).size,combo.steps.length,id+' duplicate state');
+ assert.ok(combo.steps.every(x=>x.instruction&&x.label&&x.slot),id+' missing learner instruction');
+ assert.equal(mapMethodToStates(id,{}).ok,false,'Must reject missing original material');
+}
+const question=i=>({id:'q'+i,text:'Original question '+i,answers:['Verified answer '+i],sourceRef:'Original book p.141 q'+i});
+const source={audioSrc:'/audio/original.mp3',expectedQuestionCount:5,questions:[1,2,3,4,5].map(question),gistQuestion:'What is the main idea?',groupTask:'Share the details with classmates.'};
+const mapped=mapMethodToStates('tbl-listening',source);
+assert.equal(mapped.ok,true);
+assert.equal(mapped.states.length,6);
+assert.equal(mapped.originalQuestionCount,5);
+assert.deepEqual(mapped.states.find(x=>x.id==='complete').material,source.questions);
+assert.equal(mapped.states.find(x=>x.id==='complete').answerPolicy,'teacher-controlled');
+assert.ok(mapped.states.every(x=>x.id==='complete'||x.answerPolicy==='hidden'));
+assert.equal(mapped.status,'needs-teacher-review');
+const shortened={...source,questions:source.questions.slice(0,3)};
+assert.ok(checkMethodSource('tbl-listening',shortened).some(s=>s.includes('mismatch')));
+assert.ok(checkMethodSource('tbl-listening',{...source,questions:[...source.questions.slice(0,4),{text:'Question 5',answers:[]}]}).length>0);
+assert.ok(checkMethodSource('tbl-listening',{...source,questions:source.questions.map((q,i)=>i===0?{...q,sourceRef:null}:q)}).some(s=>s.includes('source reference')));
+assert.ok(checkMethodSource('tbl-listening',{...source,audioSrc:''}).some(s=>s.includes('audioSrc')));
+console.log('Method combo catalog and source-fidelity tests passed');
