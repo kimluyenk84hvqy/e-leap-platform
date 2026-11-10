@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {METHOD_COMBOS,checkMethodSource,mapMethodToStates} from '../assets/js/authoring/method-combo-catalog.js';
 assert.equal(Object.keys(METHOD_COMBOS).length,29);
+assert.ok(Object.values(METHOD_COMBOS).every(c=>c.steps.some(s=>s.mode==='individual')&&c.steps.some(s=>s.mode==='pair'||s.mode==='group')));
 assert.ok(Object.values(METHOD_COMBOS).filter(c=>c.group==='Listening').length>=5);
 assert.ok(Object.values(METHOD_COMBOS).filter(c=>c.group==='Reading').length>=4);
 for(const [id,combo] of Object.entries(METHOD_COMBOS)){
@@ -10,7 +11,7 @@ for(const [id,combo] of Object.entries(METHOD_COMBOS)){
  assert.ok(combo.steps.every(x=>x.instruction&&x.label&&x.slot),id+' missing learner instruction');
  assert.equal(mapMethodToStates(id,{}).ok,false,'Must reject missing original material');
 }
-const question=i=>({id:'q'+i,text:'Original question '+i,answers:['Verified answer '+i],sourceRef:'Original book p.141 q'+i});
+const question=i=>({id:'q'+i,text:'Original question '+i,answers:['Verified answer '+i],sourceRef:'Original book p.141 q'+i,evidenceQuote:'Verified supporting sentence '+i,why:'Verified evidence supports original question '+i});
 const source={audioSrc:'/audio/original.mp3',expectedQuestionCount:5,questions:[1,2,3,4,5].map(question),gistQuestion:'What is the main idea?',groupTask:'Share the details with classmates.'};
 const mapped=mapMethodToStates('tbl-listening',source);
 assert.equal(mapped.ok,true);
@@ -33,6 +34,7 @@ assert.ok(checkMethodSource('listening-sequence',{...source,events:[]}).some(x=>
 assert.ok(checkMethodSource('dictogloss-listening',source).some(x=>x.includes('transcript')));
 assert.equal(mapMethodToStates('dictogloss-listening',{...source,transcript:'Verified original audio transcript'}).ok,true);
 assert.equal(mapMethodToStates('reciprocal-reading',{passage:'Original reading text',questions:source.questions}).ok,true);
+assert.ok(checkMethodSource('reciprocal-reading',{passage:'Original text',questions:source.questions.map(q=>({...q,why:''}))}).some(x=>x.includes('Why')));
 assert.equal(mapMethodToStates('grammar-ttt',{grammarTarget:'Second conditional',examples:'Original examples',questions:source.questions}).ok,true);
 assert.equal(mapMethodToStates('vocabulary-hot-seat',{items:[{text:'Tornado'}],questions:source.questions}).ok,true);
 assert.equal(mapMethodToStates('warmup-picture-quiz',{photoSrc:'/media/nature.webp',targetWord:'tornado'}).ok,true);
