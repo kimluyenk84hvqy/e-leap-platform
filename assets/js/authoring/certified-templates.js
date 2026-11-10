@@ -83,7 +83,8 @@ export function changeCertifiedVariant(data,nextVariant){
  return {...clone(data),variant:nextVariant};
 }
 export const certifiedLayoutSignature=data=>JSON.stringify({family:data?.family,variant:data?.variant,values:data?.values});
-export function validateCertifiedTemplate(data,{draft=false}={}){
+export const certifiedSourceSignature=blocks=>JSON.stringify(blocks||[]);
+export function validateCertifiedTemplate(data,{draft=false,sourceBlocks=null}={}){
  const spec=CERTIFIED_TEMPLATES[data?.family];if(!spec)return ['Unsupported certified template family.'];
  const v=data.values||{},issues=[];
  if(!spec.variants.some(x=>x.id===data.variant))issues.push('Unknown design variant.');
@@ -101,7 +102,7 @@ export function validateCertifiedTemplate(data,{draft=false}={}){
   if(isReal(v[key])&&VAGUE_GOAL.test(v[key].trim()))issues.push(key+': specify the concrete learning content or performance.');
  }
  if(!draft&&(!data.layoutReview||data.layoutReview.signature!==certifiedLayoutSignature(data)||data.layoutReview.passed!==true))issues.push('Slide layout has not passed 16:9 overflow check for the selected design and current content.');
- if(data.sourceReview?.required===true&&(!data.sourceReview.approved||data.sourceReview.contentSignature!==JSON.stringify(v)))issues.push('Converted source needs review and sign-off after mapping to certified slots.');
+ if(data.sourceReview?.required===true&&(!data.sourceReview.approved||data.sourceReview.contentSignature!==JSON.stringify(v)||!data.sourceReview.sourceSignature||(sourceBlocks!==null&&data.sourceReview.sourceSignature!==certifiedSourceSignature(sourceBlocks))))issues.push('Converted source changed or needs review and sign-off after mapping to certified slots.');
  if(data.family==='aims'){
   const complete=Object.values(spec.slots).length===6&&Object.keys(spec.slots).every(k=>isReal(v[k]));
   if(complete&&new Set(Object.keys(spec.slots).map(k=>String(v[k]).trim().toLowerCase())).size<6)issues.push('All six aims must be distinct and specific.');
