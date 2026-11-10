@@ -25,6 +25,8 @@ for(const family of Object.keys(CERTIFIED_TEMPLATES)){
 const cover=makeCertifiedTemplate('cover');
 Object.assign(cover.values,{unit:'Unit 12',topic:'Nature',imageSrc:'https://images.example.edu/nature.jpg',imageAlt:'Natural landscape'});
 cover.values.imageSrc='/assets/media/nature.webp';cover.values.imageAlt='Mountain and forest landscape';cover.mediaCheck={src:cover.values.imageSrc,loaded:true};
+assert.ok(validateCertifiedTemplate(cover).some(x=>x.includes('not been loaded')));
+cover.mediaCheck={src:cover.values.imageSrc,loaded:true};
 assert.deepEqual(validateCertifiedTemplate(cover),[]);
 const aims=makeCertifiedTemplate('aims');
 Object.assign(aims.values,{
@@ -45,6 +47,8 @@ Object.assign(opener.values,{
  target:'tornado',concept:'A rapidly rotating column of air.'
 });
 opener.values.imageSrc='/assets/media/tornado.webp';opener.values.imageAlt='Tornado over a field';opener.mediaCheck={src:opener.values.imageSrc,loaded:true};
+assert.ok(validateCertifiedTemplate(opener).some(x=>x.includes('not been loaded')));
+opener.mediaCheck={src:opener.values.imageSrc,loaded:true};
 assert.deepEqual(validateCertifiedTemplate(opener),[]);
 const student=renderCertifiedVisual({certifiedTemplate:opener},'student',2,true);
 const teacher=renderCertifiedVisual({certifiedTemplate:opener},'teacher',2,true);
