@@ -8,7 +8,7 @@ import {ELeapAuthoringSaveService} from './authoring-save-service.js';
 import {controlModelForRole} from './controls/control-shell.js';
 import {createLesson as modelCreateLesson,ensureLessonSchema as modelEnsureLessonSchema,createScreen as modelCreateScreen,createBlock as modelCreateBlock,normaliseActivity as modelNormaliseActivity,defaultActivityPrompt,legacyToBlocks as modelLegacyToBlocks,clone as modelClone,uid as modelUid,parsePipeLines,duplicateLesson as modelDuplicateLesson} from './authoring/lesson-model.js';
 import {E_LEAP_LAYOUT_IDS} from './authoring/layout-registry.js';
-import {TEACHING_COMBOS,createTeachingCombo} from './authoring/teaching-combo-registry.js';
+import {TEACHING_COMBOS,createTeachingCombo,comboStep,activeComboBlocks,setComboStep} from './authoring/teaching-combo-registry.js';
 import {CONTENT_SLOT_SCHEMAS,readTemplateSlots,applyMappedContent} from './authoring/content-mapper.js';
 import {variantOptions,setVisualVariant} from './authoring/visual-variants.js';
 import {makeLifeU12AcceptanceFixture,LIFE_U12_FIXTURE_ID} from './authoring/pilot-life-u12.js';
@@ -52,13 +52,14 @@ function newBlock(type){return modelCreateBlock(type);}
 function normaliseActivity(a={},type){return modelNormaliseActivity(a,type);}
 function defaultPrompt(type){return defaultActivityPrompt(type);}
 function currentScreen(){return lesson.screens[selectedScreen]}
-function currentBlock(){return currentScreen().blocks[selectedBlock]||currentScreen().blocks[0]}
+function currentBlock(){return currentScreen().blocks[selectedBlock]||activeComboBlocks(currentScreen())[0]||currentScreen().blocks[0]}
 function markDirty(){dirty=true;status('Unsaved changes');clearTimeout(autosaveTimer);autosaveTimer=setTimeout(saveDraft,700)}
 function saveDraft(){localStorage.setItem(draftKey,JSON.stringify(lesson));dirty=false;status('Saving draft…');saveService.saveDraft(lesson).then(r=>status(r.mode==='server'?'Draft saved to server':'Draft saved locally')).catch(()=>status('Draft saved locally'))}
 function status(msg){const e=document.querySelector('[data-studio-status]');if(e)e.textContent=msg}
 
 function render(){
   const s=currentScreen(); if(selectedBlock>=s.blocks.length)selectedBlock=Math.max(0,s.blocks.length-1);
+  if(s.combo&&!activeComboBlocks(s).includes(s.blocks[selectedBlock]))selectedBlock=Math.max(0,s.blocks.indexOf(activeComboBlocks(s)[0]));
   root.innerHTML=`<section class="studio-shell">
     <header class="studio-topbar">
       <div class="studio-brand"><div class="studio-logo">E</div><div><b>E-LEAP Authoring Studio</b><small data-studio-status>${dirty?'Unsaved changes':'Draft ready'}</small></div></div>
@@ -76,8 +77,9 @@ function render(){
   wire();
 }
 function slideItem(s,i){return `<button class="slide-item ${i===selectedScreen?'active':''}" data-slide="${i}"><span class="slide-thumb">${i+1}</span><span class="slide-title"><b>${esc(s.title||'Untitled')}</b><small>${esc(s.stage||'Slide')}</small></span><span class="slide-more">⋮</span></button>`}
-function renderCanvas(s){const t=lesson.theme;return `<div class="canvas-wrap" style="--canvas-font:${cssFont(t.fontFamily)};--canvas-title-size:${Number(t.titleSize)||36}px;--canvas-body-size:${Number(t.bodySize)||18}px;--canvas-text:${safeColor(t.textColor,'#173f38')};--canvas-accent:${safeColor(t.accentColor,'#0d7d6d')};--canvas-bg:${safeColor(t.backgroundColor,'#fff')}"><div class="preview-strip"><b>${cap(previewRole)} preview</b><span>${esc(t.preset)} · ${esc(t.fontFamily)}</span></div><section class="lesson-canvas layout-${esc(s.layout||'standard')} template-${esc(s.templateId||'custom')} variant-${esc(s.visualVariant||'default')}"><header class="canvas-hero"><div class="canvas-kicker">${esc(s.stage||'')}</div><h1 class="canvas-title" contenteditable="${!['student','guest','presentation'].includes(previewRole)}" data-edit="screen-title">${esc(s.title||'')}</h1><p class="canvas-instruction" contenteditable="${!['student','guest','presentation'].includes(previewRole)}" data-edit="screen-instruction">${esc(s.instruction||'')}</p></header><div class="canvas-body">${s.blocks.map((b,i)=>renderBlock(b,i)).join('')}${['student','guest','presentation'].includes(previewRole)?'':'<div class="add-block"><button class="studio-btn primary" data-open-library>+ Add content / activity</button></div>'}</div></section></div>`}
-function renderBlock(b,i){if(b.audience==='teacher'||b.audience==='internal')return '';return `<section class="block ${i===selectedBlock?'selected':''}" data-block="${i}">${blockPreview(b)}</section>`}
+function renderCanvas(s){const t=lesson.theme;return `<div class="canvas-wrap" style="--canvas-font:${cssFont(t.fontFamily)};--canvas-title-size:${Number(t.titleSize)||36}px;--canvas-body-size:${Number(t.bodySize)||18}px;--canvas-text:${safeColor(t.textColor,'#173f38')};--canvas-accent:${safeColor(t.accentColor,'#0d7d6d')};--canvas-bg:${safeColor(t.backgroundColor,'#fff')}"><div class="preview-strip"><b>${cap(previewRole)} preview</b><span>${esc(t.preset)} · ${esc(t.fontFamily)}</span></div><section class="lesson-canvas layout-${esc(s.layout||'standard')} template-${esc(s.templateId||'custom')} variant-${esc(s.visualVariant||'default')}"><header class="canvas-hero"><div class="canvas-kicker">${esc(s.stage||'')}</div><h1 class="canvas-title" contenteditable="${!['student','guest','presentation'].includes(previewRole)}" data-edit="screen-title">${esc(s.title||'')}</h1><p class="canvas-instruction" contenteditable="${!['student','guest','presentation'].includes(previewRole)}" data-edit="screen-instruction">${esc(s.instruction||'')}</p></header><div class="canvas-body">${renderComboSteps(s)}${s.blocks.map((b,i)=>renderBlock(b,i)).join('')}${['student','guest','presentation'].includes(previewRole)?'':'<div class="add-block"><button class="studio-btn primary" data-open-library>+ Add content / activity</button></div>'}</div></section></div>`}
+function renderComboSteps(s){if(!s.combo?.steps?.length)return '';return `<nav class="combo-step-nav" aria-label="Learning steps">${s.combo.steps.map((step,i)=>`<button type="button" data-combo-step="${esc(step.id)}" class="combo-step-button ${comboStep(s)?.id===step.id?'active':''}" aria-current="${comboStep(s)?.id===step.id?'step':'false'}"><small>${i+1}</small>${esc(step.label)}</button>`).join('')}</nav>`}
+function renderBlock(b,i){if(b.audience==='teacher'||b.audience==='internal')return '';if(b.comboStep&&comboStep(currentScreen())?.id!==b.comboStep)return '';return `<section class="block ${i===selectedBlock?'selected':''}" data-block="${i}">${blockPreview(b)}</section>`}
 function allowedMediaUrl(src){const s=String(src||'').trim();return (/^https:\/\/[^\s"'<>]+$/i.test(s)||/^(?:\/(?!\/)|\.\.?\/)[^\s"'<>]+$/.test(s))?s:''}
 function blockPreview(b){
   const visibleLabels=!(['student','guest','presentation'].includes(previewRole));
@@ -164,6 +166,7 @@ function revealEvidence(quote){
   return true;
 }
 function wire(){
+  document.querySelectorAll('[data-combo-step]').forEach(b=>b.onclick=()=>{if(!setComboStep(currentScreen(),b.dataset.comboStep))return;const blocks=activeComboBlocks(currentScreen());selectedBlock=Math.max(0,currentScreen().blocks.indexOf(blocks[0]));markDirty();render()});
   document.querySelectorAll('[data-evidence-quote]').forEach(button=>button.addEventListener('click',()=>{
     const ok=revealEvidence(button.dataset.evidenceQuote);
     const note=document.querySelector('.studio-evidence-note');
@@ -177,7 +180,7 @@ function wire(){
   document.querySelectorAll('[data-preview-role]').forEach(b=>b.onclick=()=>{previewRole=b.dataset.previewRole;render()});
   document.querySelector('[data-open-library]')?.addEventListener('click',()=>document.querySelector('[data-add-panel]').classList.add('open'));
   document.querySelector('[data-close-library]')?.addEventListener('click',()=>document.querySelector('[data-add-panel]').classList.remove('open'));
-  document.querySelectorAll('[data-add-type]').forEach(b=>b.onclick=()=>{currentScreen().blocks.splice(selectedBlock+1,0,newBlock(b.dataset.addType));selectedBlock++;markDirty();render()});
+  document.querySelectorAll('[data-add-type]').forEach(b=>b.onclick=()=>{const next=newBlock(b.dataset.addType);if(currentScreen().combo)next.comboStep=comboStep(currentScreen()).id;currentScreen().blocks.splice(selectedBlock+1,0,next);selectedBlock++;markDirty();render()});
   document.querySelector('[data-apply-mapping]')?.addEventListener('click',()=>{
     const values={};document.querySelectorAll('[data-map-key]').forEach(el=>values[el.dataset.mapKey]=el.value);
     const result=applyMappedContent(currentScreen(),values);
