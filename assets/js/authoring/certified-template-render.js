@@ -56,9 +56,15 @@ export function renderCertifiedEditor(s){
     '<input type="text" data-certified-slot="'+key+'" maxlength="'+def.limit+'" value="'+value+'">')+'</div>';
  }).join('');
  const issues=validateCertifiedTemplate(data);
+ const originalSource=(s.blocks||[]).map((b,i)=>{
+  const details=String(b.content?.text||b.activity?.prompt||b.content?.src||'').trim();
+  return details?'<p><strong>'+esc(b.type||'block')+' '+(i+1)+'</strong>: '+esc(details.slice(0,500))+'</p>':'';
+ }).filter(Boolean).join('');
+ const sourcePanel=data.sourceReview?.required?'<details class="cert-original-source"><summary>Review original source blocks before approval</summary>'+originalSource+'</details>':'';
  return '<section class="property-section certified-props"><h3>'+esc(spec.label)+'</h3>'+
   '<p class="helper">Design preview only. Verify the source text and images; activity submissions are not connected to Live Class yet.</p>'+
   '<div class="cert-variant-picker">'+options+'</div><h4>Template Slots</h4>'+fields+
+  sourcePanel+
   (data.sourceReview?.required?'<button type="button" class="studio-btn" data-certify-review-source>Confirm source activity mapping</button><p class="helper">Check original textbook content and all learner-facing slots before confirming.</p>':'')+
   '<p class="helper">'+(issues.length?esc(issues.join(' · ')):'Certified slot checks passed.')+'</p></section>';
 }
