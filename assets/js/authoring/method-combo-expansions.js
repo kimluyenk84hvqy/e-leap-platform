@@ -59,7 +59,7 @@ export const EXPANDED_METHOD_COMBOS={
  bestFor:'Informational texts with several meaningful sections',
  required:['passage','questions'],optional:['sections','groupTask'],
  steps:[
- s('preview','Preview','Predict the text topic from its title and visuals.','passage','pair',true),
+ s('preview','Preview','First predict the topic independently from the title and visuals.','passage','individual',true),
  s('roles','Role Reading','Predictor, Clarifier, Questioner and Summarizer read with separate roles.','passage','group',true),
  s('exchange','Exchange','Each role explains their findings to the group.','groupTask','group'),
  s('question','Question','Ask one question and locate support in the text.','passage','pair',true),
@@ -131,7 +131,7 @@ export const EXPANDED_METHOD_COMBOS={
  bestFor:'Frequent errors and confusing forms',
  required:['examples','grammarTarget','questions'],optional:['errorExamples','application'],
  steps:[
- s('spot','Spot','Find possible errors in the examples.','errorExamples','pair'),
+ s('spot','Spot','Individually mark possible errors before comparing.','errorExamples','individual'),
  s('hypothesize','Hypothesize','Explain which rule might be broken.','examples','group',true),
  s('correct','Correct','Propose corrected sentences together.','errorExamples','pair'),
  s('explain','Explain','Justify your corrections using the form and meaning.','grammarTarget','class'),
@@ -143,7 +143,7 @@ export const EXPANDED_METHOD_COMBOS={
  bestFor:'Concrete words with visually identifiable meaning',
  required:['items','questions','photoSrc'],optional:['application'],
  steps:[
- s('reveal','Reveal','Look at the partial picture and predict the word.','photoSrc','pair'),
+ s('reveal','Reveal','Individually predict the word from the partial picture.','photoSrc','individual'),
  s('guess','Guess','Give clues without saying the target word.','items','pair'),
  s('meaning','Meaning','Match each image and word with its meaning.','items','group',true),
  s('pronounce','Pronounce','Listen and practise stress and pronunciation.','items','class',true),
@@ -155,7 +155,7 @@ export const EXPANDED_METHOD_COMBOS={
  bestFor:'Semantic fields, collocations and abstract topic vocabulary',
  required:['items','questions'],optional:['categories','application'],
  steps:[
- s('brainstorm','Brainstorm','List words you already know about the topic.','categories','group'),
+ s('brainstorm','Brainstorm','Individually list words you already know before group clustering.','categories','individual'),
  s('cluster','Cluster','Place the new words in meaningful groups.','items','group',true),
  s('match','Match','Match words with definitions and collocations.','items','pair',true),
  s('retrieve','Retrieve','Close the word list and explain three words to a partner.','items','pair'),
@@ -168,6 +168,7 @@ export const EXPANDED_METHOD_COMBOS={
  required:['items','questions'],optional:['photoSrc','forbiddenWords','application'],
  steps:[
  s('see','See','Everyone except the guesser looks at the word or picture.','items','group'),
+ s('prepare','Prepare Clue','Each describing student prepares one English clue privately. The Hot Seat learner must not see the word.','forbiddenWords','individual'),
  s('describe','Describe','Give English clues without saying the keyword.','forbiddenWords','group'),
  s('guess','Guess','The Hot Seat learner guesses the keyword.','items','group'),
  s('switch','Switch','Change roles so every learner describes and guesses.','items','group'),
@@ -227,7 +228,7 @@ export const EXPANDED_METHOD_COMBOS={
  bestFor:'Short paragraphs, reports, joint summaries and group outputs',
  required:['writingPrompt'],optional:['outline','criteria','languageSupport'],
  steps:[
- s('ideas','Idea Pool','Share ideas and agree on the key message.','writingPrompt','group'),
+ s('ideas','Idea Pool','Individually prepare two ideas before pooling them with the group.','writingPrompt','individual'),
  s('outline','Outline','Assign roles for the opening, body and conclusion.','outline','group'),
  s('draft','Co-write','Produce one shared first draft.','writingPrompt','group'),
  s('edit','Peer Edit','Exchange drafts and provide specific corrections.','criteria','group'),
@@ -251,7 +252,7 @@ export const EXPANDED_METHOD_COMBOS={
  bestFor:'Introducing visual vocabulary or concrete topics',
  required:['photoSrc','targetWord'],optional:['clues','leadQuestions'],
  steps:[
- s('reveal','Reveal','Look at a small part of the picture.','photoSrc','class'),
+ s('reveal','Reveal','Individually observe a small part of the picture and predict one detail.','photoSrc','individual'),
  s('observe','Observe','Describe what you can see without guessing yet.','leadQuestions','pair'),
  s('clues','Clues','Give a short clue to your classmates.','clues','pair'),
  s('guess','Guess','Guess the keyword based on clues.','targetWord','class'),
