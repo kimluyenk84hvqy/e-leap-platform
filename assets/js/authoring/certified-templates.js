@@ -23,7 +23,8 @@ export const CERTIFIED_TEMPLATES={
   label:'Learning Aims · Bloom',templateId:'lesson-aims',
   variants:[
    {id:'three-cards',label:'Three Cards',description:'Knowledge · Skills · Attitudes in three fixed boxes'},
-   {id:'three-pillars',label:'Three Pillars',description:'Three tall columns with numbered measurable outcomes'}
+   {id:'three-pillars',label:'Three Pillars',description:'Three tall columns with numbered measurable outcomes'},
+   {id:'three-horizontal',label:'Three Horizontal Bands',description:'Knowledge · Skills · Attitudes in three full-width horizontal boxes'}
   ],
   slots:{
    knowledge1:field('Knowledge 1 · Bloom verb','textarea',200),knowledge2:field('Knowledge 2 · Bloom verb','textarea',200),
