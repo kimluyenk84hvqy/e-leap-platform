@@ -131,3 +131,11 @@
 .certified-canvas .cert-opener-task{padding:3.7% 4.5%;gap:9px}
 .certified-canvas .cert-opener-actions .cert-step-buttons button,.certified-canvas .cert-opener-actions>[data-certified-reveal]{font-size:clamp(17px,1.91cqw,22px)}
 @media(max-width:900px){.certified-cover.design-framed-gallery .cert-cover-layout{padding:12px 20px 12px 12px}.certified-cover.design-framed-gallery .cert-cover-identity{padding:5% 4%}.certified-canvas .cert-aim-card ol{gap:8px}}
+
+/* Empty-photo state: never draw placeholder words across the lesson title.
+   The teacher can jump directly to the Photo URL slot; students see nothing. */
+.certified-cover .cert-photo-missing{background:linear-gradient(115deg,#254c3e,#91a79b);display:flex;align-items:flex-end;justify-content:flex-end;padding:22px;min-height:0}
+.certified-cover.design-photo-hero .cert-cover-photo:after{pointer-events:none}
+.certified-canvas .cert-photo-choose{z-index:5;position:relative;display:inline-flex;border:2px solid #daefb3;border-radius:12px;padding:12px 16px;background:#184a34;color:#fff;font:700 17px Poppins,Arial,sans-serif;cursor:pointer;box-shadow:0 3px 16px #102e284a}
+.certified-canvas .cert-photo-choose:hover{background:#27734c}
+.certified-cover.design-photo-hero .cert-photo-choose{margin-bottom:1%;margin-right:1%}
