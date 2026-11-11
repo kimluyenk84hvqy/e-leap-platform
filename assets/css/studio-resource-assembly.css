@@ -110,3 +110,14 @@
 .rs-source-media{max-height:100%;overflow:visible}
 .rs-practice .rs-activity-nav{margin-bottom:0}
 @media(max-width:780px){.rs-phase-content .rs-panel ol{columns:1}.rs-listening{grid-template-columns:1fr;max-height:70%}.rs-cross-layout{grid-template-columns:1fr}.rs-cross-active{max-height:220px}.rs-practice .rs-items{grid-template-columns:1fr}.rs-canvas{overflow:auto!important}}
+
+/* Lead-in: one large verified source image, supporting thumbnails, real TPS phase. */
+.rs-picture-focus{display:grid;grid-template-columns:minmax(0,1fr) 180px;gap:14px;height:61%;padding:0 4% 3%}
+.rs-picture-feature{height:100%;min-height:0;border:1px solid #d3e2d1;border-radius:14px;background:#fff;display:grid;place-items:center;overflow:hidden}
+.rs-picture-feature .rs-image{max-width:100%;max-height:100%;object-fit:contain}
+.rs-picture-choices{display:grid;grid-template-columns:1fr 1fr;gap:6px;min-height:0;overflow:auto;align-content:start}
+.rs-picture-choices button{border:2px solid #d4e3d6;background:#fff;border-radius:9px;min-height:95px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:4px}
+.rs-picture-choices button.rs-current{border-color:#419456;background:#e7f6d9}
+.rs-picture-choices img{height:67px;object-fit:contain}
+.rs-picture-choices span{font:700 12px Poppins,Arial,sans-serif;color:#1d5b36}
+@media(max-width:780px){.rs-picture-focus{grid-template-columns:1fr;height:auto}.rs-picture-feature{min-height:220px}.rs-picture-choices{grid-template-columns:repeat(3,1fr)}}
