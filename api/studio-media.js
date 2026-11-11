@@ -1,4 +1,6 @@
-import { handleUpload } from '@vercel/blob/client';
+// Load the upload-only SDK only when authenticated private uploads are enabled.
+// GET listing must remain available even if the optional client-upload bundle
+// was omitted from a deployment's function trace.
 import { get, head } from '@vercel/blob';
 import { getResearchDb } from '../server/_research-db.js';
 import { requireAuth, requireSameOrigin, getAuth } from '../server/_auth.js';
@@ -46,6 +48,7 @@ export default async function handler(req,res){
   if(req.method==='POST'&&req.body?.type){
    if(!enabled())return err(res,503,'Media upload is not enabled on this deployment.');
    // The Blob SDK verifies signed completion callbacks; do not trust arbitrary callbacks.
+   const { handleUpload } = await import('@vercel/blob/client');
    const response=await handleUpload({
     body:req.body,request:req,
     onBeforeGenerateToken:async(pathname,clientPayload)=>{
