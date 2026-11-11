@@ -114,7 +114,7 @@ function renderBlock(b,i){if(b.audience==='teacher'||b.audience==='internal')ret
 function allowedMediaUrl(src){const s=String(src||'').trim();return (/^https:\/\/[^\s"'<>]+$/i.test(s)||/^(?:\/(?!\/)|\.\.?\/)[^\s"'<>]+$/.test(s))?s:''}
 function blockPreview(b){
   const visibleLabels=!(['student','guest','presentation'].includes(previewRole));
-  if(b.type==='text')return `<div class="block-label" ${visibleLabels?'':'hidden'}>Text</div><div class="studio-text-role role-${esc(b.content?.role||'body')}" contenteditable="${!['student','guest','presentation'].includes(previewRole)}" data-edit="block-text">${esc(b.content?.text||'')}</div>`;
+  if(b.type==='text')return `<div class="studio-text-role role-${esc(b.content?.role||'body')}" contenteditable="${!['student','guest','presentation'].includes(previewRole)}" data-edit="block-text">${esc(b.content?.text||'')}</div>`;
   if(b.type==='image'&&['student','guest','presentation'].includes(previewRole)&&!b.content?.src&&!b.content?.assetId)return '<div class="media-placeholder">Image unavailable</div>';
   if(b.type==='image'&&allowedMediaUrl(b.content?.src))return `<div class="block-label" ${visibleLabels?'':'hidden'}>Image</div><figure class="studio-asset"><img loading="lazy" src="${esc(allowedMediaUrl(b.content.src))}" alt="${esc(b.content?.alt||'')}"/><figcaption>${esc(b.content?.caption||'')}</figcaption></figure>`;
   if(b.type==='image')return `<div class="block-label" ${visibleLabels?'':'hidden'}>Image</div><div class="media-placeholder"><div><strong>▧ ${esc(b.content?.caption||'Image')}</strong>${b.content?.src?esc(b.content.src):(b.content?.assetId?`Asset: ${esc(b.content.assetId)}`:'Choose an image from Media Library or paste a media path.')}</div></div>`;
