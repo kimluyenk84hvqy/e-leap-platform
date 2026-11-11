@@ -1,7 +1,7 @@
 /* Fixed HTML renderers for certified template families.
  * Data is always escaped. Student mode never exposes keys.
  */
-import {CERTIFIED_TEMPLATES,validateCertifiedTemplate} from './certified-templates.js';
+import {CERTIFIED_TEMPLATES,TEMPLATE_TOKENS,validateCertifiedTemplate} from './certified-templates.js';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const safeMedia=s=>/^https:\/\/[^\s"'<>]+$/i.test(String(s||''))||/^(?:\/(?!\/)|\.\.?\/)[^\s"'<>]+$/.test(String(s||''))?String(s):'';
 const photo=(src,alt,editor)=>{
@@ -21,7 +21,7 @@ export function renderCertifiedVisual(s,role,qIndex=0,revealed=false,response=''
    '<div class="cert-cover-photo">'+photo(v.imageSrc,v.imageAlt||v.topic,editor)+'</div></div>';
  }else if(family==='aims'){
   const group=(label,key,n)=>'<section class="cert-aim-card"><span class="cert-aim-number">'+n+'</span><h2>'+label+'</h2><ol><li>'+blank(v[key+'1'])+'</li><li>'+blank(v[key+'2'])+'</li></ol></section>';
-  inner='<div class="cert-aims-head">LEARNING AIMS</div><div class="cert-aims-grid">'+
+  inner='<div class="cert-aims-head">Aims of the lesson</div><div class="cert-aims-grid">'+
    group('KNOWLEDGE','knowledge','01')+group('SKILLS','skills','02')+group('ATTITUDES','attitudes','03')+'</div>';
  }else if(family==='opener'){
   const i=Math.max(0,Math.min(2,Number(qIndex)||0)),show=revealed&&canReveal;
@@ -40,7 +40,16 @@ export function renderCertifiedVisual(s,role,qIndex=0,revealed=false,response=''
   inner='<div class="cert-opener-grid">'+(data.variant==='hot-seat'?task+image:image+task)+'</div>';
  }
  const issues=validateCertifiedTemplate(data);
- return '<div class="canvas-wrap certified-wrap"><section class="lesson-canvas certified-canvas certified-'+esc(family)+' design-'+esc(data.variant)+'">'+inner+'</section>'+
+ const typography={
+  '--cert-identity':TEMPLATE_TOKENS.coverIdentityPx+'px','--cert-faculty':TEMPLATE_TOKENS.coverFacultyPx+'px',
+  '--cert-cover-unit':TEMPLATE_TOKENS.coverUnitPx+'px','--cert-cover-topic':TEMPLATE_TOKENS.coverTopicPx+'px',
+  '--cert-cover-course':TEMPLATE_TOKENS.coverCoursePx+'px','--cert-aims-title':TEMPLATE_TOKENS.aimsTitlePx+'px',
+  '--cert-aims-category':TEMPLATE_TOKENS.aimsCategoryPx+'px','--cert-aims-body':TEMPLATE_TOKENS.aimsBodyPx+'px',
+  '--cert-opener-task':TEMPLATE_TOKENS.openerTaskPx+'px','--cert-opener-instruction':TEMPLATE_TOKENS.instructionPx+'px',
+  '--cert-opener-question':TEMPLATE_TOKENS.openerQuestionPx+'px','--cert-opener-target':TEMPLATE_TOKENS.openerTargetPx+'px'
+ };
+ const typeStyle=Object.entries(typography).map(([name,value])=>name+':'+value).join(';');
+ return '<div class="canvas-wrap certified-wrap"><section class="lesson-canvas certified-canvas certified-'+esc(family)+' design-'+esc(data.variant)+'" style="'+esc(typeStyle)+'">'+inner+'</section>'+
   (editor&&issues.length?'<div class="cert-editor-warning">'+issues.length+' slot checks incomplete. Finish Template Slots before Publish.</div>':'')+'</div>';
 }
 export function renderCertifiedEditor(s){
