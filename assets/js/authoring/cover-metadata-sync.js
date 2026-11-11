@@ -3,7 +3,8 @@
  */
 const NORMAL=x=>String(x??'').trim();
 const isStarterTopic=x=>!NORMAL(x)||/^new lesson$/i.test(NORMAL(x));
-const isStarterUnit=x=>!NORMAL(x)||/^unit\s*2\s*[·•-]\s*lesson\s*u2\.1$/i.test(NORMAL(x));
+const isStarterUnit=x=>!NORMAL(x)||/^u2\.1$/i.test(NORMAL(x))||/^unit\s*2\s*[·•-]\s*lesson\s*u2\.1$/i.test(NORMAL(x));
+const isStarterCourse=x=>!NORMAL(x)||/^(objective (first b2|pet b[12])|new course)$/i.test(NORMAL(x));
 const explicit=x=>NORMAL(x);
 export function coverMetadata(lesson){
  return {unit:explicit(lesson?.lessonNumber),topic:explicit(lesson?.title),course:explicit(lesson?.courseLabel)};
@@ -18,7 +19,7 @@ export function syncCoverMetadata(cover,lesson,{initial=false}={}){
   for(const key of ['unit','topic','course']){
    const previous=explicit(data.values[key]),next=metadata[key];
    const linked=data.autoSynced[key]===true;
-   const starter=key==='unit'?isStarterUnit(previous):key==='topic'?isStarterTopic(previous):!previous;
+   const starter=key==='unit'?isStarterUnit(previous):key==='topic'?isStarterTopic(previous):isStarterCourse(previous)&&previous!==next;
    if((linked||(initial&&starter))&&previous!==next){data.values[key]=next;changed=true;}
    if(initial&&starter)data.autoSynced[key]=true;
   }
