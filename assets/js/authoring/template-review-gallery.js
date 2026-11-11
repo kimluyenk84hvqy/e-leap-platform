@@ -38,7 +38,7 @@ export function showTemplateReviewGallery(root,{backUrl='./index.html'}={}){
    '<div class="gallery-layout"><aside class="gallery-list">'+
    ['cover','aims','opener'].map(f=>'<section><h2>'+esc(CERTIFIED_TEMPLATES[f].label)+'</h2>'+
     filtered.filter(x=>x.family===f).map(x=>{const r=reviews[x.family+':'+x.id]||{};return '<button type="button" class="gallery-item '+(selected.family===x.family&&selected.id===x.id?'active':'')+'" data-gallery-select="'+esc(x.family+':'+x.id)+'"><strong>'+esc(x.label)+'</strong><small>'+esc(x.description)+'</small><span>'+esc(r.decision==='layout-accepted'?'Bố cục đã được chọn':r.decision==='needs-change'?'Cần sửa':'Chưa duyệt')+'</span></button>'}).join('')+'</section>').join('')+
-   '</aside><main class="gallery-review"><div class="gallery-preview-head"><div><h2>'+esc(selected.groupLabel)+' · '+esc(selected.label)+'</h2><p>'+esc(selected.description)+'</p></div><span class="gallery-status">'+esc(record.decision==='layout-accepted'?'Đã chấp nhận bố cục':record.decision==='needs-change'?'Cần sửa':'Chưa duyệt')+'</span></div>'+
+   '</aside><main class="gallery-review"><div class="gallery-preview-head"><div><h2>'+esc(selected.groupLabel)+' · '+esc(selected.label)+'</h2><p>'+esc(selected.description)+'</p></div><div class="gallery-review-quick-actions"><span class="gallery-status">'+esc(record.decision==='layout-accepted'?'Đã chấp nhận bố cục':record.decision==='needs-change'?'Cần sửa':'Chưa duyệt')+'</span><button type="button" class="studio-btn primary" data-gallery-decision="layout-accepted">✓ Chấp nhận bố cục</button></div></div>'+
    '<div class="gallery-demo">'+renderCertifiedVisual({certifiedTemplate:template()},'teacher',q,visibleAnswer)+'</div>'+
    (selected.family==='opener'?'<div class="gallery-demo-controls"><button data-gallery-question="0">Question 1</button><button data-gallery-question="1">Question 2</button><button data-gallery-question="2">Question 3</button><button data-gallery-answer>'+(visibleAnswer?'Hide answer':'Show answer')+'</button></div>':'')+
    '<div class="gallery-review-fields"><label>Ảnh minh họa của chị (HTTPS URL hoặc đường dẫn có sẵn trên website)<input data-gallery-photo placeholder="Dán đường dẫn ảnh thật nếu muốn thử bố cục với ảnh" value="'+esc(photoSrc)+'"></label>'+
@@ -60,7 +60,7 @@ export function showTemplateReviewGallery(root,{backUrl='./index.html'}={}){
    const key=selected.family+':'+selected.id,decision=b.dataset.galleryDecision;
    const notes=root.querySelector('[data-gallery-notes]')?.value||'';
    if(decision==='unreviewed')delete reviews[key];else reviews[key]={decision,notes,at:new Date().toISOString()};
-   localStorage.setItem(KEY,JSON.stringify(reviews));draw();
+   try{localStorage.setItem(KEY,JSON.stringify(reviews));draw();}catch(e){const note=root.querySelector('.gallery-caution');if(note)note.textContent='Không thể lưu quyết định trong trình duyệt này. Chị vẫn có thể vào Studio → Choose Template để chèn bản nháp.';}
   });
  }
  draw();
