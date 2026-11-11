@@ -84,7 +84,7 @@ function defaultPrompt(type){return defaultActivityPrompt(type);}
 function currentScreen(){return lesson.screens[selectedScreen]}
 function currentBlock(){return currentScreen().blocks[selectedBlock]||activeComboBlocks(currentScreen())[0]||currentScreen().blocks[0]}
 function markDirty(){dirty=true;status('Unsaved changes');clearTimeout(autosaveTimer);autosaveTimer=setTimeout(saveDraft,700)}
-function saveDraft(){localStorage.setItem(draftKey,JSON.stringify(lesson));dirty=false;status('Saving draft…');saveService.saveDraft(lesson).then(r=>status(r.mode==='server'?'Draft saved to server':'Draft saved locally')).catch(()=>status('Draft saved locally'))}
+function saveDraft(){try{localStorage.setItem(draftKey,JSON.stringify(lesson));dirty=false;if(lesson.resourceBank){status('Resource draft saved in this browser only · not synced to server');return;}status('Saving draft…');saveService.saveDraft(lesson).then(r=>status(r.mode==='server'?'Draft saved to server':'Draft saved locally')).catch(()=>status('Draft saved locally'))}catch(e){dirty=true;status('Local save failed: '+e.message)}}
 function status(msg){const e=document.querySelector('[data-studio-status]');if(e)e.textContent=msg}
 
 function render(){
