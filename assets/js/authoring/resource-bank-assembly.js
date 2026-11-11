@@ -219,7 +219,7 @@ export function wireResourceStage({screen,pack,role,render,onModified}){
   // Update digital grid in place while typing; do not interrupt focus or playback.
   const stage=src(screen,pack);if(stage?.type==='crossword'){
    const focus=document.querySelector('.rs-cross-grid');if(!focus)return;
-   const letters=el.value.replace(/\\s+/g,'').toUpperCase();
+   const letters=el.value.replace(/\s+/g,'').toUpperCase();
    focus.querySelectorAll('[data-rs-letter]').forEach(cell=>{cell.childNodes.forEach(node=>{if(node.nodeType===3)node.remove()});cell.append(document.createTextNode(letters[Number(cell.dataset.rsLetter)]||''));});
   }
  }));
