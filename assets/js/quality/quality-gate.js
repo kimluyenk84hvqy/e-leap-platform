@@ -7,6 +7,7 @@ import {validateCertifiedTemplate} from '../authoring/certified-templates.js';
 import {certifiedGroupStatus} from '../authoring/certification-gates.js';
 import {methodTemplateIssues} from '../authoring/method-template-builder.js';
 import {functionalSlideIssues} from '../authoring/functional-slide-library.js';
+import {layoutIssues} from '../authoring/visual-layout-editor.js';
 
 const hasAnswer=(a,t)=>{if(['mcq','multi-select','true-false','listening','video-question'].includes(t))return (a.answerKey||[]).length>0;if(t==='fill')return (a.items||[]).every(x=>(x.answers||[]).length);if(t==='matching')return (a.pairs||[]).length>0;if(t==='ordering')return (a.answerKey||[]).length>0;if(t==='categorising')return (a.items||[]).every(x=>x.category);return true};
 const pushDup=(issues,seen,id,where)=>{if(!id)return;if(seen.has(id))issues.push(['error',`${where}: duplicate id ${id}`]);else seen.add(id)};
@@ -26,6 +27,8 @@ export function auditLesson(lesson={}){
   if((lesson.theme?.fontFamily||'')!=='Poppins')issues.push(['warn','Template Contract: Poppins is the default lesson font']);
   (lesson.screens||[]).forEach((s,si)=>{
     const sw=`Slide ${si+1}`;pushDup(issues,seen,s.id,sw);
+    for(const message of layoutIssues(s))issues.push(['error',`${sw}: ${message}`]);
+    if(s.visualLayout&&Object.keys(s.visualLayout.regions||{}).length)issues.push(['error',`${sw}: Custom visual layout requires interactive projection QA before Publish; review only.`]);
     if(!s.certifiedTemplate&&!String(s.title||'').trim())issues.push(['error',`${sw}: missing title`]);
     if(s.functionalDraft){for(const message of functionalSlideIssues(s))issues.push(['error',`${sw}: ${message}`]);return;}
     if(s.methodDraft){for(const message of methodTemplateIssues(s))issues.push(['error',`${sw}: ${message}`]);return;}
