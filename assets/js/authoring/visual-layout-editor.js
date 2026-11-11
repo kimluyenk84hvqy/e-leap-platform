@@ -27,6 +27,7 @@ export function layoutIssues(s){
  const issues=[];
  if(v.schemaVersion!==LAYOUT_SCHEMA)issues.push('Unknown layout editor schema.');
  for(const [key,o] of Object.entries(v.regions||{}))if(!/^[a-z0-9:_-]{1,100}$/i.test(key)||!validOverride(o))issues.push('Invalid visual region '+key);
+ for(const [key,style] of Object.entries(v.boxBorders||{}))if(!/^[a-z0-9:_-]{1,100}$/i.test(key)||!['default','none','solid','dashed'].includes(style))issues.push('Invalid box border '+key);
  return issues;
 }
 export function layoutRegionMetadata(canvas){
@@ -52,6 +53,12 @@ export function applyLayoutOverrides(canvas,screen){
  for(const {id,el} of list){
   el.dataset.layoutRegion=id;
   el.classList.add('layout-adjustable');
+  const borderStyle=screen.visualLayout?.boxBorders?.[id];
+  if(['none','solid','dashed'].includes(borderStyle)){
+   el.dataset.layoutBorder=borderStyle;
+   if(borderStyle==='none'){el.style.border='none';el.style.boxShadow='none';}
+   else {el.style.border='2px '+borderStyle+' #218557';}
+  }
   const o=regions[id];
   if(!validOverride(o))continue;
   const scale=baseWidth/o.base;
@@ -66,6 +73,14 @@ export function applyLayoutOverrides(canvas,screen){
  return list;
 }
 export function resetLayout(screen){if(!screen)return false;delete screen.visualLayout;return true;}
+export function borderForRegion(screen,id){return screen?.visualLayout?.boxBorders?.[id]||'default';}
+export function setRegionBorder(screen,id,style){
+ if(!screen||!/^[a-z0-9:_-]{1,100}$/i.test(id)||!['default','none','solid','dashed'].includes(style))return false;
+ if(!screen.visualLayout)screen.visualLayout={schemaVersion:LAYOUT_SCHEMA,regions:{}};
+ if(!screen.visualLayout.boxBorders)screen.visualLayout.boxBorders={};
+ if(style==='default')delete screen.visualLayout.boxBorders[id];else screen.visualLayout.boxBorders[id]=style;
+ return true;
+}
 export function layoutSnapshot(screen){return cloneLayout(screen?.visualLayout||{schemaVersion:LAYOUT_SCHEMA,regions:{}})}
 export function saveRegionOverride(screen,id,entry){
  if(!screen||!/^[a-z0-9:_-]{1,100}$/i.test(id)||!validOverride(entry))return false;
@@ -167,7 +182,7 @@ export function saveLayoutPreset(storage,screen,label){
  const name=String(label||'').trim().slice(0,80),family=layoutFamily(screen);
  if(!name||!screen)return false;
  const layout=layoutSnapshot(screen);
- if(!Object.keys(layout.regions).length)return false;
+ if(!Object.keys(layout.regions||{}).length&&!Object.keys(layout.boxBorders||{}).length)return false;
  if(Object.values(layout.regions).some(x=>!validOverride(x)))return false;
  const all=readLayoutPresets(storage);
  const saved=Array.isArray(all[family])?all[family].filter(x=>x.name!==name):[];
@@ -182,6 +197,6 @@ export function listLayoutPresets(storage,screen){
 }
 export function applyLayoutPreset(storage,screen,name){
  const all=readLayoutPresets(storage),preset=(all[layoutFamily(screen)]||[]).find(x=>x.name===name);
- if(!preset||Object.values(preset.layout?.regions||{}).some(x=>!validOverride(x)))return false;
+ if(!preset||Object.values(preset.layout?.regions||{}).some(x=>!validOverride(x))||Object.values(preset.layout?.boxBorders||{}).some(x=>!['default','none','solid','dashed'].includes(x)))return false;
  screen.visualLayout=cloneLayout(preset.layout);return true;
 }
