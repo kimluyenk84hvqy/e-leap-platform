@@ -5,6 +5,7 @@
  */
 import {METHOD_COMBOS} from './method-combo-catalog.js';
 import {hybridStepContract,evaluateHybridCombo} from './hybrid-pedagogy-contract.js';
+import {comboTypographyStyle} from './combo-typography.js';
 
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid=()=>('method-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8));
@@ -56,12 +57,12 @@ export function renderMethodTemplateCanvas(screen,role='teacher'){
  const draft=screen.methodDraft,step=selectedMethodStep(screen),student=noStudentContent(role);
  if(student)return '<div class="canvas-wrap"><section class="lesson-canvas method-draft-hidden"><p class="studio-no-content">This lesson activity is not yet available.</p></section></div>';
  if(!step)return '';
- const mk=(k,label)=>'<div class="method-slot"><strong>'+esc(label)+'</strong><span>Reserved content space</span></div>';
+ const mk=(k,label)=>'<div class="method-slot" data-method-slot="'+esc(k)+'"><strong>'+esc(label)+'</strong><span>Reserved content space</span></div>';
  const slots=step.placeholders||[];
  const labels={instruction:'Instruction',guidedSteps:'Guided Steps',workedExample:'Worked Example',sentenceSupport:'Sentence Support',sourceMaterial:'Text / Audio / Image',learnerResponse:'Individual Response',peerTask:'Pair / Group Task',reportShare:'Share / Report',feedback:'Feedback / Check',answerKey:'Teacher Answer',evidence:'Evidence',why:'Why'};
  const learnerSlots=slots.filter(x=>!['answerKey','evidence','why'].includes(x));
  const teacherSlots=slots.filter(x=>['answerKey','evidence','why'].includes(x));
- return '<div class="canvas-wrap"><section class="lesson-canvas method-template-canvas">'+
+ return '<div class="canvas-wrap"><section class="lesson-canvas method-template-canvas" style="'+comboTypographyStyle()+'">'+
   '<div class="method-draft-heading"><small>'+esc(screen.stage)+' · TEMPLATE STRUCTURE · NOT PUBLISHED</small><h1>'+esc(screen.title)+'</h1></div>'+
   '<nav class="combo-step-nav">'+draft.steps.map((s,i)=>'<button type="button" data-method-draft-step="'+esc(s.id)+'" class="combo-step-button '+(s.id===step.id?'active':'')+'"><small>'+String(i+1)+'</small>'+esc(s.label)+'</button>').join('')+'</nav>'+
   '<div class="method-draft-detail"><strong>'+esc(step.label)+' · '+esc(step.mode)+'</strong><p>'+esc(step.pedagogicalPurpose)+'</p></div>'+
