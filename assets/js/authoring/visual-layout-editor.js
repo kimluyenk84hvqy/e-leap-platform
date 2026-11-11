@@ -13,6 +13,8 @@ const TEXT_ZONE_SELECTORS=[
  ['.cert-revealed-key','Answer / Key'],['.cert-task-label','Activity label'],
  ['.method-draft-heading h1','Combo title'],['.method-draft-detail strong','Teaching step'],
  ['.method-slot strong','Activity content'],['.functional-slot span','Slide text'],
+ ['.rs-cover-text h1','Resource Cover title'],['.rs-cover-text h3','Resource course'],['.rs-head h2','Resource slide title'],['.rs-head p','Resource instruction'],
+ ['.rs-aims li','Learning outcome'],['.rs-clue p','Crossword clue'],['.rs-item-main p','Practice question'],['.rs-rule','Grammar rule'],
  ['.canvas-title','Slide title'],['.canvas-instruction','Slide instruction'],
  ['.activity-prompt','Question'],['.studio-text-role','Content text']
 ];
@@ -35,6 +37,7 @@ export function isTextLayoutRegion(id){return /^text:/.test(String(id||''));}
 export const LAYOUT_TEXT_FONTS=TEXT_FONTS;
 const ZONES=[
  ['.cert-cover-identity','Institution + title'],['.cert-cover-photo','Cover photo'],
+ ['.rs-cover-text','Resource title panel'],['.rs-cover-photo','Resource photo'],['.rs-gallery','Resource image group'],['.rs-photo','Individual source photo'],['.rs-head','Teaching prompt'],['.rs-panel','Resource card'],
  ['.cert-aims-head','Aims heading'],['.cert-aim-card','Learning aim'],
  ['.cert-opener-photo','Opener image'],['.cert-opener-task','Question / task'],
  ['.functional-identity','Institution header'],['.functional-slot','Functional region'],
