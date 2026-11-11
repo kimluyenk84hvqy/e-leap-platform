@@ -22,7 +22,7 @@ import {showMethodReviewGallery} from './authoring/method-review-gallery.js';
 import {createMethodTemplateScreen,renderMethodTemplateCanvas,renderMethodTemplateProperties,changeMethodStep} from './authoring/method-template-builder.js';
 import {METHOD_COMBOS} from './authoring/method-combo-catalog.js';
 import {FUNCTION_SLIDES,createFunctionalSlide,renderFunctionalSlide,renderFunctionalSlideProps} from './authoring/functional-slide-library.js';
-import {mountLayoutEditor,resetLayout,layoutSnapshot,createLayoutHistory} from './authoring/visual-layout-editor.js';
+import {mountLayoutEditor,resetLayout,layoutSnapshot,createLayoutHistory,saveLayoutPreset,listLayoutPresets,applyLayoutPreset} from './authoring/visual-layout-editor.js';
 
 const root=document.getElementById('studio');
 let verifiedUser=null;
@@ -98,7 +98,7 @@ function render(){
       <aside class="studio-left"><div class="studio-pane-head"><div><h2>Lesson</h2><small>${esc(lesson.lessonNumber||'')} · ${esc(lesson.title||'')}</small></div></div><div class="studio-arc-strip" aria-label="Lesson learning arc">${LEARNING_ARC.map(p=>`<span title="${esc(p.purpose)}" class="${phaseForScreen(s)===p.id?'active':''}">${esc(p.label)}</span>`).join('')}</div><div class="slide-list">${lesson.screens.map((x,i)=>slideItem(x,i)).join('')}</div><div class="left-footer"><button class="studio-btn primary" data-add-slide style="width:100%">+ Add slide</button></div></aside>
       <main class="studio-center"><div class="canvas-toolbar"><div class="studio-preview-modes"><b style="font-size:13px">Preview as</b>${['teacher','admin','student','guest','presentation'].map(r=>`<button class="studio-btn ${previewRole===r?'primary':''}" data-preview-role="${r}">${cap(r)}</button>`).join('')}</div><div class="studio-layout-tools">
  <button type="button" class="studio-btn ${layoutEditMode?'primary':''}" data-layout-toggle ${['student','guest','presentation'].includes(previewRole)?'disabled':''}>${layoutEditMode?'Finish layout':'Edit layout'}</button>
- ${layoutEditMode?'<button type="button" class="studio-btn" data-layout-undo>Undo</button><button type="button" class="studio-btn" data-layout-redo>Redo</button><button type="button" class="studio-btn" data-layout-reset>Reset layout</button>':''}
+ ${layoutEditMode?'<button type="button" class="studio-btn" data-layout-undo>Undo</button><button type="button" class="studio-btn" data-layout-redo>Redo</button><button type="button" class="studio-btn" data-layout-reset>Reset layout</button><button type="button" class="studio-btn" data-layout-save-preset>Save as My Template</button>':''}${layoutEditMode&&listLayoutPresets(localStorage,s).length?'<select class="studio-layout-presets" data-layout-preset-select><option value="">My Templates…</option>'+listLayoutPresets(localStorage,s).map(name=>'<option value="'+esc(name)+'">'+esc(name)+'</option>').join('')+'</select>':''}
  <span class="status">${esc(s.stage)} · Slide ${selectedScreen+1}/${lesson.screens.length}</span></div></div>${renderCanvas(s)}</main>
       <aside class="studio-right"><div class="studio-pane-head"><div><h2>Properties</h2><small>${currentBlock()?cap(typeLabel(currentBlock().type)):'Slide'}</small></div></div><div class="properties">${renderProperties()}</div></aside>
     </div>
@@ -220,6 +220,17 @@ function wire(){
   document.querySelector('[data-layout-undo]')?.addEventListener('click',()=>{if(layoutHistory.undo(currentScreen())){markDirty();render();}});
   document.querySelector('[data-layout-redo]')?.addEventListener('click',()=>{if(layoutHistory.redo(currentScreen())){markDirty();render();}});
   document.querySelector('[data-layout-reset]')?.addEventListener('click',()=>{layoutHistory.change(currentScreen(),layoutSnapshot(currentScreen()));resetLayout(currentScreen());markDirty();render()});
+  document.querySelector('[data-layout-save-preset]')?.addEventListener('click',()=>{
+   const name=prompt('Name your visual template (positions and sizes only):');
+   if(!name)return;
+   if(saveLayoutPreset(localStorage,currentScreen(),name)){status('Saved My Template: '+name);render();}
+   else status('Move or resize at least one region before saving a template.');
+  });
+  document.querySelector('[data-layout-preset-select]')?.addEventListener('change',e=>{
+   const name=e.target.value;if(!name)return;
+   const before=layoutSnapshot(currentScreen());
+   if(applyLayoutPreset(localStorage,currentScreen(),name)){layoutHistory.change(currentScreen(),before);markDirty();render();}
+  });
 
   const currentCertified=currentScreen().certifiedTemplate;
   if(currentCertified){
