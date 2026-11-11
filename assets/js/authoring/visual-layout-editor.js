@@ -88,6 +88,7 @@ export function mountLayoutEditor(canvas,screen,{enabled=false,onChange=()=>{},o
    if(!resize&&event.target.closest('button,input,textarea,select,a,[contenteditable]'))return;
    event.preventDefault();event.stopPropagation();
    const frame=canvas.getBoundingClientRect(),r=el.getBoundingClientRect(),base=Math.max(1,frame.width);
+   const before=layoutSnapshot(screen);
    const existing=screen.visualLayout?.regions?.[z.id];
    const prev=validOverride(existing)?{...existing}:{dx:0,dy:0,width:r.width,height:r.height,base};
    const ratio=base/prev.base;
@@ -117,7 +118,7 @@ export function mountLayoutEditor(canvas,screen,{enabled=false,onChange=()=>{},o
     el.removeEventListener('pointermove',update);el.removeEventListener('pointerup',end);el.removeEventListener('pointercancel',end);
     if(el.hasPointerCapture?.(pointer))el.releasePointerCapture(pointer);
     const entry=el.__layoutPending;delete el.__layoutPending;
-    if(entry&&saveRegionOverride(screen,z.id,entry))onChange();
+    if(entry&&saveRegionOverride(screen,z.id,entry))onChange(before);
    };
    el.setPointerCapture?.(pointer);
    el.addEventListener('pointermove',update);el.addEventListener('pointerup',end);el.addEventListener('pointercancel',end);
