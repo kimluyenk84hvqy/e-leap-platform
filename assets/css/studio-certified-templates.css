@@ -88,3 +88,46 @@
 .cert-original-source{margin:12px 0;padding:10px;border-radius:10px;background:#eef5ef}
 .cert-original-source summary{cursor:pointer;font-weight:700;font-size:13px}
 .cert-original-source p{font-size:12px;line-height:1.5;overflow-wrap:anywhere}
+
+/* Projection typography v2: explicit defaults PER FUNCTIONAL REGION.
+ * Width-dependent vw is intentionally removed from official slide text.
+ * These are design tokens; the preview scales consistently at 16:9.
+ */
+.certified-canvas{container-type:inline-size}
+.certified-canvas .cert-institution{font-size:clamp(16px,2.36cqw,var(--cert-identity,26px));line-height:1.18;font-weight:800;letter-spacing:.01em;white-space:nowrap}
+.certified-canvas .cert-faculty{font-size:clamp(16px,2.18cqw,var(--cert-faculty,24px));line-height:1.2;font-weight:700;white-space:nowrap}
+.certified-canvas .cert-cover-identity{gap:5px;justify-content:flex-start}
+.certified-canvas .cert-cover-content{margin:auto 0}
+.certified-canvas .cert-unit{font-size:clamp(19px,2.64cqw,var(--cert-cover-unit,29px));line-height:1.2}
+.certified-canvas .cert-cover-content h1{font-size:clamp(32px,6cqw,var(--cert-cover-topic,66px));line-height:1.08;margin:14px 0 10px;overflow-wrap:break-word}
+.certified-canvas .cert-cover-content p{font-size:clamp(19px,2.45cqw,var(--cert-cover-course,27px));line-height:1.24}
+.certified-cover.design-photo-hero .cert-cover-identity{max-width:90%}
+.certified-cover.design-photo-hero .cert-cover-content{max-width:75%}
+.certified-cover.design-framed-gallery .cert-cover-layout{grid-template-columns:38% 62%;gap:14px;padding:20px 34px 20px 20px}
+.certified-cover.design-framed-gallery .cert-cover-identity{padding:6% 5%;min-width:0}
+.certified-cover.design-framed-gallery .cert-cover-photo{border-width:5px}
+.certified-cover.design-framed-gallery .cert-institution,.certified-cover.design-framed-gallery .cert-faculty{font-size:clamp(14px,1.65cqw,21px);letter-spacing:-.02em}
+.certified-cover.design-framed-gallery .cert-cover-content h1{font-size:clamp(28px,3.8cqw,48px)}
+.certified-cover.design-split-editorial .cert-cover-layout{grid-template-columns:43% 57%}
+.certified-cover.design-split-editorial .cert-cover-identity{padding:5% 5%}
+.certified-cover.design-split-editorial .cert-institution,.certified-cover.design-split-editorial .cert-faculty{font-size:clamp(15px,1.85cqw,23px);letter-spacing:-.025em}
+.certified-canvas .cert-aims-head{font-size:clamp(30px,4.36cqw,var(--cert-aims-title,48px));line-height:1.2;padding:3% 2% 2%}
+.certified-canvas .cert-aim-card h2{font-size:clamp(22px,2.91cqw,var(--cert-aims-category,32px));line-height:1.18;margin:7px 0 12px}
+.certified-canvas .cert-aim-card li{font-size:clamp(18px,2.45cqw,var(--cert-aims-body,27px));line-height:1.32}
+.certified-canvas .cert-aim-number{font-size:clamp(18px,1.91cqw,21px)}
+.certified-aims .cert-aims-grid{height:77%;gap:1.8%}
+.certified-aims .cert-aim-card{padding:4%;border-radius:15px}
+.certified-aims .cert-aim-card ol{gap:15px}
+.certified-aims.design-three-horizontal .cert-aims-grid{grid-template-columns:1fr;grid-template-rows:repeat(3,minmax(0,1fr));gap:2%;height:79%;padding:0 4% 3%}
+.certified-aims.design-three-horizontal .cert-aim-card{display:grid;grid-template-columns:35px 23% 1fr;align-items:center;gap:12px;padding:10px 19px;border-top:0;border-left:10px solid #15583c}
+.certified-aims.design-three-horizontal .cert-aim-card h2{margin:0;font-size:clamp(21px,2.64cqw,29px)}
+.certified-aims.design-three-horizontal .cert-aim-card ol{display:grid;gap:7px;padding-left:20px}
+.certified-aims.design-three-horizontal .cert-aim-card li{font-size:clamp(18px,2.09cqw,23px);line-height:1.2}
+.certified-canvas .cert-task-label{font-size:clamp(17px,2.09cqw,var(--cert-opener-task,23px))}
+.certified-canvas .cert-instruction{font-size:clamp(21px,2.91cqw,var(--cert-opener-instruction,32px));line-height:1.26}
+.certified-canvas .cert-question{font-size:clamp(23px,3.18cqw,var(--cert-opener-question,35px));line-height:1.22}
+.certified-canvas .cert-question-counter{font-size:clamp(18px,1.91cqw,21px)}
+.certified-canvas .cert-revealed-key,.certified-canvas .cert-target strong{font-size:clamp(22px,2.91cqw,var(--cert-opener-target,32px))}
+.certified-canvas .cert-opener-task{padding:3.7% 4.5%;gap:9px}
+.certified-canvas .cert-opener-actions .cert-step-buttons button,.certified-canvas .cert-opener-actions>[data-certified-reveal]{font-size:clamp(17px,1.91cqw,22px)}
+@media(max-width:900px){.certified-cover.design-framed-gallery .cert-cover-layout{padding:12px 20px 12px 12px}.certified-cover.design-framed-gallery .cert-cover-identity{padding:5% 4%}.certified-canvas .cert-aim-card ol{gap:8px}}
