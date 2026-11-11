@@ -6,6 +6,7 @@ import {learnerBlockReady} from '../authoring/learner-preview-policy.js';
 import {validateCertifiedTemplate} from '../authoring/certified-templates.js';
 import {certifiedGroupStatus} from '../authoring/certification-gates.js';
 import {methodTemplateIssues} from '../authoring/method-template-builder.js';
+import {functionalSlideIssues} from '../authoring/functional-slide-library.js';
 
 const hasAnswer=(a,t)=>{if(['mcq','multi-select','true-false','listening','video-question'].includes(t))return (a.answerKey||[]).length>0;if(t==='fill')return (a.items||[]).every(x=>(x.answers||[]).length);if(t==='matching')return (a.pairs||[]).length>0;if(t==='ordering')return (a.answerKey||[]).length>0;if(t==='categorising')return (a.items||[]).every(x=>x.category);return true};
 const pushDup=(issues,seen,id,where)=>{if(!id)return;if(seen.has(id))issues.push(['error',`${where}: duplicate id ${id}`]);else seen.add(id)};
@@ -26,6 +27,7 @@ export function auditLesson(lesson={}){
   (lesson.screens||[]).forEach((s,si)=>{
     const sw=`Slide ${si+1}`;pushDup(issues,seen,s.id,sw);
     if(!s.certifiedTemplate&&!String(s.title||'').trim())issues.push(['error',`${sw}: missing title`]);
+    if(s.functionalDraft){for(const message of functionalSlideIssues(s))issues.push(['error',`${sw}: ${message}`]);return;}
     if(s.methodDraft){for(const message of methodTemplateIssues(s))issues.push(['error',`${sw}: ${message}`]);return;}
     if(s.certifiedTemplate){for(const message of validateCertifiedTemplate(s.certifiedTemplate,{sourceBlocks:s.blocks}))issues.push(['error',`${sw}: ${message}`]);if(certifiedGroupStatus(s)!=='PASSED')issues.push(['error',`${sw}: Certified template awaiting full visual, runtime and source QA. Preview only; Publish blocked.`]);}
     if(!E_LEAP_LAYOUTS[s.layout||'standard'])issues.push(['error',`${sw}: unsupported layout ${s.layout}`]);
