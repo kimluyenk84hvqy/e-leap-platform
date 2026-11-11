@@ -22,7 +22,7 @@ import {showMethodReviewGallery} from './authoring/method-review-gallery.js';
 import {createMethodTemplateScreen,renderMethodTemplateCanvas,renderMethodTemplateProperties,changeMethodStep} from './authoring/method-template-builder.js';
 import {METHOD_COMBOS} from './authoring/method-combo-catalog.js';
 import {FUNCTION_SLIDES,createFunctionalSlide,renderFunctionalSlide,renderFunctionalSlideProps} from './authoring/functional-slide-library.js';
-import {mountLayoutEditor,resetLayout,layoutSnapshot,createLayoutHistory,saveLayoutPreset,listLayoutPresets,applyLayoutPreset} from './authoring/visual-layout-editor.js';
+import {mountLayoutEditor,resetLayout,layoutSnapshot,createLayoutHistory,saveLayoutPreset,listLayoutPresets,applyLayoutPreset,setRegionBorder,borderForRegion} from './authoring/visual-layout-editor.js';
 
 const root=document.getElementById('studio');
 let verifiedUser=null;
@@ -45,7 +45,7 @@ const LIBRARY=E_LEAP_AUTHORING_LIBRARY;
 const saveService=new ELeapAuthoringSaveService();
 let lesson=null, selectedScreen=0, selectedBlock=0, dirty=false, previewRole='teacher', autosaveTimer=null;
 let draftKey='';
-let layoutEditMode=false;
+let layoutEditMode=false,layoutGuidesVisible=true,selectedLayoutRegion=null;
 const layoutHistory=createLayoutHistory();
 const certifiedQuestionIndex=new Map(),certifiedAnswers=new Set(),certifiedResponses=new Map();
 
@@ -98,6 +98,7 @@ function render(){
       <aside class="studio-left"><div class="studio-pane-head"><div><h2>Lesson</h2><small>${esc(lesson.lessonNumber||'')} · ${esc(lesson.title||'')}</small></div></div><div class="studio-arc-strip" aria-label="Lesson learning arc">${LEARNING_ARC.map(p=>`<span title="${esc(p.purpose)}" class="${phaseForScreen(s)===p.id?'active':''}">${esc(p.label)}</span>`).join('')}</div><div class="slide-list">${lesson.screens.map((x,i)=>slideItem(x,i)).join('')}</div><div class="left-footer"><button class="studio-btn primary" data-add-slide style="width:100%">+ Add slide</button></div></aside>
       <main class="studio-center"><div class="canvas-toolbar"><div class="studio-preview-modes"><b style="font-size:13px">Preview as</b>${['teacher','admin','student','guest','presentation'].map(r=>`<button class="studio-btn ${previewRole===r?'primary':''}" data-preview-role="${r}">${cap(r)}</button>`).join('')}</div><div class="studio-layout-tools">
  <button type="button" class="studio-btn ${layoutEditMode?'primary':''}" data-layout-toggle ${['student','guest','presentation'].includes(previewRole)?'disabled':''}>${layoutEditMode?'Finish layout':'Edit layout'}</button>
+ ${layoutEditMode?`<button type="button" class="studio-btn" data-layout-guides>${layoutGuidesVisible?'Hide guides':'Show guides'}</button><label class="studio-border-control">Box border <select data-layout-border><option value="default">Template default</option><option value="none">No border</option><option value="solid">Solid border</option><option value="dashed">Dashed border</option></select></label>`:''}
  ${layoutEditMode?'<button type="button" class="studio-btn" data-layout-undo>Undo</button><button type="button" class="studio-btn" data-layout-redo>Redo</button><button type="button" class="studio-btn" data-layout-reset>Reset layout</button><button type="button" class="studio-btn" data-layout-save-preset>Save as My Template</button>':''}${layoutEditMode&&listLayoutPresets(localStorage,s).length?'<select class="studio-layout-presets" data-layout-preset-select><option value="">My Templates…</option>'+listLayoutPresets(localStorage,s).map(name=>'<option value="'+esc(name)+'">'+esc(name)+'</option>').join('')+'</select>':''}
  <span class="status">${esc(s.stage)} · Slide ${selectedScreen+1}/${lesson.screens.length}</span></div></div>${renderCanvas(s)}</main>
       <aside class="studio-right"><div class="studio-pane-head"><div><h2>Properties</h2><small>${currentBlock()?cap(typeLabel(currentBlock().type)):'Slide'}</small></div></div><div class="properties">${renderProperties()}</div></aside>
@@ -214,7 +215,28 @@ function wire(){
   mountLayoutEditor(designCanvas,currentScreen(),{
    enabled:layoutEditMode&&!['student','guest','presentation'].includes(previewRole),
    onChange:(before)=>{layoutHistory.change(currentScreen(),before);markDirty();status('Layout adjusted. Draft autosaved.');},
-   onSelection:({label})=>status('Adjust: '+label+' · drag to move, corner to resize')
+   onSelection:({id,label})=>{
+    selectedLayoutRegion=id;
+    const control=document.querySelector('[data-layout-border]');
+    if(control)control.value=borderForRegion(currentScreen(),id);
+    status('Selected: '+label+' · drag to move, corner to resize, or change Border');
+   }
+  });
+  designCanvas?.classList.toggle('layout-guides-hidden',!layoutGuidesVisible);
+  document.querySelector('[data-layout-guides]')?.addEventListener('click',()=>{
+   layoutGuidesVisible=!layoutGuidesVisible;
+   designCanvas?.classList.toggle('layout-guides-hidden',!layoutGuidesVisible);
+   const button=document.querySelector('[data-layout-guides]');
+   if(button)button.textContent=layoutGuidesVisible?'Hide guides':'Show guides';
+  });
+  document.querySelector('[data-layout-border]')?.addEventListener('change',event=>{
+   if(!selectedLayoutRegion||!layoutEditMode){status('Click a box first, then choose its border.');event.target.value='default';return;}
+   const node=designCanvas?.querySelector('[data-layout-region="'+selectedLayoutRegion+'"]');
+   if(!node){status('Select a box on the current slide first.');return;}
+   const before=layoutSnapshot(currentScreen());
+   if(!setRegionBorder(currentScreen(),selectedLayoutRegion,event.target.value))return;
+   layoutHistory.change(currentScreen(),before);
+   markDirty();render();
   });
   document.querySelector('[data-layout-toggle]')?.addEventListener('click',()=>{if(['student','guest','presentation'].includes(previewRole))return;layoutEditMode=!layoutEditMode;render()});
   document.querySelector('[data-layout-undo]')?.addEventListener('click',()=>{if(layoutHistory.undo(currentScreen())){markDirty();render();}});
