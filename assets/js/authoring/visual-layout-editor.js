@@ -5,6 +5,34 @@
  */
 export const LAYOUT_SCHEMA=1;
 const MAX_HISTORY=30;
+const TEXT_ZONE_SELECTORS=[
+ ['.cert-institution','University'],['.cert-faculty','Faculty'],['.cert-unit','Unit number'],
+ ['.cert-cover-content h1','Lesson title'],['.cert-cover-content p','Course name'],
+ ['.cert-aims-head','Aims title'],['.cert-aim-card h2','Aim group heading'],['.cert-aim-card li','Learning outcome'],
+ ['.cert-instruction','Instruction'],['.cert-question','Question'],
+ ['.cert-revealed-key','Answer / Key'],['.cert-task-label','Activity label'],
+ ['.method-draft-heading h1','Combo title'],['.method-draft-detail strong','Teaching step'],
+ ['.method-slot strong','Activity content'],['.functional-slot span','Slide text'],
+ ['.canvas-title','Slide title'],['.canvas-instruction','Slide instruction'],
+ ['.activity-prompt','Question'],['.studio-text-role','Content text']
+];
+const TEXT_FONTS=['Poppins','Arial','Georgia','Times New Roman','Verdana','Tahoma'];
+export function validTextStyle(v){return !!v&&typeof v==='object'&&!Array.isArray(v)&&
+ (!('fontSize' in v)||(Number.isFinite(v.fontSize)&&v.fontSize>=14&&v.fontSize<=100))&&
+ (!('fontFamily' in v)||TEXT_FONTS.includes(v.fontFamily))&&
+ (!('color' in v)||/^#[a-f0-9]{6}$/i.test(v.color))&&
+ (!('textAlign' in v)||['left','center','right'].includes(v.textAlign));}
+export function textStyleForRegion(screen,id){return screen?.visualLayout?.textStyles?.[id]||{};}
+export function setRegionTextStyle(screen,id,style){
+ if(!screen||!/^[a-z0-9:_-]{1,100}$/i.test(id)||!validTextStyle(style))return false;
+ if(!screen.visualLayout)screen.visualLayout={schemaVersion:LAYOUT_SCHEMA,regions:{}};
+ if(!screen.visualLayout.textStyles)screen.visualLayout.textStyles={};
+ if(!Object.keys(style).length)delete screen.visualLayout.textStyles[id];
+ else screen.visualLayout.textStyles[id]={...style};
+ return true;
+}
+export function isTextLayoutRegion(id){return /^text:/.test(String(id||''));}
+export const LAYOUT_TEXT_FONTS=TEXT_FONTS;
 const ZONES=[
  ['.cert-cover-identity','Institution + title'],['.cert-cover-photo','Cover photo'],
  ['.cert-aims-head','Aims heading'],['.cert-aim-card','Learning aim'],
@@ -28,6 +56,7 @@ export function layoutIssues(s){
  if(v.schemaVersion!==LAYOUT_SCHEMA)issues.push('Unknown layout editor schema.');
  for(const [key,o] of Object.entries(v.regions||{}))if(!/^[a-z0-9:_-]{1,100}$/i.test(key)||!validOverride(o))issues.push('Invalid visual region '+key);
  for(const [key,style] of Object.entries(v.boxBorders||{}))if(!/^[a-z0-9:_-]{1,100}$/i.test(key)||!['default','none','solid','dashed'].includes(style))issues.push('Invalid box border '+key);
+ for(const [key,style] of Object.entries(v.textStyles||{}))if(!isTextLayoutRegion(key)||!validTextStyle(style))issues.push('Invalid text style '+key);
  return issues;
 }
 export function layoutRegionMetadata(canvas){
@@ -41,6 +70,12 @@ export function layoutRegionMetadata(canvas){
    const ix=zones.filter(z=>z.selector===selector).length;
    const id=name+':'+ix;
    zones.push({id,label:el.classList.contains('functional-slot')?el.querySelector('b')?.textContent?.trim()||label:el.classList.contains('method-slot')?el.querySelector('strong')?.textContent?.trim()||label:label,selector,el});
+  });
+ }
+ for(const [selector,label] of TEXT_ZONE_SELECTORS){
+  canvas.querySelectorAll(selector).forEach((el,ix)=>{
+   if(skipElement(el))return;
+   zones.push({id:'text:'+selector.replace(/[^a-z0-9]+/gi,'-').replace(/^-|-$/g,'')+':'+ix,label,selector,el,isText:true});
   });
  }
  return zones;
@@ -58,6 +93,13 @@ export function applyLayoutOverrides(canvas,screen){
    el.dataset.layoutBorder=borderStyle;
    if(borderStyle==='none'){el.style.border='none';el.style.boxShadow='none';}
    else {el.style.border='2px '+borderStyle+' #218557';}
+  }
+  const ts=screen.visualLayout?.textStyles?.[id];
+  if(isTextLayoutRegion(id)&&validTextStyle(ts)){
+   if(ts.fontSize)el.style.setProperty('font-size',ts.fontSize+'px','important');
+   if(ts.fontFamily)el.style.setProperty('font-family','"'+ts.fontFamily+'",Arial,sans-serif','important');
+   if(ts.color)el.style.setProperty('color',ts.color,'important');
+   if(ts.textAlign)el.style.setProperty('text-align',ts.textAlign,'important');
   }
   const o=regions[id];
   if(!validOverride(o))continue;
@@ -182,7 +224,7 @@ export function saveLayoutPreset(storage,screen,label){
  const name=String(label||'').trim().slice(0,80),family=layoutFamily(screen);
  if(!name||!screen)return false;
  const layout=layoutSnapshot(screen);
- if(!Object.keys(layout.regions||{}).length&&!Object.keys(layout.boxBorders||{}).length)return false;
+ if(!Object.keys(layout.regions||{}).length&&!Object.keys(layout.boxBorders||{}).length&&!Object.keys(layout.textStyles||{}).length)return false;
  if(Object.values(layout.regions).some(x=>!validOverride(x)))return false;
  const all=readLayoutPresets(storage);
  const saved=Array.isArray(all[family])?all[family].filter(x=>x.name!==name):[];
@@ -197,6 +239,6 @@ export function listLayoutPresets(storage,screen){
 }
 export function applyLayoutPreset(storage,screen,name){
  const all=readLayoutPresets(storage),preset=(all[layoutFamily(screen)]||[]).find(x=>x.name===name);
- if(!preset||Object.values(preset.layout?.regions||{}).some(x=>!validOverride(x))||Object.values(preset.layout?.boxBorders||{}).some(x=>!['default','none','solid','dashed'].includes(x)))return false;
+ if(!preset||Object.values(preset.layout?.regions||{}).some(x=>!validOverride(x))||Object.values(preset.layout?.boxBorders||{}).some(x=>!['default','none','solid','dashed'].includes(x))||Object.values(preset.layout?.textStyles||{}).some(x=>!validTextStyle(x)))return false;
  screen.visualLayout=cloneLayout(preset.layout);return true;
 }
