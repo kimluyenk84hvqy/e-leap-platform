@@ -158,7 +158,11 @@ function renderCertifiedGatePanel(screen){
  items.map(item=>'<div class="cert-qa-item"><strong>'+esc(item.label)+'</strong><span class="cert-qa-status '+esc(item.status)+'">'+esc(item.status)+'</span><p>'+esc(item.note)+'</p></div>').join('')+
  '</section>';
 }
-function renderCertifiedProperties(){const s=currentScreen();if(s.certifiedTemplate)return renderCertifiedEditor(s)+renderCertifiedGatePanel(s);const family=({'lesson-cover':'cover','lesson-aims':'aims','lead-in':'opener'})[s.templateId];return family?'<section class="property-section"><h3>Certified template</h3><button class="studio-btn primary" data-certify-current="'+family+'">Convert slide to certified '+family+' template</button><p class="helper">Existing source blocks are preserved. Complete the fixed template slots before publishing.</p></section>':'';}
+function renderCertifiedProperties(){const s=currentScreen();if(s.certifiedTemplate){
+ const isU5= s.certifiedTemplate.family==='cover'&&/^u5\.1$/i.test(String(lesson.lessonNumber||'').trim())&&/objective\s*pet\s*b1/i.test(String(lesson.courseLabel||''));
+ const curated=isU5?'<section class="property-section"><h3>Recommended photo · U5.1</h3><p class="helper">Airport check-in and luggage drop · Wikimedia Commons · Aliceinthealice · CC0.</p><button type="button" class="studio-btn primary" data-u51-cover-image>Use airport photo for this Cover</button><p class="helper">Only the current Cover image is replaced. Other slides and learning material remain unchanged.</p></section>':'';
+ return curated+renderCertifiedEditor(s)+renderCertifiedGatePanel(s);
+}const family=({'lesson-cover':'cover','lesson-aims':'aims','lead-in':'opener'})[s.templateId];return family?'<section class="property-section"><h3>Certified template</h3><button class="studio-btn primary" data-certify-current="'+family+'">Convert slide to certified '+family+' template</button><p class="helper">Existing source blocks are preserved. Complete the fixed template slots before publishing.</p></section>':'';}
 function renderProperties(){return currentScreen().functionalDraft?`${lessonProps()}${renderFunctionalSlideProps(currentScreen())}`:currentScreen().methodDraft?`${lessonProps()}${renderMethodTemplateProperties(currentScreen())}`:`${lessonProps()}${slideProps()}${renderCertifiedProperties()}${currentScreen().certifiedTemplate?'':renderContentMapper()+blockProps()}`}
 function renderContentMapper(){
   const s=currentScreen(),schema=CONTENT_SLOT_SCHEMAS[s.templateId];if(!schema)return '';
@@ -330,6 +334,17 @@ function wire(){
     const next=changeCertifiedVariant(currentScreen().certifiedTemplate,b.dataset.certifiedVariant);
     if(!next)return;currentScreen().certifiedTemplate=next;markDirty();render();
   });
+  document.querySelectorAll('[data-u51-cover-image]').forEach(b=>b.addEventListener('click',()=>{
+    const screen=currentScreen(),data=screen?.certifiedTemplate;
+    if(data?.family!=='cover')return;
+    data.values.imageSrc='https://upload.wikimedia.org/wikipedia/commons/9/94/Ninoy_Aquino_International_Airport_Terminal_1%2C_01.jpg';
+    data.values.imageAlt='Passengers checking in luggage at Ninoy Aquino International Airport Terminal 1';
+    data.imageCredit={creator:'Aliceinthealice',license:'CC0 1.0',source:'https://commons.wikimedia.org/wiki/File:Ninoy_Aquino_International_Airport_Terminal_1,_01.jpg'};
+    data.mediaCheck=null;
+    data.layoutReview=null;
+    if(data.sourceReview?.required){data.sourceReview.approved=false;data.sourceReview.contentSignature='';}
+    markDirty();render();status('Airport photo added to Cover. Save draft and check image loading in preview.');
+  }));
   document.querySelectorAll('[data-certified-image-jump]').forEach(b=>b.addEventListener('click',()=>{
     const input=document.querySelector('[data-certified-slot="imageSrc"]');
     if(!input){status('Select a certified Cover or Opener to add a photo.');return;}
