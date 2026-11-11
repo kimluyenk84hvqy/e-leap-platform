@@ -1,7 +1,8 @@
 // Load the upload-only SDK only when authenticated private uploads are enabled.
 // GET listing must remain available even if the optional client-upload bundle
 // was omitted from a deployment's function trace.
-import { get, head } from '@vercel/blob';
+// Blob SDK is loaded only for enabled upload and authorized file downloads.
+// Listing remains independent of the optional Blob package.
 import { getResearchDb } from '../server/_research-db.js';
 import { requireAuth, requireSameOrigin, getAuth } from '../server/_auth.js';
 
@@ -75,6 +76,7 @@ export default async function handler(req,res){
     onUploadCompleted:async({blob,tokenPayload})=>{
      const meta=JSON.parse(tokenPayload||'{}'),sql=getResearchDb();
      await ensureSchema(sql);
+     const {head}=await import('@vercel/blob');
      const actual=await head(blob.url);
      if(actual.size!==meta.bytes||actual.contentType!==meta.mime)throw Error('Stored file metadata differs from approved upload');
      await sql`INSERT INTO studio_media_v1(owner_id,original_name,category,content_type,bytes,client_sha256,blob_path)
@@ -90,6 +92,7 @@ export default async function handler(req,res){
    const id=String(req.query.open);
    const rows=await sql`SELECT blob_path,content_type,original_name FROM studio_media_v1 WHERE asset_id::text=${id} AND owner_id=${owner} AND status='active' LIMIT 1`;
    if(!rows.length)return err(res,404,'File not found');
+   const {get}=await import('@vercel/blob');
    const file=await get(rows[0].blob_path,{access:'private'});
    if(!file)return err(res,404,'File unavailable');
    res.setHeader('Content-Type',rows[0].content_type);
