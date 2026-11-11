@@ -147,3 +147,41 @@ export function createLayoutHistory(){
  }
  return {change,undo:screen=>navigate(screen,'undo'),redo:screen=>navigate(screen,'redo')};
 }
+
+/* Personal design presets are local to this browser. They contain layout
+ * coordinates only; textbook text, answer keys and media are never included. */
+const PRESET_KEY='eleap-my-visual-layouts-v1';
+export function layoutFamily(screen){
+ if(screen?.certifiedTemplate)return 'certified:'+screen.certifiedTemplate.family+':'+screen.certifiedTemplate.variant;
+ if(screen?.methodDraft)return 'combo:'+screen.methodDraft.methodId;
+ if(screen?.functionalDraft)return 'function:'+screen.functionalDraft.type+':'+screen.functionalDraft.variant;
+ return 'legacy:'+String(screen?.templateId||screen?.layout||'standard');
+}
+export function readLayoutPresets(storage){
+ try{
+  const data=JSON.parse(storage.getItem(PRESET_KEY)||'{}');
+  return data&&typeof data==='object'&&!Array.isArray(data)?data:{};
+ }catch{return {};}
+}
+export function saveLayoutPreset(storage,screen,label){
+ const name=String(label||'').trim().slice(0,80),family=layoutFamily(screen);
+ if(!name||!screen)return false;
+ const layout=layoutSnapshot(screen);
+ if(!Object.keys(layout.regions).length)return false;
+ if(Object.values(layout.regions).some(x=>!validOverride(x)))return false;
+ const all=readLayoutPresets(storage);
+ const saved=Array.isArray(all[family])?all[family].filter(x=>x.name!==name):[];
+ saved.push({name,layout,at:new Date().toISOString()});
+ all[family]=saved.slice(-20);
+ storage.setItem(PRESET_KEY,JSON.stringify(all));
+ return true;
+}
+export function listLayoutPresets(storage,screen){
+ const saved=readLayoutPresets(storage)[layoutFamily(screen)];
+ return Array.isArray(saved)?saved.map(x=>x.name):[];
+}
+export function applyLayoutPreset(storage,screen,name){
+ const all=readLayoutPresets(storage),preset=(all[layoutFamily(screen)]||[]).find(x=>x.name===name);
+ if(!preset||Object.values(preset.layout?.regions||{}).some(x=>!validOverride(x)))return false;
+ screen.visualLayout=cloneLayout(preset.layout);return true;
+}
