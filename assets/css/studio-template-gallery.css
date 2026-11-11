@@ -81,3 +81,96 @@
 .method-teacher-reserved>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:6px}
 .method-draft-hidden{display:flex;align-items:center;justify-content:center}
 @media(max-width:760px){.method-slot-grid,.method-teacher-reserved>div{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+
+/* Teaching Combo and functional slide projection typography.
+ * Every text region has a controlled default; keys are deliberately distinct.
+ * These rules apply to projection ONLY, not the compact Studio sidebar.
+ */
+.method-template-canvas,
+.functional-template{font-family:Poppins,Arial,sans-serif;color:var(--combo-body-color,#203A30);container-type:inline-size}
+.method-template-canvas .method-draft-heading h1,
+.functional-template .functional-title{font-size:clamp(30px,4.4cqw,var(--combo-title-size,48px));color:var(--combo-title-color,#113D2B);font-weight:800}
+.method-template-canvas .method-draft-detail strong{font-size:clamp(22px,2.9cqw,var(--combo-step-size,32px));color:var(--combo-step-color,#134632)}
+.method-template-canvas .method-draft-detail p{font-size:clamp(20px,2.45cqw,var(--combo-body-size,27px));color:var(--combo-body-color,#203A30);line-height:1.35;font-weight:600}
+.method-template-canvas .method-slot strong{font-size:clamp(17px,2.15cqw,var(--combo-body-size,27px));line-height:1.25;color:var(--combo-body-color,#203A30);font-weight:750}
+.method-template-canvas .method-slot span{font-size:clamp(15px,1.7cqw,var(--combo-label-size,18px));color:#406451}
+.method-template-canvas .method-slot[data-method-slot="instruction"] strong,
+.method-template-canvas .method-slot[data-method-slot="guidedSteps"] strong{font-size:clamp(21px,2.45cqw,var(--combo-instruction-size,30px));color:var(--combo-instruction-color,#193D2D)}
+.method-template-canvas .method-slot[data-method-slot="sourceMaterial"] strong,
+.method-template-canvas .method-slot[data-method-slot="learnerResponse"] strong{font-size:clamp(20px,2.45cqw,var(--combo-question-size,32px))}
+.method-template-canvas .method-slot[data-method-slot="sentenceSupport"]{background:#eaf5ed}
+.method-template-canvas .method-slot[data-method-slot="sentenceSupport"] strong{font-size:clamp(20px,2.3cqw,var(--combo-support-size,27px));color:#174F37}
+.method-template-canvas .method-slot[data-method-slot="answerKey"]{background:var(--combo-key-bg,#D4F28B);border:2px solid #5a9c38}
+.method-template-canvas .method-slot[data-method-slot="answerKey"] strong{font-size:clamp(23px,3.09cqw,var(--combo-key-size,34px));color:var(--combo-key-color,#103B2B);font-weight:800}
+.method-template-canvas .method-slot[data-method-slot="evidence"],
+.method-template-canvas .method-slot[data-method-slot="why"]{background:#edf8ee}
+.method-template-canvas .method-slot[data-method-slot="evidence"] strong,
+.method-template-canvas .method-slot[data-method-slot="why"] strong{font-size:clamp(20px,2.27cqw,var(--combo-evidence-size,25px));color:var(--combo-evidence-color,#174B35)}
+.method-template-canvas .combo-step-button{font-size:clamp(16px,1.73cqw,var(--combo-nav-size,19px));color:var(--combo-nav-color,#194E36)}
+.method-template-canvas .combo-step-button.active{color:#fff}
+.method-template-canvas .method-slot-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.method-template-canvas .method-slot{min-height:100px;padding:16px;border-width:2px}
+.method-template-canvas .method-teacher-reserved>div{grid-template-columns:repeat(3,minmax(0,1fr))}
+.method-template-canvas{min-height:0;overflow:auto}
+@media(max-width:760px){.method-template-canvas .method-slot-grid,.method-template-canvas .method-teacher-reserved>div{grid-template-columns:1fr}}
+
+/* Legacy activity slides use the SAME functional role typography and color palette. */
+.lesson-canvas.template-reading-task,
+.lesson-canvas.template-listening-task,
+.lesson-canvas.template-speaking-task,
+.lesson-canvas.template-vocabulary-presentation,
+.lesson-canvas.template-grammar-presentation,
+.lesson-canvas.template-controlled-practice,
+.lesson-canvas.template-consolidation{
+ --combo-title-size:48px;--combo-question-size:32px;--combo-body-size:27px;--combo-option-size:27px;
+ --combo-key-size:34px;--combo-key-bg:#D4F28B;--combo-key-color:#103B2B;
+ color:#203A30;font-family:Poppins,Arial,sans-serif
+}
+.lesson-canvas:is(.template-reading-task,.template-listening-task,.template-speaking-task,.template-vocabulary-presentation,.template-grammar-presentation,.template-controlled-practice,.template-consolidation) .canvas-title{
+ font-size:clamp(32px,3.6vw,var(--combo-title-size));color:#113D2B;font-weight:800
+}
+.lesson-canvas:is(.template-reading-task,.template-listening-task,.template-speaking-task,.template-vocabulary-presentation,.template-grammar-presentation,.template-controlled-practice,.template-consolidation) .canvas-instruction{
+ font-size:clamp(22px,2.1vw,30px);color:#193D2D;font-weight:700
+}
+.lesson-canvas:is(.template-reading-task,.template-listening-task,.template-speaking-task,.template-vocabulary-presentation,.template-grammar-presentation,.template-controlled-practice,.template-consolidation) .activity-prompt{
+ font-size:clamp(23px,2.25vw,var(--combo-question-size));color:#173F2E;font-weight:800
+}
+.lesson-canvas:is(.template-reading-task,.template-listening-task,.template-speaking-task,.template-vocabulary-presentation,.template-grammar-presentation,.template-controlled-practice,.template-consolidation) .option-demo,
+.lesson-canvas:is(.template-reading-task,.template-listening-task,.template-speaking-task,.template-vocabulary-presentation,.template-grammar-presentation,.template-controlled-practice,.template-consolidation) .studio-text-role.role-body{
+ font-size:clamp(21px,1.92vw,var(--combo-body-size));color:#203A30;line-height:1.46
+}
+.lesson-canvas:is(.template-reading-task,.template-listening-task,.template-speaking-task,.template-vocabulary-presentation,.template-grammar-presentation,.template-controlled-practice,.template-consolidation) .studio-text-role.role-answer,
+.lesson-canvas:is(.template-reading-task,.template-listening-task,.template-speaking-task,.template-vocabulary-presentation,.template-grammar-presentation,.template-controlled-practice,.template-consolidation) .cert-revealed-key{
+ font-size:clamp(27px,2.55vw,var(--combo-key-size));color:var(--combo-key-color);background:var(--combo-key-bg);font-weight:800
+}
+
+/* Additional standalone lesson-cover / consolidation / thank-you slide families. */
+.functional-template{background:#f6faf7;aspect-ratio:16/9;min-height:0;overflow:hidden!important;display:flex;flex-direction:column;padding:clamp(16px,3cqw,38px);gap:16px}
+.functional-template .functional-slot{background:#fff;border:2px dashed #8fbc9f;border-radius:13px;padding:14px;min-width:0;display:flex;flex-direction:column;gap:5px}
+.functional-template .functional-slot b{font-size:clamp(19px,2.4cqw,28px);line-height:1.2;color:#184c35}
+.functional-template .functional-slot span{font-size:clamp(19px,2.4cqw,28px);color:#173b2b;overflow-wrap:anywhere}
+.functional-template .functional-slot i{font-size:clamp(15px,1.7cqw,20px);font-style:normal;color:#557865}
+.functional-identity{display:flex;flex-direction:column;gap:5px;align-items:flex-start;margin-bottom:10px}
+.functional-identity .functional-slot{padding:5px 12px;min-width:65%;background:transparent;border:1px dashed #a5c5aa}
+.functional-identity .functional-slot b{font-size:clamp(15px,1.5cqw,20px)}
+.functional-identity .functional-slot span{font-size:clamp(18px,2.2cqw,26px);font-weight:800;white-space:nowrap}
+.functional-cover-body{display:grid;grid-template-columns:42% 58%;gap:15px;align-items:stretch;flex:1;min-height:0}
+.functional-cover-body>div:first-child{display:flex;flex-direction:column;gap:14px;justify-content:center}
+.functional-cover-body [data-functional-slot="lessonTitle"] span{font-size:clamp(30px,5cqw,66px);font-weight:800}
+.functional-cover-body [data-functional-slot="image"]{background:#dcebe0;min-height:0;align-items:center;justify-content:center}
+.functional-lesson-part-cover.variant-photo-hero{background:#e8f5ec}
+.functional-lesson-part-cover.variant-photo-framed .functional-cover-body [data-functional-slot="image"]{border:7px solid #81c34f}
+.functional-review-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;flex:1}
+.functional-review-grid .functional-slot{background:#fff;border-top:10px solid #176244}
+.functional-review-foot{min-height:80px}
+.functional-consolidation.variant-retrieval-board .functional-review-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.functional-thank-you{background:linear-gradient(135deg,#103d2c,#216f48);color:#fff}
+.functional-thank-you .functional-identity .functional-slot{border-color:#89ae93}
+.functional-thank-you .functional-identity .functional-slot span,.functional-thank-you .functional-identity .functional-slot b{color:#fff}
+.functional-thank-body{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr auto;gap:14px;min-height:0}
+.functional-thank-body [data-functional-slot="closingMessage"]{grid-column:1}
+.functional-thank-body [data-functional-slot="closingMessage"] span{font-size:clamp(35px,5.8cqw,65px);font-weight:800}
+.functional-thank-body [data-functional-slot="image"]{grid-column:2;grid-row:1 / span 2;background:#dfeee1;align-items:center;justify-content:center}
+.functional-thank-you.variant-minimal-green .functional-thank-body [data-functional-slot="image"]{opacity:.55}
+.functional-variant-options{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}
