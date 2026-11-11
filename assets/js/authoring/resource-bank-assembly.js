@@ -111,7 +111,8 @@ function crossword(screen,source,role){
 }
 export function renderResourceStage(screen,pack,role='teacher'){
  const source=src(screen,pack);if(!source)return '<div class="rs-missing">Source mapping missing. Import the resource ZIP again.</div>';
- const heading='<div class="rs-head"><span>U5.1 · '+html(source.combo)+'</span><h2>'+html(source.title)+'</h2>'+(source.instruction?'<p>'+html(source.instruction)+'</p>':'')+'</div>';
+ const methodId=screen.resourceStage?.comboId||source.combo;
+ const heading='<div class="rs-head"><span>U5.1 · '+html(METHOD_COMBOS[methodId]?.label||methodId)+'</span><h2>'+html(source.title)+'</h2>'+(source.instruction?'<p>'+html(source.instruction)+'</p>':'')+'</div>';
  let body='';
  switch(source.type){
  case 'cover':
@@ -125,9 +126,9 @@ export function renderResourceStage(screen,pack,role='teacher'){
  case 'peer':
   body=heading+'<div class="rs-prompt-list">'+(source.prompts||[]).map((p,i)=>card('TASK '+(i+1),'<p>'+html(p)+'</p>')).join('')+'</div>';break;
  case 'listening':
-  body=heading+'<div class="rs-listening"><div class="rs-source-media"><audio controls preload="metadata" src="'+html(resourceMediaUrl(pack,source.audioAsset))+'"></audio><small>Original Track 22 · six conversations · Evidence clips pending source QA</small><div class="rs-sign-grid">'+(source.media||[]).map((id,i)=>'<div><span>'+String.fromCharCode(97+i)+'</span>'+media(pack,id,'Travel sign')+'</div>').join('')+'</div></div><div>'+questionItems(screen,source,role,{kind:'listening'})+'</div></div>';break;
+  body=heading+(methodId==='tbl-listening'?'<div class="rs-teaching-phase">Prepare → Listen → Group task → Report → Check. Tell a partner what each traveller needs before confirming a location.</div>':'<div class="rs-teaching-phase">Predict → Listen for gist → Listen for detail → Compare → Check.</div>')+'<div class="rs-listening"><div class="rs-source-media"><audio controls preload="metadata" src="'+html(resourceMediaUrl(pack,source.audioAsset))+'"></audio><small>Original Track 22 · six conversations · Evidence clips pending source QA</small><div class="rs-sign-grid">'+(source.media||[]).map((id,i)=>'<div><span>'+String.fromCharCode(97+i)+'</span>'+media(pack,id,'Travel sign')+'</div>').join('')+'</div></div><div>'+questionItems(screen,source,role,{kind:'listening'})+'</div></div>';break;
  case 'discovery':
-  body=heading+'<div class="rs-discovery"><section>'+card('NOTICE · Original language focus',('<ol>'+(source.examples||[]).map(e=>'<li>'+html(e)+'</li>').join('')+'</ol>'))+'</section><section>'+card('DISCOVER · Work with a partner','<ol>'+(source.questions||[]).map(x=>'<li>'+html(x)+'</li>').join('')+'</ol>')+'<div class="rs-rule">'+(ui.reveals.has(screen.id+':rule')&&['teacher','admin','presentation'].includes(role)?html(source.rule):'<span>Work out the rule before revealing it.</span>')+'</div>'+(['teacher','admin','presentation'].includes(role)?'<button data-rs-action="rule" data-rs-key="'+html(screen.id+':rule')+'">Show / hide rule</button>':'')+'</section></div>';break;
+  body=heading+(methodId==='grammar-ppp'?'<div class="rs-teaching-phase">PRESENT → PRACTISE → PRODUCE. Start from the language pattern and check examples.</div>':'<div class="rs-teaching-phase">CONTEXT → NOTICE → DISCOVER → PAIR CHECK → PRACTISE → APPLY. Learners infer before seeing the rule.</div>')+'<div class="rs-discovery"><section>'+card('NOTICE · Original language focus',('<ol>'+(source.examples||[]).map(e=>'<li>'+html(e)+'</li>').join('')+'</ol>'))+'</section><section>'+card('DISCOVER · Work with a partner','<ol>'+(source.questions||[]).map(x=>'<li>'+html(x)+'</li>').join('')+'</ol>')+'<div class="rs-rule">'+((methodId==='grammar-ppp'||ui.reveals.has(screen.id+':rule'))&&['teacher','admin','presentation'].includes(role)?html(source.rule):'<span>Work out the rule before revealing it.</span>')+'</div>'+(['teacher','admin','presentation'].includes(role)?'<button data-rs-action="rule" data-rs-key="'+html(screen.id+':rule')+'">Show / hide rule</button>':'')+'</section></div>';break;
  case 'practice':
   body=heading+questionItems(screen,source,role);break;
  case 'exit':
