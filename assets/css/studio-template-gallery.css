@@ -174,3 +174,16 @@
 .functional-thank-body [data-functional-slot="image"]{grid-column:2;grid-row:1 / span 2;background:#dfeee1;align-items:center;justify-content:center}
 .functional-thank-you.variant-minimal-green .functional-thank-body [data-functional-slot="image"]{opacity:.55}
 .functional-variant-options{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}
+
+/* PowerPoint-like Visual Layout Editor — teacher-only edit affordances.
+   Preview and learner presentation have no drag handles. */
+.studio-layout-tools{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap}
+.studio-center .lesson-canvas.layout-edit-mode{outline:3px solid #2d8556;outline-offset:2px;overflow:auto}
+.studio-center .layout-edit-mode .layout-adjustable{touch-action:none}
+.studio-center .layout-edit-mode .layout-adjustable:not(:has(.layout-adjustable:hover)):hover{outline:2px dashed #20976a;outline-offset:2px;cursor:move}
+.studio-center .layout-edit-mode .layout-resize-handle{position:absolute;z-index:60;right:-3px;bottom:-3px;width:21px;height:21px;min-height:21px;border:2px solid #fff;border-radius:6px;background:#187d50;box-shadow:0 1px 7px #123c2b5e;cursor:nwse-resize;touch-action:none}
+.studio-center .layout-edit-mode .layout-resize-handle:after{content:'↘';color:#fff;position:absolute;font:800 16px Arial,sans-serif;left:2px;top:-1px}
+.studio-center .layout-edit-mode .layout-adjustable:has(.layout-resize-handle){position:relative}
+.studio-center .layout-edit-mode button:not(.layout-resize-handle){cursor:pointer}
+.studio-center .layout-edit-mode .layout-resize-handle:hover{background:#0e5336}
+@media(max-width:900px){.studio-layout-tools{width:100%;justify-content:flex-start}}
