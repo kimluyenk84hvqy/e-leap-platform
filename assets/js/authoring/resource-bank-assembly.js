@@ -159,10 +159,43 @@ export function renderResourceStage(screen,pack,role='teacher'){
   body=heading+crossword(screen,source,role);break;
  case 'peer':
   body=heading+'<div class="rs-prompt-list">'+(source.prompts||[]).map((p,i)=>card('TASK '+(i+1),'<p>'+html(p)+'</p>')).join('')+'</div>';break;
- case 'listening':
-  body=heading+(methodId==='tbl-listening'?'<div class="rs-teaching-phase">Prepare → Listen → Group task → Report → Check. Tell a partner what each traveller needs before confirming a location.</div>':'<div class="rs-teaching-phase">Predict → Listen for gist → Listen for detail → Compare → Check.</div>')+'<div class="rs-listening"><div class="rs-source-media"><audio controls preload="metadata" src="'+html(resourceMediaUrl(pack,source.audioAsset))+'"></audio><small>Original Track 22 · six conversations · Evidence clips pending source QA</small><div class="rs-sign-grid">'+(source.media||[]).map((id,i)=>'<div><span>'+String.fromCharCode(97+i)+'</span>'+media(pack,id,'Travel sign')+'</div>').join('')+'</div></div><div>'+questionItems(screen,source,role,{kind:'listening'})+'</div></div>';break;
- case 'discovery':
-  body=heading+(methodId==='grammar-ppp'?'<div class="rs-teaching-phase">PRESENT → PRACTISE → PRODUCE. Start from the language pattern and check examples.</div>':'<div class="rs-teaching-phase">CONTEXT → NOTICE → DISCOVER → PAIR CHECK → PRACTISE → APPLY. Learners infer before seeing the rule.</div>')+'<div class="rs-discovery"><section>'+card('NOTICE · Original language focus',('<ol>'+(source.examples||[]).map(e=>'<li>'+html(e)+'</li>').join('')+'</ol>'))+'</section><section>'+card('DISCOVER · Work with a partner','<ol>'+(source.questions||[]).map(x=>'<li>'+html(x)+'</li>').join('')+'</ol>')+'<div class="rs-rule">'+((methodId==='grammar-ppp'||(ui.reveals.has(screen.id+':rule')&&['teacher','admin','presentation'].includes(role)))?html(source.rule):'<span>Work out the rule before revealing it.</span>')+'</div>'+(['teacher','admin','presentation'].includes(role)?'<button data-rs-action="rule" data-rs-key="'+html(screen.id+':rule')+'">Show / hide rule</button>':'')+'</section></div>';break;
+ case 'listening':{
+  const phase=ui.phase.get(screen.id)||0;
+  const method=methodId==='tbl-listening'
+   ?[{label:'Prepare',instruction:'Discuss what information a traveller might need.'},{label:'Listen',instruction:'Listen once and note the location or request.'},{label:'Group Task',instruction:'Compare notes with a partner before choosing an answer.'},{label:'Check',instruction:'Return to the textbook questions. Check your answers.'}]
+   :[{label:'Predict',instruction:'Look at the signs and make a prediction.'},{label:'Listen',instruction:'Listen once for meaning and then for details.'},{label:'Compare',instruction:'Discuss answers with a partner without looking at the key.'},{label:'Check',instruction:'Complete the original questions; review one item at a time.'}];
+  const current=method[Math.min(phase,method.length-1)];
+  const flow='<nav class="rs-phase-nav">'+method.map((step,i)=>'<button type="button" data-rs-action="phase" data-rs-key="'+html(screen.id)+'" data-rs-index="'+i+'" class="'+(i===phase?'rs-current':'')+'">'+html(step.label)+'</button>').join('')+'</nav><p class="rs-phase-instruction">'+html(current.instruction)+'</p>';
+  const signs='<div class="rs-sign-grid">'+(source.media||[]).map((id,i)=>'<div><span>'+String.fromCharCode(97+i)+'</span>'+media(pack,id,'Travel sign')+'</div>').join('')+'</div>';
+  const audio='<div class="rs-source-media"><audio controls preload="metadata" src="'+html(resourceMediaUrl(pack,source.audioAsset))+'"></audio><small>Track 22 (original) · Verified Evidence segments required before publication</small></div>';
+  const isListening=phase===1,showQuestions=phase===3;
+  body=heading+flow+'<div class="rs-listening">'+(showQuestions?audio:phase===2?card('PAIR CHECK','<p>Tell a partner what you heard. Explain the clue that supports each answer.</p>'):card(phase===0?'LOOK & PREDICT':'LISTENING INPUT',phase===0?'<p>Where might you hear these conversations? What do these signs mean?</p>':audio))+
+   (showQuestions?'<div>'+questionItems(screen,source,role,{kind:'listening'})+'</div>':isListening?signs:phase===0?signs:'<div class="rs-pair-note">Keep your original answers. You can return to the questions without losing them.</div>')+'</div>';break;
+ }
+ case 'discovery':{
+  const phase=ui.phase.get(screen.id)||0;
+  const isPPP=methodId==='grammar-ppp';
+  const phases=isPPP?['Present','Practise','Produce']:['Context','Notice','Discover','Rule Check','Apply'];
+  const page=Math.min(phase,phases.length-1);
+  const flow='<nav class="rs-phase-nav">'+phases.map((label,i)=>'<button data-rs-action="phase" data-rs-key="'+html(screen.id)+'" data-rs-index="'+i+'" class="'+(page===i?'rs-current':'')+'">'+html(label)+'</button>').join('')+'</nav>';
+  const ex=(source.examples||[]).map(x=>'<li>'+html(x)+'</li>').join('');
+  const q=(source.questions||[]).map(x=>'<li>'+html(x)+'</li>').join('');
+  const rule='<div class="rs-rule">'+html(source.rule)+'</div>';
+  let content='';
+  if(isPPP){
+   content=page===0?card('PRESENT · Focus on need', '<ol>'+ex+'</ol>'+rule):
+   page===1?card('PRACTISE · Find the pattern','<ol>'+q+'</ol><p>Now complete the original textbook Activity 2 on the next screen.</p>'):
+   card('PRODUCE · Make it personal','<p>Tell a partner two things you need and one thing you do not need. Ask one question using <b>need</b>.</p>');
+  }else{
+   content=page===0?card('CONTEXT · Recall Track 22','<p>What do travellers need at the airport or hotel? Recall one conversation with your partner.</p>'):
+   page===1?card('NOTICE · Language from the recording','<ol>'+ex+'</ol><p>Underline <b>need</b> and notice the words that follow it.</p>'):
+   page===2?card('DISCOVER · Work with a partner','<ol>'+q+'</ol><p>Compare your ideas before your teacher confirms the rule.</p>'):
+   page===3?card('RULE CHECK · Confirm the pattern',(['teacher','admin','presentation'].includes(role)&&ui.reveals.has(screen.id+':rule')?rule:'<p>Think of your own rule. Your teacher can reveal it after discussion.</p>')+
+    (['teacher','admin','presentation'].includes(role)?'<button data-rs-action="rule" data-rs-key="'+html(screen.id+':rule')+'">Show / hide rule</button>':'')):
+   card('APPLY · Use need in context','<p>Complete the original Activity 2, compare with a partner, then check one sentence at a time.</p>');
+  }
+  body=heading+flow+'<div class="rs-phase-content">'+content+'</div>';break;
+ }
  case 'practice':
   body=heading+(methodId==='grammar-ppp'?'<div class="rs-teaching-phase">PRACTISE: Complete the sentences after the rule presentation → COMPARE with a partner → PRODUCE one original example aloud.</div>':'<div class="rs-teaching-phase">TRY independently → PAIR CHECK without revealing answers → TEACHER CHECK and explain the use of need.</div>')+questionItems(screen,source,role);break;
  case 'exit':
@@ -181,25 +214,32 @@ export function renderResourceProperties(screen,pack){
 export function wireResourceStage({screen,pack,role,render,onModified}){
  if(!screen?.resourceStage)return;
  document.querySelectorAll('.rs-cover-photo > img').forEach(img=>img.addEventListener('error',()=>{img.style.display='none';const fallback=img.nextElementSibling;if(fallback)fallback.style.display='block';}));
- document.querySelectorAll('[data-rs-input]').forEach(e=>e.addEventListener('input',()=>{ui.answers.set(e.dataset.rsInput,e.value);ui.checks.delete(e.dataset.rsInput)}));
- document.querySelectorAll('[data-rs-action]').forEach(btn=>btn.addEventListener('click',()=>{
-  const key=btn.dataset.rsKey,action=btn.dataset.rsAction;
-  const source=src(screen,pack),item=(source?.items||[]).find(x=>itemAnswerKey(screen,x)===key);
-  const revealAllowed=['teacher','admin','presentation'].includes(role);
-  const checkAllowed=['teacher','admin','student','guest'].includes(role);
-  if(action==='reveal'||action==='rule'){if(!revealAllowed)return;ui.reveals.has(key)?ui.reveals.delete(key):ui.reveals.add(key)}
-  if(action==='reset'){ui.answers.delete(key);ui.checks.delete(key);ui.reveals.delete(key);ui.whys.delete(key)}
-  if(action==='why'){ui.whys.has(key)?ui.whys.delete(key):ui.whys.add(key)}
-  if(action==='check'&&checkAllowed&&item){
-   const norm=x=>String(x||'').normalize('NFKC').replace(/[’‘]/g,"'").replace(/\s+/g,' ').trim().toLowerCase();
-   ui.checks.set(key,norm(ui.answers.get(key))===norm(item.answer));
+ document.querySelectorAll('[data-rs-input]').forEach(el=>el.addEventListener('input',()=>{
+  ui.answers.set(el.dataset.rsInput,el.value);ui.checks.delete(el.dataset.rsInput);
+  // Update digital grid in place while typing; do not interrupt focus or playback.
+  const stage=src(screen,pack);if(stage?.type==='crossword'){
+   const focus=document.querySelector('.rs-cross-grid');if(!focus)return;
+   // Controlled re-render only on the next navigational action, not on each keystroke.
   }
+ }));
+ document.querySelectorAll('[data-rs-action]').forEach(btn=>btn.addEventListener('click',()=>{
+  const key=btn.dataset.rsKey,action=btn.dataset.rsAction,source=src(screen,pack);
+  const item=(source?.items||[]).find(x=>itemAnswerKey(screen,x)===key);
+  const canReveal=['teacher','admin','presentation'].includes(role);
+  const canCheck=['teacher','admin','student','guest'].includes(role);
+  if(['page','focus','phase'].includes(action)){
+   const index=Math.max(0,Number(btn.dataset.rsIndex)||0);
+   if(action==='phase')ui.phase.set(screen.id,index);else ui.focus.set(screen.id,index);
+   render();return;
+  }
+  if(action==='reveal'||action==='rule'){if(!canReveal)return;ui.reveals.has(key)?ui.reveals.delete(key):ui.reveals.add(key)}
+  else if(action==='reset'){ui.answers.delete(key);ui.checks.delete(key);ui.reveals.delete(key);ui.whys.delete(key)}
+  else if(action==='why'){if(!canReveal||item?.keyStatus&&item.keyStatus!=='VERIFIED')return;ui.whys.has(key)?ui.whys.delete(key):ui.whys.add(key)}
+  else if(action==='check'&&canCheck&&item)ui.checks.set(key,answerMatches(item,ui.answers.get(key)));
   render();
  }));
- document.querySelectorAll('[data-rs-combo]').forEach(e=>e.addEventListener('change',()=>{
-  // Teacher approval is a separate process. Switching a method in preview only
-  // changes the method contract; it never silently creates missing assets.
-  const id=e.value;if(!METHOD_COMBOS[id]&&id!==src(screen,pack)?.combo)return;
-  screen.resourceStage.comboId=id;onModified();render();
+ document.querySelectorAll('[data-rs-combo]').forEach(el=>el.addEventListener('change',()=>{
+  const id=el.value;if(!METHOD_COMBOS[id]&&id!==src(screen,pack)?.combo)return;
+  screen.resourceStage.comboId=id;ui.phase.delete(screen.id);onModified();render();
  }));
 }
