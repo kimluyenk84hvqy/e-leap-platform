@@ -23,7 +23,7 @@ import {createMethodTemplateScreen,renderMethodTemplateCanvas,renderMethodTempla
 import {METHOD_COMBOS} from './authoring/method-combo-catalog.js';
 import {syncCoverMetadata,unlinkCoverSlot} from './authoring/cover-metadata-sync.js';
 import {FUNCTION_SLIDES,createFunctionalSlide,renderFunctionalSlide,renderFunctionalSlideProps} from './authoring/functional-slide-library.js';
-import {mountLayoutEditor,resetLayout,layoutSnapshot,createLayoutHistory,saveLayoutPreset,listLayoutPresets,applyLayoutPreset,setRegionBorder,borderForRegion} from './authoring/visual-layout-editor.js';
+import {mountLayoutEditor,resetLayout,layoutSnapshot,createLayoutHistory,saveLayoutPreset,listLayoutPresets,applyLayoutPreset,setRegionBorder,borderForRegion,isTextLayoutRegion,textStyleForRegion,setRegionTextStyle,LAYOUT_TEXT_FONTS} from './authoring/visual-layout-editor.js';
 
 const root=document.getElementById('studio');
 let verifiedUser=null;
@@ -101,6 +101,13 @@ function render(){
       <main class="studio-center"><div class="canvas-toolbar"><div class="studio-preview-modes"><b style="font-size:13px">Preview as</b>${['teacher','admin','student','guest','presentation'].map(r=>`<button class="studio-btn ${previewRole===r?'primary':''}" data-preview-role="${r}">${cap(r)}</button>`).join('')}</div><div class="studio-layout-tools">
  <button type="button" class="studio-btn ${layoutEditMode?'primary':''}" data-layout-toggle ${['student','guest','presentation'].includes(previewRole)?'disabled':''}>${layoutEditMode?'Finish layout':'Edit layout'}</button>
  ${layoutEditMode?`<button type="button" class="studio-btn" data-layout-guides>${layoutGuidesVisible?'Hide guides':'Show guides'}</button><label class="studio-border-control">Box border <select data-layout-border><option value="default">Template default</option><option value="none">No border</option><option value="solid">Solid border</option><option value="dashed">Dashed border</option></select></label>`:''}
+ ${layoutEditMode&&selectedLayoutRegion&&isTextLayoutRegion(selectedLayoutRegion)?`<div class="studio-text-toolbar">
+ <label>Font <select data-layout-text-font><option value="">Default</option>${LAYOUT_TEXT_FONTS.map(name=>`<option value="${esc(name)}">${esc(name)}</option>`).join('')}</select></label>
+ <label>Size <input type="number" data-layout-text-size min="14" max="100" step="1" placeholder="Default"></label>
+ <label>Colour <input type="color" data-layout-text-color value="#ffffff"></label>
+ <label>Align <select data-layout-text-align><option value="">Default</option><option value="left">Left</option><option value="center">Center</option><option value="right">Right</option></select></label>
+ <button type="button" class="studio-btn" data-layout-text-reset>Reset text</button>
+ </div>`:'')}
  ${layoutEditMode?'<button type="button" class="studio-btn" data-layout-undo>Undo</button><button type="button" class="studio-btn" data-layout-redo>Redo</button><button type="button" class="studio-btn" data-layout-reset>Reset layout</button><button type="button" class="studio-btn" data-layout-save-preset>Save as My Template</button>':''}${layoutEditMode&&listLayoutPresets(localStorage,s).length?'<select class="studio-layout-presets" data-layout-preset-select><option value="">My Templates…</option>'+listLayoutPresets(localStorage,s).map(name=>'<option value="'+esc(name)+'">'+esc(name)+'</option>').join('')+'</select>':''}
  <span class="status">${esc(s.stage)} · Slide ${selectedScreen+1}/${lesson.screens.length}</span></div></div>${renderCanvas(s)}</main>
       <aside class="studio-right"><div class="studio-pane-head"><div><h2>Properties</h2><small>${currentBlock()?cap(typeLabel(currentBlock().type)):'Slide'}</small></div></div><div class="properties">${renderProperties()}</div></aside>
@@ -225,9 +232,39 @@ function wire(){
     selectedLayoutRegion=id;
     const control=document.querySelector('[data-layout-border]');
     if(control)control.value=borderForRegion(currentScreen(),id);
+    const toolbar=document.querySelector('.studio-layout-tools');
+    if(toolbar){const old=toolbar.querySelector('.studio-text-toolbar');if(old)old.remove();if(isTextLayoutRegion(id)){
+      const tx=document.createElement('div');tx.className='studio-text-toolbar';
+      tx.innerHTML='<label>Font <select data-layout-text-font><option value="">Default</option>'+LAYOUT_TEXT_FONTS.map(name=>'<option value="'+esc(name)+'">'+esc(name)+'</option>').join('')+'</select></label><label>Size <input data-layout-text-size type="number" min="14" max="100" placeholder="Default"></label><label>Colour <input data-layout-text-color type="color" value="#ffffff"></label><label>Align <select data-layout-text-align><option value="">Default</option><option value="left">Left</option><option value="center">Center</option><option value="right">Right</option></select></label><button type="button" class="studio-btn" data-layout-text-reset>Reset text</button>';
+      toolbar.appendChild(tx);wireTextToolbar();
+    }}
     status('Selected: '+label+' · drag to move, corner to resize, or change Border');
    }
   });
+  function wireTextToolbar(){
+   if(!selectedLayoutRegion||!isTextLayoutRegion(selectedLayoutRegion))return;
+   const style=textStyleForRegion(currentScreen(),selectedLayoutRegion);
+   const mapping={fontFamily:'[data-layout-text-font]',fontSize:'[data-layout-text-size]',color:'[data-layout-text-color]',textAlign:'[data-layout-text-align]'};
+   for(const [key,selector] of Object.entries(mapping)){
+    const el=document.querySelector(selector);if(!el)continue;
+    if(style[key]!==undefined&&style[key]!==null)el.value=style[key];
+    el.addEventListener('change',()=>{
+     if(!selectedLayoutRegion||!isTextLayoutRegion(selectedLayoutRegion))return;
+     const before=layoutSnapshot(currentScreen()),next={...textStyleForRegion(currentScreen(),selectedLayoutRegion)};
+     const value=el.value;
+     if(!value){delete next[key];}
+     else if(key==='fontSize'){
+      const n=Number(value);if(!Number.isFinite(n)||n<14||n>100){status('Font size must be 14–100 px.');return;}next[key]=n;
+     }else next[key]=value;
+     if(setRegionTextStyle(currentScreen(),selectedLayoutRegion,next)){layoutHistory.change(currentScreen(),before);markDirty();render();}
+    });
+   }
+   document.querySelector('[data-layout-text-reset]')?.addEventListener('click',()=>{
+    const before=layoutSnapshot(currentScreen());
+    if(setRegionTextStyle(currentScreen(),selectedLayoutRegion,{})){layoutHistory.change(currentScreen(),before);markDirty();render();}
+   });
+  }
+  wireTextToolbar();
   designCanvas?.classList.toggle('layout-guides-hidden',!layoutGuidesVisible);
   const borderControl=document.querySelector('[data-layout-border]');
   if(borderControl){
