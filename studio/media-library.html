@@ -37,7 +37,12 @@ let uploadEnabled=false;
 async function refresh(){
  try{
  const r=await fetch('/api/studio-media',{credentials:'same-origin',cache:'no-store'});
- const data=await r.json(); if(!r.ok)throw Error(data.error||'Access denied');
+ const raw=await r.text();let data={};try{data=JSON.parse(raw)}catch{throw Error('Server returned an invalid response (HTTP '+r.status+').');}
+ if(!r.ok){
+  if(r.status===401){$('status').innerHTML='Sign in required on this Preview domain. <a href="../signin.html?next=%2Fstudio%2Fmedia-library.html">Sign in as Teacher / Admin</a> and reopen the library.';$('records').innerHTML='<tr><td colspan="4">Your Production login does not automatically sign you in on this Preview address.</td></tr>';return;}
+  if(r.status===403){$('status').textContent='Your account does not have Teacher/Admin access to this library.';$('records').innerHTML='<tr><td colspan="4">Insufficient permissions. Check the current E-LEAP role.</td></tr>';return;}
+  throw Error('HTTP '+r.status+': '+(data.error||'Library is unavailable'));
+ }
  uploadEnabled=Boolean(data.uploadEnabled);
  $('status').textContent=uploadEnabled?'Teacher/Administrator · Upload available':'Teacher/Administrator · Library preview';
  const usage=data.usage||{};
@@ -48,7 +53,7 @@ async function refresh(){
  $('records').innerHTML=(data.files||[]).map(a=>
  '<tr><td>'+esc(a.original_name)+'</td><td>'+esc(a.category)+'</td><td>'+mb(a.bytes)+'</td><td><button class="secondary" data-open="'+esc(a.asset_id)+'">Open</button> <button class="secondary" data-archive="'+esc(a.asset_id)+'">Archive</button></td></tr>'
  ).join('')||'<tr><td colspan="4">No uploaded materials yet.</td></tr>';
- }catch(e){$('status').textContent='Cannot open library: '+e.message;$('records').innerHTML='<tr><td colspan="4">Sign in as Teacher/Admin or check database access.</td></tr>'}
+ }catch(e){$('status').textContent='Cannot open library: '+e.message;$('records').innerHTML='<tr><td colspan="4">Library is not available. No materials were changed. Check authentication or server/database connection.</td></tr>'}
 }
 $('records').addEventListener('click',async e=>{
  const id=e.target?.dataset?.open;if(id){window.open('/api/studio-media?open='+encodeURIComponent(id),'_blank','noopener');return}
