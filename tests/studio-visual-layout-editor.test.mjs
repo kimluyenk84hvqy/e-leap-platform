@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {LAYOUT_SCHEMA,validOverride,layoutIssues,cloneLayout,saveRegionOverride,resetLayout,layoutSnapshot,createLayoutHistory,layoutFamily,saveLayoutPreset,listLayoutPresets,applyLayoutPreset} from '../assets/js/authoring/visual-layout-editor.js';
+import {LAYOUT_SCHEMA,validOverride,layoutIssues,cloneLayout,saveRegionOverride,resetLayout,layoutSnapshot,createLayoutHistory,layoutFamily,setRegionBorder,borderForRegion,saveLayoutPreset,listLayoutPresets,applyLayoutPreset} from '../assets/js/authoring/visual-layout-editor.js';
 const example={dx:20,dy:13,width:230,height:170,base:1100};
 assert.equal(LAYOUT_SCHEMA,1);
 assert.ok(validOverride(example));
@@ -18,6 +18,11 @@ assert.equal(history.undo(screen),true);
 assert.equal(screen.visualLayout.regions['passage:0'].width,230);
 assert.equal(history.redo(screen),true);
 assert.equal(screen.visualLayout.regions['passage:0'].width,300);
+assert.equal(setRegionBorder(screen,'passage:0','none'),true);
+assert.equal(borderForRegion(screen,'passage:0'),'none');
+assert.equal(setRegionBorder(screen,'passage:0','dashed'),true);
+assert.equal(borderForRegion(screen,'passage:0'),'dashed');
+assert.equal(setRegionBorder(screen,'passage:0','rainbow'),false);
 assert.equal(resetLayout(screen),true);
 assert.equal(screen.visualLayout,undefined);
 assert.equal(history.undo(screen),true);
@@ -34,5 +39,6 @@ assert.equal(layoutFamily({certifiedTemplate:{family:'cover',variant:'photo-hero
 assert.equal(layoutFamily({methodDraft:{methodId:'jigsaw-reading'}}),'combo:jigsaw-reading');
 assert.equal(layoutFamily({functionalDraft:{type:'thank-you',variant:'photo-hero'}}),'function:thank-you:photo-hero');
 assert.ok(layoutIssues({visualLayout:{schemaVersion:2,regions:{'a:0':example}}}).length);
+assert.ok(layoutIssues({visualLayout:{schemaVersion:1,regions:{},boxBorders:{'a:0':'bad-style'}}}).length);
 assert.ok(layoutIssues({visualLayout:{schemaVersion:1,regions:{'a:0':{...example,dx:Infinity}}}}).length);
 console.log('Visual Layout Editor: presets, validation, history and per-slide overrides passed.');
