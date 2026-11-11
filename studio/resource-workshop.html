@@ -54,7 +54,7 @@ footer{font-size:13px;color:#647b69}
 <div class="field"><label>First spoken content after intro (verified)</label><input id="introEnds" type="number" min="0" step=".05" value="0"></div>
 <div class="two"><div class="field"><label>Conversation / evidence label</label><input id="clipName" value="conversation-01" maxlength="80"></div><div class="field"><label>Evidence target ID</label><input id="evidenceId" placeholder="e.g. Listening-2-Q1" maxlength="100"></div></div>
 <div class="field"><label>Transcript / audible first and last words</label><textarea id="clipTranscript" rows="3" placeholder="Transcribe what you actually hear. Do not guess."></textarea></div>
-<div class="field"><label><input type="checkbox" id="verified"> I listened to the selected clip and confirmed that the intro and neighboring conversations are excluded.</label></div>
+<div class="field"><label><input type="checkbox" id="introReviewed"> I checked whether the source has an introduction / spoken track number and marked where the actual conversation starts.</label></div><div class="field"><label><input type="checkbox" id="verified"> I listened to the selected clip and confirmed that the intro and neighboring conversations are excluded.</label></div>
 <div class="actions"><button id="exportClip" disabled>Export verified WAV</button><button id="exportDraft" class="secondary" disabled>Export unverified review WAV</button></div>
 <p role="status" id="audioStatus" class="muted">Verification is mandatory for Evidence exports. Draft review clips must not be used as Evidence.</p>
 </section>
