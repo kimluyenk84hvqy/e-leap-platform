@@ -96,7 +96,7 @@ export const METHOD_COMBOS={
   ]
  }
 };
-export const METHOD_GROUPS=[...new Set(Object.values(METHOD_COMBOS).map(c=>c.group))];
+export const METHOD_GROUPS=['Warm-up / Lead-in','Vocabulary','Grammar','Listening','Reading','Speaking','Writing'].filter(g=>Object.values(METHOD_COMBOS).some(c=>c.group===g));
 const nonblank=v=>typeof v==='string'&&v.trim().length>0;
 export function checkMethodSource(id,source={}){
  const method=METHOD_COMBOS[id];if(!method)return ['Unknown method combo.'];
