@@ -130,7 +130,7 @@ export function renderResourceStage(screen,pack,role='teacher'){
  case 'discovery':
   body=heading+(methodId==='grammar-ppp'?'<div class="rs-teaching-phase">PRESENT → PRACTISE → PRODUCE. Start from the language pattern and check examples.</div>':'<div class="rs-teaching-phase">CONTEXT → NOTICE → DISCOVER → PAIR CHECK → PRACTISE → APPLY. Learners infer before seeing the rule.</div>')+'<div class="rs-discovery"><section>'+card('NOTICE · Original language focus',('<ol>'+(source.examples||[]).map(e=>'<li>'+html(e)+'</li>').join('')+'</ol>'))+'</section><section>'+card('DISCOVER · Work with a partner','<ol>'+(source.questions||[]).map(x=>'<li>'+html(x)+'</li>').join('')+'</ol>')+'<div class="rs-rule">'+((methodId==='grammar-ppp'||(ui.reveals.has(screen.id+':rule')&&['teacher','admin','presentation'].includes(role)))?html(source.rule):'<span>Work out the rule before revealing it.</span>')+'</div>'+(['teacher','admin','presentation'].includes(role)?'<button data-rs-action="rule" data-rs-key="'+html(screen.id+':rule')+'">Show / hide rule</button>':'')+'</section></div>';break;
  case 'practice':
-  body=heading+questionItems(screen,source,role);break;
+  body=heading+(methodId==='grammar-ppp'?'<div class="rs-teaching-phase">PRACTISE: Complete the sentences after the rule presentation → COMPARE with a partner → PRODUCE one original example aloud.</div>':'<div class="rs-teaching-phase">TRY independently → PAIR CHECK without revealing answers → TEACHER CHECK and explain the use of need.</div>')+questionItems(screen,source,role);break;
  case 'exit':
   body=heading+'<div class="rs-prompt-list">'+(source.prompts||[]).map((x,i)=>card('RETRIEVAL '+(i+1),'<p>'+html(x)+'</p>')).join('')+'</div>';break;
  }
