@@ -379,6 +379,7 @@ function wire(){
     };
     const chosen=choices[b.dataset.u51PhotoChoice];if(!chosen)return;
     data.values.imageSrc=chosen.src;data.values.imageAlt=chosen.alt;
+    if(b.dataset.u51PhotoChoice==='tram')data.variant='split-editorial';
     data.imageCredit={creator:chosen.creator,license:chosen.license,source:chosen.source};
     data.mediaCheck=null;data.layoutReview=null;
     if(data.sourceReview?.required){data.sourceReview.approved=false;data.sourceReview.contentSignature='';}
