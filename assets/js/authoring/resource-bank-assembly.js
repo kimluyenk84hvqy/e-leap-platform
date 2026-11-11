@@ -5,7 +5,7 @@
 import {METHOD_COMBOS} from './method-combo-catalog.js';
 const html=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]));
 const asId=x=>String(x||'').replace(/[^a-zA-Z0-9_-]/g,'').slice(0,70);
-const mediaUrls=new Map(),ui={answers:new Map(),reveals:new Set(),whys:new Set(),checks:new Map(),score:null};
+const mediaUrls=new Map(),ui={answers:new Map(),reveals:new Set(),whys:new Set(),checks:new Map(),phase:new Map(),focus:new Map(),score:null};
 const dbName='eleap-resource-bank-local-v1';
 const assetKey=(pack,id)=>pack.id+':'+id;
 function openDb(){return new Promise((resolve,reject)=>{
@@ -71,43 +71,77 @@ const media=(pack,id,alt='Source picture')=>{
  return url?'<img class="rs-image" src="'+html(url)+'" alt="'+html(alt)+'">':'<div class="rs-media-missing">Local image not loaded. Re-import the Resource ZIP.</div>';
 };
 function itemAnswerKey(screen,item){return screen.id+':'+item.id+(item.direction?':'+item.direction:'')}
+function normAnswer(x){return String(x??'').normalize('NFKC').replace(/[’‘]/g,"'").replace(/\s+/g,' ').trim().toLowerCase()}
+function answerMatches(item,value){
+ const keys=[item.answer,...(Array.isArray(item.acceptedAnswers)?item.acceptedAnswers:[])].filter(x=>x!==undefined&&x!==null);
+ return keys.some(x=>normAnswer(x)===normAnswer(value));
+}
+function phraseWithGap(text,input){
+ const t=String(text||''),m=/_{2,}|\[\s*\]|\(\s*\.\.\.\s*\)/.exec(t);
+ if(!m)return '<span class="rs-question-text">'+html(t)+'</span><div class="rs-inline-gap">'+input+'</div>';
+ return '<span class="rs-question-text">'+html(t.slice(0,m.index))+input+html(t.slice(m.index+m[0].length))+'</span>';
+}
 function questionItems(screen,source,role,{kind='practice'}={}){
  const canReveal=['teacher','admin','presentation'].includes(role);
  const canCheck=['teacher','admin','student','guest'].includes(role);
  const canEvidence=kind==='listening';
- return '<div class="rs-items">'+(source.items||[]).map((item,i)=>{
+ const current=ui.focus.get(screen.id)||0,items=source.items||[],pageSize=canEvidence?3:4;
+ const pages=Math.max(1,Math.ceil(items.length/pageSize)),page=Math.min(current,pages-1);
+ const pageItems=items.slice(page*pageSize,(page+1)*pageSize);
+ let nav='<nav class="rs-activity-nav" aria-label="Question groups"><span>Questions '+(page*pageSize+1)+'–'+Math.min(items.length,(page+1)*pageSize)+' of '+items.length+'</span>';
+ for(let i=0;i<pages;i++)nav+='<button type="button" data-rs-action="page" data-rs-key="'+screen.id+'" data-rs-index="'+i+'" class="'+(i===page?'rs-current':'')+'">'+(i+1)+'</button>';
+ nav+='</nav>';
+ return nav+'<div class="rs-items">'+pageItems.map(item=>{
   const k=itemAnswerKey(screen,item),reveal=canReveal&&ui.reveals.has(k),val=ui.answers.get(k)||'',status=ui.checks.get(k);
-  const answer=String(item.answer||'');
-  const scoreStatus=status===undefined?'':status?'✓ Correct':'Try again';
-  const input='<input class="rs-answer '+(reveal?'rs-revealed':'')+'" data-rs-input="'+html(k)+'" value="'+html(reveal?answer:val)+'" '+(reveal?'readonly':'')+' aria-label="Answer '+html(item.id)+'">';
-  return '<div class="rs-item"><span class="rs-item-n">'+html(item.id)+'</span><div class="rs-item-main"><p>'+html(item.text||item.prompt)+'</p><div class="rs-answer-line">'+input+'<span class="rs-status">'+scoreStatus+'</span></div><div class="rs-item-actions">'+
-  (canCheck?'<button type="button" data-rs-action="check" data-rs-key="'+html(k)+'">Check</button>':'')+
-  (canReveal?'<button type="button" data-rs-action="reveal" data-rs-key="'+html(k)+'">'+(reveal?'Hide answer':'Show answer')+'</button>':'')+
-  '<button type="button" data-rs-action="reset" data-rs-key="'+html(k)+'">Reset</button>'+
-  '<button type="button" data-rs-action="why" data-rs-key="'+html(k)+'">Why?</button>'+
-  (canEvidence?'<button type="button" disabled title="Audio segment not verified. Full track is available above.">Evidence · pending QA</button>':'')+
-  '</div>'+(ui.whys.has(k)?'<p class="rs-why">'+html(item.why||'No source-verified explanation yet.')+'</p>':'')+
-  '</div></div>';
+  const confirmed=item.keyStatus?item.keyStatus==='VERIFIED':true;
+  const answer=String(item.answer||''),scoreStatus=status===undefined?'':status?'✓ Correct':'Try again';
+  const isInline=kind==='practice';
+  const input='<input class="rs-answer '+(reveal?'rs-revealed':'')+'" data-rs-input="'+html(k)+'" value="'+html(reveal?answer:val)+'" '+(reveal?'readonly':'')+' aria-label="Answer '+html(item.id)+'" autocomplete="off">';
+  const prompt=isInline?phraseWithGap(item.text||item.prompt,input):'<p class="rs-question-text">'+html(item.text||item.prompt)+'</p><div class="rs-answer-line">'+input+'</div>';
+  const showWhy=ui.whys.has(k)&&canReveal&&confirmed;
+  return '<article class="rs-item"><span class="rs-item-n">'+html(item.id)+'</span><div class="rs-item-main">'+prompt+'<div class="rs-status">'+scoreStatus+'</div><div class="rs-item-actions">'+
+   (canCheck?'<button type="button" data-rs-action="check" data-rs-key="'+html(k)+'">Check</button>':'')+
+   (canReveal?'<button type="button" data-rs-action="reveal" data-rs-key="'+html(k)+'">'+(reveal?'Hide answer':'Show answer')+'</button>':'')+
+   '<button type="button" data-rs-action="reset" data-rs-key="'+html(k)+'">Reset</button>'+
+   (canReveal&&confirmed?'<button type="button" data-rs-action="why" data-rs-key="'+html(k)+'">Why?</button>':'')+
+   (canEvidence?'<button type="button" disabled title="Audio segment has not passed source verification.">Evidence · pending QA</button>':'')+
+   '</div>'+(showWhy?'<p class="rs-why">'+html(item.why||'Explanation not yet approved.')+'</p>':'')+
+   (!confirmed?'<small class="rs-unverified">Working answer key — awaiting source verification</small>':'')+
+   '</div></article>';
  }).join('')+'</div>';
 }
 function crossword(screen,source,role){
  const canReveal=['teacher','admin','presentation'].includes(role),words=source.items||[];
- const occupied=new Map(),starts=new Map();
- let maxx=0,maxy=0;
+ const chosen=Math.min(ui.focus.get(screen.id)||0,Math.max(0,words.length-1)),active=words[chosen]||null;
+ if(!active)return '<p>No validated crossword entries.</p>';
+ const occupied=new Map(),starts=new Map();let maxx=0,maxy=0;
  for(const w of words){const answer=String(w.answer||'').toUpperCase();
   for(let i=0;i<answer.length;i++){const x=Number(w.x||0)+(w.direction==='across'?i:0),y=Number(w.y||0)+(w.direction==='down'?i:0),key=x+','+y;
    if(!occupied.has(key))occupied.set(key,{letter:answer[i],terms:[]});
    occupied.get(key).terms.push(itemAnswerKey(screen,w));maxx=Math.max(maxx,x);maxy=Math.max(maxy,y);
   }const start=Number(w.x||0)+','+Number(w.y||0);if(!starts.has(start))starts.set(start,[]);starts.get(start).push(w.id);
  }
- const cols=maxx+1,rows=maxy+1;
- let board='<div class="rs-cross-grid" style="grid-template-columns:repeat('+cols+',minmax(21px,1fr))">';
- for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){const key=x+','+y,c=occupied.get(key),visible=c?.terms.some(k=>ui.reveals.has(k))&&canReveal;
- board+='<span class="rs-cross-cell '+(c?'active':'blank')+'" title="'+(c?'crossword cell':'')+'">'+(starts.has(key)?'<sup>'+html(starts.get(key).join('/'))+'</sup>':'')+(visible?html(c.letter):'')+'</span>';}
+ const xa=Number(active.x||0),ya=Number(active.y||0),len=String(active.answer||'').length,along=active.direction==='across';
+ // Show a bounded viewport around the active clue; no 23-row micro-grid.
+ const x0=Math.max(0,Math.min(xa-2,maxx-9)),x1=Math.min(maxx,Math.max(xa+(along?len:1)+1,x0+9));
+ const y0=Math.max(0,Math.min(ya-3,maxy-10)),y1=Math.min(maxy,Math.max(ya+(along?1:len)+2,y0+10));
+ let board='<div class="rs-cross-grid rs-cross-focus" style="grid-template-columns:repeat('+(x1-x0+1)+',minmax(24px,1fr))">';
+ for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){
+  const key=x+','+y,c=occupied.get(key),cellActive=along?y===ya&&x>=xa&&x<xa+len:x===xa&&y>=ya&&y<ya+len;
+  const shown=c?.terms.some(k=>ui.reveals.has(k))&&canReveal;
+  // Learner-entered letters appear on the grid for the active word only.
+  const offset=along?x-xa:y-ya,userLetters=String(ui.answers.get(itemAnswerKey(screen,active))||'').replace(/\s+/g,'').toUpperCase();
+  const typed=cellActive?userLetters[offset]||'':'';
+  board+='<span class="rs-cross-cell '+(c?'active':'blank')+(cellActive?' rs-cross-highlight':'')+'">'+(starts.has(key)?'<sup>'+html(starts.get(key).join('/'))+'</sup>':'')+(shown?html(c.letter):html(typed))+'</span>';
+ }
  board+='</div>';
- const clues=words.map(w=>{const k=itemAnswerKey(screen,w),shown=ui.reveals.has(k)&&canReveal;
- return '<div class="rs-clue"><b>'+html(w.id)+' '+html(w.direction)+'</b><p>'+html(w.clue)+'</p>'+(canReveal?'<button type="button" data-rs-action="reveal" data-rs-key="'+html(k)+'">'+(shown?'Hide word':'Reveal word')+'</button>':'')+'</div>'}).join('');
- return '<div class="rs-cross-layout">'+board+'<div class="rs-clues">'+clues+'</div></div>';
+ const k=itemAnswerKey(screen,active),shown=ui.reveals.has(k)&&canReveal;
+ const control='<div class="rs-cross-active"><small>'+html(active.direction.toUpperCase())+' · '+html(active.id)+' / '+words.length+'</small><p>'+html(active.clue)+'</p>'+
+ '<input data-rs-input="'+html(k)+'" value="'+html(shown?active.answer:ui.answers.get(k)||'')+'" '+(shown?'readonly':'')+' placeholder="Type your word" aria-label="Crossword word '+html(active.id)+'">'+
+ '<div class="rs-item-actions"><button data-rs-action="check" data-rs-key="'+html(k)+'">Check</button><button data-rs-action="reset" data-rs-key="'+html(k)+'">Reset</button>'+
+ (canReveal?'<button data-rs-action="reveal" data-rs-key="'+html(k)+'">'+(shown?'Hide word':'Show word')+'</button>':'')+'</div><div class="rs-status">'+(ui.checks.get(k)===undefined?'':ui.checks.get(k)?'✓ Correct':'Try again')+'</div></div>';
+ const nav='<div class="rs-cross-choices">'+words.map((w,i)=>'<button data-rs-action="focus" data-rs-key="'+screen.id+'" data-rs-index="'+i+'" class="'+(i===chosen?'rs-current':'')+'">'+html(w.id)+' '+html(w.direction==='across'?'→':'↓')+'</button>').join('')+'</div>';
+ return '<div class="rs-cross-layout"><div><p class="rs-viewport-label">Digital crossword · focused view</p>'+board+'</div><div>'+nav+control+'</div></div>';
 }
 export function renderResourceStage(screen,pack,role='teacher'){
  const source=src(screen,pack);if(!source)return '<div class="rs-missing">Source mapping missing. Import the resource ZIP again.</div>';
