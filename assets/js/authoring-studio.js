@@ -330,6 +330,13 @@ function wire(){
     const next=changeCertifiedVariant(currentScreen().certifiedTemplate,b.dataset.certifiedVariant);
     if(!next)return;currentScreen().certifiedTemplate=next;markDirty();render();
   });
+  document.querySelectorAll('[data-certified-image-jump]').forEach(b=>b.addEventListener('click',()=>{
+    const input=document.querySelector('[data-certified-slot="imageSrc"]');
+    if(!input){status('Select a certified Cover or Opener to add a photo.');return;}
+    input.scrollIntoView({behavior:'smooth',block:'center'});
+    input.focus();
+    status('Paste a licensed HTTPS image URL or an existing image path into the highlighted Image Source field.');
+  }));
   document.querySelectorAll('[data-certified-slot]').forEach(el=>el.addEventListener('change',()=>{
     const data=currentScreen().certifiedTemplate;
     const key=el.dataset.certifiedSlot;
