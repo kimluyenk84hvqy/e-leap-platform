@@ -58,7 +58,10 @@ export const CERTIFIED_TEMPLATES={
 export const TEMPLATE_TOKENS=Object.freeze({
  font:"Poppins, Arial, sans-serif",green:"#154B36",greenDeep:"#0B3328",paper:"#F7FBF8",
  ink:"#142F27",lime:"#C8ED79",danger:"#C63D36",
- titlePx:44,instructionPx:28,questionPx:30,bodyPx:25,answerPx:28
+ titlePx:52,instructionPx:32,questionPx:35,bodyPx:28,answerPx:32,
+ coverIdentityPx:26,coverFacultyPx:24,coverUnitPx:29,coverTopicPx:66,coverCoursePx:27,
+ aimsTitlePx:48,aimsCategoryPx:32,aimsBodyPx:27,
+ openerTaskPx:23,openerQuestionPx:35,openerTargetPx:32
 });
 const clone=x=>JSON.parse(JSON.stringify(x));
 const isReal=s=>typeof s==='string'&&!!s.trim();
