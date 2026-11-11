@@ -21,7 +21,7 @@
 .cert-cover-photo{height:100%;min-height:0;overflow:hidden}
 .certified-cover.design-photo-hero .cert-cover-layout{display:block;position:relative}
 .certified-cover.design-photo-hero .cert-cover-photo{position:absolute;inset:0}
-.certified-cover.design-photo-hero .cert-cover-photo:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#0b3328ee,#0b3328a9 60%,#0b332877)}
+.certified-cover.design-photo-hero .cert-cover-photo:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(9,43,31,.85) 0%,rgba(9,43,31,.76) 33%,rgba(9,43,31,.38) 60%,rgba(9,43,31,.05) 100%)}
 .certified-cover.design-photo-hero .cert-cover-identity{position:absolute;z-index:1;background:transparent;inset:0;max-width:76%}
 .certified-cover.design-framed-gallery{background:#0b3328}
 .certified-cover.design-framed-gallery .cert-cover-layout{grid-template-columns:45% 55%;padding:28px;gap:15px}
@@ -139,3 +139,6 @@
 .certified-canvas .cert-photo-choose{z-index:5;position:relative;display:inline-flex;border:2px solid #daefb3;border-radius:12px;padding:12px 16px;background:#184a34;color:#fff;font:700 17px Poppins,Arial,sans-serif;cursor:pointer;box-shadow:0 3px 16px #102e284a}
 .certified-canvas .cert-photo-choose:hover{background:#27734c}
 .certified-cover.design-photo-hero .cert-photo-choose{margin-bottom:1%;margin-right:1%}
+
+/* Keep photographs vivid on the right: the dark-green overlay protects only text readability. */
+.certified-cover.design-photo-hero .cert-photo{filter:brightness(1.06) saturate(1.08)}
