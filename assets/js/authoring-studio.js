@@ -21,6 +21,7 @@ import {showTemplateReviewGallery,acceptedLayoutVariants} from './authoring/temp
 import {showMethodReviewGallery} from './authoring/method-review-gallery.js';
 import {createMethodTemplateScreen,renderMethodTemplateCanvas,renderMethodTemplateProperties,changeMethodStep} from './authoring/method-template-builder.js';
 import {METHOD_COMBOS} from './authoring/method-combo-catalog.js';
+import {syncCoverMetadata,unlinkCoverSlot} from './authoring/cover-metadata-sync.js';
 import {FUNCTION_SLIDES,createFunctionalSlide,renderFunctionalSlide,renderFunctionalSlideProps} from './authoring/functional-slide-library.js';
 import {mountLayoutEditor,resetLayout,layoutSnapshot,createLayoutHistory,saveLayoutPreset,listLayoutPresets,applyLayoutPreset,setRegionBorder,borderForRegion} from './authoring/visual-layout-editor.js';
 
@@ -85,6 +86,7 @@ function saveDraft(){localStorage.setItem(draftKey,JSON.stringify(lesson));dirty
 function status(msg){const e=document.querySelector('[data-studio-status]');if(e)e.textContent=msg}
 
 function render(){
+  if(lesson.screens?.[0]&&syncCoverMetadata(lesson.screens[0],lesson,{initial:true}))markDirty();
   const s=currentScreen(); if(selectedBlock>=s.blocks.length)selectedBlock=Math.max(0,s.blocks.length-1);
   if(s.combo&&!activeComboBlocks(s).includes(s.blocks[selectedBlock]))selectedBlock=Math.max(0,s.blocks.indexOf(activeComboBlocks(s)[0]));
   root.innerHTML=`<section class="studio-shell">
@@ -312,6 +314,7 @@ function wire(){
     const index=family==='cover'?0:same?selectedScreen:-1;
     const original=index>=0?lesson.screens[index]:modelCreateScreen(family==='aims'?'Aims':'Opener','');
     const data=original.certifiedTemplate?.family===family?clone(original.certifiedTemplate):(draftSourceFromScreen(original,family)||makeCertifiedTemplate(family));
+    if(family==='cover')syncCoverMetadata({certifiedTemplate:data},lesson,{initial:true});
     if(reviewed.length&&!reviewed.includes(data.variant))data.variant=reviewed[0];
     const result=applyCertifiedTemplate(original,data);if(!result.ok)return;
     if(index>=0){lesson.screens[index]=result.screen;selectedScreen=index;}
@@ -331,6 +334,7 @@ function wire(){
     const data=currentScreen().certifiedTemplate;
     const key=el.dataset.certifiedSlot;
     data.values[key]=el.value;
+    unlinkCoverSlot(currentScreen(),key);
     if(key==='imageSrc')data.mediaCheck=null;
     if(data.sourceReview?.required){data.sourceReview.approved=false;data.sourceReview.contentSignature='';}
     markDirty();render();
@@ -397,7 +401,8 @@ function applyPath(path,value){
   if(path==='screen.visualVariant'){const result=setVisualVariant(currentScreen(),value);if(result.ok){lesson.screens[selectedScreen]=result.screen;render()}return}
   if(path==='lesson.deliveryPolicy'){lesson.deliveryPolicy=normaliseDeliveryPolicy({id:value});render();return}
   const b=currentBlock(),a=b?.activity;
-  if(path==='lesson.title')lesson.title=value;else if(path==='lesson.courseLabel')lesson.courseLabel=value;else if(path==='lesson.lessonNumber')lesson.lessonNumber=value;else if(path.startsWith('theme.'))lesson.theme[path.split('.')[1]]=value;else if(path==='screen.stage')currentScreen().stage=value;else if(path==='screen.learningPhase')currentScreen().learningPhase=value;else if(path==='screen.title')currentScreen().title=value;else if(path==='screen.instruction')currentScreen().instruction=value;else if(path==='screen.teacherNotes')currentScreen().teacherNotes=value;else if(path==='screen.layout')currentScreen().layout=value;
+  if(path==='lesson.title')lesson.title=value;else if(path==='lesson.courseLabel')lesson.courseLabel=value;else if(path==='lesson.lessonNumber')lesson.lessonNumber=value;
+  if(['lesson.title','lesson.courseLabel','lesson.lessonNumber'].includes(path)&&lesson.screens?.[0])syncCoverMetadata(lesson.screens[0],lesson,{initial:true});else if(path.startsWith('theme.'))lesson.theme[path.split('.')[1]]=value;else if(path==='screen.stage')currentScreen().stage=value;else if(path==='screen.learningPhase')currentScreen().learningPhase=value;else if(path==='screen.title')currentScreen().title=value;else if(path==='screen.instruction')currentScreen().instruction=value;else if(path==='screen.teacherNotes')currentScreen().teacherNotes=value;else if(path==='screen.layout')currentScreen().layout=value;
   else if(path==='block.content.text')b.content.text=value;else if(path==='block.content.role')b.content.role=value;else if(path.startsWith('block.content.'))b.content[path.split('.')[2]]=value;
   else if(path==='block.vocabulary')b.content.items=parseLines(value,3).map(x=>({word:x[0],meaning:x[1],example:x[2]}));else if(path==='block.grammarExamples')b.content.examples=value.split('\n').map(x=>x.trim()).filter(Boolean);
   else if(path==='activity.prompt')a.prompt=value;else if(path==='activity.points')a.points=Number(value)||0;else if(path==='activity.placeholder')a.placeholder=value;else if(path==='activity.rubric')a.rubric=value;else if(path==='activity.modelAnswer')a.modelAnswer=value;else if(path==='activity.maxSeconds')a.maxSeconds=Number(value)||120;
