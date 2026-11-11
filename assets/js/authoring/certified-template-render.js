@@ -7,7 +7,7 @@ const safeMedia=s=>/^https:\/\/[^\s"'<>]+$/i.test(String(s||''))||/^(?:\/(?!\/)|
 const photo=(src,alt,editor)=>{
  const url=safeMedia(src);
  return url?'<img class="cert-photo" loading="lazy" src="'+esc(url)+'" alt="'+esc(alt)+'">':
-   '<div class="cert-photo-missing">'+(editor?'Add licensed real photograph in Template Slots':'')+'</div>';
+   '<div class="cert-photo-missing">'+(editor?'<button type="button" class="cert-photo-choose" data-certified-image-jump title="Locate the image source field">+ Add a real photo</button>':'')+'</div>';
 };
 const blank=x=>esc(x||'');
 export function renderCertifiedVisual(s,role,qIndex=0,revealed=false,response=''){
