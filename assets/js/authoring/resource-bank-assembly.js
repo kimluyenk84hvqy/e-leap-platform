@@ -132,7 +132,7 @@ function crossword(screen,source,role){
   // Learner-entered letters appear on the grid for the active word only.
   const offset=along?x-xa:y-ya,userLetters=String(ui.answers.get(itemAnswerKey(screen,active))||'').replace(/\s+/g,'').toUpperCase();
   const typed=cellActive?userLetters[offset]||'':'';
-  board+='<span class="rs-cross-cell '+(c?'active':'blank')+(cellActive?' rs-cross-highlight':'')+'">'+(starts.has(key)?'<sup>'+html(starts.get(key).join('/'))+'</sup>':'')+(shown?html(c.letter):html(typed))+'</span>';
+  board+='<span '+(cellActive?'data-rs-letter="'+offset+'" ':'')+'class="rs-cross-cell '+(c?'active':'blank')+(cellActive?' rs-cross-highlight':'')+'">'+(starts.has(key)?'<sup>'+html(starts.get(key).join('/'))+'</sup>':'')+(shown?html(c.letter):html(typed))+'</span>';
  }
  board+='</div>';
  const k=itemAnswerKey(screen,active),shown=ui.reveals.has(k)&&canReveal;
@@ -219,7 +219,8 @@ export function wireResourceStage({screen,pack,role,render,onModified}){
   // Update digital grid in place while typing; do not interrupt focus or playback.
   const stage=src(screen,pack);if(stage?.type==='crossword'){
    const focus=document.querySelector('.rs-cross-grid');if(!focus)return;
-   // Controlled re-render only on the next navigational action, not on each keystroke.
+   const letters=el.value.replace(/\\s+/g,'').toUpperCase();
+   focus.querySelectorAll('[data-rs-letter]').forEach(cell=>{cell.childNodes.forEach(node=>{if(node.nodeType===3)node.remove()});cell.append(document.createTextNode(letters[Number(cell.dataset.rsLetter)]||''));});
   }
  }));
  document.querySelectorAll('[data-rs-action]').forEach(btn=>btn.addEventListener('click',()=>{
