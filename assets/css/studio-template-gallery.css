@@ -191,3 +191,13 @@
 /* Slide is a clean teaching canvas, never a technical block list. Text, Image,
  * Activity, etc. labels belong to the Properties pane, not the lesson itself. */
 .studio-center .lesson-canvas .block-label{display:none!important}
+
+/* PowerPoint-style border controls are distinct from temporary edit guides. */
+.studio-border-control{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:#28533f}
+.studio-border-control select{font:600 13px Poppins,Arial,sans-serif;border:1px solid #abc8b3;border-radius:8px;padding:7px 9px;background:#fff;color:#174b37;max-width:160px}
+.studio-center .layout-edit-mode.layout-guides-hidden .layout-adjustable:hover{outline:none!important;box-shadow:inherit}
+.studio-center .layout-edit-mode.layout-guides-hidden .layout-resize-handle{opacity:0;pointer-events:none}
+.studio-center .layout-edit-mode.layout-guides-hidden{outline:none}
+.studio-center .lesson-canvas .layout-adjustable[data-layout-border="none"]{border:0!important;box-shadow:none!important}
+.studio-center .lesson-canvas .layout-adjustable[data-layout-border="solid"]{border:2px solid #218557!important}
+.studio-center .lesson-canvas .layout-adjustable[data-layout-border="dashed"]{border:2px dashed #218557!important}
