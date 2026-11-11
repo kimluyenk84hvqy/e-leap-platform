@@ -133,10 +133,10 @@ $('audioFile').addEventListener('change',async e=>{
   for(const id of ['clipStart','clipEnd','startRange','endRange','introEnds'])$(id).max=fmt(duration);
   $('audioInfo').textContent=audioFilename+' · '+fmt(duration)+'s · '+audioBuffer.numberOfChannels+' channel(s). The original is unchanged.';
   $('audioStatus').textContent='First inspect and mark the intro boundary; then set a conversation clip and play to verify.';
-  drawWave();updateEvidenceButtons();
+  $('introMark').disabled=false;drawWave();updateEvidenceButtons();
  }catch(err){$('audioStatus').textContent='Audio decoding failed: '+err.message}
 });
-$('introMark').disabled=false;
+// The intro marker is only usable after a source audio file is decoded.
 $('introMark').addEventListener('click',()=>{if(!audioBuffer)return;$('introEnds').value=start.value;invalidateVerification();drawWave();updateEvidenceButtons();$('audioStatus').textContent='Intro boundary recorded. Play the conversation and verify that no introduction remains.'});
 $('wave').addEventListener('click',e=>{
  if(!audioBuffer)return;const b=$('wave').getBoundingClientRect(),time=Math.max(0,Math.min(duration,(e.clientX-b.left)/b.width*duration));start.value=startRange.value=fmt(time);onBoundaryEdited('clipStart');
@@ -144,9 +144,9 @@ $('wave').addEventListener('click',e=>{
 $('playClip').addEventListener('click',async()=>{
  if(!validBounds())return;stopAudio();await audioContext.resume();
  const {a,b}=boundaries(),src=audioContext.createBufferSource();src.buffer=audioBuffer;src.connect(audioContext.destination);activeSource=src;src.onended=()=>{if(activeSource===src)activeSource=null};
+ src.onended=()=>{if(activeSource!==src)return;activeSource=null;hasPlayedSelection=true;playedBounds=a+':'+b;updateEvidenceButtons();$('audioStatus').textContent='Clip playback completed. Check its first/last spoken words and exclude the introduction before approving.'};
  src.start(0,a,b-a);src.stop(audioContext.currentTime+b-a);
- hasPlayedSelection=true;playedBounds=a+':'+b;updateEvidenceButtons();
- $('audioStatus').textContent='Playing '+fmt(a)+'–'+fmt(b)+' s. Tick both QA boxes only after checking the content and intro boundary.';
+ $('audioStatus').textContent='Playing '+fmt(a)+'–'+fmt(b)+' s. Wait for the full segment to finish before verifying.';
 });
 function encodeWav(buffer,a,b){
  const sr=buffer.sampleRate,channels=buffer.numberOfChannels,begin=Math.floor(a*sr),stop=Math.min(buffer.length,Math.ceil(b*sr)),n=stop-begin;
