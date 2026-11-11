@@ -68,3 +68,45 @@
 .rs-practice .rs-answer{font-size:clamp(15px,1.6cqw,19px)}
 .rs-canvas.rs-cover{padding:0}
 @media(max-width:780px){.rs-cross-layout,.rs-listening,.rs-discovery{grid-template-columns:1fr}.rs-practice .rs-items,.rs-aims{grid-template-columns:1fr}.rs-cross-grid{max-height:none}.rs-clues{max-height:500px}.rs-aims{height:auto}.rs-gallery{height:auto;grid-template-columns:repeat(2,1fr)}.rs-photo{min-height:120px}}
+
+/* Functional v2: no teacher-facing slide should overflow with a full 14-item list. */
+.rs-canvas{overflow:hidden!important}
+.rs-phase-nav{display:flex;gap:7px;flex-wrap:wrap;padding:0 4% 10px}
+.rs-phase-nav button,.rs-cross-choices button,.rs-activity-nav button{font:700 clamp(12px,1.28cqw,17px) Poppins,Arial,sans-serif;border:1px solid #a7cfad;color:#275b3d;background:#fff;border-radius:9px;padding:9px 12px;cursor:pointer}
+.rs-phase-nav .rs-current,.rs-cross-choices .rs-current,.rs-activity-nav .rs-current{background:#174e35;color:white}
+.rs-phase-instruction{margin:0 4% 12px;font-size:clamp(16px,1.6cqw,22px);font-weight:600}
+.rs-phase-content{padding:0 4% 4%;max-height:67%;overflow:auto}
+.rs-phase-content .rs-panel{max-width:100%;padding:3%;font-size:clamp(17px,1.8cqw,25px)}
+.rs-phase-content .rs-panel ol{columns:2;column-gap:40px}
+.rs-phase-content .rs-panel li{break-inside:avoid;padding:3px 0}
+.rs-phase-content .rs-panel p{font-size:clamp(17px,1.85cqw,24px);line-height:1.4}
+.rs-phase-content .rs-rule{font-size:clamp(18px,2.1cqw,26px)}
+.rs-listening{max-height:64%;overflow:auto}
+.rs-listening .rs-items{max-height:none;overflow:visible}
+.rs-sign-grid>div{height:clamp(95px,11cqw,145px)}
+.rs-cross-layout{grid-template-columns:minmax(0,1fr) minmax(0,.82fr);align-items:start}
+.rs-cross-focus{max-width:100%;max-height:none;overflow:hidden;gap:3px}
+.rs-cross-cell{font-size:clamp(16px,2cqw,26px);min-height:20px}
+.rs-cross-cell.active{border:2px solid #36704e}
+.rs-cross-cell.rs-cross-highlight{background:#def0b7;border-color:#5c9437}
+.rs-viewport-label{margin:0 0 6px;color:#366b49;font-size:clamp(15px,1.6cqw,20px);font-weight:750}
+.rs-cross-choices{display:flex;flex-wrap:wrap;gap:5px;max-height:100px;overflow:auto;margin-bottom:12px}
+.rs-cross-choices button{font-size:clamp(12px,1.2cqw,16px);padding:6px 10px}
+.rs-cross-active{background:white;border:1px solid #c0d9c4;border-top:6px solid #74b349;border-radius:14px;padding:14px;max-height:340px;overflow:auto}
+.rs-cross-active small{font-weight:800;color:#38774a}
+.rs-cross-active p{font-size:clamp(17px,1.85cqw,23px);line-height:1.35}
+.rs-cross-active input{width:100%;padding:10px 12px;border:2px solid #7aa957;border-radius:10px;font:650 clamp(18px,1.9cqw,25px) Poppins,Arial,sans-serif}
+.rs-item-main>.rs-question-text{display:block;font-size:clamp(17px,1.95cqw,26px);font-weight:650;line-height:1.65}
+.rs-question-text .rs-answer{display:inline-block;vertical-align:baseline;width:clamp(90px,12cqw,170px);max-width:45%;margin:0 7px;padding:4px 8px}
+.rs-inline-gap{margin:12px 0}
+.rs-practice .rs-items{grid-template-columns:1fr 1fr;max-height:63%;overflow:auto}
+.rs-practice .rs-item{min-height:155px}
+.rs-practice .rs-answer{width:clamp(85px,9cqw,135px);font-size:clamp(16px,1.55cqw,21px)}
+.rs-unverified{display:block;color:#8a6535;background:#fff2d8;padding:5px 8px;margin-top:8px}
+.rs-activity-nav{display:flex;align-items:center;gap:7px;padding:0 4% 10px;flex-wrap:wrap}
+.rs-activity-nav span{margin-right:auto;font-weight:750;color:#326345}
+.rs-activity-nav button{padding:6px 12px}
+.rs-pair-note{background:#e7f4e1;border-radius:13px;padding:30px;font-size:clamp(18px,2cqw,26px)}
+.rs-source-media{max-height:100%;overflow:visible}
+.rs-practice .rs-activity-nav{margin-bottom:0}
+@media(max-width:780px){.rs-phase-content .rs-panel ol{columns:1}.rs-listening{grid-template-columns:1fr;max-height:70%}.rs-cross-layout{grid-template-columns:1fr}.rs-cross-active{max-height:220px}.rs-practice .rs-items{grid-template-columns:1fr}.rs-canvas{overflow:auto!important}}
