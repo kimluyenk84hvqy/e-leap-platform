@@ -98,12 +98,13 @@ function questionItems(screen,source,role,{kind='practice'}={}){
   const isInline=kind==='practice';
   const input='<input class="rs-answer '+(reveal?'rs-revealed':'')+'" data-rs-input="'+html(k)+'" value="'+html(reveal?answer:val)+'" '+(reveal?'readonly':'')+' aria-label="Answer '+html(item.id)+'" autocomplete="off">';
   const prompt=isInline?phraseWithGap(item.text||item.prompt,input):'<p class="rs-question-text">'+html(item.text||item.prompt)+'</p><div class="rs-answer-line">'+input+'</div>';
-  const showWhy=ui.whys.has(k)&&canReveal&&confirmed;
+  const canExplain=canReveal&&confirmed&&(!canEvidence||item.evidenceStatus==='VERIFIED');
+  const showWhy=ui.whys.has(k)&&canExplain;
   return '<article class="rs-item"><span class="rs-item-n">'+html(item.id)+'</span><div class="rs-item-main">'+prompt+'<div class="rs-status">'+scoreStatus+'</div><div class="rs-item-actions">'+
    (canCheck?'<button type="button" data-rs-action="check" data-rs-key="'+html(k)+'">Check</button>':'')+
    (canReveal?'<button type="button" data-rs-action="reveal" data-rs-key="'+html(k)+'">'+(reveal?'Hide answer':'Show answer')+'</button>':'')+
    '<button type="button" data-rs-action="reset" data-rs-key="'+html(k)+'">Reset</button>'+
-   (canReveal&&confirmed?'<button type="button" data-rs-action="why" data-rs-key="'+html(k)+'">Why?</button>':'')+
+   (canExplain?'<button type="button" data-rs-action="why" data-rs-key="'+html(k)+'">Why?</button>':'')+
    (canEvidence?'<button type="button" disabled title="Audio segment has not passed source verification.">Evidence · pending QA</button>':'')+
    '</div>'+(showWhy?'<p class="rs-why">'+html(item.why||'Explanation not yet approved.')+'</p>':'')+
    (!confirmed?'<small class="rs-unverified">Working answer key — awaiting source verification</small>':'')+
@@ -153,8 +154,14 @@ export function renderResourceStage(screen,pack,role='teacher'){
   body='<div class="rs-cover"><div class="rs-cover-text"><small>VIETNAM MILITARY MEDICAL UNIVERSITY</small><small>FACULTY OF FOREIGN LANGUAGES</small><div><p>UNIT 5 · U5.1</p><h1>'+html(source.title)+'</h1><h3>'+html(pack.course)+'</h3></div></div><div class="rs-cover-photo">'+(source.photoUrl?'<img class="rs-image" src="'+html(source.photoUrl)+'" alt="Yellow tram and green bus">':'')+'<div class="rs-cover-fallback" '+(source.photoUrl?'style="display:none"':'')+'>'+media(pack,source.photoAsset,'Transport')+'</div></div></div>';break;
  case 'aims':
   body='<div class="rs-aims">'+Object.entries(source.aims||{}).map(([label,arr])=>card(label.toUpperCase(),'<ol>'+arr.map(x=>'<li>'+html(x)+'</li>').join('')+'</ol>')).join('')+'</div>';break;
- case 'gallery':
-  body=heading+'<div class="rs-gallery">'+(source.media||[]).map(id=>'<div class="rs-photo">'+media(pack,id,id.replace(/-/g,' '))+'</div>').join('')+'</div>';break;
+ case 'gallery':{
+  const photos=source.media||[],active=Math.min(ui.focus.get(screen.id)||0,photos.length-1),phase=Math.min(ui.phase.get(screen.id)||0,2);
+  const steps=['THINK','PAIR','SHARE'],instructions=['Look carefully. Name the transport you can see.','Compare the names with your partner. What is similar or different?','Share one word and explain your choice. Then try the original crossword.'];
+  body=heading+'<nav class="rs-phase-nav">'+steps.map((x,i)=>'<button data-rs-action="phase" data-rs-key="'+html(screen.id)+'" data-rs-index="'+i+'" class="'+(phase===i?'rs-current':'')+'">'+x+'</button>').join('')+'</nav>'+
+  '<p class="rs-phase-instruction">'+html(instructions[phase])+'</p><div class="rs-picture-focus">'+
+  '<div class="rs-picture-feature">'+(photos[active]?media(pack,photos[active],photos[active]):'<p>Photo not available</p>')+'</div>'+
+  '<div class="rs-picture-choices">'+photos.map((id,i)=>'<button data-rs-action="focus" data-rs-key="'+html(screen.id)+'" data-rs-index="'+i+'" class="'+(active===i?'rs-current':'')+'">'+media(pack,id,'Transport photo '+(i+1))+'<span>Photo '+(i+1)+'</span></button>').join('')+'</div></div>';break;
+ }
  case 'crossword':
   body=heading+crossword(screen,source,role);break;
  case 'peer':
@@ -235,7 +242,7 @@ export function wireResourceStage({screen,pack,role,render,onModified}){
   }
   if(action==='reveal'||action==='rule'){if(!canReveal)return;ui.reveals.has(key)?ui.reveals.delete(key):ui.reveals.add(key)}
   else if(action==='reset'){ui.answers.delete(key);ui.checks.delete(key);ui.reveals.delete(key);ui.whys.delete(key)}
-  else if(action==='why'){if(!canReveal||item?.keyStatus&&item.keyStatus!=='VERIFIED')return;ui.whys.has(key)?ui.whys.delete(key):ui.whys.add(key)}
+  else if(action==='why'){if(!canReveal||(item?.keyStatus&&item.keyStatus!=='VERIFIED')||(source?.type==='listening'&&item?.evidenceStatus!=='VERIFIED'))return;ui.whys.has(key)?ui.whys.delete(key):ui.whys.add(key)}
   else if(action==='check'&&canCheck&&item)ui.checks.set(key,answerMatches(item,ui.answers.get(key)));
   render();
  }));
