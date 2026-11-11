@@ -46,7 +46,7 @@ export function renderFunctionalSlide(screen,role='teacher'){
  let body='';
  if(d.type==='lesson-part-cover')body=identity+'<div class="functional-cover-body"><div>'+slot('lessonCode','Unit / Lesson code')+slot('lessonTitle','Lesson title')+slot('course','Course / Level')+'</div>'+slot('image','Real photo · large visual area')+'</div>';
  if(d.type==='consolidation'){
-  const k=d.variant==='exit-ticket'?['quickCheck','reflection','application']:d.variant==='retrieval-board'?['recall','application','quickCheck','reflection']:['recall','quickCheck','reflection'];
+  const k=d.variant==='exit-ticket'?['quickCheck','reflection','application','recall']:d.variant==='retrieval-board'?['recall','application','quickCheck','reflection']:['recall','quickCheck','reflection','application'];
   body='<div class="functional-title">'+slot('title','Consolidation / Wrap-up')+'</div><div class="functional-review-grid">'+k.map(x=>slot(x,({recall:'Recall · Key ideas',quickCheck:'Quick Check · Retrieval',application:'Apply · Transfer',reflection:'Reflection · Exit ticket'})[x])).join('')+'</div><div class="functional-review-foot">'+slot('feedback','Feedback / verified key · Teacher-controlled')+'</div>';
  }
  if(d.type==='thank-you')body=identity+'<div class="functional-thank-body">'+slot('closingMessage','Thank You / Closing message')+slot('image','Real photograph / visual')+slot('lessonCode','Lesson / Unit reference')+'</div>';
