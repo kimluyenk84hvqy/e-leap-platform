@@ -187,3 +187,7 @@
 .studio-center .layout-edit-mode button:not(.layout-resize-handle){cursor:pointer}
 .studio-center .layout-edit-mode .layout-resize-handle:hover{background:#0e5336}
 @media(max-width:900px){.studio-layout-tools{width:100%;justify-content:flex-start}}
+
+/* Slide is a clean teaching canvas, never a technical block list. Text, Image,
+ * Activity, etc. labels belong to the Properties pane, not the lesson itself. */
+.studio-center .lesson-canvas .block-label{display:none!important}
