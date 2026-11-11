@@ -142,3 +142,13 @@
 
 /* Keep photographs vivid on the right: the dark-green overlay protects only text readability. */
 .certified-cover.design-photo-hero .cert-photo{filter:brightness(1.06) saturate(1.08)}
+
+/* Fresh, bright U5.1 split cover: colour photograph untouched on the right. */
+.certified-cover.design-split-editorial .cert-cover-layout{grid-template-columns:49% 51%}
+.certified-cover.design-split-editorial .cert-cover-identity{background:#164a35;padding:5% 6%;min-width:0;overflow:auto}
+.certified-cover.design-split-editorial .cert-institution,
+.certified-cover.design-split-editorial .cert-faculty{white-space:normal;overflow-wrap:break-word;font-size:clamp(16px,1.75cqw,22px);line-height:1.25}
+.certified-cover.design-split-editorial .cert-cover-content h1{font-size:clamp(30px,4.05cqw,49px);line-height:1.13;overflow-wrap:break-word}
+.certified-cover.design-split-editorial .cert-cover-content p{font-size:clamp(18px,2.1cqw,24px)}
+.certified-cover.design-split-editorial .cert-cover-photo .cert-photo{filter:none;object-position:center}
+.certified-cover.design-split-editorial .cert-cover-photo:after{display:none!important}
