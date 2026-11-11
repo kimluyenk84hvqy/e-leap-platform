@@ -160,7 +160,7 @@ function renderCertifiedGatePanel(screen){
 }
 function renderCertifiedProperties(){const s=currentScreen();if(s.certifiedTemplate){
  const isU5= s.certifiedTemplate.family==='cover'&&/^u5\.1$/i.test(String(lesson.lessonNumber||'').trim())&&/objective\s*pet\s*b1/i.test(String(lesson.courseLabel||''));
- const curated=isU5?'<section class="property-section"><h3>Recommended photo · U5.1</h3><p class="helper">Airport check-in and luggage drop · Wikimedia Commons · Aliceinthealice · CC0.</p><button type="button" class="studio-btn primary" data-u51-cover-image>Use airport photo for this Cover</button><p class="helper">Only the current Cover image is replaced. Other slides and learning material remain unchanged.</p></section>':'';
+ const curated=isU5?'<section class="property-section"><h3>Recommended bright photos · U5.1</h3><p class="helper">Choose a brighter real photograph. Colourful airport travellers (Pexels free-to-use) or yellow tram + green bus (WordPress CC0).</p><div class="studio-photo-options"><button type="button" class="studio-btn primary" data-u51-photo-choice="airport">Use colourful airport photo</button><button type="button" class="studio-btn" data-u51-photo-choice="tram">Use yellow tram + green bus</button><button type="button" class="studio-btn" data-u51-cover-image>Use original airport photo</button></div><p class="helper">Replaces only this Cover photo. Text, other slides and answer keys remain untouched.</p></section>':'';
  return curated+renderCertifiedEditor(s)+renderCertifiedGatePanel(s);
 }const family=({'lesson-cover':'cover','lesson-aims':'aims','lead-in':'opener'})[s.templateId];return family?'<section class="property-section"><h3>Certified template</h3><button class="studio-btn primary" data-certify-current="'+family+'">Convert slide to certified '+family+' template</button><p class="helper">Existing source blocks are preserved. Complete the fixed template slots before publishing.</p></section>':'';}
 function renderProperties(){return currentScreen().functionalDraft?`${lessonProps()}${renderFunctionalSlideProps(currentScreen())}`:currentScreen().methodDraft?`${lessonProps()}${renderMethodTemplateProperties(currentScreen())}`:`${lessonProps()}${slideProps()}${renderCertifiedProperties()}${currentScreen().certifiedTemplate?'':renderContentMapper()+blockProps()}`}
@@ -334,6 +334,19 @@ function wire(){
     const next=changeCertifiedVariant(currentScreen().certifiedTemplate,b.dataset.certifiedVariant);
     if(!next)return;currentScreen().certifiedTemplate=next;markDirty();render();
   });
+  document.querySelectorAll('[data-u51-photo-choice]').forEach(b=>b.addEventListener('click',()=>{
+    const data=currentScreen()?.certifiedTemplate;if(data?.family!=='cover')return;
+    const choices={
+      airport:{src:'https://images.pexels.com/photos/30871445/pexels-photo-30871445.jpeg?auto=compress&cs=tinysrgb&w=1800',alt:'Colourful modern airport corridor with travellers and luggage',creator:'Robert Nagy',license:'Pexels License · Free to use',source:'https://www.pexels.com/photo/colorful-airport-corridor-with-travelers-walking-30871445/'},
+      tram:{src:'https://pd.w.org/2025/03/60067dd2e8c52f4b9.90246267-2048x1365.jpg',alt:'Bright yellow tram and green bus on a city street with pedestrians',creator:'Nilo Velez',license:'CC0 1.0',source:'https://wordpress.org/photos/photo/60067dd2e8/'}
+    };
+    const chosen=choices[b.dataset.u51PhotoChoice];if(!chosen)return;
+    data.values.imageSrc=chosen.src;data.values.imageAlt=chosen.alt;
+    data.imageCredit={creator:chosen.creator,license:chosen.license,source:chosen.source};
+    data.mediaCheck=null;data.layoutReview=null;
+    if(data.sourceReview?.required){data.sourceReview.approved=false;data.sourceReview.contentSignature='';}
+    markDirty();render();status('Bright transport photo selected. Save draft; verify the image loads on Cover.');
+  }));
   document.querySelectorAll('[data-u51-cover-image]').forEach(b=>b.addEventListener('click',()=>{
     const screen=currentScreen(),data=screen?.certifiedTemplate;
     if(data?.family!=='cover')return;
