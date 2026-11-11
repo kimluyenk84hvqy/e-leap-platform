@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>E-LEAP Studio · Resource Workshop</title>
+<style>
+:root{font-family:Poppins,Inter,Arial,sans-serif;color:#163f2f;background:#f3f8f3}*{box-sizing:border-box}body{margin:0}
+header{padding:18px max(18px,calc((100vw - 1320px)/2));background:#164b36;color:#fff;display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+header a{color:#e4f8d9;text-decoration:none;font-weight:700}header h1{font-size:24px;margin:0}header p{margin:3px 0;color:#d5e9d9}
+main{max-width:1350px;margin:20px auto;padding:0 18px 40px}
+h2{font-size:20px;margin:0 0 10px}h3{font-size:15px}p{line-height:1.4}
+.notice{border-left:5px solid #f2ae37;padding:12px;background:#fff6de;border-radius:8px;margin-bottom:16px;color:#624817}
+.panel{background:white;border:1px solid #d7e4db;border-radius:16px;padding:18px;margin:16px 0}
+.columns{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(310px,.7fr);gap:18px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{display:grid;gap:5px;margin:10px 0}
+.field label,label{font-weight:650;font-size:13px}
+input,select,textarea,button{font:inherit;border-radius:9px;border:1px solid #b4d0c0;padding:9px 10px;max-width:100%}
+input[type=file]{width:100%;background:#f8fcf9}input[type=range]{width:100%}
+button{background:#1e6547;color:#fff;font-weight:700;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
+button.secondary{background:#fff;color:#20503b}button.warn{background:#7c4937}button.selected{background:#d6f0bd;color:#164b36}
+.actions{display:flex;flex-wrap:wrap;gap:8px}.actions button{flex:none}
+.stage{position:relative;display:block;width:100%;background:#edf1ed;overflow:auto;border:1px solid #bbccbf;border-radius:12px;min-height:160px;max-height:680px}
+.stage canvas{display:block;max-width:100%;height:auto;margin:auto;touch-action:none;cursor:crosshair}
+#cropSelection{position:absolute;outline:3px dashed #78c948;background:rgba(167,235,61,.13);pointer-events:none;display:none}
+#wave{width:100%;height:140px;border:1px solid #c8d9cb;border-radius:10px;background:#eff4ed}
+.muted{color:#63786b;font-size:13px}.flag{font-size:12px;color:#774c14;background:#fff2d2;padding:6px;border-radius:6px}
+.manifest-item{padding:10px 0;border-bottom:1px solid #e1eae4;overflow-wrap:anywhere}
+footer{font-size:13px;color:#647b69}
+@media(max-width:850px){.columns,.two{grid-template-columns:1fr}}
+</style>
+</head><body>
+<header><a href="./">← Authoring Studio</a><a href="./media-library.html">Media Library</a><div><h1>Resource Workshop</h1><p>Image Crop · Audio Segment · Evidence Verification</p></div></header>
+<main>
+<div class="notice"><strong>Local preparation only.</strong> Original textbook pages and audio remain in your browser. Export images, verified clips and manifest to your computer. Files are <strong>not uploaded or saved to Media Library</strong>. Keep copyrighted textbook material within authorized teaching use.</div>
+<section class="panel"><h2>Lesson resource identity</h2><div class="two"><div class="field"><label>Lesson</label><input id="lessonId" value="OBJ-PET-B1-U5.1" maxlength="80"></div><div class="field"><label>Source reference</label><input id="sourceLabel" value="Objective PET B1 · Unit 5" maxlength="140"></div></div></section>
+<div class="columns">
+<section class="panel"><h2><span aria-hidden="true">▧ </span>Image Crop Studio</h2>
+<div class="field"><label>Open source PDF or image</label><input id="imgFile" type="file" accept="application/pdf,image/png,image/jpeg,image/webp"></div>
+<div class="actions"><button type="button" class="secondary" id="prevPage" disabled>← Page</button><span id="pageInfo" class="muted">No page loaded</span><button type="button" class="secondary" id="nextPage" disabled>Page →</button></div>
+<p class="muted">Drag a rectangle around one picture or an entire picture group. Export each crop separately. Text must not be included unintentionally.</p>
+<div class="stage" id="imgStage"><canvas id="pageCanvas"></canvas><div id="cropSelection"></div></div>
+<div class="two"><div class="field"><label>Asset name</label><input id="cropName" value="transport-photo-01" maxlength="80"></div><div class="field"><label>Crop type</label><select id="cropType"><option value="single-image">Single image</option><option value="image-group">Image group</option><option value="exercise">Exercise / diagram</option></select></div></div>
+<div class="actions"><button id="saveCrop" disabled>Export crop PNG</button><button id="resetCrop" class="secondary">Clear selection</button></div>
+<p role="status" id="cropStatus" class="muted">Select a source file.</p>
+</section>
+<section class="panel"><h2><span aria-hidden="true">◉ </span>Audio Segment Studio</h2>
+<div class="field"><label>Open original MP3 / WAV / M4A</label><input id="audioFile" type="file" accept="audio/*,.mp3,.wav,.m4a"></div>
+<canvas id="wave" width="900" height="140"></canvas>
+<p class="muted" id="audioInfo">No audio loaded. Original audio will be preserved.</p>
+<div class="two"><div class="field"><label>Start (seconds)</label><input id="clipStart" type="number" min="0" value="0" step=".05"></div><div class="field"><label>End (seconds)</label><input id="clipEnd" type="number" min="0" value="0" step=".05"></div></div>
+<label>Start marker <input id="startRange" type="range" min="0" value="0" step=".05"></label>
+<label>End marker <input id="endRange" type="range" min="0" value="0" step=".05"></label>
+<div class="actions"><button id="playClip" disabled>▶ Play selected</button><button id="stopClip" class="secondary">■ Stop</button><button id="introMark" class="secondary" disabled>Mark intro ending at Start</button></div>
+<div class="field"><label>First spoken content after intro (verified)</label><input id="introEnds" type="number" min="0" step=".05" value="0"></div>
+<div class="two"><div class="field"><label>Conversation / evidence label</label><input id="clipName" value="conversation-01" maxlength="80"></div><div class="field"><label>Evidence target ID</label><input id="evidenceId" placeholder="e.g. Listening-2-Q1" maxlength="100"></div></div>
+<div class="field"><label>Transcript / audible first and last words</label><textarea id="clipTranscript" rows="3" placeholder="Transcribe what you actually hear. Do not guess."></textarea></div>
+<div class="field"><label><input type="checkbox" id="verified"> I listened to the selected clip and confirmed that the intro and neighboring conversations are excluded.</label></div>
+<div class="actions"><button id="exportClip" disabled>Export verified WAV</button><button id="exportDraft" class="secondary" disabled>Export unverified review WAV</button></div>
+<p role="status" id="audioStatus" class="muted">Verification is mandatory for Evidence exports. Draft review clips must not be used as Evidence.</p>
+</section>
+</div>
+<section class="panel"><h2>Resource manifest</h2><p class="muted">Only metadata is stored in this session. Select source files again after reloading; exported files remain on your computer.</p><div id="manifestList" class="muted">No exported assets yet.</div><div class="actions"><button id="downloadManifest" class="secondary">Download JSON manifest</button><button id="clearManifest" class="warn">Clear manifest list</button></div></section>
+<footer>Evidence QA: verified start/end must be inside the source duration and outside the recorded intro. No automatic evidence linking before teacher confirmation.</footer>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="module" src="../assets/js/authoring/resource-workshop.js"></script>
+</body></html>
