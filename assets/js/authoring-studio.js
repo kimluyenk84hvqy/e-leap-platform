@@ -66,9 +66,10 @@ if(!canOpenStudio){
 }else{
   lesson=await loadLesson();
   ensureSchema();
-  draftKey=`e-leap-studio-v1:${source||lesson.id||'new'}`;
+  const localReviewId=/^[a-zA-Z0-9_-]{1,120}$/.test(qs.get('localReview')||'')?qs.get('localReview'):null;
+  draftKey=`e-leap-studio-v1:${source||localReviewId||lesson.id||'new'}`;
   const saved=localStorage.getItem(draftKey);
-  if(saved && !qs.get('fresh')){try{lesson=JSON.parse(saved);ensureSchema();}catch{}}
+  if(saved && !qs.get('fresh')){try{const loaded=JSON.parse(saved);if(localReviewId&&(loaded?.id!==localReviewId||!loaded?.screens?.some(s=>s.sourceReviewDraft)))throw Error('Invalid local review draft');lesson=loaded;ensureSchema();}catch{}}
   if(qs.get('importFoundation')==='1'){
     const raw=sessionStorage.getItem('e-leap-source-review-import-v1');
     try{
@@ -82,6 +83,8 @@ if(!canOpenStudio){
       if(confirm('Insert unverified Reading activity after the current slide? Its original questions will be review-only; publication remains blocked.')){
         lesson.screens.splice(selectedScreen+1,0,output.screen);
         selectedScreen++;selectedBlock=0;
+        draftKey='e-leap-studio-v1:'+lesson.id;
+        history.replaceState(null,'','./index.html?localReview='+encodeURIComponent(lesson.id));
         markDirty();
         sessionStorage.removeItem('e-leap-source-review-import-v1');
       }
