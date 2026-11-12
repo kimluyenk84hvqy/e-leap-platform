@@ -199,13 +199,13 @@ export function renderResourceStage(screen,pack,role='teacher'){
  }
  case 'listening':{
   const isPlaces=source.id==='listen'||(source.media||[]).length>0;
-  const phase=Math.max(0,Math.min(ui.phase.get(screen.id)||0,3));
-  const phaseLabels=['Prepare','Listen & answer','Compare','Check'];
+  const phase=Math.max(0,Math.min(ui.phase.get(screen.id)||0,4));
+  const phaseLabels=['Prepare','Listen 1 · Answers','Listen 2 · Clues','Compare','Check'];
   const nav='<nav class="rs-phase-nav rs-compact-nav">'+phaseLabels.map((label,i)=>'<button type="button" data-rs-action="phase" data-rs-key="'+html(screen.id)+'" data-rs-index="'+i+'" class="'+(i===phase?'rs-current':'')+'">'+html(label)+'</button>').join('')+'</nav>';
   const audio='<div class="rs-source-media"><audio controls preload="metadata" src="'+html(resourceMediaUrl(pack,source.audioAsset))+'"></audio><small>Track 22</small></div>';
   const signNames=['a · Check-in','b · Customs','c · Hotel reservations','d · Passport control','e · Information','f · Departure lounge','g · Shops','h · Ticket sales'];
   const signList='<div class="rs-sign-key">'+signNames.map(x=>'<span>'+html(x)+'</span>').join('')+'</div>';
-  const itemList=questionItems(screen,source,role,{kind:'listening',allowCheck:phase===3,allowReveal:phase===3});
+  const itemList=questionItems(screen,source,role,{kind:'listening',allowCheck:phase===4,allowReveal:phase===4});
   let teaching='';
   if(phase===0){
    const clues=isPlaces?['book a hotel room','show a passport','get a boarding pass','buy shampoo']:
@@ -220,8 +220,13 @@ export function renderResourceStage(screen,pack,role='teacher'){
    teaching='<p class="rs-learner-task">'+(isPlaces?'Listen to the six conversations. Write the letter (a–h) for each one.':'Listen again. Write a short answer to each question about what the traveller needs or does not need.')+'</p>'+
     '<div class="rs-listen-task"><aside>'+audio+(isPlaces?signList:'<p class="rs-hint">Listen for need, needs, don’t need and need to.</p>')+'</aside><div>'+itemList+'</div></div>';
   }else if(phase===2){
-   teaching='<p class="rs-learner-task">Compare your answers with a partner. Explain what you heard. Change an answer if necessary.</p>'+
-   '<div class="rs-compare-task"><div>'+itemList+'</div><aside><h3>Talk to your partner</h3><p><b>I chose … because I heard …</b></p><p><b>Did you hear … or …?</b></p><p><b>Let’s listen again to check.</b></p>'+audio+'</aside></div>';
+   teaching='<p class="rs-learner-task">Listen again. Keep your answers and write the exact phrase or key word that helped you choose each place.</p>'+
+   '<div class="rs-listen-task"><aside>'+audio+'<h3>Listen for clues</h3><p class="rs-language-hint"><b>I heard …</b> so I chose …</p><p class="rs-hint">Note a real word or phrase from the recording. Do not guess an audio quote.</p>'+
+   '<label class="rs-evidence-label">My listening clues<textarea data-rs-note="'+html(screen.id)+':clues" rows="3" placeholder="1: I heard …&#10;2: I heard …">'+html(ui.notes.get(screen.id+':clues')||'')+'</textarea></label></aside><div>'+itemList+'</div></div>';
+  }else if(phase===3){
+   teaching='<p class="rs-learner-task">Compare the location letters AND the phrases you heard. Agree on an answer or mark one to replay.</p>'+
+   '<div class="rs-compare-task"><div>'+itemList+'</div><aside><h3>Compare your evidence</h3><p><b>My answer is … because I heard …</b></p><p><b>What phrase did you hear?</b></p><p><b>Let’s replay conversation …</b></p>'+
+   '<div class="rs-peer-clues"><strong>My notes from Listen 2</strong><p>'+html(ui.notes.get(screen.id+':clues')||'No clues recorded yet. Return to Listen 2.')+'</p></div>'+audio+'</aside></div>';
   }else{
    teaching='<p class="rs-learner-task">Check each answer. Listen again if you need to.</p>'+
    '<div class="rs-listen-task"><aside>'+audio+'<p class="rs-hint">Evidence clips and Why explanations remain unavailable until the audio segments are verified.</p></aside><div>'+itemList+'</div></div>';

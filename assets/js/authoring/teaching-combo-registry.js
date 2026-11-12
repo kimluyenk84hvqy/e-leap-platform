@@ -83,6 +83,17 @@ export const TEACHING_COMBOS={
    state('detail','Details','Listen again and choose the correct details.',[audio(),activity('listening','Which detail did you hear?')])
   ])
  },
+  'listening-evidence':{
+  label:'Listen · Record · Compare · Verify',group:'Listening',template:'listening-task',
+  description:'Prepare → Answer → Record clues → Peer compare → Teacher check',
+  build:()=>sequence('Listening','Listen and explain','listening-task','question-options',[
+   state('prepare','Prepare','Match the useful phrases to possible places. Predict a location and give one reason.',[picture(),activity('matching','Match useful phrases with likely locations.')]),
+   state('listen1','Listen 1','Listen and select a place for each conversation. Record your own choices.',[audio(),activity('listening','Choose the correct place for each conversation.')]),
+   state('listen2','Listen 2','Listen again. Write one word or phrase you actually heard for each answer.',[audio(),activity('writing','Record one listening clue for every answer.')]),
+   state('compare','Compare','Compare both your answers and your listening clues. Decide which part needs replay.',[activity('discussion','Which answer and clue do you and your partner agree on?')]),
+   state('check','Check','Complete the original listening task. Check answers and source-verified explanations with your teacher.',[activity('listening','Check the original questions and explain each choice.')])
+  ],'Populate original questions, audio and verified answers before publication; never invent listening evidence.')
+ },
  'speaking-pair-share':{
   label:'Think–Pair–Share',group:'Speaking',template:'speaking-task',
   description:'Think → Pair → Share (one slide)',
