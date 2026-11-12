@@ -15,7 +15,7 @@ export function normalizeActivityContract({methodId,steps,lessonId,sourceManifes
  const seen=new Set();
  const normalized=[];
  for(const [i,s] of (Array.isArray(steps)?steps:[]).entries()){
-  if(!s||!nonblank(s.id)||seen.has(s.id))errors.push('Missing or duplicate step ID at '+i);else seen.add(s.id);
+  if(!s||typeof s.id!=='string'||!/^[a-z][a-z0-9_-]{1,63}$/i.test(s.id)||seen.has(s.id))errors.push('Missing or duplicate step ID at '+i);else seen.add(s.id);
   if(!ACTIVITY_MODES.includes(s?.mode))errors.push('Invalid interaction mode at '+i);
   for(const k of ['purpose','instruction','input','support','output','feedback','transition']){
    if(!nonblank(s?.[k]))errors.push('Missing '+k+' at '+i);
