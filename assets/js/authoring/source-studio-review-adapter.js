@@ -29,12 +29,12 @@ export function sourceIntakeToStudioReviewScreen(text,{title='Source activity re
  if(hasThreeAccounts&&(task.photos?.length!==3||new Set(task.photos.map(p=>p.name.toLowerCase())).size!==3))
   return {ok:false,issues:['Three-account photo-matching requires all three original photograph captions'],screen:null};
  const steps=hasThreeAccounts?[
-  {id:'look',label:'Look',instruction:'Look at the three photographs in the original book. Predict who wrote each account.'},
-  {id:'read-a',label:'Read A',instruction:'Read account A. Underline details about the first school day.'},
-  {id:'read-b',label:'Read B',instruction:'Read account B. Find clues about the writer’s feelings.'},
-  {id:'read-c',label:'Read C',instruction:'Read account C. Find clues about the school and the writer’s feelings.'},
-  {id:'complete',label:'Complete',instruction:'Complete both original Reading tasks on page 41. Explain your choices using evidence.'},
-  {id:'share',label:'Share',instruction:'In groups, compare names, estimated years and textual evidence. Explain disagreements.'}
+  {id:'predict',label:'Look & predict',instruction:'Look at the three people in the original book. Predict who could have written A, B and C. Give one reason.'},
+  {id:'assigned',label:'Individual reading',instruction:'Work in a group of three. Student 1 reads A; Student 2 reads B; Student 3 reads C. Read ONLY your assigned account and note two clues.'},
+  {id:'expert',label:'Expert group',instruction:'Meet students who read your SAME account. Agree on the writer’s feelings, two text clues and one possible time clue.'},
+  {id:'home',label:'Home group',instruction:'Return to your group of three. Each student TEACHES their account while the other two listen and record the clues.'},
+  {id:'complete',label:'Original tasks',instruction:'Complete BOTH Reading exercises 1 and 2 from page 41. Match accounts to photos, then write names and estimated years.'},
+  {id:'evidence',label:'Evidence & Why',instruction:'Compare all three answers. For each match quote one short clue and explain why it supports your choice. Give reasons for year estimates.'}
  ]:[
   {id:'read',label:'Read',instruction:'Read the text. Locate two useful details.'},
   {id:'answer',label:'Answer',instruction:'Answer the original questions and explain one reason to a partner.'},
@@ -42,11 +42,21 @@ export function sourceIntakeToStudioReviewScreen(text,{title='Source activity re
  ];
  const blocks=[];
  if(hasThreeAccounts){
-  blocks.push(textBlock('Photograph names in the original book: '+(task.photos||[]).map(p=>p.name).join(' · ')+'\nOpen the original page 41 to view the three photographs.','look'));
-  blocks.push(discussion('Look at the three photographs. What clues might help you match each one?','look'));
-  for(const p of task.paragraphs)blocks.push(textBlock('ACCOUNT '+p.label+'\n'+p.text,'read-'+p.label.toLowerCase()));
+  blocks.push(textBlock('Use the three original photographs on page 41: '+(task.photos||[]).map(p=>p.name).join(' · ')+'.','predict'));
+  blocks.push(discussion('Which account could belong to each person? Predict; do not decide yet.','predict'));
+  // The text is kept in the common Studio screen, but separate source-labelled
+  // blocks carry assignment metadata. The teacher assigns A, B or C and checks
+  // reading access on the learner delivery surface before live classroom use.
+  for(const p of task.paragraphs){
+   const block=textBlock('ACCOUNT '+p.label+'\n'+p.text,'assigned');
+   block.jigsawAssignment=p.label;block.sourcePage=p.sourcePage;blocks.push(block);
+   blocks.push(discussion('EXPERT '+p.label+': What feelings and events are stated? Quote two short text clues and propose a possible time clue.','expert'));
+  }
+  blocks.push(discussion('HOME GROUP: Student A, then B, then C teaches their account. Each listener records two new clues.','home'));
   for(const q of task.questions)blocks.push(discussion(q.id+'. '+q.prompt,'complete'));
-  blocks.push(discussion('Each group member explains one account (A, B or C). Share the clues behind the matching and year estimates.','share'));
+  for(const p of task.paragraphs){
+   blocks.push(discussion('ACCOUNT '+p.label+': Which person matches it? Evidence: quote a short phrase. Why does that clue support your match? What is your estimated year, and why?','evidence'));
+  }
  }else{
   blocks.push(textBlock(task.passage,'read'));
   for(const q of task.questions){
@@ -59,7 +69,7 @@ export function sourceIntakeToStudioReviewScreen(text,{title='Source activity re
   id:uid('screen'),stage:'Reading',title,instruction:steps[0].instruction,
   templateId:'reading-task',layout:'reading-split',audience:'student',
   teacherNotes:'Source imported for review only. Verify text and answer keys against the original textbook before converting to an objective activity.',
-  sourceReviewDraft:{status:'unverified',taskId:task.id,sourcePages:[...new Set([...sourcePages,task.sourcePage,...task.questions.map(q=>q.sourcePage),...(task.paragraphs||[]).map(p=>p.sourcePage)].filter(Number.isInteger))],questionCount:task.questions.length,paragraphCount:task.paragraphs?.length||0,photoLabels:task.photos?.map(p=>p.name)||[],photoAssetsVerified:false},
+  sourceReviewDraft:{status:'unverified',taskId:task.id,sourcePages:[...new Set([...sourcePages,task.sourcePage,...task.questions.map(q=>q.sourcePage),...(task.paragraphs||[]).map(p=>p.sourcePage)].filter(Number.isInteger))],questionCount:task.questions.length,paragraphCount:task.paragraphs?.length||0,photoLabels:task.photos?.map(p=>p.name)||[],photoAssetsVerified:false,jigsawGroupSize:3,assignments:['A','B','C'],tasksMustRemainOriginal:true,yearEstimateIsOpenResponse:true},
   combo:{schemaVersion:2,activeStep:steps[0].id,steps},blocks
  };
  return {ok:true,issues:[],screen,originalQuestions:task.questions.map(q=>({id:q.id,line:q.line,sourcePage:q.sourcePage,sourceStatus:'unverified'})),reviewRequired:true,publishable:false};
