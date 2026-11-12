@@ -141,7 +141,7 @@ function crossword(screen,source,role){
    return String(ui.answers.get(itemAnswerKey(screen,word))||'').replace(/\s+/g,'').toUpperCase()[offset]||'';
   }).find(Boolean)||'';
   const revealed=canReveal&&cell.words.some(idx=>ui.reveals.has(itemAnswerKey(screen,words[idx])));
-  board+='<button type="button" data-rs-action="focus" data-rs-index="'+mainIndex+'" data-rs-key="'+html(screen.id)+'" class="rs-cross-cell active'+(cellIsActive?' rs-cross-highlight':'')+'" aria-label="Crossword '+html(words[mainIndex].id)+'">'+(startIds.length?'<sup>'+html(startIds.join('/'))+'</sup>':'')+'<span class="rs-cross-letter">'+html(revealed?cell.letter:typed)+'</span></button>';
+  board+='<button type="button" data-rs-x="'+x+'" data-rs-y="'+y+'" data-rs-action="focus" data-rs-index="'+mainIndex+'" data-rs-key="'+html(screen.id)+'" class="rs-cross-cell active'+(cellIsActive?' rs-cross-highlight':'')+'" aria-label="Crossword '+html(words[mainIndex].id)+'">'+(startIds.length?'<sup>'+html(startIds.join('/'))+'</sup>':'')+'<span class="rs-cross-letter">'+html(revealed?cell.letter:typed)+'</span></button>';
  }
  board+='</div>';
  const answer=String(active.answer||''),typed=String(ui.answers.get(activeKey)||''),shown=canReveal&&ui.reveals.has(activeKey);
@@ -238,7 +238,13 @@ export function wireResourceStage({screen,pack,role,render,onModified}){
   const stage=src(screen,pack);if(stage?.type==='crossword'){
    const focus=document.querySelector('.rs-cross-grid');if(!focus)return;
    const letters=el.value.replace(/\s+/g,'').toUpperCase();
-   focus.querySelectorAll('[data-rs-letter]').forEach(cell=>{cell.childNodes.forEach(node=>{if(node.nodeType===3)node.remove()});cell.append(document.createTextNode(letters[Number(cell.dataset.rsLetter)]||''));});
+   document.querySelectorAll('.rs-cross-zoom span').forEach((node,i)=>{node.textContent=letters[i]||'';});
+   const words=stage.items||[],current=words[Math.max(0,Math.min(ui.focus.get(screen.id)||0,words.length-1))];
+   if(current){for(let i=0;i<String(current.answer||'').length;i++){
+    const x=Number(current.x||0)+(current.direction==='across'?i:0),y=Number(current.y||0)+(current.direction==='down'?i:0);
+    const cell=Array.from(focus.querySelectorAll('[data-rs-x]')).find(e=>Number(e.dataset.rsX)===x&&Number(e.dataset.rsY)===y);
+    if(cell){const letter=cell.querySelector('.rs-cross-letter');if(letter)letter.textContent=letters[i]||'';}
+   }}
   }
  }));
  document.querySelectorAll('[data-rs-action]').forEach(btn=>btn.addEventListener('click',()=>{
