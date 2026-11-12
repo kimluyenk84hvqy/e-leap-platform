@@ -73,7 +73,7 @@ if(!canOpenStudio){
     try{
       if(!raw)throw Error('No pending Reading review');
       const pending=JSON.parse(raw);
-      if(pending?.schemaVersion!=='e-leap-source-review-import-v1'||typeof pending.text!=='string'||pending.text.length>32000||Date.now()-pending.createdAt>10*60*1000)
+      if(pending?.schemaVersion!=='e-leap-source-review-import-v1'||typeof pending.text!=='string'||pending.text.length>128000||Date.now()-pending.createdAt>10*60*1000)
         throw Error('Expired or invalid Reading review');
       const output=sourceIntakeToStudioReviewScreen(pending.text,{sourcePages:pending.sourcePages||[]});
       if(!output.ok)throw Error('Source requires review: '+output.issues.join('; '));

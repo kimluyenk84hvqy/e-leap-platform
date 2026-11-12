@@ -39,10 +39,10 @@ export function sourceIntakeToStudioReviewScreen(text,{title='Source activity re
   id:uid('screen'),stage:'Reading',title,instruction:steps[0].instruction,
   templateId:'reading-task',layout:'reading-split',audience:'student',
   teacherNotes:'Source imported for review only. Verify text and answer keys against the original textbook before converting to an objective activity.',
-  sourceReviewDraft:{status:'unverified',taskId:task.id,sourcePages:[...sourcePages],questionCount:task.questions.length},
+  sourceReviewDraft:{status:'unverified',taskId:task.id,sourcePages:[...new Set([...sourcePages,task.sourcePage,...task.questions.map(q=>q.sourcePage)].filter(Number.isInteger))],questionCount:task.questions.length},
   combo:{schemaVersion:2,activeStep:'read',steps},blocks
  };
- return {ok:true,issues:[],screen,originalQuestions:task.questions.map(q=>({id:q.id,line:q.line,sourceStatus:'unverified'})),reviewRequired:true,publishable:false};
+ return {ok:true,issues:[],screen,originalQuestions:task.questions.map(q=>({id:q.id,line:q.line,sourcePage:q.sourcePage,sourceStatus:'unverified'})),reviewRequired:true,publishable:false};
 }
 export function verifyComboStateTraversal(screen){
  if(!screen?.combo?.steps?.length)return {ok:false,issues:['Combo steps missing']};

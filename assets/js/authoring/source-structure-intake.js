@@ -5,14 +5,20 @@
 const clean=x=>String(x??'').trim();
 const HEADER=/^(UNIT|LESSON|LEVEL|OBJECTIVE|TASK|PASSAGE|AUDIO|KEY[1-9][0-9]*|Q[1-9][0-9]*)\s*:\s*(.*)$/i;
 const OPT=/^([A-D])[).]\s*(\S.*)$/i;
-export function analyseExtractedText(text,{maxCharacters=32000}={}){
+export function analyseExtractedText(text,{maxCharacters=128000}={}){
  const problems=[],unverified=[];
  if(typeof text!=='string'||text.length>maxCharacters)return {ok:false,problems:['Source text missing or exceeds maximum length']};
  const lines=text.replace(/\r\n?/g,'\n').split('\n');
  const result={schemaVersion:'eleap-source-intake-v1',inputKind:'teacher-extracted-text',verification:'unverified',unit:'',lesson:'',level:'',objectives:[],tasks:[],unparsed:[],unverified,sourceLength:text.length};
- let task=null,question=null,passageMode=false;
+ let task=null,question=null,passageMode=false,currentPage=null,previousPage=0;
   for(let i=0;i<lines.length;i++){
   const line=clean(lines[i]);if(!line)continue;
+  const pageMark=/^\[PDF PAGE ([1-9][0-9]*) — UNVERIFIED\]$/.exec(line);
+  if(pageMark){
+   const next=Number(pageMark[1]);
+   if(next<=previousPage)problems.push('PDF page markers are not strictly increasing at line '+(i+1));
+   currentPage=next;previousPage=next;continue;
+  }
   const h=HEADER.exec(line),o=OPT.exec(line);
   if(h){
    passageMode=false;
@@ -25,7 +31,7 @@ export function analyseExtractedText(text,{maxCharacters=32000}={}){
     if(task){task.endLine=i;result.tasks.push(task);}
     const parts=v.split('|').map(clean);
     const id=parts[0],kind=(parts[1]||'').toLowerCase();
-    task={id,title:parts.slice(2).join(' | ')||id,kind,startLine:i+1,endLine:i+1,passage:'',questions:[],audioRef:null,missing:[]};
+    task={id,title:parts.slice(2).join(' | ')||id,kind,startLine:i+1,endLine:i+1,passage:'',questions:[],audioRef:null,sourcePage:currentPage,missing:[]};
     if(!/^\d+[a-z]?$/i.test(id)||!['reading','listening','speaking','grammar','vocabulary','writing'].includes(kind))
      task.missing.push('Task ID or kind requires teacher verification');
     question=null;continue;
@@ -35,7 +41,7 @@ export function analyseExtractedText(text,{maxCharacters=32000}={}){
    if(field==='AUDIO'){task.audioRef=v||null;unverified.push({kind:'audio',taskId:task.id,line:i+1,reason:'Audio reference was not opened or listened to'});question=null;continue;}
    if(/^Q\d+$/.test(field)){
     if(task.questions.some(x=>x.id===field))task.missing.push('Duplicate '+field);
-    question={id:field,prompt:v,line:i+1,options:[],sourceStatus:'unverified',suppliedKey:null};
+    question={id:field,prompt:v,line:i+1,sourcePage:currentPage,options:[],sourceStatus:'unverified',suppliedKey:null};
     task.questions.push(question);continue;
    }
    if(/^KEY\d+$/.test(field)){

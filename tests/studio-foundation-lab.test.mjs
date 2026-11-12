@@ -38,3 +38,19 @@ test('M1 detects unexpected PDF page marker text as unparsed, not silently appro
  assert.equal(res.ok,false);
  assert.ok(res.problems.some(x=>/unrecognized source lines/.test(x)));
 });
+
+test('M1 preserves real PDF page markers for tasks and questions without silently verifying',()=>{
+ const txt='[PDF PAGE 141 — UNVERIFIED]\\nUNIT: 12\\nTASK: 1 | reading | Read a text\\nPASSAGE: Maya visits the library.\\nQ1: Where?\\nA) Library\\nB) Stadium\\n[PDF PAGE 142 — UNVERIFIED]\\nQ2: When?\\nA) Monday\\nB) Friday';
+ const parsed=analyseExtractedText(txt);
+ assert.equal(parsed.ok,true);
+ assert.equal(parsed.source.tasks[0].sourcePage,141);
+ assert.deepEqual(parsed.source.tasks[0].questions.map(q=>q.sourcePage),[141,142]);
+ assert.equal(parsed.source.tasks[0].questions[1].sourceStatus,'unverified');
+ assert.equal(parsed.readyForPublish,false);
+});
+test('M1 refuses source pages in an impossible order',()=>{
+ const txt='[PDF PAGE 3 — UNVERIFIED]\\nUNIT: 12\\n[PDF PAGE 2 — UNVERIFIED]\\nTASK: 1 | reading | Demo\\nPASSAGE: Hello\\nQ1: Who?\\nA) A\\nB) B';
+ const parsed=analyseExtractedText(txt);
+ assert.equal(parsed.ok,false);
+ assert.ok(parsed.problems.some(p=>p.includes('not strictly increasing')));
+});
