@@ -64,6 +64,19 @@ export function validateProposalAgainstDraft(proposal,draft,{sourceManifestHash,
  }
  return {ok:errors.length===0,problems:errors,reviewRequired:true};
 }
+export function validateScopedInstructionProposal(proposal,draft,{sourceManifestHash,allowedSourceIds=[]}={}){
+ const review=validateProposalAgainstDraft(proposal,draft,{sourceManifestHash,allowedSourceIds});
+ const issues=[...review.problems];
+ if(proposal?.mode!=='assistant')issues.push('Only Assistant mode may create scoped instruction patches');
+ if(proposal?.scope?.stepId)issues.push('Step instructions require a separate dedicated adapter');
+ if(!proposal?.scope?.screenId)issues.push('A specific screen is required');
+ for(const suggestion of Array.isArray(proposal?.suggestions)?proposal.suggestions:[]){
+  if(suggestion?.kind!=='suggest-instruction')issues.push('Only instruction edits are supported in this patch adapter');
+  if(suggestion?.targetId!==proposal?.scope?.screenId)issues.push('Instruction patch must target the selected screen');
+  if(suggestion?.sourceRefs?.some(r=>r?.status==='verified'&&r?.reviewedBy===undefined))issues.push('Model-supplied source verification is not accepted');
+ }
+ return {ok:issues.length===0,problems:issues,reviewRequired:true};
+}
 export function draftProposalOnly(proposal,draft,{allowedSourceIds=[]}={}){
  const validation=validateAiProposal(proposal,{allowedSourceIds});
  if(!validation.ok)return {ok:false,problems:validation.problems};
