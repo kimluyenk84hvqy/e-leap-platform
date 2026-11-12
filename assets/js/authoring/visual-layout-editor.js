@@ -37,7 +37,7 @@ export function isTextLayoutRegion(id){return /^text:/.test(String(id||''));}
 export const LAYOUT_TEXT_FONTS=TEXT_FONTS;
 const ZONES=[
  ['.cert-cover-identity','Institution + title'],['.cert-cover-photo','Cover photo'],
- ['.rs-cover-text','Resource title panel'],['.rs-cover-photo','Resource photo'],['.rs-gallery','Resource image group'],['.rs-photo','Individual source photo'],['.rs-head','Teaching prompt'],['.rs-panel','Resource card'],
+ ['.rs-cover-text','Resource title panel'],['.rs-cover-photo','Cover image frame'],['.rs-cover-photo>.rs-image','Cover image'],['.rs-picture-feature','Lead-in image frame'],['.rs-picture-feature>.rs-image','Lead-in image'],['.rs-gallery','Resource image group'],['.rs-photo','Individual source photo'],['.rs-head','Teaching prompt'],['.rs-panel','Resource card'],
  ['.cert-aims-head','Aims heading'],['.cert-aim-card','Learning aim'],
  ['.cert-opener-photo','Opener image'],['.cert-opener-task','Question / task'],
  ['.functional-identity','Institution header'],['.functional-slot','Functional region'],
