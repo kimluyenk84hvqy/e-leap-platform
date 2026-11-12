@@ -202,11 +202,12 @@ function renderCertifiedProperties(){const s=currentScreen();if(s.certifiedTempl
  return curated+renderCertifiedEditor(s)+renderCertifiedGatePanel(s);
 }const family=({'lesson-cover':'cover','lesson-aims':'aims','lead-in':'opener'})[s.templateId];return family?'<section class="property-section"><h3>Certified template</h3><button class="studio-btn primary" data-certify-current="'+family+'">Convert slide to certified '+family+' template</button><p class="helper">Existing source blocks are preserved. Complete the fixed template slots before publishing.</p></section>':'';}
 function renderSourceNativeReviewProperties(){
- const s=currentScreen(),block=(s.blocks||[]).find(b=>b.type==='discussion'&&['answer','complete'].includes(b.comboStep));
- if(!block)return '';
- return '<section class="property-section"><h3>Shared activity engine · Review only</h3>'+
-  '<p class="helper">Try the original question with the existing E-LEAP response engine. The source is unverified; no grading, Submit or publication is permitted.</p>'+
-  '<div data-source-native-review style="margin-top:12px"></div></section>';
+ const screen=currentScreen();
+ const blocks=(screen.blocks||[]).filter(b=>b.type==='discussion'&&['answer','complete'].includes(b.comboStep));
+ if(!blocks.length)return '';
+ return '<section class="property-section"><h3>Original textbook tasks · Shared activity test</h3>'+
+  '<p class="helper">Review both tasks independently using the existing E-LEAP response component. No verified answer, Score, Submit, server save or publication is available.</p>'+
+  blocks.map((b,i)=>'<div class="studio-native-review-item"><h4>Reading task '+(i+1)+'</h4><div data-source-native-review="'+i+'"></div></div>').join('')+'</section>';
 }
 function renderProperties(){if(currentScreen().sourceReviewDraft)return lessonProps()+slideProps()+blockProps()+renderSourceNativeReviewProperties();if(currentScreen().resourceStage)return lessonProps()+renderResourceProperties(currentScreen(),lesson.resourceBank);return currentScreen().functionalDraft?`${lessonProps()}${renderFunctionalSlideProps(currentScreen())}`:currentScreen().methodDraft?`${lessonProps()}${renderMethodTemplateProperties(currentScreen())}`:`${lessonProps()}${slideProps()}${renderCertifiedProperties()}${currentScreen().certifiedTemplate?'':renderContentMapper()+blockProps()}`}
 function renderContentMapper(){
@@ -262,24 +263,24 @@ function revealEvidence(quote){
   return true;
 }
 function wire(){
-  const nativeReviewRoot=document.querySelector('[data-source-native-review]');
-  if(nativeReviewRoot&&currentScreen()?.sourceReviewDraft){
-    const block=currentScreen().blocks?.find(b=>b.type==='discussion'&&['answer','complete'].includes(b.comboStep));
-    if(block){
-      const safePreview={
+  const nativeReviewBlocks=(currentScreen()?.blocks||[]).filter(b=>b.type==='discussion'&&['answer','complete'].includes(b.comboStep));
+  if(currentScreen()?.sourceReviewDraft){
+    nativeReviewBlocks.forEach((block,i)=>{
+      const node=document.querySelector('[data-source-native-review="'+i+'"]');
+      if(!node)return;
+      const activity={
         id:block.activity?.id||block.id,
         type:'type',
-        title:'Reading response · Teacher review',
-        prompt:esc(block.activity?.prompt||'Explain your choice.'),
+        title:'Reading task '+(i+1)+' · Teacher review only',
+        prompt:esc(block.activity?.prompt||'Explain your answer.'),
         placeholder:'Type a draft response…'
       };
       const player=new ELeapNativeActivity({
-        root:nativeReviewRoot,activity:safePreview,events:null,
-        resourceId:'studio-review-'+lesson.id,studentId:null,sessionId:null,
-        context:{role:'teacher',mode:'review'}
+        root:node,activity,events:null,resourceId:'studio-review-'+lesson.id,
+        studentId:null,sessionId:null,context:{role:'teacher',mode:'review'}
       });
-      player.mount().catch(error=>{nativeReviewRoot.textContent='Shared activity preview unavailable: '+error.message;});
-    }
+      player.mount().catch(error=>{node.textContent='Shared activity preview unavailable: '+error.message;});
+    });
   }
   wireResourceStage({screen:currentScreen(),pack:lesson.resourceBank,role:previewRole,render,onModified:markDirty});
   document.querySelector('[data-import-resource]')?.addEventListener('change',async e=>{
