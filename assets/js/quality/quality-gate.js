@@ -27,6 +27,7 @@ export function auditLesson(lesson={}){
   if((lesson.theme?.fontFamily||'')!=='Poppins')issues.push(['warn','Template Contract: Poppins is the default lesson font']);
   (lesson.screens||[]).forEach((s,si)=>{
     const sw=`Slide ${si+1}`;pushDup(issues,seen,s.id,sw);
+    if(s.sourceReviewDraft)issues.push(['error',`${sw}: unverified source review draft cannot be published; teacher must verify original content and convert it to an approved activity.`]);
     for(const message of layoutIssues(s))issues.push(['error',`${sw}: ${message}`]);
     if(s.visualLayout&&Object.keys(s.visualLayout.regions||{}).length)issues.push(['error',`${sw}: Custom visual layout requires interactive projection QA before Publish; review only.`]);
     if(!s.certifiedTemplate&&!String(s.title||'').trim())issues.push(['error',`${sw}: missing title`]);
