@@ -35,6 +35,35 @@ export function validateAiProposal(input,{allowedSourceIds=[],maxSuggestions=24}
  }
  return {ok:problems.length===0,problems};
 }
+export function validateProposalAgainstDraft(proposal,draft,{sourceManifestHash,allowedSourceIds=[]}={}){
+ const base=validateAiProposal(proposal,{allowedSourceIds});
+ const errors=[...base.problems];
+ if(!draft||draft.status!=='draft'||draft.id!==proposal?.scope?.lessonId||draft.version!==proposal?.baseDraftVersion)
+  errors.push('Draft identity, status or version mismatch');
+ if(!/^[a-f0-9]{64}$/i.test(String(sourceManifestHash||''))||proposal?.sourceManifestHash!==sourceManifestHash)
+  errors.push('Source manifest hash mismatch');
+ const screens=new Map((draft?.screens||[]).map(s=>[s.id,s]));
+ if(proposal?.mode==='assistant'&&!proposal.scope?.screenId)errors.push('Assistant requires exact screen scope');
+ if(proposal?.scope?.screenId&&!screens.has(proposal.scope.screenId))errors.push('Scoped screen missing');
+ if(proposal?.scope?.stepId){
+  const active=screens.get(proposal.scope.screenId);
+  if(!active?.combo?.steps?.some(x=>x.id===proposal.scope.stepId))errors.push('Scoped step missing');
+ }
+ for(const suggestion of Array.isArray(proposal?.suggestions)?proposal.suggestions:[]){
+  if(!suggestion||!suggestion.targetId)continue;
+  const targetScreen=screens.get(suggestion.targetId);
+  const matchedScreen=[...screens.values()].find(s=>(s.blocks||[]).some(b=>b.id===suggestion.targetId));
+  const target=targetScreen||matchedScreen;
+  if(!target)errors.push('Proposal target not found: '+suggestion.targetId);
+  if(proposal.mode==='assistant'&&target?.id!==proposal.scope.screenId)
+   errors.push('Proposal target outside selected screen: '+suggestion.targetId);
+  if(proposal.scope?.stepId&&matchedScreen){
+   const block=(matchedScreen.blocks||[]).find(b=>b.id===suggestion.targetId);
+   if(block?.comboStep!==proposal.scope.stepId)errors.push('Proposal block outside selected step');
+  }
+ }
+ return {ok:errors.length===0,problems:errors,reviewRequired:true};
+}
 export function draftProposalOnly(proposal,draft,{allowedSourceIds=[]}={}){
  const validation=validateAiProposal(proposal,{allowedSourceIds});
  if(!validation.ok)return {ok:false,problems:validation.problems};
