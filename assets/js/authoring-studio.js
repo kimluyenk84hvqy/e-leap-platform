@@ -1,5 +1,6 @@
 import {ELeapRuntimeContext} from './runtime-context.js';
 import {mountFoundationLab} from './authoring/foundation-lab.js';
+import {sourceIntakeToStudioReviewScreen} from './authoring/source-studio-review-adapter.js';
 import {importResourceZip,rehydrateResourceBank,createResourceScreens,renderResourceStage,renderResourceProperties,wireResourceStage} from './authoring/resource-bank-assembly.js';
 import {E_LEAP_ACTIVITY_TYPES,E_LEAP_AUTHORING_LIBRARY} from './activity-registry.js';
 import {E_LEAP_THEME_DEFAULT,E_LEAP_THEME_PRESETS,E_LEAP_ALLOWED_FONTS,applyThemePreset} from './theme-tokens.js';
@@ -67,6 +68,24 @@ if(!canOpenStudio){
   draftKey=`e-leap-studio-v1:${source||lesson.id||'new'}`;
   const saved=localStorage.getItem(draftKey);
   if(saved && !qs.get('fresh')){try{lesson=JSON.parse(saved);ensureSchema();}catch{}}
+  if(qs.get('importFoundation')==='1'){
+    const raw=sessionStorage.getItem('e-leap-source-review-import-v1');
+    try{
+      if(!raw)throw Error('No pending Reading review');
+      const pending=JSON.parse(raw);
+      if(pending?.schemaVersion!=='e-leap-source-review-import-v1'||typeof pending.text!=='string'||pending.text.length>32000||Date.now()-pending.createdAt>10*60*1000)
+        throw Error('Expired or invalid Reading review');
+      const output=sourceIntakeToStudioReviewScreen(pending.text,{sourcePages:pending.sourcePages||[]});
+      if(!output.ok)throw Error('Source requires review: '+output.issues.join('; '));
+      if(lesson.status!=='draft')throw Error('Only draft lessons may be modified');
+      if(confirm('Insert unverified Reading activity after the current slide? Its original questions will be review-only; publication remains blocked.')){
+        lesson.screens.splice(selectedScreen+1,0,output.screen);
+        selectedScreen++;selectedBlock=0;
+        markDirty();
+        sessionStorage.removeItem('e-leap-source-review-import-v1');
+      }
+    }catch(error){console.warn('Foundation import rejected:',error.message);}
+  }
   render();
   if(lesson.resourceBank)rehydrateResourceBank(lesson.resourceBank).then(()=>render()).catch(()=>status('Local resource assets unavailable; re-import Resource ZIP.'));
 }

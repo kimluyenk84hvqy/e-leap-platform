@@ -50,7 +50,7 @@ export function mountFoundationLab(root,{role='teacher'}={}){
   '<header><h1>E-LEAP · Foundation Lab</h1><p>Source structure + interactive activity validation · PREVIEW / NO AI / NO PUBLISH</p><a href="./index.html">← Studio</a></header>'+
   (['teacher','admin'].includes(model.role)?'<section class="property-section"><h2>M1 · Teacher-extracted text intake</h2><p>Paste extracted text or extract selectable text locally from PDF. PPT/audio understanding and key verification are not available.</p>'+
   '<label style="display:block;margin:8px 0">Extract locally from PDF (max 150 MB; select up to 12 pages): <input type="file" accept="application/pdf,.pdf" data-lab-pdf></label><label style="display:inline-block;margin:8px 8px 8px 0">Start page <input type="number" min="1" value="1" data-lab-pdf-start style="width:90px"></label><label>End page (optional) <input type="number" min="1" placeholder="auto: 12 pages" data-lab-pdf-end style="width:110px"></label><p role="status">'+escapeHtml(pdfNotice)+'</p>'+ '<textarea data-lab-source rows="12" style="width:100%;font:15px monospace">'+escapeHtml(currentText)+'</textarea>'+
-  '<p>'+button('Analyse source','analyse')+' '+button('Load synthetic fixture','fixture')+'</p></section>'+
+  '<p>'+button('Analyse source','analyse')+' '+button('Load synthetic fixture','fixture')+(model.analysis.ok&&model.analysis.source?.tasks?.length===1&&model.analysis.source.tasks[0].kind==='reading'? ' '+button('Review this Reading in Studio','studio-review'):'')+'</p></section>'+
   '<section class="property-section"><h2>Source review</h2><p><b>Unit:</b> '+escapeHtml(source?.unit||'Missing')+' · <b>Verification:</b> UNVERIFIED</p>'+
   '<p><b>Tasks:</b> '+(source?.tasks?.length||0)+' · <b>Unverified records:</b> '+(source?.unverified?.length||0)+' · <b>Unparsed lines:</b> '+(source?.unparsed?.length||0)+'</p>'+
   (model.analysis.problems||[]).map(x=>'<p style="color:#a22525">'+escapeHtml(x)+'</p>').join('')+
@@ -94,6 +94,15 @@ export function mountFoundationLab(root,{role='teacher'}={}){
   root.querySelectorAll('[data-lab-phase]').forEach(el=>el.addEventListener('click',()=>{model.phase=Number(el.dataset.labPhase);model.check=null;model.scoreVisible=false;draw();}));
   root.querySelectorAll('[data-lab-question]').forEach(el=>el.addEventListener('change',()=>{model.answers.set(el.dataset.labQuestion,el.value);model.check=null;model.scoreVisible=false;draw();}));
   root.querySelectorAll('[data-lab-action]').forEach(el=>{const action=el.dataset.labAction;if(action==='analyse'||action==='fixture')return;el.addEventListener('click',()=>{
+   if(action==='studio-review'){
+    if(!['teacher','admin'].includes(model.role)||!model.analysis.ok)return;
+    if(!confirm('Open a review-only Reading draft in Studio? Source keys will remain unverified and Publish is blocked.'))return;
+    try{
+     sessionStorage.setItem('e-leap-source-review-import-v1',JSON.stringify({schemaVersion:'e-leap-source-review-import-v1',text:currentText,sourcePages:[],createdAt:Date.now()}));
+     location.assign('./index.html?importFoundation=1');
+    }catch(error){model.check='Studio handoff failed: '+String(error.message||error);draw();}
+    return;
+   }
    executeFoundationAction(model,action.startsWith('reveal-')?'reveal':action,{questionId:action.startsWith('reveal-')?action.slice(7):null});
    draw();
   });});
