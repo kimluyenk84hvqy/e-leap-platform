@@ -25,3 +25,16 @@ test('M3 teacher-supplied answer keys are NEVER scored as verified',()=>{
  const m=createFoundationLabModel(SYNTHETIC_READING_FIXTURE);m.answers.set('Q1','A');
  const score=evaluateFoundationResponses(m);assert.equal(score.checked,false);assert.equal(score.correct,null);
 });
+
+test('M1 rejects task-local errors, not only document-global errors',()=>{
+ const bad=analyseExtractedText('UNIT: Test\nTASK: 1 | reading | Demo\nQ1: Where?\nA) Only one\nKEY1: B');
+ assert.equal(bad.ok,false);
+ assert.ok(bad.problems.some(x=>x.includes('PASSAGE missing')));
+ assert.ok(bad.problems.some(x=>x.includes('fewer than 2 options')));
+ assert.ok(bad.problems.some(x=>x.includes('outside option list')));
+});
+test('M1 detects unexpected PDF page marker text as unparsed, not silently approved',()=>{
+ const res=analyseExtractedText('[PDF PAGE 1 — UNVERIFIED]\nUNIT: Test\nTASK: 1 | reading | Demo\nPASSAGE: Test\nQ1: Where?\nA) A\nB) B');
+ assert.equal(res.ok,false);
+ assert.ok(res.problems.some(x=>/unrecognized source lines/.test(x)));
+});

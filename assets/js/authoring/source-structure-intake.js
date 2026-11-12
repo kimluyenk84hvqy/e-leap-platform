@@ -11,8 +11,7 @@ export function analyseExtractedText(text,{maxCharacters=32000}={}){
  const lines=text.replace(/\r\n?/g,'\n').split('\n');
  const result={schemaVersion:'eleap-source-intake-v1',inputKind:'teacher-extracted-text',verification:'unverified',unit:'',lesson:'',level:'',objectives:[],tasks:[],unparsed:[],unverified,sourceLength:text.length};
  let task=null,question=null,passageMode=false;
- const pushTask=()=>{if(task){task.endLine=lines.length;result.tasks.push(task);}task=null;question=null;};
- for(let i=0;i<lines.length;i++){
+  for(let i=0;i<lines.length;i++){
   const line=clean(lines[i]);if(!line)continue;
   const h=HEADER.exec(line),o=OPT.exec(line);
   if(h){
@@ -53,6 +52,7 @@ export function analyseExtractedText(text,{maxCharacters=32000}={}){
  if(task){task.endLine=lines.length;result.tasks.push(task);}
  if(!result.unit)problems.push('UNIT heading missing');
  if(!result.tasks.length)problems.push('No explicit TASK headings found');
+ if(result.unparsed.length)problems.push(result.unparsed.length+' unrecognized source lines require review');
  for(const t of result.tasks){
   if(!t.questions.length)t.missing.push('No source questions extracted');
   if(t.kind==='reading'&&!t.passage)t.missing.push('PASSAGE missing');
@@ -64,6 +64,7 @@ export function analyseExtractedText(text,{maxCharacters=32000}={}){
    if(!q.suppliedKey)unverified.push({kind:'answer',taskId:t.id,questionId:q.id,reason:'No supplied answer key'});
   }
  }
+ for(const t of result.tasks)for(const issue of t.missing)problems.push('Task '+t.id+': '+issue);
  return {ok:!problems.length,problems,source:result,readyForAi:false,readyForPublish:false};
 }
 export const SYNTHETIC_READING_FIXTURE=`UNIT: Demonstration only
