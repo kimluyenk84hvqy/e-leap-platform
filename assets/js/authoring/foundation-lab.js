@@ -49,7 +49,7 @@ export function mountFoundationLab(root,{role='teacher'}={}){
   root.innerHTML='<section class="studio-shell" style="min-height:100vh;padding:20px;max-width:1100px;margin:auto">'+
   '<header><h1>E-LEAP · Foundation Lab</h1><p>Source structure + interactive activity validation · PREVIEW / NO AI / NO PUBLISH</p><a href="./index.html">← Studio</a></header>'+
   (['teacher','admin'].includes(model.role)?'<section class="property-section"><h2>M1 · Teacher-extracted text intake</h2><p>Paste extracted text or extract selectable text locally from PDF. PPT/audio understanding and key verification are not available.</p>'+
-  '<label style="display:block;margin:8px 0">Extract text locally from PDF (max 25 MB, first 30 pages): <input type="file" accept="application/pdf,.pdf" data-lab-pdf></label><p role="status">'+escapeHtml(pdfNotice)+'</p>'+ '<textarea data-lab-source rows="12" style="width:100%;font:15px monospace">'+escapeHtml(currentText)+'</textarea>'+
+  '<label style="display:block;margin:8px 0">Extract locally from PDF (max 150 MB; select up to 12 pages): <input type="file" accept="application/pdf,.pdf" data-lab-pdf></label><label style="display:inline-block;margin:8px 8px 8px 0">Start page <input type="number" min="1" value="1" data-lab-pdf-start style="width:90px"></label><label>End page (optional) <input type="number" min="1" placeholder="auto: 12 pages" data-lab-pdf-end style="width:110px"></label><p role="status">'+escapeHtml(pdfNotice)+'</p>'+ '<textarea data-lab-source rows="12" style="width:100%;font:15px monospace">'+escapeHtml(currentText)+'</textarea>'+
   '<p>'+button('Analyse source','analyse')+' '+button('Load synthetic fixture','fixture')+'</p></section>'+
   '<section class="property-section"><h2>Source review</h2><p><b>Unit:</b> '+escapeHtml(source?.unit||'Missing')+' · <b>Verification:</b> UNVERIFIED</p>'+
   '<p><b>Tasks:</b> '+(source?.tasks?.length||0)+' · <b>Unverified records:</b> '+(source?.unverified?.length||0)+' · <b>Unparsed lines:</b> '+(source?.unparsed?.length||0)+'</p>'+
@@ -78,7 +78,10 @@ export function mountFoundationLab(root,{role='teacher'}={}){
    if(status)status.textContent='Reading local PDF in this browser…';
    try{
     const reader=await loadPdfJs();
-    const extracted=await extractLocalPdfText(file,reader);
+    const start=Number(root.querySelector('[data-lab-pdf-start]')?.value||1);
+    const rawEnd=root.querySelector('[data-lab-pdf-end]')?.value||'';
+    const end=rawEnd?Number(rawEnd):null;
+    const extracted=await extractLocalPdfText(file,reader,{startPage:start,endPage:end});
     currentText=extracted.pages.map(p=>'[PDF PAGE '+p.page+' — UNVERIFIED]\n'+p.text).join('\n\n');
     model=createFoundationLabModel(currentText);model.role=role;model.originRole=role;
     pdfNotice='Loaded '+extracted.pages.length+'/'+extracted.pageCount+' pages from '+file.name+' (UNVERIFIED). '+extracted.warnings.join(' ');
