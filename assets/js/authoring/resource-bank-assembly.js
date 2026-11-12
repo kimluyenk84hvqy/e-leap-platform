@@ -85,7 +85,7 @@ function questionItems(screen,source,role,{kind='practice'}={}){
  const canReveal=['teacher','admin','presentation'].includes(role);
  const canCheck=['teacher','admin','student','guest'].includes(role);
  const canEvidence=kind==='listening';
- const current=ui.focus.get(screen.id)||0,items=source.items||[],pageSize=canEvidence?3:4;
+ const current=ui.focus.get(screen.id)||0,items=source.items||[],pageSize=2; // 16:9 teaching: two full-size items, never crop a question
  const pages=Math.max(1,Math.ceil(items.length/pageSize)),page=Math.min(current,pages-1);
  const pageItems=items.slice(page*pageSize,(page+1)*pageSize);
  let nav='<nav class="rs-activity-nav" aria-label="Question groups"><span>Questions '+(page*pageSize+1)+'–'+Math.min(items.length,(page+1)*pageSize)+' of '+items.length+'</span>';
@@ -124,8 +124,8 @@ function crossword(screen,source,role){
  }
  const xa=Number(active.x||0),ya=Number(active.y||0),len=String(active.answer||'').length,along=active.direction==='across';
  // Show a bounded viewport around the active clue; no 23-row micro-grid.
- const x0=Math.max(0,Math.min(xa-2,maxx-9)),x1=Math.min(maxx,Math.max(xa+(along?len:1)+1,x0+9));
- const y0=Math.max(0,Math.min(ya-3,maxy-10)),y1=Math.min(maxy,Math.max(ya+(along?1:len)+2,y0+10));
+ const x0=Math.max(0,Math.min(xa-1,maxx-7)),x1=Math.min(maxx,Math.max(xa+(along?len:1),x0+7));
+ const y0=Math.max(0,Math.min(ya-1,maxy-7)),y1=Math.min(maxy,Math.max(ya+(along?1:len),y0+7));
  let board='<div class="rs-cross-grid rs-cross-focus" style="grid-template-columns:repeat('+(x1-x0+1)+',minmax(24px,1fr))">';
  for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){
   const key=x+','+y,c=occupied.get(key),cellActive=along?y===ya&&x>=xa&&x<xa+len:x===xa&&y>=ya&&y<ya+len;
@@ -199,7 +199,7 @@ export function renderResourceStage(screen,pack,role='teacher'){
    page===2?card('DISCOVER · Work with a partner','<ol>'+q+'</ol><p>Compare your ideas before your teacher confirms the rule.</p>'):
    page===3?card('RULE CHECK · Confirm the pattern',(['teacher','admin','presentation'].includes(role)&&ui.reveals.has(screen.id+':rule')?rule:'<p>Think of your own rule. Your teacher can reveal it after discussion.</p>')+
     (['teacher','admin','presentation'].includes(role)?'<button data-rs-action="rule" data-rs-key="'+html(screen.id+':rule')+'">Show / hide rule</button>':'')):
-   card('APPLY · Use need in context','<p>Complete the original Activity 2, compare with a partner, then check one sentence at a time.</p>');
+   card('APPLY · Bridge to the textbook','<p>Use the pattern in meaningful situations before attempting Activity 2.</p><div class="rs-apply-steps"><div><b>1 · THINK</b><p>What do you need when travelling?</p></div><div><b>2 · PAIR</b><p>Tell a partner what you need and what you don’t need.</p></div><div><b>3 · TRANSFER</b><p>Now complete Activity 2. Explain your verb form to your partner before checking.</p></div></div>');
   }
   body=heading+flow+'<div class="rs-phase-content">'+content+'</div>';break;
  }
