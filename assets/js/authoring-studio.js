@@ -199,7 +199,7 @@ function renderCertifiedProperties(){const s=currentScreen();if(s.certifiedTempl
  return curated+renderCertifiedEditor(s)+renderCertifiedGatePanel(s);
 }const family=({'lesson-cover':'cover','lesson-aims':'aims','lead-in':'opener'})[s.templateId];return family?'<section class="property-section"><h3>Certified template</h3><button class="studio-btn primary" data-certify-current="'+family+'">Convert slide to certified '+family+' template</button><p class="helper">Existing source blocks are preserved. Complete the fixed template slots before publishing.</p></section>':'';}
 function renderSourceNativeReviewProperties(){
- const s=currentScreen(),block=(s.blocks||[]).find(b=>b.type==='discussion'&&b.comboStep==='answer');
+ const s=currentScreen(),block=(s.blocks||[]).find(b=>b.type==='discussion'&&['answer','complete'].includes(b.comboStep));
  if(!block)return '';
  return '<section class="property-section"><h3>Shared activity engine · Review only</h3>'+
   '<p class="helper">Try the original question with the existing E-LEAP response engine. The source is unverified; no grading, Submit or publication is permitted.</p>'+
@@ -261,13 +261,13 @@ function revealEvidence(quote){
 function wire(){
   const nativeReviewRoot=document.querySelector('[data-source-native-review]');
   if(nativeReviewRoot&&currentScreen()?.sourceReviewDraft){
-    const block=currentScreen().blocks?.find(b=>b.type==='discussion'&&b.comboStep==='answer');
+    const block=currentScreen().blocks?.find(b=>b.type==='discussion'&&['answer','complete'].includes(b.comboStep));
     if(block){
       const safePreview={
         id:block.activity?.id||block.id,
         type:'type',
         title:'Reading response · Teacher review',
-        prompt:block.activity?.prompt||'Explain your choice.',
+        prompt:esc(block.activity?.prompt||'Explain your choice.'),
         placeholder:'Type a draft response…'
       };
       const player=new ELeapNativeActivity({
