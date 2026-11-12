@@ -35,17 +35,17 @@ export function mountFoundationLab(root,{role='teacher'}={}){
   (task?.missing||[]).map(x=>'<p style="color:#a22525">Missing: '+escapeHtml(x)+'</p>').join('')+
   '<p><b>Safety:</b> No teacher-supplied answer is recognized as source-approved; incomplete text is marked for review.</p></section>'+
   '<section class="property-section"><h2>M3 · Real interaction sandbox</h2><p>Source-based content rendered as a three-step activity. This is NOT the published lesson player.</p>'+
-  '<label>Preview role <select data-lab-role><option value="teacher" '+(model.role==='teacher'?'selected':'')+'>Teacher</option><option value="student" '+(model.role==='student'?'selected':'')+'>Student</option><option value="guest" '+(model.role==='guest'?'selected':'')+'>Guest</option><option value="presentation" '+(model.role==='presentation'?'selected':'')+'>Presentation</option></select></label>'+
+  '<label>Preview role <select data-lab-role><option value="teacher" '+(model.role==='teacher'?'selected':'')+'>Teacher</option><option value="admin" '+(model.role==='admin'?'selected':'')+'>Admin</option><option value="student" '+(model.role==='student'?'selected':'')+'>Student</option><option value="guest" '+(model.role==='guest'?'selected':'')+'>Guest</option><option value="presentation" '+(model.role==='presentation'?'selected':'')+'>Presentation</option></select></label>'+
   '<nav class="combo-step-nav">'+phases.map((p,i)=>'<button type="button" class="combo-step-button '+(model.phase===i?'active':'')+'" data-lab-phase="'+i+'">'+(i+1)+'. '+p+'</button>').join('')+'</nav>'+
   (task?'<h3>'+escapeHtml(task.title)+'</h3>':'<p>Valid explicit TASK required.</p>')+
   (model.phase===0?'<p style="font-size:22px;line-height:1.6">'+escapeHtml(task?.passage||'Source passage unavailable')+'</p><p>Read the text. Underline or note information related to each question.</p>':
    model.phase===1?qs.map(q=>'<fieldset style="margin:12px 0;padding:14px;border:1px solid #acc3b0"><legend>'+escapeHtml(q.id+': '+q.prompt)+'</legend>'+
     q.options.map(o=>'<label style="display:block;padding:8px"><input type="radio" name="lab-'+escapeHtml(q.id)+'" data-lab-question="'+escapeHtml(q.id)+'" value="'+escapeHtml(o.id)+'" '+(model.answers.get(q.id)===o.id?'checked':'')+'> '+escapeHtml(o.id+'. '+o.label)+'</label>').join('')+
-    ((model.synthetic&&['teacher','presentation'].includes(model.role)&&model.revealed.has(q.id))?'<p>Verified synthetic fixture key: '+escapeHtml(q.suppliedKey)+'</p>':'')+
-    (model.synthetic&&['teacher','presentation'].includes(model.role)?button('Show answer ('+q.id+')','reveal-'+q.id):'')+'</fieldset>').join(''):
+    ((model.synthetic&&['teacher','admin','presentation'].includes(model.role)&&model.revealed.has(q.id))?'<p>Verified synthetic fixture key: '+escapeHtml(q.suppliedKey)+'</p>':'')+
+    (model.synthetic&&['teacher','admin','presentation'].includes(model.role)?button('Show answer ('+q.id+')','reveal-'+q.id):'')+'</fieldset>').join(''):
    '<p>Compare your saved choices with a partner. Explain which sentence in the reading supports each answer.</p>'+
    qs.map(q=>'<p>'+escapeHtml(q.id)+': '+escapeHtml(model.answers.get(q.id)||'Unanswered')+'</p>').join(''))+
-  '<div style="display:flex;gap:8px;flex-wrap:wrap">'+button('Previous','previous',model.phase===0)+button('Next','next',model.phase===2)+button('Check','check',model.phase===0)+button('Reset','reset')+button('Score','score',model.phase===0)+'</div>'+
+  '<div style="display:flex;gap:8px;flex-wrap:wrap">'+button('Previous','previous',model.phase===0)+button('Next','next',model.phase===2)+(['teacher','admin','student','guest'].includes(model.role)?button('Check','check',model.phase===0):'')+button('Reset','reset')+(['student','guest'].includes(model.role)?button('Score','score',model.phase===0):'')+(model.role==='presentation'?button('Exit Presentation','exit'): '')+'</div>'+
   (outcome.checked?'<p><b>Test score:</b> '+outcome.correct+'/'+outcome.total+' ('+outcome.percentage+'%). Unanswered included in denominator.</p>':
     '<p><b>Answers recorded:</b> '+outcome.answered+'/'+outcome.total+'. Correctness not checked for unverified source.</p>')+
   (model.check?'<p role="status">'+escapeHtml(model.check)+'</p>':'')+
@@ -57,10 +57,11 @@ export function mountFoundationLab(root,{role='teacher'}={}){
   root.querySelectorAll('[data-lab-question]').forEach(el=>el.addEventListener('change',()=>{model.answers.set(el.dataset.labQuestion,el.value);model.check=null;draw();}));
   root.querySelectorAll('[data-lab-action]').forEach(el=>{const action=el.dataset.labAction;if(action==='analyse'||action==='fixture')return;el.addEventListener('click',()=>{
    if(action==='next')model.phase=Math.min(2,model.phase+1);
+   if(action==='exit'){model.role='teacher';model.revealed.clear();}
    if(action==='previous')model.phase=Math.max(0,model.phase-1);
    if(action==='reset'){model.answers.clear();model.revealed.clear();model.check='All local answers reset.';}
-   if(action==='check')model.check=model.synthetic?'Checked synthetic responses. Incorrect/empty choices remain in the denominator.':'Responses saved locally in this page. Source keys are unverified; no correctness judgment.';
-   if(action==='score')model.check=model.synthetic?'Synthetic practice score calculated.':'Score unavailable without verified keys.';
+   if(action==='check'&&['teacher','admin','student','guest'].includes(model.role))model.check=model.synthetic?'Checked synthetic responses. Incorrect/empty choices remain in the denominator.':'Responses saved locally in this page. Source keys are unverified; no correctness judgment.';
+   if(action==='score'&&['student','guest'].includes(model.role))model.check=model.synthetic?'Synthetic practice score calculated.':'Score unavailable without verified keys.';
    if(action.startsWith('reveal-')&&model.synthetic&&['teacher','presentation'].includes(model.role)){const qid=action.slice(7);model.revealed.has(qid)?model.revealed.delete(qid):model.revealed.add(qid);}
    draw();
   });});
