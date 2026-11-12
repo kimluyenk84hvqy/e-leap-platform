@@ -248,7 +248,12 @@ export function renderResourceStage(screen,pack,role='teacher'){
  case 'practice':
   body=heading+questionItems(screen,source,role);break;
  case 'exit':
-  body=heading+'<div class="rs-prompt-list">'+(source.prompts||[]).map((x,i)=>card('RETRIEVAL '+(i+1),'<p>'+html(x)+'</p>')).join('')+'</div>';break;
+  body='<div class="rs-head"><h2>What can you do now?</h2><p>Use <b>need</b> to talk about travelling.</p></div>'+
+   '<div class="rs-exit-task"><div class="rs-exit-challenge"><h3>1 · Make it personal</h3><p>Tell a partner one thing you need and one thing you don’t need when you travel.</p>'+
+   '<p class="rs-language-hint">I need … because … / I don’t need … because …</p>'+
+   '<label for="rs-exit-note">My sentences</label><textarea id="rs-exit-note" data-rs-note="'+html(screen.id)+'" rows="3" placeholder="Write your own sentences here…">'+html(ui.notes.get(screen.id)||'')+'</textarea></div>'+
+   '<div class="rs-exit-challenge"><h3>2 · Check your learning</h3><p>What is the difference between <b>need + noun</b> and <b>need to + verb</b>?</p><p>Share an example with your partner.</p>'+
+   '<p class="rs-language-hint">I need a ticket. / I need to buy a ticket.</p></div></div>';break;
  }
  return '<div class="canvas-wrap rs-wrap"><section class="lesson-canvas rs-canvas rs-'+html(source.type)+'">'+body+'</section></div>';
 }
@@ -256,14 +261,34 @@ export function renderResourceProperties(screen,pack){
  const source=src(screen,pack);if(!source)return '';
  const available=[...new Set([source.combo,...Object.keys(METHOD_COMBOS).filter(id=>METHOD_COMBOS[id].group===({listening:'Listening',discovery:'Grammar',practice:'Grammar',gallery:'Speaking'}[source.type]||'none'))].filter(Boolean))];
  const usable=available.filter(id=>id===source.combo||['guided-grammar','grammar-ppp','staged-listening','tbl-listening','think-pair-share'].includes(id));
- return '<section class="property-section"><h3>Resource Bank · '+html(pack.id)+'</h3><p class="helper">Asset references are shared. Changing a method does not delete textbook content, images or answer keys.</p><p class="helper">Imported locally into this browser. No server Media Library upload.</p>'+
+ const imageControls=(source.type==='cover'||source.type==='gallery');
+ const image=screen.resourceStage.imageAdjustment||{},fit=image.fit||'contain',x=Number.isFinite(+image.x)?+image.x:50,y=Number.isFinite(+image.y)?+image.y:50,zoom=Number.isFinite(+image.zoom)?+image.zoom:100;
+ return '<section class="property-section"><h3>Resource Bank · '+html(pack.id)+'</h3><p class="helper">Resource IDs stay attached when a combo changes. Source material is saved in this browser.</p>'+
  '<label>Teaching Combo</label><select data-rs-combo>'+usable.map(id=>'<option value="'+html(id)+'" '+(screen.resourceStage.comboId===id?'selected':'')+'>'+html(METHOD_COMBOS[id]?.label||id)+'</option>').join('')+'</select>'+
- '<p class="helper">Source: '+html(source.id)+' · '+html(pack.status)+'</p><p class="helper">Evidence: '+html(pack.quality?.audioEvidence)+'</p></section>';
+ (imageControls?'<h3>Image positioning</h3><p class="helper">Adjust the photograph without altering the source file.</p>'+
+ '<label>Fit</label><select data-rs-image-adjust="fit"><option value="contain" '+(fit==='contain'?'selected':'')+'>Show whole image</option><option value="cover" '+(fit==='cover'?'selected':'')+'>Fill frame</option></select>'+
+ '<label>Horizontal position · '+x+'%</label><input type="range" min="0" max="100" step="1" data-rs-image-adjust="x" value="'+x+'">'+
+ '<label>Vertical position · '+y+'%</label><input type="range" min="0" max="100" step="1" data-rs-image-adjust="y" value="'+y+'">'+
+ '<label>Zoom · '+zoom+'%</label><input type="range" min="70" max="180" step="5" data-rs-image-adjust="zoom" value="'+zoom+'">':'')+
+ '<p class="helper">QA: '+html(pack.status)+' · Listening Evidence: '+html(pack.quality?.audioEvidence||'PENDING')+'</p></section>';
 }
 export function wireResourceStage({screen,pack,role,render,onModified}){
  if(!screen?.resourceStage)return;
  document.querySelectorAll('.rs-cover-photo > img').forEach(img=>img.addEventListener('error',()=>{img.style.display='none';const fallback=img.nextElementSibling;if(fallback)fallback.style.display='block';}));
- document.querySelectorAll('[data-rs-note]').forEach(el=>el.addEventListener('input',()=>ui.notes.set(el.dataset.rsNote,el.value)));
+ function adjustImages(){
+   const data=screen.resourceStage.imageAdjustment||{};
+   const fit=data.fit||'contain',x=Number.isFinite(+data.x)?+data.x:50,y=Number.isFinite(+data.y)?+data.y:50,zoom=Number.isFinite(+data.zoom)?+data.zoom:100;
+   const targets=Array.from(document.querySelectorAll('.rs-picture-feature .rs-image,.rs-cover-photo>.rs-image,.rs-cover-fallback .rs-image'));
+   targets.forEach(img=>{img.style.setProperty('object-fit',fit,'important');img.style.setProperty('object-position',x+'% '+y+'%','important');img.style.setProperty('transform','scale('+(zoom/100)+')');img.style.transformOrigin=x+'% '+y+'%';});
+  }
+ adjustImages();
+ document.querySelectorAll('[data-rs-image-adjust]').forEach(el=>el.addEventListener('input',()=>{
+  const key=el.dataset.rsImageAdjust;const value=key==='fit'?el.value:Number(el.value);
+  screen.resourceStage.imageAdjustment={...(screen.resourceStage.imageAdjustment||{}),[key]:value};adjustImages();
+  const label=el.previousElementSibling;if(label&&key!=='fit')label.textContent=(key==='x'?'Horizontal position':key==='y'?'Vertical position':'Zoom')+' · '+value+'%';
+  onModified();
+ }));
+  document.querySelectorAll('[data-rs-note]').forEach(el=>el.addEventListener('input',()=>ui.notes.set(el.dataset.rsNote,el.value)));
  document.querySelectorAll('[data-rs-predict]').forEach(el=>el.addEventListener('change',()=>ui.predictions.set(el.dataset.rsPredict,el.value)));
  document.querySelectorAll('[data-rs-input]').forEach(el=>el.addEventListener('input',()=>{
   ui.answers.set(el.dataset.rsInput,el.value);ui.checks.delete(el.dataset.rsInput);
