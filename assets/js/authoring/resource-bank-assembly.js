@@ -79,7 +79,13 @@ function answerMatches(item,value){
 function phraseWithGap(text,input){
  const t=String(text||''),m=/_{2,}|\[\s*\]|\(\s*\.\.\.\s*\)/.exec(t);
  if(!m)return '<span class="rs-question-text">'+html(t)+'</span><div class="rs-inline-gap">'+input+'</div>';
- return '<span class="rs-question-text">'+html(t.slice(0,m.index))+input+html(t.slice(m.index+m[0].length))+'</span>';
+ const before=t.slice(0,m.index),after=t.slice(m.index+m[0].length);
+ // Textbook parenthetical cues are hints, not part of the answer sentence.
+ // Keep the cue separately instead of displaying "Do you need (you) a ...".
+ const cue=/^\s*\(([^)]+)\)/.exec(after);
+ const remaining=cue?after.slice(cue[0].length):after;
+ const hint=cue?'<small class="rs-grammar-hint">Hint: '+html(cue[1])+'</small>':'';
+ return '<span class="rs-question-text">'+html(before)+input+html(remaining)+'</span>'+hint;
 }
 function questionItems(screen,source,role,{kind='practice',allowCheck=true,allowReveal=true}={}){
  const canReveal=allowReveal&&['teacher','admin','presentation'].includes(role);
