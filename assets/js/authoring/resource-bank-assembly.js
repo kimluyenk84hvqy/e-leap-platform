@@ -3,6 +3,7 @@
    Import is a draft; publish remains blocked by the existing quality gate.
  */
 import {METHOD_COMBOS} from './method-combo-catalog.js';
+import {LEARNING_COMBO_CONTRACTS,inspectLearningContract} from './learning-step-contract.js';
 const html=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]));
 const asId=x=>String(x||'').replace(/[^a-zA-Z0-9_-]/g,'').slice(0,70);
 const mediaUrls=new Map(),ui={answers:new Map(),reveals:new Set(),whys:new Set(),checks:new Map(),phase:new Map(),focus:new Map(),notes:new Map(),predictions:new Map(),score:null};
@@ -267,6 +268,9 @@ export function renderResourceProperties(screen,pack){
  const source=src(screen,pack);if(!source)return '';
  const available=[...new Set([source.combo,...Object.keys(METHOD_COMBOS).filter(id=>METHOD_COMBOS[id].group===({listening:'Listening',discovery:'Grammar',practice:'Grammar',gallery:'Speaking'}[source.type]||'none'))].filter(Boolean))];
  const usable=available.filter(id=>id===source.combo||['guided-grammar','grammar-ppp','staged-listening','tbl-listening','think-pair-share'].includes(id));
+ const activeCombo=screen.resourceStage.comboId||source.combo,contract=LEARNING_COMBO_CONTRACTS[activeCombo];
+ const errors=contract?inspectLearningContract(activeCombo):[];
+ const contractPanel=contract?'<details class="rs-method-contract"><summary>Teaching Combo steps · '+html(contract.name)+'</summary><div class="rs-contract-steps">'+contract.phases.map(step=>'<div><b>'+html(step.label)+'</b><p><strong>Input:</strong> '+html(step.input)+'</p><p><strong>Task:</strong> '+html(step.task)+'</p><p><strong>Support:</strong> '+html(step.support)+'</p><p><strong>Output:</strong> '+html(step.output)+'</p><p><strong>Interaction:</strong> '+html(step.interaction)+'</p><p><strong>Feedback:</strong> '+html(step.feedback)+'</p></div>').join('')+'</div></details>':'';
  const imageControls=(source.type==='cover'||source.type==='gallery');
  const image=screen.resourceStage.imageAdjustment||{},fit=image.fit||'contain',x=Number.isFinite(+image.x)?+image.x:50,y=Number.isFinite(+image.y)?+image.y:50,zoom=Number.isFinite(+image.zoom)?+image.zoom:100;
  return '<section class="property-section"><h3>Resource Bank · '+html(pack.id)+'</h3><p class="helper">Resource IDs stay attached when a combo changes. Source material is saved in this browser.</p>'+
@@ -276,6 +280,7 @@ export function renderResourceProperties(screen,pack){
  '<label>Horizontal position · '+x+'%</label><input type="range" min="0" max="100" step="1" data-rs-image-adjust="x" value="'+x+'">'+
  '<label>Vertical position · '+y+'%</label><input type="range" min="0" max="100" step="1" data-rs-image-adjust="y" value="'+y+'">'+
  '<label>Zoom · '+zoom+'%</label><input type="range" min="70" max="180" step="5" data-rs-image-adjust="zoom" value="'+zoom+'">':'')+
+ contractPanel+(errors.length?'<p class="helper">Method QA: '+html(errors.join('; '))+'</p>':'')+
  '<p class="helper">QA: '+html(pack.status)+' · Listening Evidence: '+html(pack.quality?.audioEvidence||'PENDING')+'</p></section>';
 }
 export function wireResourceStage({screen,pack,role,render,onModified}){
