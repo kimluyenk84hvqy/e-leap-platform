@@ -20,27 +20,45 @@ export function sourceIntakeToStudioReviewScreen(text,{title='Source activity re
  if(tasks.length!==1||tasks[0].kind!=='reading')
   return {ok:false,issues:['Adapter supports exactly one reading task for review'],screen:null};
  const task=tasks[0];
- if(!task.passage||!task.questions.length)return {ok:false,issues:['Reading passage and questions are required'],screen:null};
- if(task.questions.some(q=>!q.prompt||q.options.length<2))
-  return {ok:false,issues:['Only complete multiple-choice source questions are supported'],screen:null};
- const steps=[
+ if((!task.passage&&!task.paragraphs?.length)||!task.questions.length)return {ok:false,issues:['Reading text and source tasks are required'],screen:null};
+ if(task.questions.some(q=>!q.prompt||(q.options.length>0&&q.options.length<2)))
+  return {ok:false,issues:['Question text is incomplete or objective options are invalid'],screen:null};
+ const hasThreeAccounts=task.paragraphs?.length===3&&
+  ['A','B','C'].every(label=>task.paragraphs.some(p=>p.label===label));
+ if(task.paragraphs?.length&&!hasThreeAccounts)return {ok:false,issues:['Three-account reading requires original paragraphs A, B and C'],screen:null};
+ const steps=hasThreeAccounts?[
+  {id:'look',label:'Look',instruction:'Look at the three photographs in the original book. Predict who wrote each account.'},
+  {id:'read-a',label:'Read A',instruction:'Read account A. Underline details about the first school day.'},
+  {id:'read-b',label:'Read B',instruction:'Read account B. Find clues about the writer’s feelings.'},
+  {id:'read-c',label:'Read C',instruction:'Read account C. Find clues about the school and the writer’s feelings.'},
+  {id:'complete',label:'Complete',instruction:'Complete both original Reading tasks on page 41. Explain your choices using evidence.'},
+  {id:'share',label:'Share',instruction:'In groups, compare names, estimated years and textual evidence. Explain disagreements.'}
+ ]:[
   {id:'read',label:'Read',instruction:'Read the text. Locate two useful details.'},
-  {id:'answer',label:'Answer',instruction:'Choose your answer and explain one reason to a partner.'},
+  {id:'answer',label:'Answer',instruction:'Answer the original questions and explain one reason to a partner.'},
   {id:'compare',label:'Compare',instruction:'Compare answers and identify supporting sentences.'}
  ];
- const blocks=[textBlock(task.passage,'read')];
- for(const question of task.questions){
-  // Open responses preserve exact options without trusting the answer supplied in text.
-  const options=question.options.map(o=>o.id+'. '+o.label).join('\n');
-  blocks.push(discussion(question.id+'. '+question.prompt+'\n'+options,'answer'));
-  blocks.push(discussion('Compare evidence for '+question.id+'. Which sentence supports your choice?','compare'));
+ const blocks=[];
+ if(hasThreeAccounts){
+  blocks.push(textBlock('Photograph names in the original book: '+(task.photos||[]).map(p=>p.name).join(' · ')+'\nOpen the original page 41 to view the three photographs.','look'));
+  blocks.push(discussion('Look at the three photographs. What clues might help you match each one?','look'));
+  for(const p of task.paragraphs)blocks.push(textBlock('ACCOUNT '+p.label+'\n'+p.text,'read-'+p.label.toLowerCase()));
+  for(const q of task.questions)blocks.push(discussion(q.id+'. '+q.prompt,'complete'));
+  blocks.push(discussion('Each group member explains one account (A, B or C). Share the clues behind the matching and year estimates.','share'));
+ }else{
+  blocks.push(textBlock(task.passage,'read'));
+  for(const q of task.questions){
+   const options=q.options.map(o=>o.id+'. '+o.label).join('\n');
+   blocks.push(discussion(q.id+'. '+q.prompt+(options?'\n'+options:''),'answer'));
+   blocks.push(discussion('Compare evidence for '+q.id+'. Which sentence supports your choice?','compare'));
+  }
  }
  const screen={
   id:uid('screen'),stage:'Reading',title,instruction:steps[0].instruction,
   templateId:'reading-task',layout:'reading-split',audience:'student',
   teacherNotes:'Source imported for review only. Verify text and answer keys against the original textbook before converting to an objective activity.',
-  sourceReviewDraft:{status:'unverified',taskId:task.id,sourcePages:[...new Set([...sourcePages,task.sourcePage,...task.questions.map(q=>q.sourcePage)].filter(Number.isInteger))],questionCount:task.questions.length},
-  combo:{schemaVersion:2,activeStep:'read',steps},blocks
+  sourceReviewDraft:{status:'unverified',taskId:task.id,sourcePages:[...new Set([...sourcePages,task.sourcePage,...task.questions.map(q=>q.sourcePage),...(task.paragraphs||[]).map(p=>p.sourcePage)].filter(Number.isInteger))],questionCount:task.questions.length,paragraphCount:task.paragraphs?.length||0,photoLabels:task.photos?.map(p=>p.name)||[],photoAssetsVerified:false},
+  combo:{schemaVersion:2,activeStep:steps[0].id,steps},blocks
  };
  return {ok:true,issues:[],screen,originalQuestions:task.questions.map(q=>({id:q.id,line:q.line,sourcePage:q.sourcePage,sourceStatus:'unverified'})),reviewRequired:true,publishable:false};
 }

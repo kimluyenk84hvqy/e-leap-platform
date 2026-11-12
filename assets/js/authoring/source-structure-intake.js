@@ -19,6 +19,21 @@ export function analyseExtractedText(text,{maxCharacters=128000}={}){
    if(next<=previousPage)problems.push('PDF page markers are not strictly increasing at line '+(i+1));
    currentPage=next;previousPage=next;continue;
   }
+  const photo=/^PHOTO:\s*(.+)$/i.exec(line);
+  const paragraph=/^PARAGRAPH\s+([A-C]):\s*(.+)$/i.exec(line);
+  if(photo&&task){
+   passageMode=false;question=null;
+   if(task.photos.some(p=>p.name.toLowerCase()===photo[1].trim().toLowerCase()))task.missing.push('Duplicate source photo label');
+   task.photos.push({name:photo[1].trim(),sourcePage:currentPage,line:i+1,mediaStatus:'unverified'});
+   continue;
+  }
+  if(paragraph&&task){
+   passageMode=false;question=null;
+   const label=paragraph[1].toUpperCase();
+   if(task.paragraphs.some(p=>p.label===label))task.missing.push('Duplicate source paragraph '+label);
+   task.paragraphs.push({label,text:paragraph[2].trim(),sourcePage:currentPage,line:i+1});
+   continue;
+  }
   const h=HEADER.exec(line),o=OPT.exec(line);
   if(h){
    passageMode=false;
@@ -31,7 +46,7 @@ export function analyseExtractedText(text,{maxCharacters=128000}={}){
     if(task){task.endLine=i;result.tasks.push(task);}
     const parts=v.split('|').map(clean);
     const id=parts[0],kind=(parts[1]||'').toLowerCase();
-    task={id,title:parts.slice(2).join(' | ')||id,kind,startLine:i+1,endLine:i+1,passage:'',questions:[],audioRef:null,sourcePage:currentPage,missing:[]};
+    task={id,title:parts.slice(2).join(' | ')||id,kind,startLine:i+1,endLine:i+1,passage:'',paragraphs:[],photos:[],questions:[],audioRef:null,sourcePage:currentPage,missing:[]};
     if(!/^\d+[a-z]?$/i.test(id)||!['reading','listening','speaking','grammar','vocabulary','writing'].includes(kind))
      task.missing.push('Task ID or kind requires teacher verification');
     question=null;continue;
@@ -61,8 +76,9 @@ export function analyseExtractedText(text,{maxCharacters=128000}={}){
  if(result.unparsed.length)problems.push(result.unparsed.length+' unrecognized source lines require review');
  for(const t of result.tasks){
   if(!t.questions.length)t.missing.push('No source questions extracted');
-  if(t.kind==='reading'&&!t.passage)t.missing.push('PASSAGE missing');
+  if(t.kind==='reading'&&!t.passage&&!t.paragraphs.length)t.missing.push('PASSAGE or PARAGRAPH text missing');
   if(t.kind==='listening'&&!t.audioRef)t.missing.push('Audio reference missing');
+  if(t.paragraphs.length&&t.paragraphs.some(p=>!p.text))t.missing.push('Empty paragraph');
   for(const q of t.questions){
    if(!q.prompt)t.missing.push(q.id+' question text missing');
    if(q.options.length&&q.options.length<2)t.missing.push(q.id+' has fewer than 2 options');
