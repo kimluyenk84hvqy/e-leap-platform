@@ -1,5 +1,6 @@
 import {ELeapRuntimeContext} from './runtime-context.js';
 import {mountFoundationLab} from './authoring/foundation-lab.js';
+import {ELeapNativeActivity} from './native-activity.js';
 import {sourceIntakeToStudioReviewScreen} from './authoring/source-studio-review-adapter.js';
 import {importResourceZip,rehydrateResourceBank,createResourceScreens,renderResourceStage,renderResourceProperties,wireResourceStage} from './authoring/resource-bank-assembly.js';
 import {E_LEAP_ACTIVITY_TYPES,E_LEAP_AUTHORING_LIBRARY} from './activity-registry.js';
@@ -194,7 +195,14 @@ function renderCertifiedProperties(){const s=currentScreen();if(s.certifiedTempl
  const curated=isU5?'<section class="property-section"><h3>Recommended bright photos · U5.1</h3><p class="helper">Choose a brighter real photograph. Colourful airport travellers (Pexels free-to-use) or yellow tram + green bus (WordPress CC0).</p><div class="studio-photo-options"><button type="button" class="studio-btn primary" data-u51-photo-choice="airport">Use colourful airport photo</button><button type="button" class="studio-btn" data-u51-photo-choice="tram">Use yellow tram + green bus</button><button type="button" class="studio-btn" data-u51-cover-image>Use original airport photo</button></div><p class="helper">Replaces only this Cover photo. Text, other slides and answer keys remain untouched.</p></section>':'';
  return curated+renderCertifiedEditor(s)+renderCertifiedGatePanel(s);
 }const family=({'lesson-cover':'cover','lesson-aims':'aims','lead-in':'opener'})[s.templateId];return family?'<section class="property-section"><h3>Certified template</h3><button class="studio-btn primary" data-certify-current="'+family+'">Convert slide to certified '+family+' template</button><p class="helper">Existing source blocks are preserved. Complete the fixed template slots before publishing.</p></section>':'';}
-function renderProperties(){if(currentScreen().resourceStage)return lessonProps()+renderResourceProperties(currentScreen(),lesson.resourceBank);return currentScreen().functionalDraft?`${lessonProps()}${renderFunctionalSlideProps(currentScreen())}`:currentScreen().methodDraft?`${lessonProps()}${renderMethodTemplateProperties(currentScreen())}`:`${lessonProps()}${slideProps()}${renderCertifiedProperties()}${currentScreen().certifiedTemplate?'':renderContentMapper()+blockProps()}`}
+function renderSourceNativeReviewProperties(){
+ const s=currentScreen(),block=(s.blocks||[]).find(b=>b.type==='discussion'&&b.comboStep==='answer');
+ if(!block)return '';
+ return '<section class="property-section"><h3>Shared activity engine · Review only</h3>'+
+  '<p class="helper">Try the original question with the existing E-LEAP response engine. The source is unverified; no grading, Submit or publication is permitted.</p>'+
+  '<div data-source-native-review style="margin-top:12px"></div></section>';
+}
+function renderProperties(){if(currentScreen().sourceReviewDraft)return lessonProps()+slideProps()+blockProps()+renderSourceNativeReviewProperties();if(currentScreen().resourceStage)return lessonProps()+renderResourceProperties(currentScreen(),lesson.resourceBank);return currentScreen().functionalDraft?`${lessonProps()}${renderFunctionalSlideProps(currentScreen())}`:currentScreen().methodDraft?`${lessonProps()}${renderMethodTemplateProperties(currentScreen())}`:`${lessonProps()}${slideProps()}${renderCertifiedProperties()}${currentScreen().certifiedTemplate?'':renderContentMapper()+blockProps()}`}
 function renderContentMapper(){
   const s=currentScreen(),schema=CONTENT_SLOT_SCHEMAS[s.templateId];if(!schema)return '';
   const existing=readTemplateSlots(s);
@@ -248,6 +256,25 @@ function revealEvidence(quote){
   return true;
 }
 function wire(){
+  const nativeReviewRoot=document.querySelector('[data-source-native-review]');
+  if(nativeReviewRoot&&currentScreen()?.sourceReviewDraft){
+    const block=currentScreen().blocks?.find(b=>b.type==='discussion'&&b.comboStep==='answer');
+    if(block){
+      const safePreview={
+        id:block.activity?.id||block.id,
+        type:'type',
+        title:'Reading response · Teacher review',
+        prompt:block.activity?.prompt||'Explain your choice.',
+        placeholder:'Type a draft response…'
+      };
+      const player=new ELeapNativeActivity({
+        root:nativeReviewRoot,activity:safePreview,events:null,
+        resourceId:'studio-review-'+lesson.id,studentId:null,sessionId:null,
+        context:{role:'teacher',mode:'review'}
+      });
+      player.mount().catch(error=>{nativeReviewRoot.textContent='Shared activity preview unavailable: '+error.message;});
+    }
+  }
   wireResourceStage({screen:currentScreen(),pack:lesson.resourceBank,role:previewRole,render,onModified:markDirty});
   document.querySelector('[data-import-resource]')?.addEventListener('change',async e=>{
    const file=e.target.files?.[0];if(!file)return;
