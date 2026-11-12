@@ -147,7 +147,7 @@ function crossword(screen,source,role){
 export function renderResourceStage(screen,pack,role='teacher'){
  const source=src(screen,pack);if(!source)return '<div class="rs-missing">Source mapping missing. Import the resource ZIP again.</div>';
  const methodId=screen.resourceStage?.comboId||source.combo;
- const heading='<div class="rs-head"><span>U5.1 · '+html(METHOD_COMBOS[methodId]?.label||methodId)+'</span><h2>'+html(source.title)+'</h2>'+(source.instruction?'<p>'+html(source.instruction)+'</p>':'')+'</div>';
+ const heading='<div class="rs-head"><h2>'+html(source.title)+'</h2>'+(source.instruction?'<p>'+html(source.instruction)+'</p>':'')+'</div>';
  let body='';
  switch(source.type){
  case 'cover':
@@ -174,7 +174,7 @@ export function renderResourceStage(screen,pack,role='teacher'){
   const current=method[Math.min(phase,method.length-1)];
   const flow='<nav class="rs-phase-nav">'+method.map((step,i)=>'<button type="button" data-rs-action="phase" data-rs-key="'+html(screen.id)+'" data-rs-index="'+i+'" class="'+(i===phase?'rs-current':'')+'">'+html(step.label)+'</button>').join('')+'</nav><p class="rs-phase-instruction">'+html(current.instruction)+'</p>';
   const signs='<div class="rs-sign-grid">'+(source.media||[]).map((id,i)=>'<div><span>'+String.fromCharCode(97+i)+'</span>'+media(pack,id,'Travel sign')+'</div>').join('')+'</div>';
-  const audio='<div class="rs-source-media"><audio controls preload="metadata" src="'+html(resourceMediaUrl(pack,source.audioAsset))+'"></audio><small>Track 22 (original) · Verified Evidence segments required before publication</small></div>';
+  const audio='<div class="rs-source-media"><audio controls preload="metadata" src="'+html(resourceMediaUrl(pack,source.audioAsset))+'"></audio><small>Track 22</small></div>';
   const isListening=phase===1,showQuestions=phase===3;
   body=heading+flow+'<div class="rs-listening">'+(showQuestions?audio:phase===2?card('PAIR CHECK','<p>Tell a partner what you heard. Explain the clue that supports each answer.</p>'):card(phase===0?'LOOK & PREDICT':'LISTENING INPUT',phase===0?'<p>Where might you hear these conversations? What do these signs mean?</p>':audio))+
    (showQuestions?'<div>'+questionItems(screen,source,role,{kind:'listening'})+'</div>':isListening?signs:phase===0?signs:'<div class="rs-pair-note">Keep your original answers. You can return to the questions without losing them.</div>')+'</div>';break;
@@ -199,12 +199,12 @@ export function renderResourceStage(screen,pack,role='teacher'){
    page===2?card('DISCOVER · Work with a partner','<ol>'+q+'</ol><p>Compare your ideas before your teacher confirms the rule.</p>'):
    page===3?card('RULE CHECK · Confirm the pattern',(['teacher','admin','presentation'].includes(role)&&ui.reveals.has(screen.id+':rule')?rule:'<p>Think of your own rule. Your teacher can reveal it after discussion.</p>')+
     (['teacher','admin','presentation'].includes(role)?'<button data-rs-action="rule" data-rs-key="'+html(screen.id+':rule')+'">Show / hide rule</button>':'')):
-   card('APPLY · Bridge to the textbook','<p>Use the pattern in meaningful situations before attempting Activity 2.</p><div class="rs-apply-steps"><div><b>1 · THINK</b><p>What do you need when travelling?</p></div><div><b>2 · PAIR</b><p>Tell a partner what you need and what you don’t need.</p></div><div><b>3 · TRANSFER</b><p>Now complete Activity 2. Explain your verb form to your partner before checking.</p></div></div>');
+   card('Use need in real life','<p>What do you need when you travel? Tell a partner two things you need and one thing you don’t need.</p><p>Now complete Activity 2.</p>');
   }
   body=heading+flow+'<div class="rs-phase-content">'+content+'</div>';break;
  }
  case 'practice':
-  body=heading+(methodId==='grammar-ppp'?'<div class="rs-teaching-phase">PRACTISE: Complete the sentences after the rule presentation → COMPARE with a partner → PRODUCE one original example aloud.</div>':'<div class="rs-teaching-phase">TRY independently → PAIR CHECK without revealing answers → TEACHER CHECK and explain the use of need.</div>')+questionItems(screen,source,role);break;
+  body=heading+questionItems(screen,source,role);break;
  case 'exit':
   body=heading+'<div class="rs-prompt-list">'+(source.prompts||[]).map((x,i)=>card('RETRIEVAL '+(i+1),'<p>'+html(x)+'</p>')).join('')+'</div>';break;
  }
