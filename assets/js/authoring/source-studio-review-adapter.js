@@ -26,6 +26,8 @@ export function sourceIntakeToStudioReviewScreen(text,{title='Source activity re
  const hasThreeAccounts=task.paragraphs?.length===3&&
   ['A','B','C'].every(label=>task.paragraphs.some(p=>p.label===label));
  if(task.paragraphs?.length&&!hasThreeAccounts)return {ok:false,issues:['Three-account reading requires original paragraphs A, B and C'],screen:null};
+ if(hasThreeAccounts&&(task.photos?.length!==3||new Set(task.photos.map(p=>p.name.toLowerCase())).size!==3))
+  return {ok:false,issues:['Three-account photo-matching requires all three original photograph captions'],screen:null};
  const steps=hasThreeAccounts?[
   {id:'look',label:'Look',instruction:'Look at the three photographs in the original book. Predict who wrote each account.'},
   {id:'read-a',label:'Read A',instruction:'Read account A. Underline details about the first school day.'},
