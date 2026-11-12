@@ -4,6 +4,7 @@
  * submission or publishing is performed by this lab.
  */
 import {analyseExtractedText,SYNTHETIC_READING_FIXTURE} from './source-structure-intake.js';
+import {extractLocalPdfText} from './source-pdf-local.js';
 const escapeHtml=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const phases=['Read','Answer','Compare'];
 export function createFoundationLabModel(text,{synthetic=false}={}){
@@ -16,10 +17,29 @@ export function evaluateFoundationResponses(model){
  const correct=qs.filter(q=>q.suppliedKey&&model.answers.get(q.id)===q.suppliedKey).length;
  return {checked:true,answered,total:qs.length,correct,percentage:qs.length?Math.round(100*correct/qs.length):0};
 }
+let pdfJsLoad=null;
+async function loadPdfJs(){
+ if(window.pdfjsLib)return window.pdfjsLib;
+ if(!pdfJsLoad)pdfJsLoad=new Promise((resolve,reject)=>{
+  const tag=document.createElement('script');
+  tag.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+  tag.crossOrigin='anonymous';tag.referrerPolicy='no-referrer';
+  tag.onload=()=>{
+   const lib=window.pdfjsLib;
+   if(!lib)return reject(Error('PDF.js was not loaded'));
+   lib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+   resolve(lib);
+  };
+  tag.onerror=()=>reject(Error('Cannot load PDF reader; check connection'));
+  document.head.appendChild(tag);
+ });
+ return pdfJsLoad;
+}
 export function mountFoundationLab(root,{role='teacher'}={}){
  if(!root)throw Error('Missing Studio root');
  let model=createFoundationLabModel(SYNTHETIC_READING_FIXTURE,{synthetic:true});
  model.role=role;
+ let pdfNotice='No PDF selected. PDF parsing only extracts selectable text, not OCR.';
  const button=(label,action,disabled=false)=>'<button type="button" data-lab-action="'+action+'" '+(disabled?'disabled':'')+' class="studio-btn">'+escapeHtml(label)+'</button>';
  function draw(){
   const source=model.analysis.source,task=source?.tasks?.[model.taskIndex],qs=task?.questions||[],student=['student','guest'].includes(model.role);
@@ -27,7 +47,7 @@ export function mountFoundationLab(root,{role='teacher'}={}){
   root.innerHTML='<section class="studio-shell" style="min-height:100vh;padding:20px;max-width:1100px;margin:auto">'+
   '<header><h1>E-LEAP · Foundation Lab</h1><p>Source structure + interactive activity validation · PREVIEW / NO AI / NO PUBLISH</p><a href="./index.html">← Studio</a></header>'+
   '<section class="property-section"><h2>M1 · Teacher-extracted text intake</h2><p>Paste structured text. This tool does not open PDF/PPT/audio and never verifies supplied keys.</p>'+
-  '<textarea data-lab-source rows="12" style="width:100%;font:15px monospace">'+escapeHtml(currentText)+'</textarea>'+
+  '<label style="display:block;margin:8px 0">Extract text locally from PDF (max 25 MB, first 30 pages): <input type="file" accept="application/pdf,.pdf" data-lab-pdf></label><p role="status">'+escapeHtml(pdfNotice)+'</p>'+ '<textarea data-lab-source rows="12" style="width:100%;font:15px monospace">'+escapeHtml(currentText)+'</textarea>'+
   '<p>'+button('Analyse source','analyse')+' '+button('Load synthetic fixture','fixture')+'</p></section>'+
   '<section class="property-section"><h2>Source review</h2><p><b>Unit:</b> '+escapeHtml(source?.unit||'Missing')+' · <b>Verification:</b> UNVERIFIED</p>'+
   '<p><b>Tasks:</b> '+(source?.tasks?.length||0)+' · <b>Unverified records:</b> '+(source?.unverified?.length||0)+' · <b>Unparsed lines:</b> '+(source?.unparsed?.length||0)+'</p>'+
@@ -50,6 +70,19 @@ export function mountFoundationLab(root,{role='teacher'}={}){
     '<p><b>Answers recorded:</b> '+outcome.answered+'/'+outcome.total+'. Correctness not checked for unverified source.</p>')+
   (model.check?'<p role="status">'+escapeHtml(model.check)+'</p>':'')+
   '<p><small>Submit/Responses/Live Class are intentionally unavailable in this isolated lab. They must be tested in the shared lesson runtime before M3 acceptance.</small></p></section></section>';
+  root.querySelector('[data-lab-pdf]')?.addEventListener('change',async e=>{
+   const file=e.target.files?.[0];if(!file)return;
+   const status=root.querySelector('[data-lab-pdf]')?.parentElement?.nextElementSibling;
+   if(status)status.textContent='Reading local PDF in this browser…';
+   try{
+    const reader=await loadPdfJs();
+    const extracted=await extractLocalPdfText(file,reader);
+    currentText=extracted.pages.map(p=>'[PDF PAGE '+p.page+' — UNVERIFIED]\\n'+p.text).join('\\n\\n');
+    model=createFoundationLabModel(currentText);
+    pdfNotice='Loaded '+extracted.pages.length+'/'+extracted.pageCount+' pages from '+file.name+' (UNVERIFIED). '+extracted.warnings.join(' ');
+    draw();
+   }catch(error){pdfNotice='PDF extraction failed: '+String(error.message||error);draw();}
+  });
   root.querySelector('[data-lab-action="analyse"]')?.addEventListener('click',()=>{currentText=root.querySelector('[data-lab-source]').value;model=createFoundationLabModel(currentText);model.role=role;draw();});
   root.querySelector('[data-lab-action="fixture"]')?.addEventListener('click',()=>{currentText=SYNTHETIC_READING_FIXTURE;model=createFoundationLabModel(currentText,{synthetic:true});model.role=role;draw();});
   root.querySelector('[data-lab-role]')?.addEventListener('change',e=>{model.role=e.target.value;model.revealed.clear();model.check=null;draw();});
