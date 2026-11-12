@@ -112,37 +112,48 @@ function questionItems(screen,source,role,{kind='practice'}={}){
  }).join('')+'</div>';
 }
 function crossword(screen,source,role){
- const canReveal=['teacher','admin','presentation'].includes(role),words=source.items||[];
- const chosen=Math.min(ui.focus.get(screen.id)||0,Math.max(0,words.length-1)),active=words[chosen]||null;
- if(!active)return '<p>No validated crossword entries.</p>';
+ const words=source.items||[],canReveal=['teacher','admin','presentation'].includes(role);
+ const chosen=Math.max(0,Math.min(ui.focus.get(screen.id)||0,words.length-1)),active=words[chosen];
+ if(!active)return '<p>No crossword entries have been supplied.</p>';
  const occupied=new Map(),starts=new Map();let maxx=0,maxy=0;
- for(const w of words){const answer=String(w.answer||'').toUpperCase();
-  for(let i=0;i<answer.length;i++){const x=Number(w.x||0)+(w.direction==='across'?i:0),y=Number(w.y||0)+(w.direction==='down'?i:0),key=x+','+y;
-   if(!occupied.has(key))occupied.set(key,{letter:answer[i],terms:[]});
-   occupied.get(key).terms.push(itemAnswerKey(screen,w));maxx=Math.max(maxx,x);maxy=Math.max(maxy,y);
-  }const start=Number(w.x||0)+','+Number(w.y||0);if(!starts.has(start))starts.set(start,[]);starts.get(start).push(w.id);
+ for(const [idx,w] of words.entries()){
+  const answer=String(w.answer||'').toUpperCase();
+  for(let i=0;i<answer.length;i++){
+   const x=Number(w.x||0)+(w.direction==='across'?i:0),y=Number(w.y||0)+(w.direction==='down'?i:0),key=x+','+y;
+   if(!occupied.has(key))occupied.set(key,{letter:answer[i],words:[]});
+   occupied.get(key).words.push(idx);maxx=Math.max(maxx,x);maxy=Math.max(maxy,y);
+  }
+  const start=Number(w.x||0)+','+Number(w.y||0);
+  if(!starts.has(start))starts.set(start,[]);
+  starts.get(start).push(idx);
  }
- const xa=Number(active.x||0),ya=Number(active.y||0),len=String(active.answer||'').length,along=active.direction==='across';
- // Show a bounded viewport around the active clue; no 23-row micro-grid.
- const x0=Math.max(0,Math.min(xa-1,maxx-7)),x1=Math.min(maxx,Math.max(xa+(along?len:1),x0+7));
- const y0=Math.max(0,Math.min(ya-1,maxy-7)),y1=Math.min(maxy,Math.max(ya+(along?1:len),y0+7));
- let board='<div class="rs-cross-grid rs-cross-focus" style="grid-template-columns:repeat('+(x1-x0+1)+',minmax(24px,1fr))">';
- for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){
-  const key=x+','+y,c=occupied.get(key),cellActive=along?y===ya&&x>=xa&&x<xa+len:x===xa&&y>=ya&&y<ya+len;
-  const shown=c?.terms.some(k=>ui.reveals.has(k))&&canReveal;
-  // Learner-entered letters appear on the grid for the active word only.
-  const offset=along?x-xa:y-ya,userLetters=String(ui.answers.get(itemAnswerKey(screen,active))||'').replace(/\s+/g,'').toUpperCase();
-  const typed=cellActive?userLetters[offset]||'':'';
-  board+='<span '+(cellActive?'data-rs-letter="'+offset+'" ':'')+'class="rs-cross-cell '+(c?'active':'blank')+(cellActive?' rs-cross-highlight':'')+'">'+(starts.has(key)?'<sup>'+html(starts.get(key).join('/'))+'</sup>':'')+(shown?html(c.letter):html(typed))+'</span>';
+ const totalCols=maxx+1,totalRows=maxy+1,activeKey=itemAnswerKey(screen,active);
+ let board='<div class="rs-cross-grid rs-cross-full" role="group" aria-label="Complete transport crossword" style="--rs-cross-cols:'+totalCols+';--rs-cross-rows:'+totalRows+';grid-template-columns:repeat('+totalCols+',minmax(0,1fr))">';
+ for(let y=0;y<totalRows;y++)for(let x=0;x<totalCols;x++){
+  const cell=occupied.get(x+','+y);
+  if(!cell){board+='<span class="rs-cross-cell blank" aria-hidden="true"></span>';continue;}
+  const mainIndex=cell.words.includes(chosen)?chosen:cell.words[0];
+  const startIds=(starts.get(x+','+y)||[]).map(idx=>words[idx].id);
+  const cellIsActive=cell.words.includes(chosen);
+  // A complete board remains visible. Only the selected word is highlighted.
+  const typed=cell.words.map(idx=>{
+   const word=words[idx],offset=word.direction==='across'?x-Number(word.x):y-Number(word.y);
+   return String(ui.answers.get(itemAnswerKey(screen,word))||'').replace(/\s+/g,'').toUpperCase()[offset]||'';
+  }).find(Boolean)||'';
+  const revealed=canReveal&&cell.words.some(idx=>ui.reveals.has(itemAnswerKey(screen,words[idx])));
+  board+='<button type="button" data-rs-action="focus" data-rs-index="'+mainIndex+'" data-rs-key="'+html(screen.id)+'" class="rs-cross-cell active'+(cellIsActive?' rs-cross-highlight':'')+'" aria-label="Crossword '+html(words[mainIndex].id)+'">'+(startIds.length?'<sup>'+html(startIds.join('/'))+'</sup>':'')+'<span class="rs-cross-letter">'+html(revealed?cell.letter:typed)+'</span></button>';
  }
  board+='</div>';
- const k=itemAnswerKey(screen,active),shown=ui.reveals.has(k)&&canReveal;
- const control='<div class="rs-cross-active"><small>'+html(active.direction.toUpperCase())+' · '+html(active.id)+' / '+words.length+'</small><p>'+html(active.clue)+'</p>'+
- '<input data-rs-input="'+html(k)+'" value="'+html(shown?active.answer:ui.answers.get(k)||'')+'" '+(shown?'readonly':'')+' placeholder="Type your word" aria-label="Crossword word '+html(active.id)+'">'+
- '<div class="rs-item-actions"><button data-rs-action="check" data-rs-key="'+html(k)+'">Check</button><button data-rs-action="reset" data-rs-key="'+html(k)+'">Reset</button>'+
- (canReveal?'<button data-rs-action="reveal" data-rs-key="'+html(k)+'">'+(shown?'Hide word':'Show word')+'</button>':'')+'</div><div class="rs-status">'+(ui.checks.get(k)===undefined?'':ui.checks.get(k)?'✓ Correct':'Try again')+'</div></div>';
- const nav='<div class="rs-cross-choices">'+words.map((w,i)=>'<button data-rs-action="focus" data-rs-key="'+screen.id+'" data-rs-index="'+i+'" class="'+(i===chosen?'rs-current':'')+'">'+html(w.id)+' '+html(w.direction==='across'?'→':'↓')+'</button>').join('')+'</div>';
- return '<div class="rs-cross-layout"><div><p class="rs-viewport-label">Digital crossword · focused view</p>'+board+'</div><div>'+nav+control+'</div></div>';
+ const answer=String(active.answer||''),typed=String(ui.answers.get(activeKey)||''),shown=canReveal&&ui.reveals.has(activeKey);
+ const bigCells='<div class="rs-cross-zoom" aria-label="Selected word">'+Array.from({length:answer.length},(_,i)=>'<span>'+html(shown?answer[i].toUpperCase():(typed.replace(/\s+/g,'').toUpperCase()[i]||''))+'</span>').join('')+'</div>';
+ const nav='<nav class="rs-cross-choices">'+words.map((w,i)=>'<button type="button" data-rs-action="focus" data-rs-key="'+html(screen.id)+'" data-rs-index="'+i+'" class="'+(i===chosen?'rs-current':'')+'">'+html(w.id)+' '+(w.direction==='across'?'→':'↓')+'</button>').join('')+'</nav>';
+ const clue='<section class="rs-cross-active"><h3>'+html(active.direction==='across'?'Across':'Down')+' '+html(active.id)+'</h3><p class="rs-cross-clue">'+html(active.clue)+'</p>'+
+ bigCells+'<input data-rs-input="'+html(activeKey)+'" type="text" value="'+html(shown?answer:typed)+'" '+(shown?'readonly':'')+' placeholder="Type your answer" aria-label="Word '+html(active.id)+'">'+
+ '<div class="rs-item-actions">'+
+ '<button type="button" data-rs-action="check" data-rs-key="'+html(activeKey)+'">Check</button><button type="button" data-rs-action="reset" data-rs-key="'+html(activeKey)+'">Reset</button>'+
+ (canReveal?'<button type="button" data-rs-action="reveal" data-rs-key="'+html(activeKey)+'">'+(shown?'Hide word':'Show word')+'</button>':'')+
+ '</div><p class="rs-status">'+(ui.checks.get(activeKey)===undefined?'':ui.checks.get(activeKey)?'✓ Correct':'Try again')+'</p></section>';
+ return '<div class="rs-cross-layout"><div class="rs-cross-board-panel">'+board+'</div><div class="rs-cross-side">'+nav+clue+'</div></div>';
 }
 export function renderResourceStage(screen,pack,role='teacher'){
  const source=src(screen,pack);if(!source)return '<div class="rs-missing">Source mapping missing. Import the resource ZIP again.</div>';
