@@ -5,7 +5,7 @@
 import {METHOD_COMBOS} from './method-combo-catalog.js';
 const html=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]));
 const asId=x=>String(x||'').replace(/[^a-zA-Z0-9_-]/g,'').slice(0,70);
-const mediaUrls=new Map(),ui={answers:new Map(),reveals:new Set(),whys:new Set(),checks:new Map(),phase:new Map(),focus:new Map(),notes:new Map(),score:null};
+const mediaUrls=new Map(),ui={answers:new Map(),reveals:new Set(),whys:new Set(),checks:new Map(),phase:new Map(),focus:new Map(),notes:new Map(),predictions:new Map(),score:null};
 const dbName='eleap-resource-bank-local-v1';
 const assetKey=(pack,id)=>pack.id+':'+id;
 function openDb(){return new Promise((resolve,reject)=>{
@@ -81,9 +81,9 @@ function phraseWithGap(text,input){
  if(!m)return '<span class="rs-question-text">'+html(t)+'</span><div class="rs-inline-gap">'+input+'</div>';
  return '<span class="rs-question-text">'+html(t.slice(0,m.index))+input+html(t.slice(m.index+m[0].length))+'</span>';
 }
-function questionItems(screen,source,role,{kind='practice'}={}){
- const canReveal=['teacher','admin','presentation'].includes(role);
- const canCheck=['teacher','admin','student','guest'].includes(role);
+function questionItems(screen,source,role,{kind='practice',allowCheck=true,allowReveal=true}={}){
+ const canReveal=allowReveal&&['teacher','admin','presentation'].includes(role);
+ const canCheck=allowCheck&&['teacher','admin','student','guest'].includes(role);
  const canEvidence=kind==='listening';
  const current=ui.focus.get(screen.id)||0,items=source.items||[],pageSize=2; // 16:9 teaching: two full-size items, never crop a question
  const pages=Math.max(1,Math.ceil(items.length/pageSize)),page=Math.min(current,pages-1);
@@ -191,17 +191,35 @@ export function renderResourceStage(screen,pack,role='teacher'){
    '<div class="rs-share-output"><label for="rs-share-note">My three sentences</label><textarea id="rs-share-note" data-rs-note="'+html(screen.id)+'" rows="3" placeholder="Write your own experience…">'+html(ui.notes.get(screen.id)||'')+'</textarea></div></div></section>';break;
  }
  case 'listening':{
-  const phase=ui.phase.get(screen.id)||0;
-  const method=methodId==='tbl-listening'
-   ?[{label:'Prepare',instruction:'Discuss what information a traveller might need.'},{label:'Listen',instruction:'Listen once and note the location or request.'},{label:'Group Task',instruction:'Compare notes with a partner before choosing an answer.'},{label:'Check',instruction:'Return to the textbook questions. Check your answers.'}]
-   :[{label:'Predict',instruction:'Look at the signs and make a prediction.'},{label:'Listen',instruction:'Listen once for meaning and then for details.'},{label:'Compare',instruction:'Discuss answers with a partner without looking at the key.'},{label:'Check',instruction:'Complete the original questions; review one item at a time.'}];
-  const current=method[Math.min(phase,method.length-1)];
-  const flow='<nav class="rs-phase-nav">'+method.map((step,i)=>'<button type="button" data-rs-action="phase" data-rs-key="'+html(screen.id)+'" data-rs-index="'+i+'" class="'+(i===phase?'rs-current':'')+'">'+html(step.label)+'</button>').join('')+'</nav><p class="rs-phase-instruction">'+html(current.instruction)+'</p>';
-  const signs='<div class="rs-sign-grid">'+(source.media||[]).map((id,i)=>'<div><span>'+String.fromCharCode(97+i)+'</span>'+media(pack,id,'Travel sign')+'</div>').join('')+'</div>';
+  const isPlaces=source.id==='listen'||(source.media||[]).length>0;
+  const phase=Math.max(0,Math.min(ui.phase.get(screen.id)||0,3));
+  const phaseLabels=['Prepare','Listen & answer','Compare','Check'];
+  const nav='<nav class="rs-phase-nav rs-compact-nav">'+phaseLabels.map((label,i)=>'<button type="button" data-rs-action="phase" data-rs-key="'+html(screen.id)+'" data-rs-index="'+i+'" class="'+(i===phase?'rs-current':'')+'">'+html(label)+'</button>').join('')+'</nav>';
   const audio='<div class="rs-source-media"><audio controls preload="metadata" src="'+html(resourceMediaUrl(pack,source.audioAsset))+'"></audio><small>Track 22</small></div>';
-  const isListening=phase===1,showQuestions=phase===3;
-  body=heading+flow+'<div class="rs-listening">'+(showQuestions?audio:phase===2?card('PAIR CHECK','<p>Tell a partner what you heard. Explain the clue that supports each answer.</p>'):card(phase===0?'LOOK & PREDICT':'LISTENING INPUT',phase===0?'<p>Where might you hear these conversations? What do these signs mean?</p>':audio))+
-   (showQuestions?'<div>'+questionItems(screen,source,role,{kind:'listening'})+'</div>':isListening?signs:phase===0?signs:'<div class="rs-pair-note">Keep your original answers. You can return to the questions without losing them.</div>')+'</div>';break;
+  const signNames=['a · Check-in','b · Customs','c · Hotel reservations','d · Passport control','e · Information','f · Departure lounge','g · Shops','h · Ticket sales'];
+  const signList='<div class="rs-sign-key">'+signNames.map(x=>'<span>'+html(x)+'</span>').join('')+'</div>';
+  const itemList=questionItems(screen,source,role,{kind:'listening',allowCheck:phase===3,allowReveal:phase===3});
+  let teaching='';
+  if(phase===0){
+   const clues=isPlaces?['book a hotel room','show a passport','get a boarding pass','buy shampoo']:
+     ['a thing someone needs','an action someone needs to do','something someone does not need'];
+   const options=isPlaces?signNames:['Thing','Action','Not needed'];
+   teaching='<div class="rs-listen-pre"><div class="rs-prepare-card"><h3>'+(isPlaces?'Where might you hear these phrases?':'What information will you listen for?')+'</h3><p>'+(isPlaces?'Match the phrase with an airport sign. Discuss your prediction with a partner.':'Read the questions. Predict whether each answer will name a thing, an action or something not needed.')+'</p>'+
+   clues.map((word,i)=>'<label class="rs-predict-row"><span>'+html(word)+'</span><select data-rs-predict="'+html(screen.id)+':'+i+'"><option value="">Choose…</option>'+
+      options.map((o,j)=>'<option value="'+j+'" '+(ui.predictions.get(screen.id+':'+i)===String(j)?'selected':'')+'>'+html(isPlaces?o:String(o))+'</option>').join('')+
+    '</select></label>').join('')+'</div>'+
+    (isPlaces?'<div class="rs-prepare-signs">'+(source.media||[]).map((id,i)=>'<figure>'+media(pack,id,'Airport sign '+String.fromCharCode(97+i))+'<figcaption>'+String.fromCharCode(97+i)+'</figcaption></figure>').join('')+'</div>':'<div class="rs-listen-targets"><h3>Listen for</h3><p><b>need + noun</b> (a thing)</p><p><b>need to + verb</b> (an action)</p><p><b>don’t / doesn’t need</b> (negative)</p></div>')+'</div>';
+  }else if(phase===1){
+   teaching='<p class="rs-learner-task">'+(isPlaces?'Listen to the six conversations. Write the letter (a–h) for each one.':'Listen again. Write a short answer to each question about what the traveller needs or does not need.')+'</p>'+
+    '<div class="rs-listen-task"><aside>'+audio+(isPlaces?signList:'<p class="rs-hint">Listen for need, needs, don’t need and need to.</p>')+'</aside><div>'+itemList+'</div></div>';
+  }else if(phase===2){
+   teaching='<p class="rs-learner-task">Compare your answers with a partner. Explain what you heard. Change an answer if necessary.</p>'+
+   '<div class="rs-compare-task"><div>'+itemList+'</div><aside><h3>Talk to your partner</h3><p><b>I chose … because I heard …</b></p><p><b>Did you hear … or …?</b></p><p><b>Let’s listen again to check.</b></p>'+audio+'</aside></div>';
+  }else{
+   teaching='<p class="rs-learner-task">Check each answer. Listen again if you need to.</p>'+
+   '<div class="rs-listen-task"><aside>'+audio+'<p class="rs-hint">Evidence clips and Why explanations remain unavailable until the audio segments are verified.</p></aside><div>'+itemList+'</div></div>';
+  }
+  body='<div class="rs-head rs-compact-head"><h2>'+html(source.title)+'</h2></div>'+nav+teaching;break;
  }
  case 'discovery':{
   const phase=ui.phase.get(screen.id)||0;
@@ -245,6 +263,8 @@ export function renderResourceProperties(screen,pack){
 export function wireResourceStage({screen,pack,role,render,onModified}){
  if(!screen?.resourceStage)return;
  document.querySelectorAll('.rs-cover-photo > img').forEach(img=>img.addEventListener('error',()=>{img.style.display='none';const fallback=img.nextElementSibling;if(fallback)fallback.style.display='block';}));
+ document.querySelectorAll('[data-rs-note]').forEach(el=>el.addEventListener('input',()=>ui.notes.set(el.dataset.rsNote,el.value)));
+ document.querySelectorAll('[data-rs-predict]').forEach(el=>el.addEventListener('change',()=>ui.predictions.set(el.dataset.rsPredict,el.value)));
  document.querySelectorAll('[data-rs-input]').forEach(el=>el.addEventListener('input',()=>{
   ui.answers.set(el.dataset.rsInput,el.value);ui.checks.delete(el.dataset.rsInput);
   // Update digital grid in place while typing; do not interrupt focus or playback.
