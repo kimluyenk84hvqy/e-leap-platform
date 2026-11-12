@@ -5,7 +5,7 @@
 import {METHOD_COMBOS} from './method-combo-catalog.js';
 const html=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]));
 const asId=x=>String(x||'').replace(/[^a-zA-Z0-9_-]/g,'').slice(0,70);
-const mediaUrls=new Map(),ui={answers:new Map(),reveals:new Set(),whys:new Set(),checks:new Map(),phase:new Map(),focus:new Map(),score:null};
+const mediaUrls=new Map(),ui={answers:new Map(),reveals:new Set(),whys:new Set(),checks:new Map(),phase:new Map(),focus:new Map(),notes:new Map(),score:null};
 const dbName='eleap-resource-bank-local-v1';
 const assetKey=(pack,id)=>pack.id+':'+id;
 function openDb(){return new Promise((resolve,reject)=>{
@@ -162,21 +162,34 @@ export function renderResourceStage(screen,pack,role='teacher'){
  let body='';
  switch(source.type){
  case 'cover':
-  body='<div class="rs-cover"><div class="rs-cover-text"><small>VIETNAM MILITARY MEDICAL UNIVERSITY</small><small>FACULTY OF FOREIGN LANGUAGES</small><div><p>UNIT 5 · U5.1</p><h1>'+html(source.title)+'</h1><h3>'+html(pack.course)+'</h3></div></div><div class="rs-cover-photo">'+(source.photoUrl?'<img class="rs-image" src="'+html(source.photoUrl)+'" alt="Yellow tram and green bus">':'')+'<div class="rs-cover-fallback" '+(source.photoUrl?'style="display:none"':'')+'>'+media(pack,source.photoAsset,'Transport')+'</div></div></div>';break;
+  body='<div class="rs-cover"><div class="rs-cover-text"><small>VIETNAM MILITARY MEDICAL UNIVERSITY</small><small>FACULTY OF FOREIGN LANGUAGES</small><div><p>OBJECTIVE PET B1 · UNIT 5</p><h1>'+html(source.title)+'</h1><h3>English in real-life travel</h3></div></div><div class="rs-cover-photo">'+(source.photoUrl?'<img class="rs-image" src="'+html(source.photoUrl)+'" alt="Transport theme">':'')+'<div class="rs-cover-fallback" '+(source.photoUrl?'style="display:none"':'')+'>'+media(pack,source.photoAsset,'Transport')+'</div></div></div>';break;
  case 'aims':
-  body='<div class="rs-aims">'+Object.entries(source.aims||{}).map(([label,arr])=>card(label.toUpperCase(),'<ol>'+arr.map(x=>'<li>'+html(x)+'</li>').join('')+'</ol>')).join('')+'</div>';break;
+  body='<div class="rs-aims-layout"><div class="rs-aims-header"><h1>Aims of the Lesson</h1></div><div class="rs-aims">'+Object.entries(source.aims||{}).map(([label,arr])=>card(label.charAt(0).toUpperCase()+label.slice(1),'<ol>'+arr.map(x=>'<li>'+html(x)+'</li>').join('')+'</ol>')).join('')+'</div></div>';break;
  case 'gallery':{
   const photos=source.media||[],active=Math.min(ui.focus.get(screen.id)||0,photos.length-1),phase=Math.min(ui.phase.get(screen.id)||0,2);
-  const steps=['THINK','PAIR','SHARE'],instructions=['Look carefully. Name the transport you can see.','Compare the names with your partner. What is similar or different?','Share one word and explain your choice. Then try the original crossword.'];
-  body=heading+'<nav class="rs-phase-nav">'+steps.map((x,i)=>'<button data-rs-action="phase" data-rs-key="'+html(screen.id)+'" data-rs-index="'+i+'" class="'+(phase===i?'rs-current':'')+'">'+x+'</button>').join('')+'</nav>'+
-  '<p class="rs-phase-instruction">'+html(instructions[phase])+'</p><div class="rs-picture-focus">'+
-  '<div class="rs-picture-feature">'+(photos[active]?media(pack,photos[active],photos[active]):'<p>Photo not available</p>')+'</div>'+
-  '<div class="rs-picture-choices">'+photos.map((id,i)=>'<button data-rs-action="focus" data-rs-key="'+html(screen.id)+'" data-rs-index="'+i+'" class="'+(active===i?'rs-current':'')+'">'+media(pack,id,'Transport photo '+(i+1))+'<span>Photo '+(i+1)+'</span></button>').join('')+'</div></div>';break;
+  const steps=['Look','Talk','Share'];
+  const instructions=['Look at the photograph. What type of transport can you see?','Tell a partner its name. Where do people use it?','Share your answer with the class. Give one reason.'];
+  body='<div class="rs-head"><h2>What do you see?</h2><p>'+html(instructions[phase])+'</p></div>'+
+  '<nav class="rs-phase-nav">'+steps.map((x,i)=>'<button type="button" data-rs-action="phase" data-rs-key="'+html(screen.id)+'" data-rs-index="'+i+'" class="'+(phase===i?'rs-current':'')+'">'+x+'</button>').join('')+'</nav>'+
+  '<div class="rs-picture-focus"><div class="rs-picture-feature">'+(photos[active]?media(pack,photos[active],photos[active]):'<p>Source photograph unavailable</p>')+'</div>'+
+  '<div class="rs-picture-choices">'+photos.map((id,i)=>'<button type="button" data-rs-action="focus" data-rs-key="'+html(screen.id)+'" data-rs-index="'+i+'" class="'+(active===i?'rs-current':'')+'">'+media(pack,id,'Transport photo '+(i+1))+'<span>Photo '+(i+1)+'</span></button>').join('')+'</div></div>';break;
  }
  case 'crossword':
   body=heading+crossword(screen,source,role);break;
- case 'peer':
-  body=heading+'<div class="rs-prompt-list">'+(source.prompts||[]).map((p,i)=>card('TASK '+(i+1),'<p>'+html(p)+'</p>')).join('')+'</div>';break;
+ case 'peer':{
+  // Introduction Activity 3 (book p34): personal transport experience and frequency.
+  const original=pack.screens.find(x=>x.type==='crossword');
+  const travelWords=[...new Set((original?.items||[]).map(w=>String(w.answer||'').toLowerCase()).filter(Boolean))];
+  const chips=travelWords.map(w=>'<span class="rs-vocab-chip">'+html(w)+'</span>').join('');
+  body='<div class="rs-head"><h2>How do you travel?</h2><p>Which types of transport do you use? Count them. Write three sentences using <b>usually</b>, <b>sometimes</b> and <b>often</b>.</p></div>'+
+   '<section class="rs-travel-share"><div class="rs-travel-words"><h3>Choose from these words</h3><div class="rs-vocab-grid">'+chips+'</div><p>Which ones have you tried?</p></div>'+
+   '<div class="rs-travel-extend"><h3>Make your answer more interesting</h3>'+
+   '<p><b>I usually travel by …</b> when I …</p>'+
+   '<p><b>I sometimes take …</b> because …</p>'+
+   '<p><b>I last travelled by …</b> when I went to …</p>'+
+   '<p><b>I prefer … to …</b> because …</p>'+
+   '<div class="rs-share-output"><label for="rs-share-note">My three sentences</label><textarea id="rs-share-note" data-rs-note="'+html(screen.id)+'" rows="3" placeholder="Write your own experience…">'+html(ui.notes.get(screen.id)||'')+'</textarea></div></div></section>';break;
+ }
  case 'listening':{
   const phase=ui.phase.get(screen.id)||0;
   const method=methodId==='tbl-listening'
