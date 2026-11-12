@@ -50,7 +50,8 @@ export function sourceIntakeToStudioReviewScreen(text,{title='Source activity re
   for(const p of task.paragraphs){
    const block=textBlock('ACCOUNT '+p.label+'\n'+p.text,'assigned');
    block.jigsawAssignment=p.label;block.sourcePage=p.sourcePage;blocks.push(block);
-   blocks.push(discussion('EXPERT '+p.label+': What feelings and events are stated? Quote two short text clues and propose a possible time clue.','expert'));
+   const expert=discussion('EXPERT '+p.label+': What feelings and events are stated? Quote two short text clues and propose a possible time clue.','expert');
+   expert.jigsawAssignment=p.label;blocks.push(expert);
   }
   blocks.push(discussion('HOME GROUP: Student A, then B, then C teaches their account. Each listener records two new clues.','home'));
   for(const q of task.questions)blocks.push(discussion(q.id+'. '+q.prompt,'complete'));
