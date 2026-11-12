@@ -1,4 +1,5 @@
 import {ELeapRuntimeContext} from './runtime-context.js';
+import {mountFoundationLab} from './authoring/foundation-lab.js';
 import {importResourceZip,rehydrateResourceBank,createResourceScreens,renderResourceStage,renderResourceProperties,wireResourceStage} from './authoring/resource-bank-assembly.js';
 import {E_LEAP_ACTIVITY_TYPES,E_LEAP_AUTHORING_LIBRARY} from './activity-registry.js';
 import {E_LEAP_THEME_DEFAULT,E_LEAP_THEME_PRESETS,E_LEAP_ALLOWED_FONTS,applyThemePreset} from './theme-tokens.js';
@@ -58,6 +59,8 @@ if(!canOpenStudio){
   showMethodReviewGallery(root,{backUrl:'./index.html?view=gallery'});
 }else if(qs.get('view')==='gallery'){
   showTemplateReviewGallery(root,{backUrl:'./index.html?view=builder'});
+}else if(qs.get('view')==='foundation'){
+  mountFoundationLab(root,{role:verifiedUser?.role||'teacher'});
 }else{
   lesson=await loadLesson();
   ensureSchema();
@@ -95,7 +98,7 @@ function render(){
     <header class="studio-topbar">
       <div class="studio-brand"><div class="studio-logo">E</div><div><b>E-LEAP Authoring Studio</b><small data-studio-status>${dirty?'Unsaved changes':'Draft ready'}</small></div></div>
       <div class="studio-top-actions">
-        <a class="studio-btn primary" href="./index.html?view=gallery" target="_blank" rel="noopener">Template Gallery & Review</a><a class="studio-btn" href="./index.html?view=methods" target="_blank" rel="noopener">Teaching Combo Library</a><button class="studio-btn" data-open-template-gallery>Choose Template</button><label class="studio-btn" style="cursor:pointer">Import Resource Pack<input type="file" accept=".zip" data-import-resource style="display:none"></label><a class="studio-btn" href="../index.html">← Platform</a><a class="studio-btn" href="?pilot=life-u12" title="Open the canonical LIFE Unit 12 acceptance draft">LIFE U12 pilot</a><button class="studio-btn" data-new>New lesson</button><button class="studio-btn" data-duplicate-lesson>Duplicate</button><button class="studio-btn" data-quality>Quality check</button><button class="studio-btn" data-export>Export JSON</button><button class="studio-btn" data-save>Save draft</button><button class="studio-btn primary" data-publish>${verifiedUser?.role==='admin'?'Publish candidate':'Request publish'}</button>
+        <a class="studio-btn primary" href="./index.html?view=gallery" target="_blank" rel="noopener">Template Gallery & Review</a><a class="studio-btn" href="./index.html?view=foundation" target="_blank" rel="noopener">Foundation Lab</a><a class="studio-btn" href="./index.html?view=methods" target="_blank" rel="noopener">Teaching Combo Library</a><button class="studio-btn" data-open-template-gallery>Choose Template</button><label class="studio-btn" style="cursor:pointer">Import Resource Pack<input type="file" accept=".zip" data-import-resource style="display:none"></label><a class="studio-btn" href="../index.html">← Platform</a><a class="studio-btn" href="?pilot=life-u12" title="Open the canonical LIFE Unit 12 acceptance draft">LIFE U12 pilot</a><button class="studio-btn" data-new>New lesson</button><button class="studio-btn" data-duplicate-lesson>Duplicate</button><button class="studio-btn" data-quality>Quality check</button><button class="studio-btn" data-export>Export JSON</button><button class="studio-btn" data-save>Save draft</button><button class="studio-btn primary" data-publish>${verifiedUser?.role==='admin'?'Publish candidate':'Request publish'}</button>
       </div>
     </header>
     <div class="studio-layout">
