@@ -46,14 +46,14 @@ export function mountFoundationLab(root,{role='teacher'}={}){
   const outcome=evaluateFoundationResponses(model);
   root.innerHTML='<section class="studio-shell" style="min-height:100vh;padding:20px;max-width:1100px;margin:auto">'+
   '<header><h1>E-LEAP · Foundation Lab</h1><p>Source structure + interactive activity validation · PREVIEW / NO AI / NO PUBLISH</p><a href="./index.html">← Studio</a></header>'+
-  '<section class="property-section"><h2>M1 · Teacher-extracted text intake</h2><p>Paste structured text. This tool does not open PDF/PPT/audio and never verifies supplied keys.</p>'+
+  (['teacher','admin'].includes(model.role)?'<section class="property-section"><h2>M1 · Teacher-extracted text intake</h2><p>Paste extracted text or extract selectable text locally from PDF. PPT/audio understanding and key verification are not available.</p>'+
   '<label style="display:block;margin:8px 0">Extract text locally from PDF (max 25 MB, first 30 pages): <input type="file" accept="application/pdf,.pdf" data-lab-pdf></label><p role="status">'+escapeHtml(pdfNotice)+'</p>'+ '<textarea data-lab-source rows="12" style="width:100%;font:15px monospace">'+escapeHtml(currentText)+'</textarea>'+
   '<p>'+button('Analyse source','analyse')+' '+button('Load synthetic fixture','fixture')+'</p></section>'+
   '<section class="property-section"><h2>Source review</h2><p><b>Unit:</b> '+escapeHtml(source?.unit||'Missing')+' · <b>Verification:</b> UNVERIFIED</p>'+
   '<p><b>Tasks:</b> '+(source?.tasks?.length||0)+' · <b>Unverified records:</b> '+(source?.unverified?.length||0)+' · <b>Unparsed lines:</b> '+(source?.unparsed?.length||0)+'</p>'+
   (model.analysis.problems||[]).map(x=>'<p style="color:#a22525">'+escapeHtml(x)+'</p>').join('')+
   (task?.missing||[]).map(x=>'<p style="color:#a22525">Missing: '+escapeHtml(x)+'</p>').join('')+
-  '<p><b>Safety:</b> No teacher-supplied answer is recognized as source-approved; incomplete text is marked for review.</p></section>'+
+  '<p><b>Safety:</b> No teacher-supplied answer is recognized as source-approved; incomplete text is marked for review.</p></section>':'')+
   '<section class="property-section"><h2>M3 · Real interaction sandbox</h2><p>Source-based content rendered as a three-step activity. This is NOT the published lesson player.</p>'+
   '<label>Preview role <select data-lab-role><option value="teacher" '+(model.role==='teacher'?'selected':'')+'>Teacher</option><option value="admin" '+(model.role==='admin'?'selected':'')+'>Admin</option><option value="student" '+(model.role==='student'?'selected':'')+'>Student</option><option value="guest" '+(model.role==='guest'?'selected':'')+'>Guest</option><option value="presentation" '+(model.role==='presentation'?'selected':'')+'>Presentation</option></select></label>'+
   '<nav class="combo-step-nav">'+phases.map((p,i)=>'<button type="button" class="combo-step-button '+(model.phase===i?'active':'')+'" data-lab-phase="'+i+'">'+(i+1)+'. '+p+'</button>').join('')+'</nav>'+
@@ -77,7 +77,7 @@ export function mountFoundationLab(root,{role='teacher'}={}){
    try{
     const reader=await loadPdfJs();
     const extracted=await extractLocalPdfText(file,reader);
-    currentText=extracted.pages.map(p=>'[PDF PAGE '+p.page+' — UNVERIFIED]\\n'+p.text).join('\\n\\n');
+    currentText=extracted.pages.map(p=>'[PDF PAGE '+p.page+' — UNVERIFIED]\n'+p.text).join('\n\n');
     model=createFoundationLabModel(currentText);
     pdfNotice='Loaded '+extracted.pages.length+'/'+extracted.pageCount+' pages from '+file.name+' (UNVERIFIED). '+extracted.warnings.join(' ');
     draw();
