@@ -1,0 +1,344 @@
+{
+  "schemaVersion": "eleap-golden-combos-v1",
+  "version": "1.0.0",
+  "scope": "Pedagogical exemplars, not verbatim textbook tasks",
+  "publicationStatus": "review-only",
+  "sourcePolicy": "No example contains verified textbook answers, quotes, transcripts, source timecodes or page mappings. Do not publish until teacher maps and verifies actual input.",
+  "constitutionRef": "docs/pedagogy/E-LEAP-PEDAGOGICAL-CONSTITUTION-V1.md",
+  "examples": [
+    {
+      "id": "warmup-photo-clue-v1",
+      "methodId": "photo-predict",
+      "category": "Warm-up",
+      "status": "template-review",
+      "aim": "Infer a lesson topic using visible photo evidence.",
+      "sourceRequirements": [
+        "one cleared relevant photograph",
+        "lesson topic"
+      ],
+      "steps": [
+        {
+          "step": "observe",
+          "mode": "individual",
+          "instruction": "Look at the photograph. Write down two things you can see.",
+          "scaffold": "I can see … / There is …",
+          "output": "Two visible observations",
+          "check": "Compare observations against the photo; do not guess unseen details.",
+          "transition": "Use your observations to make a supported guess."
+        },
+        {
+          "step": "predict",
+          "mode": "individual",
+          "instruction": "Use one visual clue to predict what today's lesson may be about.",
+          "scaffold": "I think the lesson is about … because I can see …",
+          "output": "One prediction plus visual reason",
+          "check": "Can the learner point to the cited clue?",
+          "transition": "Hear a second interpretation."
+        },
+        {
+          "step": "share",
+          "mode": "pair",
+          "instruction": "Tell your partner your prediction and reason. Ask what clue they noticed.",
+          "scaffold": "What makes you think that? / I noticed …",
+          "output": "One partner response and reason",
+          "check": "Both learners speak; transition to the real unit title.",
+          "transition": "Connect predictions with the verified unit focus."
+        }
+      ]
+    },
+    {
+      "id": "vocab-context-to-use-v1",
+      "methodId": "vocabulary-context",
+      "category": "Vocabulary",
+      "status": "template-review",
+      "aim": "Understand, pronounce and use selected words in context.",
+      "sourceRequirements": [
+        "verified word list",
+        "source image/context",
+        "approved pronunciations"
+      ],
+      "steps": [
+        {
+          "step": "notice",
+          "mode": "individual",
+          "instruction": "Look at the picture. Match each supplied word to an object or action you can identify.",
+          "scaffold": "I think … means … because …",
+          "output": "Individual first matches",
+          "check": "Review against verified image/context; do not auto-invent distractors.",
+          "transition": "Check meaning before speaking."
+        },
+        {
+          "step": "form",
+          "mode": "pair",
+          "instruction": "Compare your matches. Practise each word and mark its stressed syllable.",
+          "scaffold": "The stress is on … / It means …",
+          "output": "Corrected matches plus marked stress",
+          "check": "Teacher confirms meaning and pronunciation from approved source.",
+          "transition": "Use words in context."
+        },
+        {
+          "step": "use",
+          "mode": "individual",
+          "instruction": "Choose two words and write one true sentence about your life with each.",
+          "scaffold": "I usually … / I sometimes …",
+          "output": "Two original sentences",
+          "check": "Peer checks meaning; teacher checks context and form.",
+          "transition": "Recycle target words in next task."
+        }
+      ]
+    },
+    {
+      "id": "grammar-notice-use-v1",
+      "methodId": "grammar-discovery",
+      "category": "Grammar",
+      "status": "template-review",
+      "aim": "Discover form and meaning, then use the target pattern accurately.",
+      "sourceRequirements": [
+        "verified grammar examples",
+        "target structure",
+        "original practice questions",
+        "checked rule"
+      ],
+      "steps": [
+        {
+          "step": "notice",
+          "mode": "individual",
+          "instruction": "Read the supplied examples. Underline the repeated grammar pattern and circle the words around it.",
+          "scaffold": "I notice … comes before/after …",
+          "output": "Marked patterns in source examples",
+          "check": "Teacher verifies highlights against the source.",
+          "transition": "Form a rule from the examples."
+        },
+        {
+          "step": "discover",
+          "mode": "pair",
+          "instruction": "Explain to your partner what the pattern means and when it is used. Write one rule together.",
+          "scaffold": "We use … when … / The form is …",
+          "output": "One tentative form-and-meaning rule",
+          "check": "Teacher shows verified rule only after hypotheses.",
+          "transition": "Apply the pattern to original questions."
+        },
+        {
+          "step": "practise",
+          "mode": "individual",
+          "instruction": "Complete the original textbook exercise. Explain one choice using the rule.",
+          "scaffold": "I chose … because the subject/meaning is …",
+          "output": "Original answers plus one explanation",
+          "check": "Teacher checks with source-verified keys; no model-created key.",
+          "transition": "Make one personally meaningful example."
+        },
+        {
+          "step": "apply",
+          "mode": "pair",
+          "instruction": "Tell your partner two true sentences using the target pattern. Ask one follow-up question.",
+          "scaffold": "I … / What about you?",
+          "output": "Two spoken examples and a follow-up",
+          "check": "Partner gives specific feedback on target form.",
+          "transition": "Exit check against lesson aim."
+        }
+      ]
+    },
+    {
+      "id": "reading-jigsaw-evidence-v1",
+      "methodId": "reading-jigsaw",
+      "category": "Reading",
+      "status": "template-review",
+      "aim": "Reconstruct meaning of the reading and justify original textbook answers.",
+      "sourceRequirements": [
+        "complete licensed passage",
+        "verified section boundaries",
+        "original textbook questions",
+        "teacher-verified evidence locator for each answer"
+      ],
+      "steps": [
+        {
+          "step": "read",
+          "mode": "individual",
+          "instruction": "Read only your assigned section. Write two main ideas and one supporting detail.",
+          "scaffold": "My section is mainly about … / One detail is …",
+          "output": "Two ideas plus one text-based detail",
+          "check": "Learner underlines where each idea came from.",
+          "transition": "Bring notes to expert group."
+        },
+        {
+          "step": "expert",
+          "mode": "group",
+          "instruction": "Meet classmates with the same section. Agree on the three points everyone must teach.",
+          "scaffold": "Our most important point is … because paragraph …",
+          "output": "Three agreed points and a text locator",
+          "check": "Each member must explain at least one point.",
+          "transition": "Teach another group."
+        },
+        {
+          "step": "share",
+          "mode": "group",
+          "instruction": "Return to your home group. Teach your section, listen to each member and complete your group notes.",
+          "scaffold": "My section explains … / Could you repeat …?",
+          "output": "Completed notes across all sections",
+          "check": "Group reporter checks all sections are represented.",
+          "transition": "Complete the original exercise."
+        },
+        {
+          "step": "complete",
+          "mode": "pair",
+          "instruction": "Answer the original textbook questions. For each answer, locate the supporting text and explain why it fits.",
+          "scaffold": "The evidence is in … / It supports the answer because …",
+          "output": "Answers plus evidence/why per item",
+          "check": "Teacher reveals only verified item-level answer/evidence/why.",
+          "transition": "Reflect on what helped locate the evidence."
+        }
+      ]
+    },
+    {
+      "id": "listening-evidence-compare-v1",
+      "methodId": "listening-evidence",
+      "category": "Listening",
+      "status": "template-review",
+      "aim": "Complete the authentic listening task and justify choices using actually heard clues.",
+      "sourceRequirements": [
+        "approved audio",
+        "original questions and answer count",
+        "verified answer key",
+        "checked transcript or teacher-reviewed audio evidence"
+      ],
+      "steps": [
+        {
+          "step": "prepare",
+          "mode": "pair",
+          "instruction": "Read the original task and match the supplied key phrases to likely places or meanings. Record one prediction.",
+          "scaffold": "I expect to hear … because …",
+          "output": "One recorded prediction or matching sheet",
+          "check": "Compare predictions; no claim that the audio has been heard.",
+          "transition": "Listen for the actual answers."
+        },
+        {
+          "step": "listen1",
+          "mode": "individual",
+          "instruction": "Listen once. Answer each original question independently before speaking to anyone.",
+          "scaffold": "Question 1: … / Question 2: …",
+          "output": "Individual first-pass answers",
+          "check": "Keep attempts visible for later comparison.",
+          "transition": "Listen again for audible clues."
+        },
+        {
+          "step": "listen2",
+          "mode": "individual",
+          "instruction": "Listen again. Write the word or phrase you actually heard that supports each answer.",
+          "scaffold": "I heard … / This suggests …",
+          "output": "One heard clue per answer",
+          "check": "If unclear, mark ? and replay; never fill the transcript by guessing.",
+          "transition": "Compare answer and evidence."
+        },
+        {
+          "step": "compare",
+          "mode": "pair",
+          "instruction": "Compare both your answers and heard clues. Circle any item you disagree on.",
+          "scaffold": "I chose … because I heard … / Can we replay …?",
+          "output": "Agreed answers plus a replay list",
+          "check": "Both partners explain a clue; teacher can replay selected clip.",
+          "transition": "Verify against source."
+        },
+        {
+          "step": "check",
+          "mode": "class",
+          "instruction": "Check each original question using the teacher's verified answer and audio evidence. Correct your own notes.",
+          "scaffold": "My answer changed from … to … because …",
+          "output": "Final checked answers and one justified correction",
+          "check": "Teacher reveals item-wise only; withhold Evidence/Why if source verification is pending.",
+          "transition": "Use target language in a short follow-up."
+        }
+      ]
+    },
+    {
+      "id": "speaking-tps-report-v1",
+      "methodId": "speaking-pair-share",
+      "category": "Speaking",
+      "status": "template-review",
+      "aim": "Give a personal opinion and report another person's viewpoint.",
+      "sourceRequirements": [
+        "original speaking prompt",
+        "age/CEFR level",
+        "topic-specific vocabulary"
+      ],
+      "steps": [
+        {
+          "step": "think",
+          "mode": "individual",
+          "instruction": "Write one answer to the prompt and two reasons from your own experience.",
+          "scaffold": "I think … because … / Another reason is …",
+          "output": "Answer plus two reasons",
+          "check": "Both reasons must support the learner's own view.",
+          "transition": "Rehearse with partner."
+        },
+        {
+          "step": "pair",
+          "mode": "pair",
+          "instruction": "Tell your partner your view. Ask one follow-up question, then note their answer.",
+          "scaffold": "Why do you think so? / Can you give an example?",
+          "output": "Partner's answer and one follow-up",
+          "check": "Both partners speak and listen, not only read frames.",
+          "transition": "Report the partner's contribution."
+        },
+        {
+          "step": "share",
+          "mode": "class",
+          "instruction": "Tell the class your partner's idea and one reason. Check with your partner that you understood.",
+          "scaffold": "My partner thinks … because …",
+          "output": "Accurate oral report",
+          "check": "Peer confirms accurate reporting; teacher comments on clarity.",
+          "transition": "Reflect on one useful phrase."
+        }
+      ]
+    },
+    {
+      "id": "writing-review-revise-v1",
+      "methodId": "process-writing",
+      "category": "Writing",
+      "status": "template-review",
+      "aim": "Produce and improve an original text meeting the given task and criteria.",
+      "sourceRequirements": [
+        "original writing prompt",
+        "success criteria or rubric",
+        "expected length/CEFR"
+      ],
+      "steps": [
+        {
+          "step": "plan",
+          "mode": "individual",
+          "instruction": "Underline the task requirements and write an outline with one idea per paragraph.",
+          "scaffold": "Introduction → Main idea → Support → Closing",
+          "output": "Task checklist and outline",
+          "check": "Compare outline to the verified prompt.",
+          "transition": "Write a first draft."
+        },
+        {
+          "step": "draft",
+          "mode": "individual",
+          "instruction": "Write your own first draft using the outline; include supporting details.",
+          "scaffold": "One reason is … / For example …",
+          "output": "Complete first draft",
+          "check": "Mark any requirement not yet addressed.",
+          "transition": "Exchange drafts."
+        },
+        {
+          "step": "review",
+          "mode": "pair",
+          "instruction": "Use the rubric to identify one strength and one specific improvement in your partner's text.",
+          "scaffold": "This is clear because … / You could improve … by …",
+          "output": "One strength and one actionable suggestion",
+          "check": "Comments refer to a criterion, not just 'good'.",
+          "transition": "Revise based on feedback."
+        },
+        {
+          "step": "revise",
+          "mode": "individual",
+          "instruction": "Revise your draft and highlight two changes you made because of feedback.",
+          "scaffold": "I changed … to … because …",
+          "output": "Revised final writing and two marked edits",
+          "check": "Compare final text to original task and rubric.",
+          "transition": "Reflect on improvement."
+        }
+      ]
+    }
+  ]
+}
