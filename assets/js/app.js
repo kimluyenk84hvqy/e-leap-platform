@@ -61,12 +61,50 @@ async function classesPage(){
   $$('[data-rename]',content).forEach(b=>{const c=rows.find(x=>String(x.class_id)===String(b.dataset.rename));b.onclick=()=>ELEAPOps.modal('Rename Class',`<label class="field">Class name<input id="cRename" value="${esc(c?.class_name||'')}"></label>`,async m=>{const n=$('#cRename',m).value.trim();if(!n)return false;try{await liveReq('/classes',{method:'PATCH',body:JSON.stringify({classId:b.dataset.rename,className:n})});render()}catch(e){alert(e.message)}return true})});
   $$('[data-archive]',content).forEach(b=>{const c=rows.find(x=>String(x.class_id)===String(b.dataset.archive));b.onclick=async()=>{const next=c?.status==='archived'?'active':'archived';if(next==='archived'&&!confirm(`Archive ${c?.class_name||'this class'}?`))return;try{await liveReq('/classes',{method:'PATCH',body:JSON.stringify({classId:b.dataset.archive,status:next})});render()}catch(e){alert(e.message)}}});
 }
-async function assessmentBootstrap(){try{await liveReq('/bootstrap',{method:'POST',body:'{}'});return true}catch(e){console.error(e);return false}}
+let assessmentAccessError='';
+async function assessmentBootstrap(){
+  assessmentAccessError='';
+  // The Preview role switch is only presentation state: the authenticated
+  // server identity must match the role before touching class data.
+  let identity;
+  try{
+    const result=await fetch('/api/auth/me',{credentials:'same-origin',cache:'no-store'});
+    identity=await result.json().catch(()=>null);
+    if(!result.ok||!identity?.ok||!identity?.user){
+      assessmentAccessError='Sign in to E-LEAP to access assignments, responses and progress.';
+      return false;
+    }
+  }catch(e){
+    assessmentAccessError='Unable to verify your signed-in E-LEAP account.';
+    return false;
+  }
+  const actual=identity.user.role;
+  const allowed=actual==='admin'&&(role==='admin'||role==='teacher') || actual===role;
+  if(!allowed){
+    assessmentAccessError='The selected Preview role does not match your signed-in account.';
+    return false;
+  }
+  try{
+    const health=await liveReq('/bootstrap');
+    if(!health?.ready||health?.submissionsReady!==true){
+      assessmentAccessError='Assignments and Responses are not ready in this Preview database.';
+      return false;
+    }
+    return true;
+  }catch(e){
+    assessmentAccessError='Unable to verify Preview assessment database readiness.';
+    return false;
+  }
+}
+function assessmentBlocked(title){
+ const next=role==='student'?'/student-access.html':'/login.html';
+ return hero(title)+'<div class="empty-simple"><b>'+esc(assessmentAccessError||'Sign in required')+'</b><p>Use an authorized E-LEAP account to continue.</p><a class="btn primary" href="'+next+'?next='+encodeURIComponent(location.pathname+location.search)+'">Sign in</a></div>';
+}
 async function loadRubrics(){try{return (await getJSON('data/rubrics.json')).rubrics||[]}catch{return []}}
 function rubricFields(rubric,scores={}){if(!rubric?.criteria?.length)return `<label class="field">Score<input id="score" type="number" min="0" max="${rubric?.maxScore||100}" value=""></label>`;return rubric.criteria.map(c=>`<label class="field">${esc(c.label)} <small>0–${c.max}</small><input class="rubric-score" data-criterion="${esc(c.id)}" type="number" min="0" max="${c.max}" step="0.5" value="${scores?.[c.id]??''}"></label>`).join('')}
 async function assignmentsPage(){
   setHeader((role==='teacher'||role==='admin')?'Assignments':'My Assignments',['Assignments']);
-  if(!(await assessmentBootstrap())){content.innerHTML=hero(role==='student'?'My Assignments':'Assignments')+`<div class="empty-simple"><b>Assessment + Research Data v1 needs the Research DB connection.</b><br>Classes may still work locally, but server-side homework and marking are unavailable until the database is connected.</div>`;return}
+  if(!(await assessmentBootstrap())){content.innerHTML=assessmentBlocked(role==='student'?'My Assignments':'Assignments');return}
   if(role==='student'){
     const l=currentLearner();if(!l){content.innerHTML=hero('My Assignments')+`<div class="empty-simple">Set a Student Preview profile to view server assignments.<br><button class="btn primary" id="setStudent">Set Student Profile</button></div>`;$('#setStudent').onclick=()=>ensureStudentIdentity(()=>render());return}
     let asgs=[],subs=[];try{asgs=(await liveReq('/assignments')).assignments||[];subs=(await liveReq('/submissions')).submissions||[]}catch(e){content.innerHTML=hero('My Assignments')+`<div class="empty-simple">${esc(e.message)}</div>`;return}
@@ -80,7 +118,7 @@ async function assignmentsPage(){
 }
 async function submissionsPage(){
   setHeader((role==='teacher'||role==='admin')?'Submissions & Marking':'My Feedback',['Submissions']);
-  if(!(await assessmentBootstrap())){content.innerHTML=hero('Submissions')+`<div class="empty-simple">Research DB unavailable.</div>`;return}
+  if(!(await assessmentBootstrap())){content.innerHTML=assessmentBlocked('Submissions');return}
   const rubrics=await loadRubrics();
   if(role==='student'){
     const l=currentLearner();if(!l){content.innerHTML=hero('My Feedback')+`<div class="empty-simple">Set your Student Profile first.</div>`;return}
@@ -93,7 +131,7 @@ async function submissionsPage(){
 }
 async function progressPage(){
   setHeader((role==='teacher'||role==='admin')?'Progress & Research':'My Progress',['Progress']);
-  if(!(await assessmentBootstrap())){content.innerHTML=hero('Progress')+`<div class="empty-simple">Research DB unavailable.</div>`;return}
+  if(!(await assessmentBootstrap())){content.innerHTML=assessmentBlocked('Progress');return}
   if(role==='student'){const l=currentLearner();if(!l){content.innerHTML=hero('My Progress')+`<div class="empty-simple">Set your Student Profile first.</div>`;return}let subs=[];try{subs=(await liveReq('/submissions')).submissions||[]}catch{}const graded=subs.filter(s=>['graded','feedback-released'].includes(s.status));const pct=graded.filter(s=>s.score!=null&&s.max_score).map(s=>100*Number(s.score)/Number(s.max_score));const avg=pct.length?Math.round(pct.reduce((a,b)=>a+b,0)/pct.length):null;content.innerHTML=hero('My Progress')+`<div class="metric-grid"><div class="metric"><b>${subs.length}</b><span>Submissions</span></div><div class="metric"><b>${graded.length}</b><span>Marked</span></div><div class="metric"><b>${avg??'—'}</b><span>Average %</span></div></div>`;return}
   const teacher=liveTeacher();let asgs=[],subs=[];try{asgs=(await liveReq(`/assignments?teacherId=${encodeURIComponent(teacher.teacherId)}`)).assignments||[];subs=(await liveReq(`/submissions?teacherId=${encodeURIComponent(teacher.teacherId)}`)).submissions||[]}catch{}content.innerHTML=hero('Progress & Research')+`<div class="metric-grid"><div class="metric"><b>${asgs.length}</b><span>Assignments</span></div><div class="metric"><b>${subs.length}</b><span>Submissions</span></div><div class="metric"><b>${subs.filter(s=>['graded','feedback-released'].includes(s.status)).length}</b><span>Marked</span></div><div class="metric"><b>${subs.filter(s=>s.status==='feedback-released').length}</b><span>Feedback released</span></div></div><div class="context-toolbar"><a class="btn" href="/api/research/export?kind=submissions&format=csv&teacherId=${encodeURIComponent(teacher.teacherId)}">Download submissions dataset</a><a class="btn" href="/api/research/export?kind=events&format=csv&teacherId=${encodeURIComponent(teacher.teacherId)}">Download event log</a></div>`
 }
