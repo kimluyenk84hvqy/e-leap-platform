@@ -12,7 +12,7 @@ export function validateAssignedResponse(assignment,payload){
    return {ok:false,code:'RESOURCE_MISMATCH',error:'Response is not for this assigned lesson'};
  if(!assignment.activity_id||typeof payload.activityId!=='string'||payload.activityId!==String(assignment.activity_id))
    return {ok:false,code:'ACTIVITY_MISMATCH',error:'Response is not for this assigned activity'};
- if(!Object.prototype.hasOwnProperty.call(payload,'value')||payload.value===null)
+ if(!Object.prototype.hasOwnProperty.call(payload,'value')||payload.value===null||payload.value===undefined)
    return {ok:false,code:'ANSWER_MISSING',error:'Response value is missing'};
  let size;
  try{size=JSON.stringify(payload).length}catch{return {ok:false,code:'INVALID_RESPONSE',error:'Response is not serializable'};}
