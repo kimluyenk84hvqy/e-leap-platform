@@ -1,5 +1,6 @@
 import { getResearchDb } from '../_research-db.js';
 import { requireAuth,requireSameOrigin,teacherOwnsClass } from '../_auth.js';
+import { requireSubmissionSchema } from '../_submission-schema-contract.js';
 
 async function log(sql,{teacherId,classId,resourceId,activityId,eventType,metadata}){
   try{await sql`INSERT INTO events(teacher_id,class_id,lesson_id,activity_id,event_type,metadata) VALUES(${teacherId},${classId},${resourceId},${activityId},${eventType},${metadata||{}})`;}catch(e){console.warn('assignment event log failed',e);}
@@ -18,6 +19,7 @@ const LATE_POLICIES=new Set(['closed','allow-late','teacher-approval']);
 export default async function handler(req,res){
   try{
     const sql=getResearchDb(); const user=await requireAuth(req,res); if(!user)return;
+    if(!await requireSubmissionSchema(sql,res))return;
     if(req.method==='GET'){
       let rows=[];
       if(user.role==='student'){

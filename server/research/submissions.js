@@ -1,5 +1,6 @@
 import { getResearchDb } from '../_research-db.js';
 import { requireAuth,requireSameOrigin,teacherOwnsClass,studentInClass } from '../_auth.js';
+import { requireSubmissionSchema } from '../_submission-schema-contract.js';
 
 const studentSelect=(assignmentId,userId)=>assignmentId
   ? `assignment:${assignmentId}:student:${userId}`
@@ -8,6 +9,7 @@ const studentSelect=(assignmentId,userId)=>assignmentId
 export default async function handler(req,res){
   try{
     const sql=getResearchDb(); const user=await requireAuth(req,res); if(!user)return;
+    if(!await requireSubmissionSchema(sql,res))return;
     if(req.method==='GET'){
       const assignmentId=req.query?.assignmentId;
       if(user.role==='student'){
@@ -61,19 +63,48 @@ export default async function handler(req,res){
     if(req.method==='POST'){
       if(!requireSameOrigin(req,res))return;
       if(user.role!=='student')return res.status(403).json({ok:false,error:'Student session required'});
-      const {assignmentId,response={},researchConsent=false}=req.body||{};
+      const {assignmentId,response={},researchConsent=false,clientRequestId}=req.body||{};
+      if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(clientRequestId||'')))
+        return res.status(400).json({ok:false,error:'A UUID clientRequestId is required',code:'REQUEST_ID_REQUIRED'});
+      if(!response||typeof response!=='object'||Array.isArray(response)||JSON.stringify(response).length>64000)
+        return res.status(400).json({ok:false,error:'Invalid or oversized response'});
       if(!assignmentId)return res.status(400).json({ok:false,error:'assignmentId is required'});
       const a=await sql`SELECT * FROM assignments WHERE assignment_id=${assignmentId} AND status='active' LIMIT 1`;
       if(!a.length)return res.status(404).json({ok:false,error:'Active assignment not found'});
       if(!await studentInClass(sql,user,a[0].class_id))return res.status(403).json({ok:false,error:'Student is not assigned to this class'});
-      const prev=await sql`SELECT COALESCE(MAX(attempt_no),0)::int AS n FROM submissions WHERE assignment_id=${assignmentId} AND student_user_id=${user.user_id}`;
-      const attempt=Number(prev[0]?.n||0)+1;
-      if(a[0].attempt_limit!=null&&attempt>Number(a[0].attempt_limit))return res.status(403).json({ok:false,error:'Attempt limit reached'});
-      if(a[0].deadline&&a[0].late_policy==='closed'&&Date.now()>new Date(a[0].deadline).getTime())return res.status(403).json({ok:false,error:'Assignment deadline has passed'});
+      // Idempotence: the database MUST have the two named UNIQUE indexes
+      // checked by requireSubmissionSchema. Concurrent writers race safely via
+      // ON CONFLICT DO NOTHING, then inspect the request UUID or retry.
+      const existing=await sql`SELECT * FROM submissions WHERE assignment_id=${assignmentId}
+        AND student_user_id=${user.user_id} AND client_request_id=${clientRequestId} LIMIT 1`;
+      if(existing.length)return res.status(200).json({ok:true,idempotent:true,submission:existing[0]});
+      if(a[0].deadline&&a[0].late_policy==='closed'&&Date.now()>new Date(a[0].deadline).getTime())
+        return res.status(403).json({ok:false,error:'Assignment deadline has passed'});
       const meta={researchConsent:Boolean(researchConsent)};
-      const rows=await sql`INSERT INTO submissions(assignment_id,student_user_id,student_code,student_name,response,attempt_no,status,metadata) VALUES(${assignmentId},${user.user_id},${user.student_id||user.user_id},${user.display_name},${response},${attempt},'submitted',${meta}) RETURNING *`;
-      await sql`INSERT INTO events(class_id,lesson_id,activity_id,event_type,answer,metadata) VALUES(${a[0].class_id},${a[0].resource_id},${a[0].activity_id},'assignment.submitted',${{submissionId:rows[0].submission_id,attemptNo:attempt}},${meta})`;
-      return res.status(201).json({ok:true,submission:rows[0]});
+      let confirmed=null;
+      for(let i=0;i<6;i++){
+        const prev=await sql`SELECT COALESCE(MAX(attempt_no),0)::int AS n FROM submissions
+          WHERE assignment_id=${assignmentId} AND student_user_id=${user.user_id}`;
+        const attempt=Number(prev[0]?.n||0)+1;
+        if(a[0].attempt_limit!=null&&attempt>Number(a[0].attempt_limit))
+          return res.status(403).json({ok:false,error:'Attempt limit reached'});
+        const inserted=await sql`INSERT INTO submissions(
+          assignment_id,student_user_id,student_code,student_name,response,attempt_no,status,metadata,client_request_id)
+          VALUES(${assignmentId},${user.user_id},${user.student_id||user.user_id},
+          ${user.display_name},${response},${attempt},'submitted',${meta},${clientRequestId})
+          ON CONFLICT DO NOTHING RETURNING *`;
+        if(inserted.length){confirmed=inserted[0];break;}
+        const duplicate=await sql`SELECT * FROM submissions WHERE assignment_id=${assignmentId}
+          AND student_user_id=${user.user_id} AND client_request_id=${clientRequestId} LIMIT 1`;
+        if(duplicate.length)return res.status(200).json({ok:true,idempotent:true,submission:duplicate[0]});
+      }
+      if(!confirmed)return res.status(409).json({ok:false,error:'Concurrent submission conflict; inspect My Submissions',code:'SUBMISSION_CONFLICT'});
+      try{
+        await sql`INSERT INTO events(class_id,lesson_id,activity_id,event_type,answer,metadata)
+          VALUES(${a[0].class_id},${a[0].resource_id},${a[0].activity_id},'assignment.submitted',
+          ${{submissionId:confirmed.submission_id,attemptNo:confirmed.attempt_no}},${meta})`;
+      }catch(logError){console.warn('Non-critical submission telemetry failed',logError?.message);}
+      return res.status(201).json({ok:true,submission:confirmed});
     }
     res.setHeader('Allow',['GET','POST']);return res.status(405).json({ok:false,error:'Method not allowed'});
   }catch(error){console.error('submissions API failed',error);return res.status(500).json({ok:false,error:'Submissions request failed'});}
