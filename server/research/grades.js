@@ -1,4 +1,5 @@
 import { getResearchDb } from '../_research-db.js';
+import { requireSubmissionSchema } from '../_submission-schema-contract.js';
 import { requireAuth,requireSameOrigin,teacherOwnsClass } from '../_auth.js';
 import { ensureMarkingSchema } from '../_marking-schema.js';
 
@@ -27,6 +28,7 @@ export default async function handler(req,res){
     if(!['POST','PATCH'].includes(req.method)){res.setHeader('Allow',['POST','PATCH']);return res.status(405).json({ok:false,error:'Method not allowed'});}
     if(!requireSameOrigin(req,res))return;
     const sql=getResearchDb(); const user=await requireAuth(req,res,['teacher','admin']); if(!user)return;
+    if(!await requireSubmissionSchema(sql,res))return;
     await ensureMarkingSchema(sql);
 
     const {submissionId,score=null,maxScore=null,feedback='',rubricScores=null,releaseFeedback=false,review=null}=req.body||{};

@@ -1,4 +1,5 @@
 import { getResearchDb } from '../_research-db.js';
+import { requireSubmissionSchema } from '../_submission-schema-contract.js';
 import { requireAuth,requireSameOrigin,teacherOwnsClass } from '../_auth.js';
 import { ensureMarkingSchema } from '../_marking-schema.js';
 
@@ -19,6 +20,7 @@ export default async function handler(req,res){
   try{
     const sql=getResearchDb();
     const user=await requireAuth(req,res,['teacher','admin']); if(!user)return;
+    if(!await requireSubmissionSchema(sql,res))return;
     await ensureMarkingSchema(sql);
 
     if(req.method==='GET'){

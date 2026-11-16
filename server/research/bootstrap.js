@@ -1,11 +1,20 @@
 import { getResearchDb,researchDbAvailable } from '../_research-db.js';
 import { ensureAuthSchema,getAuth,requireAuth,requireSameOrigin } from '../_auth.js';
+import { inspectSubmissionSchema } from '../_submission-schema-contract.js';
 export default async function handler(req,res){
   if(!['GET','POST'].includes(req.method)){res.setHeader('Allow',['GET','POST']);return res.status(405).json({ok:false,error:'Method not allowed'});}
   if(!researchDbAvailable())return res.status(503).json({ok:false,error:'Live database is not configured',code:'DB_NOT_CONFIGURED'});
   try{
     if(req.method==='GET'){
-      const sql=getResearchDb(); await sql`SELECT 1`; return res.status(200).json({ok:true,ready:true,assessmentResearchVersion:'1.1',authAccessVersion:'1.0'});
+      const sql=getResearchDb(); await sql`SELECT 1`;
+      const columns=await sql`SELECT table_name,column_name,data_type FROM information_schema.columns
+        WHERE table_schema='public' AND table_name IN ('assignments','submissions')`;
+      const indexes=await sql`SELECT indexname,indexdef FROM pg_indexes
+        WHERE schemaname='public' AND tablename='submissions'`;
+      const submissions=inspectSubmissionSchema(columns,indexes);
+      return res.status(200).json({ok:true,ready:true,
+        submissionsReady:submissions.ok,submissionsSchemaVersion:submissions.version,
+        assessmentResearchVersion:'1.1',authAccessVersion:'1.0'});
     }
     if(!requireSameOrigin(req,res))return;
     const sql=await ensureAuthSchema();
