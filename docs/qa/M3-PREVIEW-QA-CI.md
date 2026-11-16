@@ -1,0 +1,11 @@
+# M3 Preview QA — CI and authenticated acceptance
+
+The `.github/workflows/m3-preview-qa.yml` workflow runs contract tests automatically on GitHub Preview pushes. The authenticated HTTP test is **manual dispatch only** and restricted to `feature/studio-media-library-v1`. It requires the `preview-qa` GitHub environment and the following **synthetic-only** GitHub Actions Secrets:
+
+`ELEAP_QA_PREVIEW_URL`, `ELEAP_QA_ASSIGNMENT_ID`, `ELEAP_QA_RESOURCE_ID`, `ELEAP_QA_ACTIVITY_ID`, `ELEAP_QA_TEACHER_EMAIL`, `ELEAP_QA_TEACHER_PASSWORD`, `ELEAP_QA_STUDENT_ID`, `ELEAP_QA_STUDENT_PIN`.
+
+Use an immutable Preview deployment URL, never the Production alias. Only a separately created QA teacher, student, class and active assignment may be used. The harness checks live Preview database binding and refuses to continue if `previewDatabaseBindingVerified !== true` or `submissionsReady !== true`. Login credentials are read exclusively from the GitHub Actions Secrets at runtime; do not write passwords to repo or artifacts.
+
+**Execution:** GitHub → Actions → E-LEAP M3 Preview QA → Run workflow → branch `feature/studio-media-library-v1` → enable `run_authenticated_e2e`. If required QA secrets have not been configured, the job fails rather than reporting a false PASS. Only a full PASS of the authenticated job is evidence of server-authenticated Student/Teacher HTTP E2E; it is not a graphical browser acceptance test.
+
+Test response is synthetic. The test leaves its submission until evidence is collected; clean up only the named QA data on Neon Preview afterward. Set environment protection/reviewer to prevent unintended dispatch. No workflow secrets or QA accounts have been provisioned by this change. No Production publish/DB migration authorized.

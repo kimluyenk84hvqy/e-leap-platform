@@ -1,0 +1,87 @@
+name: E-LEAP M3 Preview QA
+on:
+  push:
+    branches:
+      - feature/studio-media-library-v1
+    paths:
+      - 'server/**'
+      - 'assets/js/**'
+      - 'tests/**'
+      - 'scripts/qa/**'
+      - '.github/workflows/m3-preview-qa.yml'
+  workflow_dispatch:
+    inputs:
+      run_authenticated_e2e:
+        type: boolean
+        description: 'Run real Preview QA login → Submit → Teacher Responses (requires QA secrets)'
+        required: true
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: m3-preview-qa-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  contract-tests:
+    name: JS schema, security, auth and submission contracts
+    if: github.ref == 'refs/heads/feature/studio-media-library-v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install runtime/test dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund --no-package-lock
+      - name: Run fail-closed contracts
+        run: node --test tests/runtime-confirmed-submission.test.mjs tests/submission-schema-contract.test.mjs tests/submission-payload-contract.test.mjs tests/active-assignment-context.test.mjs tests/teacher-ownership-contract.test.mjs
+      - name: Static JS parse check
+        run: |
+          node --check assets/js/app.js
+          node --check assets/js/runtime/shared-lesson-runtime.js
+          node --check assets/js/native-activity.js
+          node --check assets/js/assignment-submission-bridge.js
+          node --check server/research/submissions.js
+          node --check scripts/qa/preview-submissions-e2e.mjs
+  authenticated-http-e2e:
+    name: Student → Submit → Teacher Responses → Reload
+    needs: contract-tests
+    if: github.event_name == 'workflow_dispatch' && inputs.run_authenticated_e2e == true && github.ref == 'refs/heads/feature/studio-media-library-v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: preview-qa
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Require explicitly provisioned synthetic QA credentials
+        env:
+          QA_URL: ${{ secrets.ELEAP_QA_PREVIEW_URL }}
+          QA_ASSIGNMENT: ${{ secrets.ELEAP_QA_ASSIGNMENT_ID }}
+          QA_RESOURCE: ${{ secrets.ELEAP_QA_RESOURCE_ID }}
+          QA_ACTIVITY: ${{ secrets.ELEAP_QA_ACTIVITY_ID }}
+          QA_TEACHER: ${{ secrets.ELEAP_QA_TEACHER_EMAIL }}
+          QA_TEACHER_PASSWORD: ${{ secrets.ELEAP_QA_TEACHER_PASSWORD }}
+          QA_STUDENT: ${{ secrets.ELEAP_QA_STUDENT_ID }}
+          QA_PIN: ${{ secrets.ELEAP_QA_STUDENT_PIN }}
+        run: |
+          for name in QA_URL QA_ASSIGNMENT QA_RESOURCE QA_ACTIVITY QA_TEACHER QA_TEACHER_PASSWORD QA_STUDENT QA_PIN; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Preview QA secret ${name} is missing; no authenticated test was attempted."
+              exit 1
+            fi
+          done
+      - name: Run authenticated Preview smoke test (no secrets logged)
+        env:
+          ELEAP_QA_CONFIRM: PREVIEW_SYNTHETIC_ONLY
+          ELEAP_QA_PREVIEW_URL: ${{ secrets.ELEAP_QA_PREVIEW_URL }}
+          ELEAP_QA_ASSIGNMENT_ID: ${{ secrets.ELEAP_QA_ASSIGNMENT_ID }}
+          ELEAP_QA_RESOURCE_ID: ${{ secrets.ELEAP_QA_RESOURCE_ID }}
+          ELEAP_QA_ACTIVITY_ID: ${{ secrets.ELEAP_QA_ACTIVITY_ID }}
+          ELEAP_QA_TEACHER_EMAIL: ${{ secrets.ELEAP_QA_TEACHER_EMAIL }}
+          ELEAP_QA_TEACHER_PASSWORD: ${{ secrets.ELEAP_QA_TEACHER_PASSWORD }}
+          ELEAP_QA_STUDENT_ID: ${{ secrets.ELEAP_QA_STUDENT_ID }}
+          ELEAP_QA_STUDENT_PIN: ${{ secrets.ELEAP_QA_STUDENT_PIN }}
+        run: node scripts/qa/preview-submissions-e2e.mjs
