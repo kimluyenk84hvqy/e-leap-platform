@@ -14,16 +14,22 @@ export function inspectSubmissionSchema(rows=[],indexes=[]){
   const got=actual.get(table+'.'+column);
   if(got!==type)issues.push(table+'.'+column+': expected '+type+', found '+(got||'missing'));
  }
- const names=new Set((Array.isArray(indexes)?indexes:[]).map(r=>r.indexname));
- for(const required of ['idx_submissions_assignment_student_attempt_v2','idx_submissions_idempotent_v2']){
-  if(!names.has(required))issues.push('missing unique index '+required);
+ const definitions=new Map((Array.isArray(indexes)?indexes:[]).map(r=>[r.indexname,String(r.indexdef||'')]));
+ const uniqueIndexes={
+  idx_submissions_assignment_student_attempt_v2:['assignment_id','student_user_id','attempt_no'],
+  idx_submissions_idempotent_v2:['assignment_id','student_user_id','client_request_id']
+ };
+ for(const [name,columns] of Object.entries(uniqueIndexes)){
+  const definition=definitions.get(name)||'';
+  const pattern=new RegExp('CREATE UNIQUE INDEX\\s+'+name+'\\s+ON\\s+.+\\('+columns.join('\\s*,\\s*')+'\\)','i');
+  if(!pattern.test(definition))issues.push('missing or invalid unique index '+name);
  }
  return {ok:issues.length===0,version:SUBMISSION_SCHEMA_VERSION,issues};
 }
 export async function requireSubmissionSchema(sql,res){
  const rows=await sql`SELECT table_name,column_name,data_type FROM information_schema.columns
  WHERE table_schema='public' AND table_name IN ('assignments','submissions')`;
- const indexes=await sql`SELECT indexname FROM pg_indexes WHERE schemaname='public' AND tablename='submissions'`;
+ const indexes=await sql`SELECT indexname,indexdef FROM pg_indexes WHERE schemaname='public' AND tablename='submissions'`;
  const report=inspectSubmissionSchema(rows,indexes);
  if(report.ok)return true;
  res.status(503).json({ok:false,code:'SUBMISSIONS_SCHEMA_UPGRADE_REQUIRED',
