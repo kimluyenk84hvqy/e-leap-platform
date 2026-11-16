@@ -73,6 +73,24 @@ export default async function handler(req,res){
       const a=await sql`SELECT * FROM assignments WHERE assignment_id=${assignmentId} AND status='active' LIMIT 1`;
       if(!a.length)return res.status(404).json({ok:false,error:'Active assignment not found'});
       if(!await studentInClass(sql,user,a[0].class_id))return res.status(403).json({ok:false,error:'Student is not assigned to this class'});
+      // Any assignment explicitly configured for server-authorized Jigsaw must
+      // have a verified source and a role assigned to this authenticated Student.
+      // This prevents bypassing the reading endpoint via generic Submit.
+      const jigsaw=await sql`SELECT j.source_text_verified,j.photo_assets_verified,m.account
+        FROM reading_jigsaw_materials j LEFT JOIN reading_jigsaw_members m
+          ON m.assignment_id=j.assignment_id AND m.student_user_id=${user.user_id}
+          AND m.class_id=j.class_id
+        WHERE j.assignment_id=${assignmentId} LIMIT 1`;
+      if(jigsaw.length){
+        if(!jigsaw[0].account)return res.status(403).json({ok:false,code:'READING_NOT_ASSIGNED',error:'Reading account not assigned'});
+        if(!jigsaw[0].source_text_verified||!jigsaw[0].photo_assets_verified)
+          return res.status(423).json({ok:false,code:'SOURCE_REVIEW_REQUIRED',error:'Reading source and images require teacher verification'});
+        if(!response?.value||typeof response.value!=='object'||Array.isArray(response.value)||
+          !String(response.value.evidence||'').trim()||!String(response.value.why||'').trim())
+          return res.status(400).json({ok:false,code:'EVIDENCE_WHY_REQUIRED',error:'Evidence and Why are both required'});
+        if(response.value.account!==undefined&&response.value.account!==jigsaw[0].account)
+          return res.status(403).json({ok:false,code:'ACCOUNT_MISMATCH',error:'Only your assigned account is permitted'});
+      }
       const validated=validateAssignedResponse(a[0],response);
       if(!validated.ok)return res.status(400).json({ok:false,code:validated.code,error:validated.error});
       // Idempotence: the database MUST have the two named UNIQUE indexes

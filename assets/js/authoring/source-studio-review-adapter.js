@@ -56,7 +56,9 @@ export function sourceIntakeToStudioReviewScreen(text,{title='Source activity re
   blocks.push(discussion('HOME GROUP: Student A, then B, then C teaches their account. Each listener records two new clues.','home'));
   for(const q of task.questions)blocks.push(discussion(q.id+'. '+q.prompt,'complete'));
   for(const p of task.paragraphs){
-   blocks.push(discussion('ACCOUNT '+p.label+': Which person matches it? Evidence: quote a short phrase. Why does that clue support your match? What is your estimated year, and why?','evidence'));
+   const block=discussion('ACCOUNT '+p.label+': Reading 1 – Photograph/name match. Evidence: quote a SHORT phrase from the account. Why does it support your match? Reading 2 – Estimate the starting year; identify a time clue and explain why it suggests that period. Discuss estimates; no exact year is supplied in the book.','evidence');
+   block.jigsawEvidence={account:p.label,requiresEvidence:true,requiresWhy:true,openYearEstimate:true,teacherReviewRequired:true};
+   blocks.push(block);
   }
  }else{
   blocks.push(textBlock(task.passage,'read'));

@@ -20,6 +20,7 @@ function harness(){
   const q=parts.join('?').replace(/\s+/g,' ').trim();
   if(q.includes('FROM assignments WHERE assignment_id=')&&q.includes('status='))return args[0]===assignment.assignment_id?[assignment]:[];
   if(q.includes('FROM assignments WHERE assignment_id='))return args[0]===assignment.assignment_id?[assignment]:[];
+  if(q.includes('FROM reading_jigsaw_materials j LEFT JOIN reading_jigsaw_members m'))return [];
   if(q.includes('FROM auth_class_members'))return args[0]===assignment.class_id&&args[1]===student.user_id?[{one:1}]:[];
   if(q.includes('FROM users WHERE external_auth_id='))return [{user_id:teacher.user_id}];
   if(q.includes('SELECT 1 FROM classes'))return args[0]===assignment.class_id&&

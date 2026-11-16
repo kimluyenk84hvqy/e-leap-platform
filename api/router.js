@@ -22,6 +22,7 @@ import researchSessions from '../server/research/sessions.js';
 import researchShells from '../server/research/shells.js';
 import researchSubmissions from '../server/research/submissions.js';
 import researchUsers from '../server/research/users.js';
+import researchReadingJigsaw from '../server/research/reading-jigsaw.js';
 
 const ROUTES={
   'auth/login':authLogin,
@@ -46,6 +47,7 @@ const ROUTES={
   'research/sessions':researchSessions,
   'research/shells':researchShells,
   'research/submissions':researchSubmissions,
+  'research/reading-jigsaw':researchReadingJigsaw,
   'research/users':researchUsers
 };
 
