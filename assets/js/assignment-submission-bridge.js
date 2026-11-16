@@ -7,7 +7,7 @@
   const readEvents=()=>{try{return JSON.parse(localStorage.getItem(EVENTS_KEY)||'[]')}catch{return[]}};
   const readActive=()=>{try{return JSON.parse(localStorage.getItem(ACTIVE_KEY)||'null')}catch{return null}};
   const writeActive=v=>{try{if(v)localStorage.setItem(ACTIVE_KEY,JSON.stringify(v));else localStorage.removeItem(ACTIVE_KEY)}catch{}};
-  function begin(a){writeActive({assignmentId:String(a.assignment_id),resourceId:String(a.resource_id),startedAt:new Date().toISOString()})}
+  function begin(a){if(!a?.activity_id)return;writeActive({assignmentId:String(a.assignment_id),resourceId:String(a.resource_id),activityId:String(a.activity_id),startedAt:new Date().toISOString()})}
   function evidence(a){
     const active=readActive();
     const start=active&&String(active.assignmentId)===String(a.assignment_id)?new Date(active.startedAt||0).getTime():0;
@@ -17,16 +17,16 @@
     const latestScore=[...submits,...checks].map(e=>Number(e?.payload?.score??e?.payload?.grading?.score)).filter(Number.isFinite).at(-1);
     return {kind:'interactive-lesson',resourceId:a.resource_id,activityId:a.activity_id||null,startedAt:active?.startedAt||null,completedAt:new Date().toISOString(),eventCount:rows.length,submitCount:submits.length,latestScore:Number.isFinite(latestScore)?latestScore:null,events:rows.slice(-120).map(e=>({eventId:e.eventId,eventType:e.eventType,occurredAt:e.occurredAt,activityId:e.activityId||null,payload:e.payload||{}}))};
   }
-  async function submitAssignment(a,btn){
-    const proof=evidence(a);
-    if(!proof.eventCount){alert('Open the lesson and complete the homework before submitting it.');return}
-    if(!confirm(`Submit “${a.title}” now? This creates one homework attempt.`))return;
-    btn.disabled=true;const old=btn.textContent;btn.textContent='Submitting…';
+  async function checkSubmission(a,btn){
+    btn.disabled=true;const old=btn.textContent;btn.textContent='Checking…';
     try{
-      await api('/submissions',{method:'POST',body:JSON.stringify({assignmentId:a.assignment_id,response:proof})});
-      writeActive(null);btn.textContent='Submitted';
-      document.querySelector('#mainNav [data-nav="assignments"]')?.click();
-    }catch(e){btn.disabled=false;btn.textContent=old;alert(e.message)}
+      const result=await api('/submissions?assignmentId='+encodeURIComponent(a.assignment_id));
+      const rows=result.submissions||[];
+      alert(rows.length
+        ? 'Submitted · '+rows.length+' attempt(s) recorded on E-LEAP. Latest: '+new Date(rows[0].submitted_at).toLocaleString()
+        : 'Not submitted yet. Open the assigned lesson and use Submit inside the activity.');
+    }catch(e){alert('Unable to verify submission: '+e.message)}
+    finally{btn.disabled=false;btn.textContent=old}
   }
   async function decorate(){
     if(role()!=='student')return;
@@ -34,13 +34,24 @@
     if(!['My Assignments','Homework'].includes(title))return;
     let asgs=[];try{asgs=(await api('/assignments')).assignments||[]}catch{return}
     const cards=[...document.querySelectorAll('#content .assignment-card')];
-    cards.forEach((card,i)=>{
-      const a=asgs[i];if(!a||card.dataset.assignmentBridge==='1')return;card.dataset.assignmentBridge='1';
+    cards.forEach(card=>{
+      if(card.dataset.assignmentBridge==='1')return;
+      const explicitId=card.dataset.assignmentId;
+      const resourceId=card.dataset.resourceId;
+      const heading=card.querySelector('h2,h3,h4,.assignment-title,.card-title')?.textContent?.trim();
+      // Never pair cards to assignments by array index: sorted results can differ.
+      const matches=asgs.filter(a=>explicitId
+        ? String(a.assignment_id)===explicitId
+        : resourceId
+          ? String(a.resource_id)===resourceId
+          : heading&&String(a.title||'').trim()===heading);
+      if(matches.length!==1)return;
+      const a=matches[0];card.dataset.assignmentBridge='1';
       const open=card.querySelector('button.btn:not([data-do]),button[data-open-lesson]');
       if(open&&/open lesson/i.test(open.textContent||''))open.addEventListener('click',()=>begin(a),{capture:true});
       const due=a.deadline?new Date(a.deadline).getTime():null,closed=due&&Date.now()>due&&a.late_policy==='closed';
       if(closed)return;
-      const submit=document.createElement('button');submit.type='button';submit.className='btn primary';submit.textContent='Submit Homework';submit.dataset.assignmentSubmit='1';submit.onclick=()=>submitAssignment(a,submit);
+      const submit=document.createElement('button');submit.type='button';submit.className='btn primary';submit.textContent='Check Submission';submit.dataset.assignmentStatus='1';submit.onclick=()=>checkSubmission(a,submit);
       const doBtn=card.querySelector('[data-do]');if(doBtn)doBtn.before(submit);else card.append(submit);
     });
   }

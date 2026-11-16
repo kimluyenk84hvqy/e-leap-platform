@@ -6,6 +6,7 @@ import {ELeapMediaResolver} from '../media/media-resolver.js';
 import {normalizeAssessment,scoreText,detailText} from '../grading/grading-core.js';
 import {inlineActivityControlsHTML} from '../controls/control-shell.js';
 import {ConfirmedAssignmentSubmission} from './confirmed-assignment-submission.js';
+import {ACTIVE_ASSIGNMENT_KEY,resolveOpenedAssignment} from './active-assignment-context.js';
 
 const esc=s=>String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));
 
@@ -250,7 +251,10 @@ export class ELeapSharedLessonRuntime{
       if(g.assessable&&g.unansweredCount>0&&!globalThis.confirm(`You have answered ${g.answeredCount} of ${g.totalCount} questions. ${g.unansweredCount} unanswered question(s) will receive 0 points. Submit anyway?`))return;
       // Assignment is a server-issued teaching task, not a locally invented
       // record. Never claim success for a local-only analytics event.
-      const assignmentId=a.assignmentId||this.lesson.assignmentId||null;
+      let opened=null;
+      try{opened=JSON.parse(globalThis.localStorage?.getItem(ACTIVE_ASSIGNMENT_KEY)||'null')}catch{}
+      const assignmentId=a.assignmentId||this.lesson.assignmentId||
+        (this.context.role==='student'?resolveOpenedAssignment({lesson:this.lesson,activity:a,active:opened}):null);
       const resourceId=String(this.lesson.resourceId||this.lesson.id);
       const activityId=String(a.id||'');
       if(!assignmentId){
