@@ -16,7 +16,8 @@ test('U6 has a real jigsaw learning cycle, not serial whole-class reading',()=>{
  const result=sourceIntakeToStudioReviewScreen(source);
  assert.equal(result.ok,true);
  assert.deepEqual(result.screen.combo.steps.map(s=>s.id),['predict','assigned','expert','home','complete','evidence']);
- assert.deepEqual(result.screen.blocks.filter(b=>b.jigsawAssignment).map(b=>b.jigsawAssignment),['A','B','C']);
+ assert.deepEqual(result.screen.blocks.filter(b=>b.comboStep==='assigned').map(b=>b.jigsawAssignment),['A','B','C']);
+ assert.deepEqual(result.screen.blocks.filter(b=>b.comboStep==='expert').map(b=>b.jigsawAssignment),['A','B','C']);
  assert.ok(result.screen.blocks.filter(b=>b.comboStep==='expert').length===3);
  assert.ok(result.screen.blocks.filter(b=>b.comboStep==='evidence').length===3);
  assert.equal(verifyComboStateTraversal(result.screen).ok,true);
