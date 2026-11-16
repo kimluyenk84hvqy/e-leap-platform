@@ -5,6 +5,7 @@ import {ELeapAutosaveStore} from '../autosave-store.js';
 import {ELeapMediaResolver} from '../media/media-resolver.js';
 import {normalizeAssessment,scoreText,detailText} from '../grading/grading-core.js';
 import {inlineActivityControlsHTML} from '../controls/control-shell.js';
+import {ConfirmedAssignmentSubmission} from './confirmed-assignment-submission.js';
 
 const esc=s=>String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));
 
@@ -17,6 +18,7 @@ export class ELeapSharedLessonRuntime{
     this.events=new ELeapLearningEvents({resourceId:lesson.resourceId||lesson.id,context:this.context.toJSON(),sink:eventSink||new LocalEventSink(),source:'shared-runtime'});
     this.autosave=new ELeapAutosaveStore();
     this.media=new ELeapMediaResolver({basePath:'..'});
+    this.confirmedSubmissions=new ConfirmedAssignmentSubmission();
   }
   async mount(){
     document.documentElement.dataset.eleapRole=this.context.role;
@@ -36,6 +38,10 @@ export class ELeapSharedLessonRuntime{
     return `<a class="eleap-studio-link" href="${esc(href)}">Edit in Studio</a>`;
   }
   render(){
+    if(this.lesson.screens?.some(x=>x.sourceReviewDraft)){
+      this.root.textContent='This source is not verified and cannot be opened in the learner Runtime. Review it in Teacher Studio.';
+      return;
+    }
     const s=this.current();
     const canPresent=this.context.can('presentation:enter');
     this.root.innerHTML=`<section class="eleap-runtime-shell">
@@ -236,12 +242,35 @@ export class ELeapSharedLessonRuntime{
       flash(host?.querySelector('[data-show-answer]'),'is-active',900);
     });
     host?.querySelector('[data-exit-presentation]')?.addEventListener('click',()=>{this.root.dispatchEvent(new CustomEvent('e-leap:exit-presentation',{bubbles:true}));});
-    host?.querySelector('[data-submit]')?.addEventListener('click',async()=>{
-      const response=this.collectResponse(a,host);const g=this.gradeActivity(a,response);
-      if(g.assessable&&g.unansweredCount>0&&!globalThis.confirm(`You have answered ${g.answeredCount} of ${g.totalCount} questions. ${g.unansweredCount} question(s) are unanswered and will receive 0 points. Submit anyway?`))return;
-      this.setGradeStatus(host,g,{submitted:true});
-      flash(host?.querySelector('[data-submit]'),'is-success',1000);
-      await this.events.emit('response.submitted',{activityId:a.id,studentId:this.context.studentId,sessionId:this.context.sessionId,payload:{response,grading:g,score:g.score,correctCount:g.correctCount,answeredCount:g.answeredCount,wrongCount:g.wrongCount,unansweredCount:g.unansweredCount,totalCount:g.totalCount,attemptNo:1,submissionType:'shared-runtime'}});
+    host?.querySelector('[data-submit]')?.addEventListener('click',async(e)=>{
+      if(this.context.role!=='student'||this.context.mode==='presentation')return;
+      const button=e.currentTarget;
+      if(button.disabled||host.dataset.submitPending==='1')return;
+      const response=this.collectResponse(a,host),g=this.gradeActivity(a,response);
+      if(g.assessable&&g.unansweredCount>0&&!globalThis.confirm(`You have answered ${g.answeredCount} of ${g.totalCount} questions. ${g.unansweredCount} unanswered question(s) will receive 0 points. Submit anyway?`))return;
+      // Assignment is a server-issued teaching task, not a locally invented
+      // record. Never claim success for a local-only analytics event.
+      const assignmentId=a.assignmentId||this.lesson.assignmentId||null;
+      const resourceId=String(this.lesson.resourceId||this.lesson.id);
+      const activityId=String(a.id||'');
+      if(!assignmentId){
+        const st=host.querySelector('[data-status]');
+        if(st)st.textContent='Not submitted: no active assignment is linked to this activity.';
+        return;
+      }
+      host.dataset.submitPending='1';button.disabled=true;
+      const st=host.querySelector('[data-status]');
+      if(st)st.textContent='Submitting to E-LEAP…';
+      try{
+        const result=await this.confirmedSubmissions.submit({assignmentId,resourceId,activityId,response});
+        this.setGradeStatus(host,g,{submitted:true});
+        if(st){st.textContent='Submitted · receipt '+result.submissionId+' · attempt '+result.attemptNo+(g.assessable?' · local check only':' · teacher review pending');st.title='Confirmed by E-LEAP server';}
+        flash(button,'is-success',1000);
+        try{await this.events.emit('response.submitted',{activityId,studentId:this.context.studentId,sessionId:this.context.sessionId,payload:{submissionId:result.submissionId,attemptNo:result.attemptNo,serverConfirmed:true}});}
+        catch(error){console.warn('Optional submission telemetry failed after confirmed server receipt:',error);}
+      }catch(error){
+        if(st){st.textContent=error.message||'Submission not confirmed';st.title='No confirmed server receipt';}
+      }finally{delete host.dataset.submitPending;button.disabled=false;}
     });
     host?.querySelector('[data-guest-finish]')?.addEventListener('click',()=>{
       const response=this.collectResponse(a,host);
