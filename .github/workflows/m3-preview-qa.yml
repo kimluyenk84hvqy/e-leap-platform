@@ -47,7 +47,7 @@ jobs:
   authenticated-http-e2e:
     name: Student → Submit → Teacher Responses → Reload
     needs: contract-tests
-    if: github.event_name == 'workflow_dispatch' && inputs.run_authenticated_e2e == true && github.ref == 'refs/heads/feature/studio-media-library-v1'
+    if: github.ref == 'refs/heads/feature/studio-media-library-v1' && ((github.event_name == 'push' && vars.ELEAP_QA_E2E_ENABLED == 'true') || (github.event_name == 'workflow_dispatch' && inputs.run_authenticated_e2e == true))
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment: preview-qa
