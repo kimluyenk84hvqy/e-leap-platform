@@ -7,11 +7,20 @@
 --           branch restore/binding requires an independent validated procedure.
 -- Migration is intentionally non-repeatable and aborts on any unexpected data.
 BEGIN;
+-- Prevent indefinite waiting and leave original state on failure.
+SET LOCAL lock_timeout = '5s';
+SET LOCAL statement_timeout = '60s';
 
 LOCK TABLE public.assignments, public.submissions IN ACCESS EXCLUSIVE MODE;
 
 DO $guard$
 BEGIN
+  IF (SELECT data_type FROM information_schema.columns WHERE table_schema='public'
+      AND table_name='assignments' AND column_name='assignment_id') IS DISTINCT FROM 'bigint'
+     OR (SELECT data_type FROM information_schema.columns WHERE table_schema='public'
+      AND table_name='submissions' AND column_name='submission_id') IS DISTINCT FROM 'bigint' THEN
+    RAISE EXCEPTION 'Unexpected legacy table versions: abort migration';
+  END IF;
   IF EXISTS (SELECT 1 FROM public.assignments LIMIT 1) OR
      EXISTS (SELECT 1 FROM public.submissions LIMIT 1) THEN
     RAISE EXCEPTION 'Legacy assignment or submission table is not empty: abort migration';
@@ -25,6 +34,11 @@ BEGIN
     WHERE contype='f' AND confrelid IN (
       'public.assignments'::regclass,'public.submissions'::regclass)
   ) THEN RAISE EXCEPTION 'Other tables reference legacy assignment or submission schema: abort'; END IF;
+  IF EXISTS (
+    SELECT 1 FROM pg_rewrite r JOIN pg_depend d ON d.objid=r.oid
+    WHERE d.refobjid IN ('public.assignments'::regclass,'public.submissions'::regclass)
+      AND r.ev_class NOT IN ('public.assignments'::regclass,'public.submissions'::regclass)
+  ) THEN RAISE EXCEPTION 'External view dependency exists: abort migration'; END IF;
 END
 $guard$;
 
