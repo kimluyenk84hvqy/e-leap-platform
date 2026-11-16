@@ -41,7 +41,15 @@ button:disabled{opacity:.55;cursor:wait}.hint{background:#f0f8d8;border-left:5px
 </form></div></section>
 <section id="teacherSection" class="section" hidden><h2>Reading group assignments</h2>
 <p class="note">Assign each student A, B or C. Unverified source material stays unavailable to students.</p>
-<div id="reviewState"></div><div id="roster" class="grid"></div><div id="teacherResult" role="status"></div></section>
+<div id="reviewState"></div>
+<details class="section" id="sourceEditor"><summary><strong>Source and photograph review</strong></summary>
+<p class="note">Copy text A/B/C from the verified book page. Image asset IDs must reference original photographs uploaded to the Media Library.</p>
+<div class="form" id="draftFields"></div><button id="saveDraft" type="button">Save source draft</button>
+<p class="note">Saving a draft does not release Reading to students.</p>
+<label><input type="checkbox" id="confirmText" style="width:auto"> I checked all three accounts and both tasks against the textbook.</label>
+<label><input type="checkbox" id="confirmPhotos" style="width:auto"> I checked the three uploaded original photographs.</label>
+<button type="button" id="verifySource">Confirm source review</button>
+</details><div id="roster" class="grid"></div><div id="teacherResult" role="status"></div></section>
 </main><script type="module">
 import {ConfirmedAssignmentSubmission} from './assets/js/runtime/confirmed-assignment-submission.js';
 const $=id=>document.getElementById(id),params=new URLSearchParams(location.search);
@@ -81,6 +89,47 @@ async function start(){
    $('reviewState').textContent=data.material
     ?(data.material.source_text_verified&&data.material.photo_assets_verified?'Text and images verified':'Source review required — Student access blocked')
     :'Reading source has not been added or verified.';
+   const fields=$('draftFields');
+   const input=(caption,value='',multiline=false)=>{
+    const label=element('label',caption);label.className='field';
+    const control=document.createElement(multiline?'textarea':'input');
+    if(multiline)control.rows=5;control.value=value;label.append(control);fields.append(label);return control;
+   };
+   const existing=data.material||{};
+   const passage={};
+   for(const k of ['A','B','C'])passage[k]=input('Account '+k,existing.accounts?.[k]||'',true);
+   const photoNames=['Mavis Carver','Anita Green','Neil Johnson'].map((name,i)=>input('Photo '+(i+1)+' name',existing.photo_labels?.[i]||name));
+   const photoIds=[0,1,2].map(i=>input('Photo '+(i+1)+' media asset ID',existing.photo_assets?.[i]?.assetId||''));
+   const questions=[0,1].map((i)=>input('Original Reading exercise '+(i+1),existing.original_questions?.[i]||'',true));
+   const sourcePage=input('Source page',String(existing.source_page||41));
+   $('saveDraft').onclick=async()=>{
+    const button=$('saveDraft');button.disabled=true;$('teacherResult').textContent='Saving Reading draft…';
+    const material={accounts:Object.fromEntries(['A','B','C'].map(k=>[k,passage[k].value.trim()])),
+     photoLabels:photoNames.map(x=>x.value.trim()),
+     photoAssets:photoIds.every(x=>x.value.trim())?photoIds.map((x,i)=>({assetId:x.value.trim(),alt:photoNames[i].value.trim()})):[],
+     originalQuestions:questions.map(x=>x.value.trim()),sourcePage:Number(sourcePage.value)};
+    try{
+     await api('/api/research/reading-jigsaw',{method:'POST',body:JSON.stringify({assignmentId,action:'draft',material})});
+     data.material={...material,source_text_verified:false,photo_assets_verified:false};
+     $('reviewState').textContent='Draft saved · awaiting verification. Student reading remains locked.';
+     $('teacherResult').textContent='Draft saved for Teacher Review.';
+    }catch(ex){$('teacherResult').textContent='Not saved: '+ex.message}
+    finally{button.disabled=false}
+   };
+   $('verifySource').onclick=async()=>{
+    if(!$('confirmText').checked||!$('confirmPhotos').checked){
+     $('teacherResult').textContent='Confirm the source text and all three photos before release.';return;
+    }
+    const button=$('verifySource');button.disabled=true;
+    try{
+     const result=await api('/api/research/reading-jigsaw',{method:'POST',
+      body:JSON.stringify({assignmentId,action:'verify',confirmSourceText:true,confirmOriginalPhotos:true})});
+     data.material={...data.material,...result.material};
+     $('reviewState').textContent='Source reviewed · assigned Students can read their account.';
+     $('teacherResult').textContent='Source verification recorded.';
+    }catch(ex){$('teacherResult').textContent='Not verified: '+ex.message}
+    finally{button.disabled=false}
+   };
    const byId=new Map((data.members||[]).map(m=>[m.student_user_id,m.account]));
    (data.roster||[]).forEach(student=>{
     const card=document.createElement('div');card.className='section';card.style.margin='0';
@@ -89,6 +138,7 @@ async function start(){
     for(const label of ['A','B','C']){const option=element('option','Account '+label);option.value=label;option.selected=byId.get(student.user_id)===label;select.append(option)}
     const button=element('button','Assign');button.style.marginTop='12px';
     button.addEventListener('click',async()=>{
+     if(!data.material){$('teacherResult').textContent='Save the Reading source draft before assigning accounts.';return;}
      button.disabled=true;$('teacherResult').textContent='Saving assignment…';
      try{await api('/api/research/reading-jigsaw',{method:'POST',body:JSON.stringify({
        action:'assign',assignmentId,studentUserId:student.user_id,account:select.value
