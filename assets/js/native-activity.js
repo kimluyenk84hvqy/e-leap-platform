@@ -1,4 +1,5 @@
-import {ELeapSubmissionService,LocalSubmissionStore} from './submissions.js';
+import {ConfirmedAssignmentSubmission} from './runtime/confirmed-assignment-submission.js';
+import {ACTIVE_ASSIGNMENT_KEY,resolveOpenedAssignment} from './runtime/active-assignment-context.js';
 import {normalizeAssessment,scoreText,detailText} from './grading-core.js';
 import {inlineActivityControlsHTML} from './controls/control-shell.js';
 
@@ -11,7 +12,7 @@ export function nativeControlCapabilities({role='guest',context={},activity={}}=
 export class ELeapNativeActivity{
   constructor({root,activity,events,resourceId,studentId=null,sessionId=null,context={}}){
     Object.assign(this,{root,activity,events,resourceId,studentId,sessionId,context});
-    this.service=new ELeapSubmissionService({resourceId,studentId,sessionId,context,store:new LocalSubmissionStore(),events});
+    this.confirmedSubmissions=new ConfirmedAssignmentSubmission();
   }
   role(){return this.context?.role||'guest';}
   response(){
@@ -62,10 +63,30 @@ export class ELeapNativeActivity{
       const r=this.response(),status=this.root.querySelector('[data-status]'),feedback=this.root.querySelector('[data-feedback]');
       if(!this.valid(r)){status.textContent='Complete the activity first';return;}
       const g=this.grading(r);
-      const row=await this.service.submit(a,r);
-      status.textContent=scoreText(g,{submitted:true});status.title=detailText(g);
-      feedback.textContent=g.assessable?(g.isCorrect?'Correct':'Check the response and try again'):'Response saved for teacher review.';
-      this.root.dispatchEvent(new CustomEvent('e-leap:submission',{bubbles:true,detail:{...row,grading:g}}));
+      const resourceId=String(this.resourceId||'');
+      const activityId=String(a.id||'');
+      let opened=null;
+      try{opened=JSON.parse(globalThis.localStorage?.getItem(ACTIVE_ASSIGNMENT_KEY)||'null')}catch{}
+      const assignmentId=a.assignmentId||this.context?.assignmentId||
+        resolveOpenedAssignment({lesson:{id:resourceId,resourceId},activity:a,active:opened});
+      if(!assignmentId||!activityId){
+        status.textContent='Not submitted: open an assigned activity first.';
+        feedback.textContent='Your answer remains on this screen; no server record was created.';
+        return;
+      }
+      const button=this.root.querySelector('[data-submit]');
+      if(button.disabled)return;
+      button.disabled=true;status.textContent='Submitting to E-LEAP…';
+      try{
+        const receipt=await this.confirmedSubmissions.submit({assignmentId,resourceId,activityId,response:r});
+        status.textContent='Submitted · receipt '+receipt.submissionId;
+        status.title='Server-confirmed attempt '+receipt.attemptNo;
+        feedback.textContent=g.assessable?'Submitted. Any score shown by Check is local only.':'Submitted for teacher review.';
+        this.root.dispatchEvent(new CustomEvent('e-leap:submission',{bubbles:true,detail:{...receipt,grading:g,serverConfirmed:true}}));
+      }catch(error){
+        status.textContent=error.message||'Submission not confirmed';
+        feedback.textContent='No server receipt was confirmed. Your answer is still on this screen.';
+      }finally{button.disabled=false}
     });
     return this;
   }
