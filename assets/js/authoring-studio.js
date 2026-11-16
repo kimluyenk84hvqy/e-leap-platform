@@ -209,7 +209,7 @@ function renderSourceAiWorkbenchProperties(){
  const canUndo=previousInstructionUndo?.screenId===screen.id;
  return '<section class="property-section" data-source-workbench><h3>Teaching Method Review · M2</h3>'+
   '<p class="helper">Select a class size and activity time to check whether Jigsaw fits this source. Deterministic rule check — no AI model call.</p>'+
-  '<label style="display:inline-block;margin-right:10px">Learners <input data-workbench-learners type="number" min="1" max="120" value="3" style="width:75px"></label>'+
+  '<label style="display:inline-block;margin-right:10px">Learners <input data-workbench-learners type="number" min="1" max="120" value="6" style="width:75px"></label>'+
   '<label>Minutes <input data-workbench-minutes type="number" min="5" max="120" value="30" style="width:75px"></label>'+
   '<p><button type="button" class="studio-btn" data-workbench-method>Evaluate method</button></p>'+
   '<h3>Instruction Assistant Review · M4</h3>'+

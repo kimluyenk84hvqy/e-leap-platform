@@ -8,7 +8,7 @@ test('M2 accepts 3-source reading and explicitly rejects unsuitable group/time a
  const good=recommendTeachingMethod({screen,learnerCount:6,minutes:30});
  assert.equal(good.ok,true);assert.equal(good.methodId,'jigsaw-reading');
  assert.equal(good.canPublish,false);assert.ok(good.warnings.some(x=>/photograph/.test(x)));
- assert.equal(recommendTeachingMethod({screen,learnerCount:2,minutes:30}).ok,false);
+ assert.equal(recommendTeachingMethod({screen,learnerCount:3,minutes:30}).ok,false);
  assert.equal(recommendTeachingMethod({screen,learnerCount:6,minutes:10}).ok,false);
  screen.blocks.pop();assert.equal(recommendTeachingMethod({screen,learnerCount:6,minutes:30}).ok,false);
 });
@@ -42,4 +42,11 @@ test('M4 source fingerprint changes if source content changes',async()=>{
  lesson.screens[0].blocks[0].content.text='Changed passage';
  const b=await fingerprintReviewSource(lesson.screens[0]);
  assert.notEqual(a,b);
+});
+
+test('M2 rejects exactly 3 learners because no expert pairs can form',()=>{
+ const screen=make().screens[0];
+ const result=recommendTeachingMethod({screen,learnerCount:3,minutes:40});
+ assert.equal(result.ok,false);
+ assert.ok(result.warnings.some(x=>/at least six learners/.test(x)));
 });

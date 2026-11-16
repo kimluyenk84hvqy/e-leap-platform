@@ -5,7 +5,7 @@ import {validateProposalAgainstDraft,AI_PROPOSAL_SCHEMA} from './studio-ai-contr
 const clone=x=>JSON.parse(JSON.stringify(x));
 const validHash=x=>/^[0-9a-f]{64}$/i.test(String(x||''));
 const str=x=>String(x??'').trim();
-export function recommendTeachingMethod({screen,learnerCount=3,minutes=25}={}){
+export function recommendTeachingMethod({screen,learnerCount=6,minutes=25}={}){
  const findings=[],warnings=[];
  if(!screen?.sourceReviewDraft)return {ok:false,method:null,findings:[],warnings:['A source-mapped review screen is required']};
  const originalTasks=(screen.blocks||[]).filter(b=>b.comboStep==='complete'&&b.type==='discussion');
@@ -15,8 +15,8 @@ export function recommendTeachingMethod({screen,learnerCount=3,minutes=25}={}){
   return {ok:false,method:null,findings:[],warnings:['Jigsaw requires three independently assigned source accounts A, B and C']};
  if(originalTasks.length!==screen.sourceReviewDraft.questionCount||originalTasks.length!==2)
   return {ok:false,method:null,findings:[],warnings:['Both original textbook tasks must be retained before proposing a method']};
- if(!Number.isInteger(learnerCount)||learnerCount<3)
-  return {ok:false,method:null,findings:[],warnings:['Jigsaw needs at least three learners to cover A, B and C']};
+ if(!Number.isInteger(learnerCount)||learnerCount<6)
+  return {ok:false,method:null,findings:[],warnings:['Expert-group Jigsaw requires at least six learners: at least two experts per account A, B and C']};
  if(!Number.isFinite(minutes)||minutes<20)
   return {ok:false,method:null,findings:[],warnings:['Insufficient lesson time for individual, expert, home, textbook tasks, and evidence']};
  findings.push('Three distinct source accounts A/B/C support information-gap reading.');
