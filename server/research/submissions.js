@@ -78,9 +78,15 @@ export default async function handler(req,res){
       // Idempotence: the database MUST have the two named UNIQUE indexes
       // checked by requireSubmissionSchema. Concurrent writers race safely via
       // ON CONFLICT DO NOTHING, then inspect the request UUID or retry.
-      const existing=await sql`SELECT * FROM submissions WHERE assignment_id=${assignmentId}
+      const existing=await sql`SELECT *,response=${validated.response}::jsonb AS same_payload
+        FROM submissions WHERE assignment_id=${assignmentId}
         AND student_user_id=${user.user_id} AND client_request_id=${clientRequestId} LIMIT 1`;
-      if(existing.length)return res.status(200).json({ok:true,idempotent:true,submission:existing[0]});
+      if(existing.length){
+        if(!existing[0].same_payload)return res.status(409).json({ok:false,
+          code:'IDEMPOTENCY_PAYLOAD_CONFLICT',error:'This request ID already belongs to a different response'});
+        const {same_payload,...confirmedRow}=existing[0];
+        return res.status(200).json({ok:true,idempotent:true,submission:confirmedRow});
+      }
       if(a[0].deadline&&a[0].late_policy==='closed'&&Date.now()>new Date(a[0].deadline).getTime())
         return res.status(403).json({ok:false,error:'Assignment deadline has passed'});
       const meta={researchConsent:Boolean(researchConsent)};
@@ -97,9 +103,15 @@ export default async function handler(req,res){
           ${user.display_name},${validated.response},${attempt},'submitted',${meta},${clientRequestId})
           ON CONFLICT DO NOTHING RETURNING *`;
         if(inserted.length){confirmed=inserted[0];break;}
-        const duplicate=await sql`SELECT * FROM submissions WHERE assignment_id=${assignmentId}
+        const duplicate=await sql`SELECT *,response=${validated.response}::jsonb AS same_payload
+          FROM submissions WHERE assignment_id=${assignmentId}
           AND student_user_id=${user.user_id} AND client_request_id=${clientRequestId} LIMIT 1`;
-        if(duplicate.length)return res.status(200).json({ok:true,idempotent:true,submission:duplicate[0]});
+        if(duplicate.length){
+          if(!duplicate[0].same_payload)return res.status(409).json({ok:false,
+            code:'IDEMPOTENCY_PAYLOAD_CONFLICT',error:'This request ID already belongs to a different response'});
+          const {same_payload,...confirmedRow}=duplicate[0];
+          return res.status(200).json({ok:true,idempotent:true,submission:confirmedRow});
+        }
       }
       if(!confirmed)return res.status(409).json({ok:false,error:'Concurrent submission conflict; inspect My Submissions',code:'SUBMISSION_CONFLICT'});
       try{
