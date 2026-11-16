@@ -27,7 +27,7 @@ export class ConfirmedAssignmentSubmission{
  requestFor(key,fingerprint){
   let remembered=this.requestCache.get(key);
   if(!remembered){try{remembered=JSON.parse(this.storage?.getItem(key)||'null')}catch{}}
-  if(remembered?.fingerprint===fingerprint&&/^[0-9a-f-]{36}$/i.test(String(remembered.id||'')))return remembered.id;
+  if(remembered?.fingerprint===fingerprint&&/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(remembered.id||'')))return remembered.id;
   const id=this.idFactory?.();
   if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(id||'')))
    throw Error('A secure unique request ID is required');
@@ -41,7 +41,7 @@ export class ConfirmedAssignmentSubmission{
    const url=this.endpoint+'/submissions?assignmentId='+encodeURIComponent(assignmentId);
    const result=await this.json(await this.fetchImpl(url,{credentials:'same-origin',cache:'no-store'}));
    const row=(result.submissions||[]).find(x=>String(x.client_request_id||'').toLowerCase()===requestId.toLowerCase());
-   if(row?.submission_id&&String(row.assignment_id)===assignmentId){
+   if(row?.submission_id&&String(row.assignment_id)===assignmentId&&Number.isInteger(Number(row.attempt_no))&&Number(row.attempt_no)>=1){
     return {submissionId:row.submission_id,assignmentId,attemptNo:Number(row.attempt_no),status:'submitted'};
    }
   }catch{}
