@@ -2,6 +2,7 @@ import {ELeapRuntimeContext} from './runtime-context.js';
 import {mountFoundationLab} from './authoring/foundation-lab.js';
 import {ELeapNativeActivity} from './native-activity.js';
 import {sourceIntakeToStudioReviewScreen} from './authoring/source-studio-review-adapter.js';
+import {recommendTeachingMethod,previewStepInstructionEdit,acceptStepInstructionEdit,undoStepInstructionEdit,fingerprintReviewSource} from './authoring/studio-review-workbench.js';
 import {importResourceZip,rehydrateResourceBank,createResourceScreens,renderResourceStage,renderResourceProperties,wireResourceStage} from './authoring/resource-bank-assembly.js';
 import {E_LEAP_ACTIVITY_TYPES,E_LEAP_AUTHORING_LIBRARY} from './activity-registry.js';
 import {E_LEAP_THEME_DEFAULT,E_LEAP_THEME_PRESETS,E_LEAP_ALLOWED_FONTS,applyThemePreset} from './theme-tokens.js';
@@ -50,6 +51,7 @@ const LIBRARY=E_LEAP_AUTHORING_LIBRARY;
 const saveService=new ELeapAuthoringSaveService();
 let lesson=null, selectedScreen=0, selectedBlock=0, dirty=false, previewRole='teacher', autosaveTimer=null;
 const jigsawPreviewAccounts=new Map(); // Teacher-only UI filter; NOT an authorized learner assignment.
+let pendingInstructionReview=null,previousInstructionUndo=null,workbenchStatus='';
 let draftKey='';
 let layoutEditMode=false,layoutGuidesVisible=true,selectedLayoutRegion=null;
 const layoutHistory=createLayoutHistory();
@@ -201,6 +203,27 @@ function renderCertifiedProperties(){const s=currentScreen();if(s.certifiedTempl
  const curated=isU5?'<section class="property-section"><h3>Recommended bright photos · U5.1</h3><p class="helper">Choose a brighter real photograph. Colourful airport travellers (Pexels free-to-use) or yellow tram + green bus (WordPress CC0).</p><div class="studio-photo-options"><button type="button" class="studio-btn primary" data-u51-photo-choice="airport">Use colourful airport photo</button><button type="button" class="studio-btn" data-u51-photo-choice="tram">Use yellow tram + green bus</button><button type="button" class="studio-btn" data-u51-cover-image>Use original airport photo</button></div><p class="helper">Replaces only this Cover photo. Text, other slides and answer keys remain untouched.</p></section>':'';
  return curated+renderCertifiedEditor(s)+renderCertifiedGatePanel(s);
 }const family=({'lesson-cover':'cover','lesson-aims':'aims','lead-in':'opener'})[s.templateId];return family?'<section class="property-section"><h3>Certified template</h3><button class="studio-btn primary" data-certify-current="'+family+'">Convert slide to certified '+family+' template</button><p class="helper">Existing source blocks are preserved. Complete the fixed template slots before publishing.</p></section>':'';}
+function renderSourceAiWorkbenchProperties(){
+ const screen=currentScreen(),steps=screen.combo?.steps||[];
+ const active=comboStep(screen),pending=pendingInstructionReview?.screenId===screen.id?pendingInstructionReview:null;
+ const canUndo=previousInstructionUndo?.screenId===screen.id;
+ return '<section class="property-section" data-source-workbench><h3>Teaching Method Review · M2</h3>'+
+  '<p class="helper">Select a class size and activity time to check whether Jigsaw fits this source. Deterministic rule check — no AI model call.</p>'+
+  '<label style="display:inline-block;margin-right:10px">Learners <input data-workbench-learners type="number" min="1" max="120" value="3" style="width:75px"></label>'+
+  '<label>Minutes <input data-workbench-minutes type="number" min="5" max="120" value="30" style="width:75px"></label>'+
+  '<p><button type="button" class="studio-btn" data-workbench-method>Evaluate method</button></p>'+
+  '<h3>Instruction Assistant Review · M4</h3>'+
+  '<p class="helper">Manual proposal test. Choose ONE step, preview the change and explicitly approve. Source text, questions and answers are not edited.</p>'+
+  '<label>Step <select data-workbench-step>'+steps.map(st=>'<option value="'+esc(st.id)+'" '+(st.id===active?.id?'selected':'')+'>'+esc(st.label)+'</option>').join('')+'</select></label>'+
+  '<label style="display:block;margin-top:8px">Proposed instruction <textarea data-workbench-instruction rows="4" style="width:100%" maxlength="2000" placeholder="Write a clearer instruction for the selected step."></textarea></label>'+
+  '<p><button type="button" class="studio-btn" data-workbench-preview>Preview change</button></p>'+
+  (pending?'<div class="quality-item warn"><b>Before:</b> '+esc(pending.before)+'<p><b>After:</b> '+esc(pending.after)+'</p>'+
+   '<button type="button" class="studio-btn primary" data-workbench-approve>Approve change</button> '+
+   '<button type="button" class="studio-btn" data-workbench-reject>Reject</button></div>':'')+
+  (canUndo?'<p><button type="button" class="studio-btn" data-workbench-undo>Undo last approved change</button></p>':'')+
+  (workbenchStatus?'<p role="status">'+esc(workbenchStatus)+'</p>':'')+
+  '<p class="helper">Review draft only. No provider API, server approval, submission or publication.</p></section>';
+}
 function renderSourceNativeReviewProperties(){
  const screen=currentScreen();
  const blocks=(screen.blocks||[]).filter(b=>b.type==='discussion'&&['answer','complete'].includes(b.comboStep));
@@ -209,7 +232,7 @@ function renderSourceNativeReviewProperties(){
   '<p class="helper">Review both tasks independently using the existing E-LEAP response component. No verified answer, Score, Submit, server save or publication is available.</p>'+
   blocks.map((b,i)=>'<div class="studio-native-review-item"><h4>Reading task '+(i+1)+'</h4><div data-source-native-review="'+i+'"></div></div>').join('')+'</section>';
 }
-function renderProperties(){if(currentScreen().sourceReviewDraft)return lessonProps()+slideProps()+blockProps()+renderSourceNativeReviewProperties();if(currentScreen().resourceStage)return lessonProps()+renderResourceProperties(currentScreen(),lesson.resourceBank);return currentScreen().functionalDraft?`${lessonProps()}${renderFunctionalSlideProps(currentScreen())}`:currentScreen().methodDraft?`${lessonProps()}${renderMethodTemplateProperties(currentScreen())}`:`${lessonProps()}${slideProps()}${renderCertifiedProperties()}${currentScreen().certifiedTemplate?'':renderContentMapper()+blockProps()}`}
+function renderProperties(){if(currentScreen().sourceReviewDraft)return lessonProps()+slideProps()+blockProps()+renderSourceAiWorkbenchProperties()+renderSourceNativeReviewProperties();if(currentScreen().resourceStage)return lessonProps()+renderResourceProperties(currentScreen(),lesson.resourceBank);return currentScreen().functionalDraft?`${lessonProps()}${renderFunctionalSlideProps(currentScreen())}`:currentScreen().methodDraft?`${lessonProps()}${renderMethodTemplateProperties(currentScreen())}`:`${lessonProps()}${slideProps()}${renderCertifiedProperties()}${currentScreen().certifiedTemplate?'':renderContentMapper()+blockProps()}`}
 function renderContentMapper(){
   const s=currentScreen(),schema=CONTENT_SLOT_SCHEMAS[s.templateId];if(!schema)return '';
   const existing=readTemplateSlots(s);
@@ -263,6 +286,57 @@ function revealEvidence(quote){
   return true;
 }
 function wire(){
+  const workbenchRoot=document.querySelector('[data-source-workbench]');
+  if(workbenchRoot){
+    workbenchRoot.querySelector('[data-workbench-method]')?.addEventListener('click',()=>{
+      const learners=Number(workbenchRoot.querySelector('[data-workbench-learners]')?.value);
+      const minutes=Number(workbenchRoot.querySelector('[data-workbench-minutes]')?.value);
+      const verdict=recommendTeachingMethod({screen:currentScreen(),learnerCount:learners,minutes});
+      workbenchStatus=verdict.ok?'Recommended: '+verdict.label+'. '+verdict.findings.join(' ')+' '+verdict.warnings.join(' '):
+        'Method rejected: '+verdict.warnings.join(' ');
+      render();
+    });
+    workbenchRoot.querySelector('[data-workbench-preview]')?.addEventListener('click',async()=>{
+      try{
+        const screen=currentScreen();
+        const hash=await fingerprintReviewSource(screen);
+        const outcome=previewStepInstructionEdit({
+          draft:lesson,screenId:screen.id,stepId:workbenchRoot.querySelector('[data-workbench-step]')?.value,
+          instruction:workbenchRoot.querySelector('[data-workbench-instruction]')?.value,sourceManifestHash:hash
+        });
+        if(!outcome.ok){pendingInstructionReview=null;workbenchStatus='Proposal rejected: '+outcome.errors.join('; ');}
+        else {pendingInstructionReview=outcome;workbenchStatus='Review the before/after text. Nothing has changed in the lesson.';}
+      }catch(e){pendingInstructionReview=null;workbenchStatus='Preview error: '+e.message;}
+      render();
+    });
+    workbenchRoot.querySelector('[data-workbench-approve]')?.addEventListener('click',async()=>{
+      if(!pendingInstructionReview)return;
+      try{
+        const hash=await fingerprintReviewSource(currentScreen());
+        const outcome=acceptStepInstructionEdit(pendingInstructionReview,lesson,{approved:true,currentSourceManifestHash:hash});
+        if(!outcome.ok){workbenchStatus='Approval blocked: '+outcome.errors.join('; ');pendingInstructionReview=null;}
+        else {
+          lesson=outcome.lesson;previousInstructionUndo=outcome.undo;pendingInstructionReview=null;
+          workbenchStatus='Approved locally for this draft. Only the selected step instruction changed.';
+          markDirty();
+        }
+      }catch(e){workbenchStatus='Approval error: '+e.message;pendingInstructionReview=null;}
+      render();
+    });
+    workbenchRoot.querySelector('[data-workbench-reject]')?.addEventListener('click',()=>{
+      pendingInstructionReview=null;workbenchStatus='Proposal rejected. Draft unchanged.';render();
+    });
+    workbenchRoot.querySelector('[data-workbench-undo]')?.addEventListener('click',async()=>{
+      if(!previousInstructionUndo)return;
+      try{
+        const hash=await fingerprintReviewSource(currentScreen());
+        const outcome=undoStepInstructionEdit(previousInstructionUndo,lesson,{currentSourceManifestHash:hash});
+        if(!outcome.ok)workbenchStatus='Undo blocked: '+outcome.errors.join('; ');
+        else {lesson=outcome.lesson;workbenchStatus='Approved step instruction reverted locally.';markDirty();}
+      }catch(e){workbenchStatus='Undo error: '+e.message;}
+      previousInstructionUndo=null;pendingInstructionReview=null;render();
+    });
+  }
   const nativeReviewBlocks=(currentScreen()?.blocks||[]).filter(b=>b.type==='discussion'&&['answer','complete'].includes(b.comboStep));
   if(currentScreen()?.sourceReviewDraft){
     nativeReviewBlocks.forEach((block,i)=>{
