@@ -3,6 +3,8 @@
 -- Target branch ID: br-holy-surf-b3fhwfih
 -- NEVER use on br-bitter-rice-b35yfm8y (Neon main).
 -- Requires explicit review and approval before execution.
+-- RECOVERY: separate Neon child backup branch br-square-dream-b3zz75rs;
+--           branch restore/binding requires an independent validated procedure.
 -- Migration is intentionally non-repeatable and aborts on any unexpected data.
 BEGIN;
 
@@ -28,6 +30,12 @@ $guard$;
 
 ALTER TABLE public.submissions RENAME TO submissions_legacy_20261116;
 ALTER TABLE public.assignments RENAME TO assignments_legacy_20261116;
+-- Renaming tables does not rename primary-key index objects in PostgreSQL.
+-- Free the original names before CREATE TABLE creates new *_pkey indexes.
+ALTER TABLE public.submissions_legacy_20261116
+  RENAME CONSTRAINT submissions_pkey TO submissions_legacy_20261116_pkey;
+ALTER TABLE public.assignments_legacy_20261116
+  RENAME CONSTRAINT assignments_pkey TO assignments_legacy_20261116_pkey;
 
 CREATE TABLE public.assignments (
   assignment_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
