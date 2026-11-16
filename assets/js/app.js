@@ -97,7 +97,7 @@ async function assessmentBootstrap(){
   }
 }
 function assessmentBlocked(title){
- const next=role==='student'?'/student-access.html':'/login.html';
+ const next=role==='student'?'/student-login.html':'/login.html';
  return hero(title)+'<div class="empty-simple"><b>'+esc(assessmentAccessError||'Sign in required')+'</b><p>Use an authorized E-LEAP account to continue.</p><a class="btn primary" href="'+next+'?next='+encodeURIComponent(location.pathname+location.search)+'">Sign in</a></div>';
 }
 async function loadRubrics(){try{return (await getJSON('data/rubrics.json')).rubrics||[]}catch{return []}}
