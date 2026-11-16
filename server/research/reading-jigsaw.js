@@ -8,6 +8,8 @@ const validMaterial=m=>m&&typeof m==='object'&&
  LABELS.every(k=>safeText(m.accounts[k]).length>=20&&m.accounts[k].length<=10000)&&
  Array.isArray(m.photoLabels)&&m.photoLabels.length===3&&
  m.photoLabels.every(s=>safeText(s).length>0&&s.length<=100)&&
+ (!m.photoAssets || (Array.isArray(m.photoAssets)&&m.photoAssets.length===3&&
+  m.photoAssets.every(a=>a&&safeText(a.assetId).length>0&&safeText(a.alt).length>0)))&&
  Array.isArray(m.originalQuestions)&&m.originalQuestions.length===2&&
  m.originalQuestions.every(q=>safeText(q).length>=10&&q.length<=500)&&
  Number.isInteger(m.sourcePage)&&m.sourcePage>0;
@@ -34,7 +36,7 @@ export default async function handler(req,res){
     return res.status(200).json({ok:true,reviewOnly:true,material:material[0]||null,members});
    }
    if(assignment.status!=='active')return res.status(403).json({ok:false,error:'Assignment is not active'});
-   const rows=await sql`SELECT m.account,j.accounts->>m.account AS passage,j.photo_labels,j.original_questions,
+   const rows=await sql`SELECT m.account,j.accounts->>m.account AS passage,j.photo_labels,j.photo_assets,j.original_questions,
        j.source_page,j.source_text_verified,j.photo_assets_verified
        FROM reading_jigsaw_members m JOIN reading_jigsaw_materials j ON j.assignment_id=m.assignment_id
        WHERE m.assignment_id=${assignmentId} AND m.student_user_id=${user.user_id} AND m.class_id=${assignment.class_id} LIMIT 1`;
@@ -44,6 +46,7 @@ export default async function handler(req,res){
     return res.status(423).json({ok:false,code:'SOURCE_REVIEW_REQUIRED',error:'Teacher must verify the original text and images'});
    return res.status(200).json({ok:true,assignmentId,account:r.account,passage:r.passage,
     photoLabels:r.photo_labels,originalQuestions:r.original_questions,sourcePage:r.source_page,
+    photoAssets:r.photo_assets,
     evidencePrompt:'Quote a short phrase from YOUR account. Explain why it supports your answer.',
     note:'Only your assigned account is released for individual and expert reading.'});
   }
@@ -52,9 +55,10 @@ export default async function handler(req,res){
   if(action==='draft'){
    const material=req.body?.material;
    if(!validMaterial(material))return res.status(400).json({ok:false,code:'INVALID_SOURCE',error:'Three complete accounts, three photo labels and two original questions are required'});
-   const rows=await sql`INSERT INTO reading_jigsaw_materials(assignment_id,class_id,accounts,photo_labels,original_questions,source_page,created_by)
-     VALUES(${assignmentId},${assignment.class_id},${material.accounts},${material.photoLabels},${material.originalQuestions},${material.sourcePage},${user.user_id})
+   const rows=await sql`INSERT INTO reading_jigsaw_materials(assignment_id,class_id,accounts,photo_labels,photo_assets,original_questions,source_page,created_by)
+     VALUES(${assignmentId},${assignment.class_id},${material.accounts},${material.photoLabels},${material.photoAssets||[]},${material.originalQuestions},${material.sourcePage},${user.user_id})
      ON CONFLICT(assignment_id) DO UPDATE SET accounts=EXCLUDED.accounts,photo_labels=EXCLUDED.photo_labels,
+      photo_assets=EXCLUDED.photo_assets,
       original_questions=EXCLUDED.original_questions,source_page=EXCLUDED.source_page,
       source_text_verified=FALSE,photo_assets_verified=FALSE,reviewed_by=NULL,reviewed_at=NULL,updated_at=NOW()
      RETURNING assignment_id,source_text_verified,photo_assets_verified`;
@@ -77,6 +81,13 @@ export default async function handler(req,res){
    // This action is an explicit authenticated teacher attestation.
    if(req.body?.confirmSourceText!==true||req.body?.confirmOriginalPhotos!==true)
     return res.status(400).json({ok:false,code:'REVIEW_CONFIRMATION_REQUIRED',error:'Verify against textbook and original photo assets first'});
+   // Three source-matched media assets are required before a teacher can attest
+   // to photograph verification. Labels alone do not constitute uploaded images.
+   const media=await sql`SELECT photo_assets FROM reading_jigsaw_materials WHERE assignment_id=${assignmentId} LIMIT 1`;
+   if(!media.length)return res.status(404).json({ok:false,error:'Reading material is missing'});
+   if(!Array.isArray(media[0].photo_assets)||media[0].photo_assets.length!==3||
+     media[0].photo_assets.some(a=>!a||!safeText(a.assetId)||!safeText(a.alt)))
+     return res.status(409).json({ok:false,code:'PHOTO_ASSETS_MISSING',error:'Upload and link all three original photograph assets before verification'});
    const rows=await sql`UPDATE reading_jigsaw_materials
     SET source_text_verified=TRUE,photo_assets_verified=TRUE,reviewed_by=${user.user_id},reviewed_at=NOW(),updated_at=NOW()
     WHERE assignment_id=${assignmentId} RETURNING assignment_id,source_text_verified,photo_assets_verified`;

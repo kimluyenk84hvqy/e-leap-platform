@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS public.reading_jigsaw_materials (
  class_id UUID NOT NULL REFERENCES public.classes(class_id),
  accounts JSONB NOT NULL,
  photo_labels JSONB NOT NULL,
+ photo_assets JSONB NOT NULL DEFAULT '[]'::jsonb,
  original_questions JSONB NOT NULL,
  source_page INTEGER NOT NULL,
  source_text_verified BOOLEAN NOT NULL DEFAULT FALSE,
