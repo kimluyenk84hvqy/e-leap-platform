@@ -1,4 +1,4 @@
-import { getResearchDb,researchDbAvailable } from '../_research-db.js';
+import { getResearchDb,researchDbAvailable,isBoundToExpectedPreviewDatabase } from '../_research-db.js';
 import { ensureAuthSchema,getAuth,requireAuth,requireSameOrigin } from '../_auth.js';
 import { inspectSubmissionSchema } from '../_submission-schema-contract.js';
 export default async function handler(req,res){
@@ -14,6 +14,7 @@ export default async function handler(req,res){
       const submissions=inspectSubmissionSchema(columns,indexes);
       return res.status(200).json({ok:true,ready:true,
         submissionsReady:submissions.ok,submissionsSchemaVersion:submissions.version,
+        ...(process.env.VERCEL_ENV==='preview'?{previewDatabaseBindingVerified:isBoundToExpectedPreviewDatabase()}:{}),
         assessmentResearchVersion:'1.1',authAccessVersion:'1.0'});
     }
     if(!requireSameOrigin(req,res))return;
