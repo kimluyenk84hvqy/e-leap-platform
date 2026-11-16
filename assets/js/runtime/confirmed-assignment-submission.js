@@ -42,8 +42,7 @@ export class ConfirmedAssignmentSubmission{
    const result=await this.json(await this.fetchImpl(url,{credentials:'same-origin',cache:'no-store'}));
    const row=(result.submissions||[]).find(x=>String(x.client_request_id||'').toLowerCase()===requestId.toLowerCase());
    if(row?.submission_id&&String(row.assignment_id)===assignmentId){
-    this.clearRequest(requestKey);
-   return {submissionId:row.submission_id,assignmentId,attemptNo:Number(row.attempt_no),status:'submitted'};
+    return {submissionId:row.submission_id,assignmentId,attemptNo:Number(row.attempt_no),status:'submitted'};
    }
   }catch{}
   return null;
@@ -81,6 +80,7 @@ export class ConfirmedAssignmentSubmission{
    if(!row?.submission_id||String(row.assignment_id)!==assignmentId||
       row.status!=='submitted'||!Number.isInteger(Number(row.attempt_no))||Number(row.attempt_no)<1)
     throw Error('Server did not confirm a valid submission');
+   this.clearRequest(requestKey);
    return {submissionId:row.submission_id,assignmentId,attemptNo:Number(row.attempt_no),status:'submitted'};
   }catch(error){
    // A lost response may mean the server committed. Never retry blindly.
