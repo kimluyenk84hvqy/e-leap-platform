@@ -1,5 +1,5 @@
 import { getResearchDb } from '../_research-db.js';
-import { requireAuth,requireSameOrigin,teacherOwnsClass } from '../_auth.js';
+import { requireAuth,requireSameOrigin,teacherOwnsClass,ensureResearchStaffUser } from '../_auth.js';
 import { requireSubmissionSchema } from '../_submission-schema-contract.js';
 
 async function log(sql,{teacherId,classId,resourceId,activityId,eventType,metadata}){
@@ -25,7 +25,14 @@ export default async function handler(req,res){
       if(user.role==='student'){
         rows=await sql`SELECT a.* FROM assignments a JOIN auth_class_members m ON m.class_id::text=a.class_id::text WHERE m.student_user_id=${user.user_id} AND m.status='active' AND a.status='active' ORDER BY a.deadline NULLS LAST,a.created_at DESC`;
       }else if(user.role==='teacher'){
-        rows=req.query?.classId?await sql`SELECT * FROM assignments WHERE class_id=${req.query.classId} AND teacher_id=${user.user_id} ORDER BY created_at DESC`:await sql`SELECT * FROM assignments WHERE teacher_id=${user.user_id} ORDER BY created_at DESC`;
+        const researchTeacherId=await ensureResearchStaffUser(sql,user);
+        rows=req.query?.classId
+          ? await sql`SELECT a.* FROM assignments a JOIN classes c ON c.class_id=a.class_id
+            WHERE c.class_id=${req.query.classId} AND (c.teacher_id=${researchTeacherId} OR c.teacher_id=${user.user_id})
+            ORDER BY a.created_at DESC`
+          : await sql`SELECT a.* FROM assignments a JOIN classes c ON c.class_id=a.class_id
+            WHERE c.teacher_id=${researchTeacherId} OR c.teacher_id=${user.user_id}
+            ORDER BY a.created_at DESC`;
       }else rows=req.query?.classId?await sql`SELECT * FROM assignments WHERE class_id=${req.query.classId} ORDER BY created_at DESC`:await sql`SELECT * FROM assignments ORDER BY created_at DESC LIMIT 1000`;
       return res.status(200).json({ok:true,assignments:rows});
     }
@@ -39,7 +46,11 @@ export default async function handler(req,res){
       if(!LATE_POLICIES.has(latePolicy))return res.status(400).json({ok:false,error:'Invalid late policy'});
       if(!validAttemptLimit(attemptLimit))return res.status(400).json({ok:false,error:'attemptLimit must be an integer from 1 to 50'});
       if(!validDeadline(deadline))return res.status(400).json({ok:false,error:'Invalid deadline'});
-      const teacherId=user.role==='admin'&&req.body?.teacherId?req.body.teacherId:user.user_id;
+      const ownerRows=await sql`SELECT teacher_id FROM classes WHERE class_id=${classId} LIMIT 1`;
+      if(!ownerRows.length)return res.status(404).json({ok:false,error:'Class not found'});
+      // Assignments must belong to the actual owning class teacher (research-linked
+      // or auth fallback UUID), never an unchecked browser-supplied teacher ID.
+      const teacherId=ownerRows[0].teacher_id;
       const rows=await sql`INSERT INTO assignments(teacher_id,class_id,resource_id,activity_id,title,prompt,rubric_id,deadline,attempt_limit,late_policy,status) VALUES(${teacherId},${classId},${resourceId},${activityId},${String(title).slice(0,200)},${prompt==null?null:String(prompt).slice(0,10000)},${rubricId},${deadline||null},${attemptLimit==null||attemptLimit===''?null:Number(attemptLimit)},${latePolicy},${status}) RETURNING *`;
       await log(sql,{teacherId,classId,resourceId,activityId,eventType:'assignment.created',metadata:{assignmentId:rows[0].assignment_id,title:rows[0].title,rubricId,deadline:rows[0].deadline,latePolicy}});
       return res.status(201).json({ok:true,assignment:rows[0]});

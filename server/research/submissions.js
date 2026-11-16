@@ -1,5 +1,5 @@
 import { getResearchDb } from '../_research-db.js';
-import { requireAuth,requireSameOrigin,teacherOwnsClass,studentInClass } from '../_auth.js';
+import { requireAuth,requireSameOrigin,teacherOwnsClass,studentInClass,ensureResearchStaffUser } from '../_auth.js';
 import { requireSubmissionSchema } from '../_submission-schema-contract.js';
 
 const studentSelect=(assignmentId,userId)=>assignmentId
@@ -50,13 +50,15 @@ export default async function handler(req,res){
         return res.status(200).json({ok:true,scope:'assignment',submissions:rows});
       }
 
+      const researchTeacherId=user.role==='teacher'?await ensureResearchStaffUser(sql,user):null;
       const rows=user.role==='admin'
         ? await sql`SELECT s.*,a.title,a.class_id,a.resource_id,a.activity_id,a.rubric_id,a.deadline,a.late_policy
             FROM submissions s JOIN assignments a ON a.assignment_id=s.assignment_id
             ORDER BY s.submitted_at DESC LIMIT 1000`
         : await sql`SELECT s.*,a.title,a.class_id,a.resource_id,a.activity_id,a.rubric_id,a.deadline,a.late_policy
             FROM submissions s JOIN assignments a ON a.assignment_id=s.assignment_id
-            WHERE a.teacher_id=${user.user_id}
+            JOIN classes c ON c.class_id=a.class_id
+            WHERE c.teacher_id=${researchTeacherId} OR c.teacher_id=${user.user_id}
             ORDER BY s.submitted_at DESC LIMIT 1000`;
       return res.status(200).json({ok:true,scope:user.role,submissions:rows});
     }
