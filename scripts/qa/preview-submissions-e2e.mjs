@@ -39,9 +39,15 @@ assert.equal(teacher.status,200,'Teacher authentication failed');
 assert.equal(teacher.data.user?.role,'teacher');
 assert.ok(teacher.cookie,'Teacher session cookie missing');
 const student=await request('/api/auth/student',{method:'POST',body:{studentId,pin:studentPin}});
-assert.equal(student.status,200,'Student authentication failed');
+assert.ok([200,201].includes(student.status),'Student authentication failed: HTTP '+student.status);
 assert.equal(student.data.user?.role,'student');
 assert.ok(student.cookie,'Student session cookie missing');
+const sessionStudent=await request('/api/auth/me',{cookie:student.cookie});
+assert.equal(sessionStudent.status,200,'Student session did not persist');
+assert.equal(sessionStudent.data.user?.role,'student');
+const sessionTeacher=await request('/api/auth/me',{cookie:teacher.cookie});
+assert.equal(sessionTeacher.status,200,'Teacher session did not persist');
+assert.equal(sessionTeacher.data.user?.role,'teacher');
 const assigned=await request('/api/research/assignments',{cookie:student.cookie});
 assert.equal(assigned.status,200);
 assert.ok(assigned.data.assignments?.some(a=>a.assignment_id===assignmentId&&
