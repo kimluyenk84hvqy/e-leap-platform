@@ -35,13 +35,14 @@ jobs:
       - name: Install runtime/test dependencies
         run: npm install --ignore-scripts --no-audit --no-fund --no-package-lock
       - name: Run fail-closed contracts
-        run: node --test tests/runtime-confirmed-submission.test.mjs tests/submission-schema-contract.test.mjs tests/submission-payload-contract.test.mjs tests/active-assignment-context.test.mjs tests/teacher-ownership-contract.test.mjs
+        run: node --test tests/runtime-confirmed-submission.test.mjs tests/submission-schema-contract.test.mjs tests/submission-payload-contract.test.mjs tests/active-assignment-context.test.mjs tests/teacher-ownership-contract.test.mjs tests/operations-modal-async.test.mjs
       - name: Static JS parse check
         run: |
           node --check assets/js/app.js
           node --check assets/js/runtime/shared-lesson-runtime.js
           node --check assets/js/native-activity.js
           node --check assets/js/assignment-submission-bridge.js
+          node --check assets/js/operations-ui.js
           node --check server/research/submissions.js
           node --check scripts/qa/preview-submissions-e2e.mjs
   authenticated-http-e2e:
