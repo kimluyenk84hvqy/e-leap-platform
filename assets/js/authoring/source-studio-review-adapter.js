@@ -86,3 +86,31 @@ export function verifyComboStateTraversal(screen){
  }
  return {ok:!issues.length,issues};
 }
+
+/**
+ * Teacher-only, review-time role projection for the U6 three-account Jigsaw.
+ * It is intentionally NOT an access-control boundary: the original teacher
+ * draft contains all three accounts. Never use it as the authorization layer
+ * for a deployed learner route or a Student API.
+ */
+export function projectJigsawRoleForReview(screen,{role,step}={}){
+ const roles=['A','B','C'];
+ const stages=['predict','assigned','expert','home','complete','evidence'];
+ if(!screen?.sourceReviewDraft||screen.sourceReviewDraft.status!=='unverified'||
+   screen.sourceReviewDraft.jigsawGroupSize!==3)
+  return {ok:false,issues:['Only unverified three-account teacher drafts are supported'],screen:null};
+ if(!roles.includes(role))return {ok:false,issues:['Choose Student A, B or C'],screen:null};
+ if(!stages.includes(step)||!screen.combo?.steps?.some(s=>s.id===step))
+  return {ok:false,issues:['Choose a valid Jigsaw stage'],screen:null};
+ const copy=JSON.parse(JSON.stringify(screen));
+ copy.combo.activeStep=step;
+ copy.instruction=copy.combo.steps.find(s=>s.id===step).instruction;
+ // Remove ALL other stage blocks and off-role blocks from the rendered
+ // review projection. This is display-only, not security or learner isolation.
+ copy.blocks=(copy.blocks||[]).filter(block=>
+  block.comboStep===step &&
+  (!block.jigsawAssignment||block.jigsawAssignment===role));
+ copy.sourceReviewProjection={kind:'teacher-only',role,step,secureLearnerAccess:false};
+ if(!copy.blocks.length)return {ok:false,issues:['No visible blocks for that role and stage'],screen:null};
+ return {ok:true,issues:[],screen:copy,publishable:false};
+}
