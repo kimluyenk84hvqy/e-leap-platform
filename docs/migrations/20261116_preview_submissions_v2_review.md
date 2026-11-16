@@ -32,3 +32,12 @@ Verify duplicate clicks, parallel devices and lost-response retry; do not publis
 
 ## Production guard
 No GitHub main merge; no Vercel Production deployment or promotion; no Neon main SQL.
+
+## 2026-11-16 Acceptance review update
+
+- **Preview recovery checkpoint CREATED:** Neon child backup branch `backup/e-leap-preview-pre-submissions-v2-20261116` (`br-square-dream-b3zz75rs`), parent `br-holy-surf-b3fhwfih`. Confirmed `ready`. Created without a compute; it captures the pre-migration state. **Not a snapshot** and the restore/switchover procedure has not been exercised.
+- Neon refused `create_snapshot` on the non-root Preview branch (HTTP 400). Existing snapshot belongs to Neon main and is **not** a valid Preview rollback point.
+- Script corrected: the legacy primary-key constraints/indexes must be renamed after legacy tables are renamed; otherwise `CREATE TABLE` would collide with `assignments_pkey` and `submissions_pkey`.
+- Vercel's Neon environment variables target Preview and Production, but metadata does **not** prove which Neon branch a specific Preview deployment connects to. **Block live write tests until connection routing is independently verified.**
+- No SQL migration has been executed. No live Student submission, group test, or Teacher Responses E2E has run. No GitHub main merge or Vercel production promotion.
+- Next release gate: explicit approval of the corrected Preview-only SQL and branch target; verify Preview deployment ↔ Neon Preview binding; verify recovery branch; check schema and zero row counts immediately before running.
