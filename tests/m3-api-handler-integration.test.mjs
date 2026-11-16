@@ -30,7 +30,8 @@ function harness(){
     .map(x=>({...x,same_payload:JSON.stringify(x.response)===JSON.stringify(args[0])}));
   }
   if(q.includes('INSERT INTO submissions(')){
-   const [assignmentId,userId,studentCode,studentName,response,attempt,status,metadata,requestId]=args;
+   const [assignmentId,userId,studentCode,studentName,response,attempt,metadata,requestId]=args;
+   const status='submitted';
    if(submissions.some(x=>x.assignment_id===assignmentId&&x.student_user_id===userId&&
      (x.attempt_no===attempt||x.client_request_id===requestId)))return [];
    const row={submission_id:'receipt-'+(++next),assignment_id:assignmentId,student_user_id:userId,
