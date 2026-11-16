@@ -13,7 +13,10 @@ const modern=[
  {table_name:'submissions',column_name:'client_request_id',data_type:'uuid'},
  {table_name:'submissions',column_name:'attempt_no',data_type:'integer'}
 ];
-const indexes=[{indexname:'idx_submissions_assignment_student_attempt_v2'},{indexname:'idx_submissions_idempotent_v2'}];
+const indexes=[
+ {indexname:'idx_submissions_assignment_student_attempt_v2',indexdef:'CREATE UNIQUE INDEX idx_submissions_assignment_student_attempt_v2 ON public.submissions USING btree (assignment_id, student_user_id, attempt_no)'},
+ {indexname:'idx_submissions_idempotent_v2',indexdef:'CREATE UNIQUE INDEX idx_submissions_idempotent_v2 ON public.submissions USING btree (assignment_id, student_user_id, client_request_id)'}
+];
 test('legacy Neon BIGINT schema is rejected, not guessed or modified',()=>{
  const old=modern.map(x=>({...x}));
  old.find(x=>x.table_name==='submissions'&&x.column_name==='submission_id').data_type='bigint';
@@ -38,4 +41,10 @@ test('unready API returns explicit 503 without SQL write',async()=>{
  assert.equal(result.code,503);
  assert.equal(result.body.code,'SUBMISSIONS_SCHEMA_UPGRADE_REQUIRED');
  assert.equal(reads.length,2);
+});
+
+test('a correctly named index that is nonunique or over wrong columns fails closed',()=>{
+ const bad=[...indexes];
+ bad[1]={...bad[1],indexdef:'CREATE INDEX idx_submissions_idempotent_v2 ON public.submissions USING btree (assignment_id, client_request_id)'};
+ assert.equal(inspectSubmissionSchema(modern,bad).ok,false);
 });
