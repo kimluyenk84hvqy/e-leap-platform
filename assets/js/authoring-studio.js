@@ -72,7 +72,7 @@ if(!canOpenStudio){
   const localReviewId=/^[a-zA-Z0-9_-]{1,120}$/.test(qs.get('localReview')||'')?qs.get('localReview'):null;
   draftKey=`e-leap-studio-v1:${source||localReviewId||lesson.id||'new'}`;
   const saved=localStorage.getItem(draftKey);
-  if(saved && !qs.get('fresh')){try{const loaded=JSON.parse(saved);if(localReviewId&&(loaded?.id!==localReviewId||!loaded?.screens?.some(s=>s.sourceReviewDraft)))throw Error('Invalid local review draft');lesson=loaded;ensureSchema();}catch{}}
+  if(saved && !qs.get('fresh')){try{const loaded=JSON.parse(saved);if(localReviewId&&(loaded?.id!==localReviewId||!loaded?.screens?.some(s=>s.sourceReviewDraft)))throw Error('Invalid local review draft');lesson=loaded;ensureSchema();if(localReviewId){const index=lesson.screens.findIndex(s=>s.sourceReviewDraft);if(index>=0){selectedScreen=index;selectedBlock=0;}}}catch{}}
   if(qs.get('importFoundation')==='1'){
     const raw=sessionStorage.getItem('e-leap-source-review-import-v1');
     try{
@@ -351,7 +351,7 @@ function wire(){
       };
       const player=new ELeapNativeActivity({
         root:node,activity,events:null,resourceId:'studio-review-'+lesson.id,
-        studentId:null,sessionId:null,context:{role:'teacher',mode:'review'}
+        studentId:null,sessionId:null,context:{role:'teacher',mode:'review',reviewOnly:true}
       });
       player.mount().catch(error=>{node.textContent='Shared activity preview unavailable: '+error.message;});
     });
