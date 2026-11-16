@@ -73,3 +73,12 @@ A no-compute backup branch is inexpensive relative to a full second running comp
 - No proven read-only deployment-to-branch attestation exists yet. **Do not run migration solely based on Git branch name or a Vercel READY build.**
 - Next gate: an authenticated diagnostic of the effective Preview connection endpoint or a trusted Vercel/Neon integration mapping (sanitized branch ID only) that is conclusively tied to deployed runtime. Avoid disclosing connection strings/passwords.
 - No schema migration, production change, live submissions or Student→Teacher E2E were executed.
+
+
+## Final read-only binding attestation (2026-11-16)
+- Preview Vercel deployment for Git SHA `b76375f11631b938249ca38247aa16b3fdffac13` reached **READY**.
+- Deployed `GET /api/research/bootstrap` returned HTTP 200, `previewDatabaseBindingVerified: true` and `submissionsReady: false`. This is a real Vercel runtime invocation (not a local simulation).
+- The Preview-only check evaluates the **same effective URL selected by `getResearchDb()`** against the verified Neon Preview compute endpoint identity. It returns a boolean, never a connection string or password. The successful read-only DB health check confirms connectivity.
+- Backup recovery drill: `br-bitter-sound-b3g297nz` was created **from** backup `br-square-dream-b3zz75rs`, became READY and returned `classes=4`, `auth_class_members=3`, `assignments=0`, `submissions=0`, and legacy submission ID type `BIGINT` in read-only SQL. No production or Preview live branch restore/switchover performed.
+- **PRE-FLIGHT GATES 1 and 2 now passed:** deployed Preview DB branch binding, plus independently readable recovery copy. A complete switchover rehearsal is intentionally not part of this test.
+- **MIGRATION NOT EXECUTED.** Await separately explicit user approval for migration on **only** `br-holy-surf-b3fhwfih`. Before any SQL execution, independently check current row counts, inbound FKs, source branch identity and backups again.
