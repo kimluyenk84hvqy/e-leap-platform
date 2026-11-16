@@ -76,7 +76,8 @@ export default async function handler(req,res){
       // Any assignment explicitly configured for server-authorized Jigsaw must
       // have a verified source and a role assigned to this authenticated Student.
       // This prevents bypassing the reading endpoint via generic Submit.
-      const jigsaw=await sql`SELECT j.source_text_verified,j.photo_assets_verified,m.account
+      const jigsaw=await sql`SELECT j.source_text_verified,j.photo_assets_verified,j.photo_labels,
+          j.accounts->>m.account AS passage,m.account
         FROM reading_jigsaw_materials j LEFT JOIN reading_jigsaw_members m
           ON m.assignment_id=j.assignment_id AND m.student_user_id=${user.user_id}
           AND m.class_id=j.class_id
@@ -90,6 +91,13 @@ export default async function handler(req,res){
           return res.status(400).json({ok:false,code:'EVIDENCE_WHY_REQUIRED',error:'Evidence and Why are both required'});
         if(response.value.account!==undefined&&response.value.account!==jigsaw[0].account)
           return res.status(403).json({ok:false,code:'ACCOUNT_MISMATCH',error:'Only your assigned account is permitted'});
+        const phrase=String(response.value.evidence||'').trim();
+        if(phrase.length<5||!String(jigsaw[0].passage||'').toLocaleLowerCase().includes(phrase.toLocaleLowerCase()))
+          return res.status(400).json({ok:false,code:'EVIDENCE_NOT_IN_TEXT',error:'Quote a phrase that appears in your assigned account'});
+        if(!Array.isArray(jigsaw[0].photo_labels)||!jigsaw[0].photo_labels.includes(response.value.photoName))
+          return res.status(400).json({ok:false,code:'PHOTO_MATCH_REQUIRED',error:'Select one original photograph'});
+        if(!String(response.value.yearEstimate||'').trim())
+          return res.status(400).json({ok:false,code:'YEAR_ESTIMATE_REQUIRED',error:'Provide your estimated year or period'});
       }
       const validated=validateAssignedResponse(a[0],response);
       if(!validated.ok)return res.status(400).json({ok:false,code:validated.code,error:validated.error});

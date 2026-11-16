@@ -15,13 +15,14 @@ function harness(){
   resource_id:'u6-reading',activity_id:'jigsaw-answer-1',status:'active',title:'U6 Jigsaw',
   attempt_limit:3,deadline:null,late_policy:'allow-late'};
  const submissions=[];
- const jigsawState={enabled:false,account:'A',verified:true};
+ const jigsawState={enabled:false,account:'A',verified:true,passage:'I saw a science laboratory on my first day at school.',photoLabels:['Mavis Carver','Anita Green','Neil Johnson']};
  let next=0;
  const sql=async(parts,...args)=>{
   const q=parts.join('?').replace(/\s+/g,' ').trim();
   if(q.includes('FROM assignments WHERE assignment_id=')&&q.includes('status='))return args[0]===assignment.assignment_id?[assignment]:[];
   if(q.includes('FROM assignments WHERE assignment_id='))return args[0]===assignment.assignment_id?[assignment]:[];
-  if(q.includes('FROM reading_jigsaw_materials j LEFT JOIN reading_jigsaw_members m'))return jigsawState.enabled?[{source_text_verified:jigsawState.verified,photo_assets_verified:jigsawState.verified,account:jigsawState.account}]:[];
+  if(q.includes('FROM reading_jigsaw_materials j LEFT JOIN reading_jigsaw_members m'))return jigsawState.enabled?[{source_text_verified:jigsawState.verified,photo_assets_verified:jigsawState.verified,
+      account:jigsawState.account,passage:jigsawState.passage,photo_labels:jigsawState.photoLabels}]:[];
   if(q.includes('FROM auth_class_members'))return args[0]===assignment.class_id&&args[1]===student.user_id?[{one:1}]:[];
   if(q.includes('FROM users WHERE external_auth_id='))return [{user_id:teacher.user_id}];
   if(q.includes('SELECT 1 FROM classes'))return args[0]===assignment.class_id&&
@@ -134,7 +135,7 @@ test('U6 server requires role assignment, reviewed media and nonempty Evidence &
  const handler=await loadHandler(h);
  const base={assignmentId:h.assignment.assignment_id,clientRequestId:'10000000-0000-4000-8000-000000000021',
   response:{resourceId:'u6-reading',activityId:'jigsaw-answer-1',
-   value:{account:'A',evidence:'I saw a science laboratory',why:'It suggests a school with a lab',yearEstimate:'an older period'}}};
+   value:{account:'A',photoName:'Mavis Carver',evidence:'I saw a science laboratory',why:'It suggests a school with a lab',yearEstimate:'an older period'}}};
  h.jigsawState.account=null;
  const missing=await call(handler,{actor:h.student,method:'POST',body:base});
  assert.equal(missing.code,403);assert.equal(missing.body.code,'READING_NOT_ASSIGNED');
@@ -146,6 +147,12 @@ test('U6 server requires role assignment, reviewed media and nonempty Evidence &
  assert.equal(wrongRole.code,403);assert.equal(wrongRole.body.code,'ACCOUNT_MISMATCH');
  const incomplete=await call(handler,{actor:h.student,method:'POST',body:{...base,response:{...base.response,value:{...base.response.value,why:''}}}});
  assert.equal(incomplete.code,400);assert.equal(incomplete.body.code,'EVIDENCE_WHY_REQUIRED');
+ const notInText=await call(handler,{actor:h.student,method:'POST',body:{...base,response:{...base.response,value:{...base.response.value,evidence:'This quotation does not appear anywhere in my text'}}}});
+ assert.equal(notInText.code,400);assert.equal(notInText.body.code,'EVIDENCE_NOT_IN_TEXT');
+ const noPhoto=await call(handler,{actor:h.student,method:'POST',body:{...base,response:{...base.response,value:{...base.response.value,photoName:'Not a printed photograph'}}}});
+ assert.equal(noPhoto.code,400);assert.equal(noPhoto.body.code,'PHOTO_MATCH_REQUIRED');
+ const noYear=await call(handler,{actor:h.student,method:'POST',body:{...base,response:{...base.response,value:{...base.response.value,yearEstimate:''}}}});
+ assert.equal(noYear.code,400);assert.equal(noYear.body.code,'YEAR_ESTIMATE_REQUIRED');
  const good=await call(handler,{actor:h.student,method:'POST',body:base});
  assert.equal(good.code,201);
  assert.equal(good.body.submission.response.value.account,'A');
