@@ -36,6 +36,8 @@ jobs:
         run: npm install --ignore-scripts --no-audit --no-fund --no-package-lock
       - name: Run fail-closed contracts
         run: node --test tests/runtime-confirmed-submission.test.mjs tests/submission-schema-contract.test.mjs tests/submission-payload-contract.test.mjs tests/active-assignment-context.test.mjs tests/teacher-ownership-contract.test.mjs tests/operations-modal-async.test.mjs
+      - name: API handler integration (isolated synthetic auth and SQL adapter)
+        run: node --experimental-vm-modules --test tests/m3-api-handler-integration.test.mjs
       - name: Static JS parse check
         run: |
           node --check assets/js/app.js
