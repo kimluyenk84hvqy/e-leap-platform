@@ -23,7 +23,11 @@ export default async function handler(req,res){
     if(req.method==='GET'){
       let rows=[];
       if(user.role==='student'){
-        rows=await sql`SELECT a.* FROM assignments a JOIN auth_class_members m ON m.class_id::text=a.class_id::text WHERE m.student_user_id=${user.user_id} AND m.status='active' AND a.status='active' ORDER BY a.deadline NULLS LAST,a.created_at DESC`;
+        rows=await sql`SELECT a.*,j.assignment_id IS NOT NULL AS is_jigsaw
+          FROM assignments a JOIN auth_class_members m ON m.class_id::text=a.class_id::text
+          LEFT JOIN reading_jigsaw_materials j ON j.assignment_id=a.assignment_id
+          WHERE m.student_user_id=${user.user_id} AND m.status='active' AND a.status='active'
+          ORDER BY a.deadline NULLS LAST,a.created_at DESC`;
       }else if(user.role==='teacher'){
         const researchTeacherId=await ensureResearchStaffUser(sql,user);
         rows=req.query?.classId

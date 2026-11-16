@@ -33,7 +33,13 @@ export default async function handler(req,res){
    if(isStaff){
     const material=await sql`SELECT * FROM reading_jigsaw_materials WHERE assignment_id=${assignmentId} LIMIT 1`;
     const members=await sql`SELECT student_user_id,account,assigned_at FROM reading_jigsaw_members WHERE assignment_id=${assignmentId} ORDER BY account,assigned_at`;
-    return res.status(200).json({ok:true,reviewOnly:true,material:material[0]||null,members});
+    const roster=await sql`SELECT u.user_id,u.display_name,u.student_id FROM auth_class_members m
+      JOIN auth_users u ON u.user_id=m.student_user_id
+      WHERE m.class_id=${String(assignment.class_id)} AND m.status='active' AND u.role='student' AND u.status='active'
+      ORDER BY u.display_name`;
+    return res.status(200).json({ok:true,reviewOnly:true,
+      assignment:{assignmentId,resourceId:assignment.resource_id,activityId:assignment.activity_id},
+      material:material[0]||null,members,roster});
    }
    if(assignment.status!=='active')return res.status(403).json({ok:false,error:'Assignment is not active'});
    const rows=await sql`SELECT m.account,j.accounts->>m.account AS passage,j.photo_labels,j.photo_assets,j.original_questions,
@@ -44,7 +50,8 @@ export default async function handler(req,res){
    const r=rows[0];
    if(!r.source_text_verified||!r.photo_assets_verified)
     return res.status(423).json({ok:false,code:'SOURCE_REVIEW_REQUIRED',error:'Teacher must verify the original text and images'});
-   return res.status(200).json({ok:true,assignmentId,account:r.account,passage:r.passage,
+   return res.status(200).json({ok:true,assignmentId,resourceId:assignment.resource_id,activityId:assignment.activity_id,
+    account:r.account,passage:r.passage,
     photoLabels:r.photo_labels,originalQuestions:r.original_questions,sourcePage:r.source_page,
     photoAssets:r.photo_assets,
     evidencePrompt:'Quote a short phrase from YOUR account. Explain why it supports your answer.',
