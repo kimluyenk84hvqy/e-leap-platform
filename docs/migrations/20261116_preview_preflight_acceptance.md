@@ -57,3 +57,19 @@ Vercel's `RESEARCH_DB_URL_DATABASE_URL` is an integration-managed sensitive vari
 ## Other notes
 
 A no-compute backup branch is inexpensive relative to a full second running compute but may still count towards Neon storage/branch quotas. Keep cost monitoring and retention under review; never auto-delete backups.
+
+
+## Independent backup recovery drill — 2026-11-16
+- Original Preview branch: `br-holy-surf-b3fhwfih` (not altered).
+- Saved no-compute branch: `br-square-dream-b3zz75rs` (`backup/e-leap-preview-pre-submissions-v2-20261116`).
+- Restored a *new test branch* **from that backup**, rather than restoring over Preview: `br-bitter-sound-b3g297nz`, `drill/restore-preview-backup-20261116`.
+- Test branch state: READY; on the new branch read-only SQL confirmed `classes=4`, `auth_class_members=3`, `assignments=0`, `submissions=0`, legacy submission key `BIGINT`.
+- **Recovery drill passed for branch creation and data readability.** Rebinding an existing Vercel deployment / replacing a live branch was **not rehearsed**. The drill branch remains available and may use compute capacity; do not delete the backup branch.
+- A second independently generated preflight backup `br-autumn-silence-b3obbeqv` also exists. Do not confuse it with the drill branch.
+
+## Runtime branch-binding — BLOCKED
+- Vercel Preview uses integration-managed, `sensitive` database variables; their metadata lists Preview/Production targets but does not reveal a branch-specific endpoint. Attempts to obtain a comparable host through managed connector metadata did not establish a verified branch match.
+- Read-only Neon queries on Preview and main show the **same** old `BIGINT` submission/assignment key types and `classes=4`; these are not sufficient to distinguish the branches through a generic health endpoint.
+- No proven read-only deployment-to-branch attestation exists yet. **Do not run migration solely based on Git branch name or a Vercel READY build.**
+- Next gate: an authenticated diagnostic of the effective Preview connection endpoint or a trusted Vercel/Neon integration mapping (sanitized branch ID only) that is conclusively tied to deployed runtime. Avoid disclosing connection strings/passwords.
+- No schema migration, production change, live submissions or Student→Teacher E2E were executed.
