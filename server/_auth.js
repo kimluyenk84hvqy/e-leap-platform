@@ -114,7 +114,10 @@ export async function teacherOwnsClass(sql,user,classId){
   if(user.role==='admin')return true;
   if(user.role!=='teacher')return false;
   const researchUserId=await ensureResearchStaffUser(sql,user);
-  const r=await sql`SELECT 1 FROM classes WHERE class_id=${classId} AND teacher_id=${researchUserId} LIMIT 1`;
+  // Some pre-existing classes use the authenticated identity directly while
+  // others use the linked research staff user. Permit only either verified owner.
+  const r=await sql`SELECT 1 FROM classes WHERE class_id=${classId}
+    AND (teacher_id=${researchUserId} OR teacher_id=${user.user_id}) LIMIT 1`;
   return Boolean(r.length);
 }
 export async function studentInClass(sql,user,classId){

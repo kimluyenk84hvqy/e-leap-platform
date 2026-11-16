@@ -1,6 +1,7 @@
 import { getResearchDb } from '../_research-db.js';
 import { requireAuth,requireSameOrigin,teacherOwnsClass,studentInClass,ensureResearchStaffUser } from '../_auth.js';
 import { requireSubmissionSchema } from '../_submission-schema-contract.js';
+import { validateAssignedResponse } from '../_submission-payload-contract.js';
 
 const studentSelect=(assignmentId,userId)=>assignmentId
   ? `assignment:${assignmentId}:student:${userId}`
@@ -68,12 +69,12 @@ export default async function handler(req,res){
       const {assignmentId,response={},researchConsent=false,clientRequestId}=req.body||{};
       if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(clientRequestId||'')))
         return res.status(400).json({ok:false,error:'A UUID clientRequestId is required',code:'REQUEST_ID_REQUIRED'});
-      if(!response||typeof response!=='object'||Array.isArray(response)||JSON.stringify(response).length>64000)
-        return res.status(400).json({ok:false,error:'Invalid or oversized response'});
       if(!assignmentId)return res.status(400).json({ok:false,error:'assignmentId is required'});
       const a=await sql`SELECT * FROM assignments WHERE assignment_id=${assignmentId} AND status='active' LIMIT 1`;
       if(!a.length)return res.status(404).json({ok:false,error:'Active assignment not found'});
       if(!await studentInClass(sql,user,a[0].class_id))return res.status(403).json({ok:false,error:'Student is not assigned to this class'});
+      const validated=validateAssignedResponse(a[0],response);
+      if(!validated.ok)return res.status(400).json({ok:false,code:validated.code,error:validated.error});
       // Idempotence: the database MUST have the two named UNIQUE indexes
       // checked by requireSubmissionSchema. Concurrent writers race safely via
       // ON CONFLICT DO NOTHING, then inspect the request UUID or retry.
@@ -93,7 +94,7 @@ export default async function handler(req,res){
         const inserted=await sql`INSERT INTO submissions(
           assignment_id,student_user_id,student_code,student_name,response,attempt_no,status,metadata,client_request_id)
           VALUES(${assignmentId},${user.user_id},${user.student_id||user.user_id},
-          ${user.display_name},${response},${attempt},'submitted',${meta},${clientRequestId})
+          ${user.display_name},${validated.response},${attempt},'submitted',${meta},${clientRequestId})
           ON CONFLICT DO NOTHING RETURNING *`;
         if(inserted.length){confirmed=inserted[0];break;}
         const duplicate=await sql`SELECT * FROM submissions WHERE assignment_id=${assignmentId}
