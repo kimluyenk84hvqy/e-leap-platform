@@ -18,20 +18,55 @@ button:disabled{opacity:.55;cursor:wait}.hint{background:#f0f8d8;border-left:5px
 #error{white-space:pre-wrap;color:#a42e2e;font-weight:750}#success{white-space:pre-wrap;color:#156542;font-weight:800}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
 [hidden]{display:none!important}
+.step-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:22px 0}
+.step-button{background:#eaf3de;color:var(--ink);border:1px solid #b7d39c;text-align:left;font-size:15px;padding:12px;line-height:1.35}
+.step-button[aria-current="step"]{background:var(--green);color:white;border-color:var(--green)}
+.step-button small{display:block;font-size:12px;opacity:.82;font-weight:600;margin-bottom:3px}
+.step-panel{margin-top:12px}
+.student-work{display:grid;gap:15px}
+.student-work textarea{min-height:92px}
+.student-work .checklist{display:flex;align-items:center;gap:9px}
+.student-work .checklist input{width:auto}
+.note-status{font-size:14px;color:var(--muted);min-height:22px}
+@media(max-width:680px){.step-nav{grid-template-columns:repeat(2,minmax(0,1fr))}.section{padding:18px}.step-button{font-size:14px}.passage{font-size:19px}}
 </style></head><body><main>
 <header><strong>E-LEAP · READING</strong><a href="/index.html">Back to Courses</a></header>
 <h1>My first day</h1><p class="note">Read your assigned account. Find evidence, explain why, then share your ideas with your group.</p>
 <div id="error" role="alert"></div>
 <section id="studentSection" hidden>
-<div class="section"><span class="eyebrow">Individual reading</span><p><span id="role" class="badge"></span></p>
-<h2>Read your account</h2><div id="passage" class="passage"></div></div>
-<div class="section"><span class="eyebrow">Expert group</span><h2>Discuss the evidence</h2>
-<p>Meet students who read the same account. Agree on two short clues and what they tell you about the first day.</p></div>
-<div class="section"><span class="eyebrow">Home group</span><h2>Teach your group</h2>
-<p>Explain your account. Listen to the other two members before completing the original textbook exercises together.</p></div>
-<div class="section"><span class="eyebrow">Reading 1 & 2</span><h2>Complete the original tasks</h2>
-<div id="questions"></div><p class="note">Use the original photographs in your textbook. Year estimates are open answers, not automatically graded.</p></div>
-<div class="section"><span class="eyebrow">Evidence & Why</span><h2>Submit your reasoning</h2>
+<nav class="step-nav" id="learningSteps" aria-label="Jigsaw learning steps"></nav>
+<section class="section step-panel" data-jigsaw-stage="predict">
+<span class="eyebrow">Step 1 · Look & predict</span><h2>Who might have written these accounts?</h2>
+<p>Look at the three original photographs on page 41 of your book. Make your first prediction. Don't decide yet.</p>
+<div class="student-work"><label class="field">My prediction and one reason<textarea data-note="prediction" placeholder="I think ... because ..."></textarea></label></div>
+</section>
+<section class="section step-panel" data-jigsaw-stage="assigned" hidden>
+<span class="eyebrow">Step 2 · Individual reading</span><p><span id="role" class="badge"></span></p>
+<h2>Read only your assigned account</h2><div id="passage" class="passage"></div>
+<div class="student-work"><label class="field">Clue 1 from my account<textarea data-note="individual1" placeholder="A short clue from the text"></textarea></label>
+<label class="field">Clue 2 from my account<textarea data-note="individual2" placeholder="Another clue"></textarea></label></div>
+</section>
+<section class="section step-panel" data-jigsaw-stage="expert" hidden>
+<span class="eyebrow">Step 3 · Expert group</span><h2>Meet readers of the same account</h2>
+<p>Compare your clues with students who read the <strong>same letter</strong>. Agree on the writer's feelings and a possible time clue.</p>
+<div class="student-work"><label class="field">Our best evidence from the text<textarea data-note="expertEvidence" placeholder="We found the phrase ..."></textarea></label>
+<label class="field">Feelings and time clue — what do they suggest?<textarea data-note="expertWhy" placeholder="This clue matters because ..."></textarea></label></div>
+</section>
+<section class="section step-panel" data-jigsaw-stage="home" hidden>
+<span class="eyebrow">Step 4 · Home group</span><h2>Teach one another</h2>
+<p>Return to a group with readers A, B and C. Take turns teaching your account. <strong>Listen and write a clue from each partner.</strong></p>
+<div class="student-work"><label class="field" id="partnerLabel1">Partner 1 — new information<textarea data-note="partner1" placeholder="My partner explained ..."></textarea></label>
+<label class="field" id="partnerLabel2">Partner 2 — new information<textarea data-note="partner2" placeholder="My partner explained ..."></textarea></label>
+<label class="checklist"><input type="checkbox" data-note="shared"> I taught my account and listened to both partners.</label></div>
+</section>
+<section class="section step-panel" data-jigsaw-stage="complete" hidden>
+<span class="eyebrow">Step 5 · Group task</span><h2>Complete BOTH original Reading exercises</h2>
+<div id="questions"></div><p class="note">Use the three original photographs on textbook page 41. Compare the clues. Year estimates are open answers, not automatically graded.</p>
+<div id="groupAnswers" class="student-work"></div>
+</section>
+<section class="section step-panel" data-jigsaw-stage="evidence" hidden>
+<span class="eyebrow">Step 6 · Evidence & Why</span><h2>Submit your reasoning</h2>
+<p class="hint">For your own account, quote a short phrase and explain WHY it supports your match. Complete the group table before submitting.</p>
 <form id="answerForm" class="form">
 <label class="field">Which photograph or person matches your account?<select id="photo" required><option value="">Select a person</option></select></label>
 <label class="field">Evidence — quote a short phrase from your text<textarea id="evidence" required maxlength="800" placeholder="A short phrase from your account"></textarea></label>
@@ -39,7 +74,9 @@ button:disabled{opacity:.55;cursor:wait}.hint{background:#f0f8d8;border-left:5px
 <label class="field">Why does this phrase support your choice?<textarea id="why" required maxlength="1200" placeholder="Explain your reason"></textarea></label>
 <label class="field">Estimated year / period<input id="year" required maxlength="80" placeholder="Your estimate"></label>
 <button id="submit" type="submit">Submit</button><div id="success" role="status"></div>
-</form></div></section>
+</form></section>
+<p class="note-status" id="noteStatus" aria-live="polite"></p>
+</section>
 <section id="teacherSection" class="section" hidden><h2>Reading group assignments</h2>
 <p class="note">Assign each student A, B or C. Unverified source material stays unavailable to students.</p>
 <div id="reviewState"></div>
@@ -71,6 +108,74 @@ async function start(){
   const data=await api('/api/research/reading-jigsaw?assignmentId='+encodeURIComponent(assignmentId));
   if(session.user.role==='student'){
    $('studentSection').hidden=false;$('role').textContent='Account '+data.account;$('passage').textContent=data.passage;
+   const letters=['A','B','C'],partners=letters.filter(k=>k!==data.account);
+   $('partnerLabel1').firstChild.textContent='Partner '+partners[0]+' — new information';
+   $('partnerLabel2').firstChild.textContent='Partner '+partners[1]+' — new information';
+   const stateKey='eleap-u6-group-notes:'+assignmentId+':'+session.user.user_id;
+   const noteState=(()=>{
+    try{return JSON.parse(sessionStorage.getItem(stateKey)||'{}')||{}}catch{return {}}
+   })();
+   const noteControls=[...document.querySelectorAll('#studentSection [data-note]')];
+   function saveNotes(){
+    const data={};for(const control of noteControls)
+      data[control.dataset.note]=control.type==='checkbox'?control.checked:control.value;
+    try{sessionStorage.setItem(stateKey,JSON.stringify(data))}catch{}
+    $('noteStatus').textContent='Your working notes are kept in this browser session until you submit.';
+   }
+   for(const control of noteControls){
+    if(control.type==='checkbox')control.checked=noteState[control.dataset.note]===true;
+    else control.value=typeof noteState[control.dataset.note]==='string'?noteState[control.dataset.note]:'';
+    control.addEventListener(control.type==='checkbox'?'change':'input',saveNotes);
+   }
+   const stages=[
+    ['predict','Look & predict'],['assigned','Read your account'],['expert','Expert group'],
+    ['home','Home group'],['complete','Book tasks'],['evidence','Evidence & Why']
+   ];
+   let currentStage='predict';
+   function showStage(id){
+    if(!stages.some(s=>s[0]===id))return;
+    currentStage=id;
+    for(const section of document.querySelectorAll('[data-jigsaw-stage]'))
+      section.hidden=section.dataset.jigsawStage!==id;
+    for(const button of $('learningSteps').children)
+      button.setAttribute('aria-current',button.dataset.stage===id?'step':'false');
+    document.querySelector('#studentSection').scrollIntoView({block:'start',behavior:'smooth'});
+   }
+   for(const [i,stage] of stages.entries()){
+    const button=element('button',stage[1]);button.type='button';button.className='step-button';
+    button.dataset.stage=stage[0];button.prepend(element('small','STEP '+(i+1)));
+    button.addEventListener('click',()=>showStage(stage[0]));$('learningSteps').append(button);
+   }
+   for(const account of letters){
+    const wrap=document.createElement('div');wrap.className='field';wrap.dataset.account=account;
+    const title=element('strong','Account '+account+' · name and estimated start year');
+    const name=document.createElement('select');name.dataset.groupName=account;name.required=true;
+    const blank=element('option','Select the photograph');blank.value='';name.append(blank);
+    for(const person of data.photoLabels||[]){const opt=element('option',person);opt.value=person;name.append(opt)}
+    const year=document.createElement('input');year.dataset.groupYear=account;
+    year.placeholder='Estimated year or period';year.maxLength=80;
+    wrap.append(title,name,year);$('groupAnswers').append(wrap);
+    name.addEventListener('change',saveGroupAnswers);
+    year.addEventListener('input',saveGroupAnswers);
+   }
+   const groupKey=stateKey+':group';
+   function saveGroupAnswers(){
+    const rows=letters.map(k=>({
+      account:k,
+      photoName:document.querySelector('[data-group-name="'+k+'"]').value,
+      yearEstimate:document.querySelector('[data-group-year="'+k+'"]').value.trim()
+    }));
+    try{sessionStorage.setItem(groupKey,JSON.stringify(rows))}catch{}
+   }
+   try{
+    const saved=JSON.parse(sessionStorage.getItem(groupKey)||'[]');
+    for(const row of saved){
+      if(!letters.includes(row.account))continue;
+      document.querySelector('[data-group-name="'+row.account+'"]').value=row.photoName||'';
+      document.querySelector('[data-group-year="'+row.account+'"]').value=row.yearEstimate||'';
+    }
+   }catch{}
+   showStage('predict');
    (data.originalQuestions||[]).forEach((q,i)=>$('questions').append(element('p',(i+1)+'. '+q)));
    (data.photoLabels||[]).forEach(name=>{const o=document.createElement('option');o.value=name;o.textContent=name;$('photo').append(o)});
    $('findEvidence').addEventListener('click',()=>{
@@ -88,14 +193,33 @@ async function start(){
     highlight.scrollIntoView({block:'center',behavior:'smooth'});
    });
    $('answerForm').addEventListener('submit',async e=>{
-    e.preventDefault();const button=$('submit');button.disabled=true;$('success').textContent='Submitting…';
+    e.preventDefault();
+    const groupAnswers=letters.map(k=>({
+      account:k,photoName:document.querySelector('[data-group-name="'+k+'"]').value,
+      yearEstimate:document.querySelector('[data-group-year="'+k+'"]').value.trim()
+    }));
+    if(groupAnswers.some(row=>!row.photoName||!row.yearEstimate)){
+      $('success').textContent='Complete the names and estimated years for A, B and C together first.';
+      showStage('complete');return;
+    }
+    if(new Set(groupAnswers.map(row=>row.photoName)).size!==3){
+      $('success').textContent='Use each photograph only once. Discuss your matches with your group.';
+      showStage('complete');return;
+    }
+    const own=groupAnswers.find(x=>x.account===data.account);
+    if(own.photoName!==$('photo').value||own.yearEstimate!==$('year').value.trim()){
+      $('success').textContent='Make your own Evidence & Why answer match your group answer for account '+data.account+'.';
+      return;
+    }
+    const button=$('submit');button.disabled=true;$('success').textContent='Submitting…';
     try{
      const receipt=await new ConfirmedAssignmentSubmission().submit({
       assignmentId,resourceId:data.resourceId,activityId:data.activityId,
       response:{account:data.account,photoName:$('photo').value,evidence:$('evidence').value.trim(),
-       why:$('why').value.trim(),yearEstimate:$('year').value.trim()}
+       why:$('why').value.trim(),yearEstimate:$('year').value.trim(),groupAnswers}
      });
      $('success').textContent='Submitted · Attempt '+receipt.attemptNo+' · Receipt '+receipt.submissionId;
+     try{sessionStorage.removeItem(groupKey);sessionStorage.removeItem(stateKey)}catch{}
     }catch(ex){$('success').textContent='Not submitted: '+ex.message}
     finally{button.disabled=false}
    });
