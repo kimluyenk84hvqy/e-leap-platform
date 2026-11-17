@@ -62,8 +62,14 @@ export default async function handler(req,res){
   if(action==='draft'){
    const material=req.body?.material;
    if(!validMaterial(material))return res.status(400).json({ok:false,code:'INVALID_SOURCE',error:'Three complete accounts, three photo labels and two original questions are required'});
+   // Neon SQL parameters for JS arrays are PostgreSQL arrays, NOT JSONB.
+   // Serialize the real textbook source explicitly before storing JSONB columns.
+   const accountsJson=JSON.stringify(material.accounts);
+   const labelsJson=JSON.stringify(material.photoLabels);
+   const photosJson=JSON.stringify(material.photoAssets||[]);
+   const questionsJson=JSON.stringify(material.originalQuestions);
    const rows=await sql`INSERT INTO reading_jigsaw_materials(assignment_id,class_id,accounts,photo_labels,photo_assets,original_questions,source_page,created_by)
-     VALUES(${assignmentId},${assignment.class_id},${material.accounts},${material.photoLabels},${material.photoAssets||[]},${material.originalQuestions},${material.sourcePage},${user.user_id})
+     VALUES(${assignmentId},${assignment.class_id},${accountsJson}::jsonb,${labelsJson}::jsonb,${photosJson}::jsonb,${questionsJson}::jsonb,${material.sourcePage},${user.user_id})
      ON CONFLICT(assignment_id) DO UPDATE SET accounts=EXCLUDED.accounts,photo_labels=EXCLUDED.photo_labels,
       photo_assets=EXCLUDED.photo_assets,
       original_questions=EXCLUDED.original_questions,source_page=EXCLUDED.source_page,
