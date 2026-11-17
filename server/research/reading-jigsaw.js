@@ -92,9 +92,23 @@ export default async function handler(req,res){
    // to photograph verification. Labels alone do not constitute uploaded images.
    const media=await sql`SELECT photo_assets FROM reading_jigsaw_materials WHERE assignment_id=${assignmentId} LIMIT 1`;
    if(!media.length)return res.status(404).json({ok:false,error:'Reading material is missing'});
-   if(!Array.isArray(media[0].photo_assets)||media[0].photo_assets.length!==3||
-     media[0].photo_assets.some(a=>!a||!safeText(a.assetId)||!safeText(a.alt)))
-     return res.status(409).json({ok:false,code:'PHOTO_ASSETS_MISSING',error:'Upload and link all three original photograph assets before verification'});
+   const photos=media[0].photo_assets;
+   if(!Array.isArray(photos)||photos.length!==3||
+     photos.some(a=>!a||!UUID.test(String(a.assetId||''))||!safeText(a.alt))||
+     new Set(photos.map(a=>a.assetId)).size!==3)
+     return res.status(409).json({ok:false,code:'PHOTO_ASSETS_MISSING',error:'Link three distinct original photograph IDs from Media Library before verification'});
+   // Never attest photo IDs on faith: all assets must exist, be active private images,
+   // and belong to the teacher who originally supplied this U6 source.
+   const owner=await sql`SELECT created_by FROM reading_jigsaw_materials WHERE assignment_id=${assignmentId} LIMIT 1`;
+   if(!owner.length)return res.status(404).json({ok:false,error:'Reading source missing'});
+   for(const photo of photos){
+     const verified=await sql`SELECT asset_id FROM studio_media_v1
+       WHERE asset_id::text=${photo.assetId} AND owner_id=${String(owner[0].created_by)}
+       AND status='active' AND category IN ('image','textbook')
+       AND content_type IN ('image/jpeg','image/png','image/webp') LIMIT 1`;
+     if(!verified.length)
+       return res.status(409).json({ok:false,code:'PHOTO_ASSET_NOT_VERIFIED',error:'One or more original photograph assets are unavailable in the teacher Media Library'});
+   }
    const rows=await sql`UPDATE reading_jigsaw_materials
     SET source_text_verified=TRUE,photo_assets_verified=TRUE,reviewed_by=${user.user_id},reviewed_at=NOW(),updated_at=NOW()
     WHERE assignment_id=${assignmentId} RETURNING assignment_id,source_text_verified,photo_assets_verified`;
