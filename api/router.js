@@ -23,6 +23,7 @@ import researchShells from '../server/research/shells.js';
 import researchSubmissions from '../server/research/submissions.js';
 import researchUsers from '../server/research/users.js';
 import researchReadingJigsaw from '../server/research/reading-jigsaw.js';
+import researchReadingJigsawPhoto from '../server/research/reading-jigsaw-photo.js';
 
 const ROUTES={
   'auth/login':authLogin,
@@ -48,6 +49,7 @@ const ROUTES={
   'research/shells':researchShells,
   'research/submissions':researchSubmissions,
   'research/reading-jigsaw':researchReadingJigsaw,
+  'research/reading-jigsaw-photo':researchReadingJigsawPhoto,
   'research/users':researchUsers
 };
 
