@@ -95,3 +95,9 @@ test('Only owning teacher can assign active classroom Student; no client role ov
  assert.equal((await request(handler,teacher,{method:'POST',action:'assign',studentUserId:uu.A,account:'C'})).status,200);
  assert.equal(f.state.group[uu.A],'C');
 });
+
+test('U6 Neon JSONB source arrays are serialized before binding, not passed as PostgreSQL arrays',()=>{
+ for(const name of ['accountsJson','labelsJson','photosJson','questionsJson'])
+  assert.ok(source.includes(name+'}::jsonb'),'Missing JSONB binding for '+name);
+ assert.ok(source.includes('JSON.stringify(material.photoAssets||[])'));
+});
