@@ -9,7 +9,7 @@ const CLASS='10000000-0000-4000-8000-000000000002';
 const A='10000000-0000-4000-8000-000000000003';
 const PHOTO='20000000-0000-4000-8000-000000000001';
 function fixture(){
- const state={verified:true,assigned:true,active:true,photos:[{assetId:PHOTO,alt:'Photograph 1'}],actor:{role:'student',user_id:A}};
+ const state={verified:true,assigned:true,active:true,photos:[{assetId:PHOTO,alt:'Photograph 1'},{assetId:'20000000-0000-4000-8000-000000000002',alt:'Photograph 2'},{assetId:'20000000-0000-4000-8000-000000000003',alt:'Photograph 3'}],actor:{role:'student',user_id:A}};
  const sql=async(strings,...args)=>{
   const query=strings.join('?');
   if(query.includes('FROM assignments WHERE assignment_id='))return [{assignment_id:ASSIGN,class_id:CLASS,status:state.active?'active':'draft'}];
