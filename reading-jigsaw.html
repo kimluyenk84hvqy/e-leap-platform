@@ -194,6 +194,28 @@ async function start(){
    });
    $('answerForm').addEventListener('submit',async e=>{
     e.preventDefault();
+    // Jigsaw is collaborative: an individual-only reading is not sufficient
+    // to submit the two original textbook exercises as a group outcome.
+    for(const [key,stage,label] of [
+      ['individual1','assigned','two clues from your assigned account'],
+      ['individual2','assigned','two clues from your assigned account'],
+      ['expertEvidence','expert','your expert-group evidence'],
+      ['expertWhy','expert','your expert-group explanation'],
+      ['partner1','home','the first partner’s shared clue'],
+      ['partner2','home','the second partner’s shared clue']
+    ]){
+      const input=document.querySelector('[data-note="'+key+'"]');
+      if(!input?.value.trim()){
+        $('noteStatus').textContent='Before submitting, complete '+label+'.';
+        showStage(stage);
+        input?.focus();
+        return;
+      }
+    }
+    if(!document.querySelector('[data-note="shared"]')?.checked){
+      $('noteStatus').textContent='Teach your account and listen to both partners before submitting.';
+      showStage('home');return;
+    }
     const groupAnswers=letters.map(k=>({
       account:k,photoName:document.querySelector('[data-group-name="'+k+'"]').value,
       yearEstimate:document.querySelector('[data-group-year="'+k+'"]').value.trim()

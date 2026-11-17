@@ -38,3 +38,11 @@ test('Role-limited passage is obtained from authenticated server; notes are priv
  assert.match(html,/sessionStorage\.removeItem\(groupKey\)/);
  assert.doesNotMatch(html,/accounts\.A|accounts\.B|accounts\.C/);
 });
+
+test('Submitted book work requires individual clues, expert discussion and both home-group partners',()=>{
+ for(const tag of ['individual1','individual2','expertEvidence','expertWhy','partner1','partner2']){
+  assert.match(html,new RegExp("\\['"+tag+"','(?:assigned|expert|home)'"));
+ }
+ assert.match(html,/data-note="shared"/);
+ assert.match(html,/showStage\('home'\);return/);
+});
