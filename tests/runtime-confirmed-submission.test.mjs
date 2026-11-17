@@ -96,3 +96,15 @@ test('P0 unconfirmed request keeps UUID across retry and new instance; clears af
  assert.deepEqual(seen,[UUID,UUID]);
  assert.equal(store.items.size,0);
 });
+
+test('browser default fetch keeps Window/global receiver (prevents Illegal invocation)',async()=>{
+ const original=globalThis.fetch;
+ let calls=0;
+ globalThis.fetch=function(url){assert.equal(this,globalThis);assert.equal(url,'/receiver-probe');calls++;return Promise.resolve(reply({ok:true}))};
+ try{
+  const service=new ConfirmedAssignmentSubmission({storage:storage()});
+  const result=await service.fetchImpl('/receiver-probe');
+  assert.equal(result.ok,true);
+  assert.equal(calls,1);
+ }finally{globalThis.fetch=original;}
+});

@@ -5,7 +5,7 @@
  */
 const validId=value=>typeof value==='string'&&value.length>=5&&value.length<=120&&/^[a-zA-Z0-9_-]+$/.test(value);
 export class ConfirmedAssignmentSubmission{
- constructor({fetchImpl=globalThis.fetch,endpoint='/api/research',authEndpoint='/api/auth/me',idFactory=()=>globalThis.crypto?.randomUUID?.(),storage=globalThis.sessionStorage}={}){
+ constructor({fetchImpl=(...args)=>globalThis.fetch(...args),endpoint='/api/research',authEndpoint='/api/auth/me',idFactory=()=>globalThis.crypto?.randomUUID?.(),storage=globalThis.sessionStorage}={}){
   if(typeof fetchImpl!=='function')throw Error('Fetch is required');
   this.fetchImpl=fetchImpl;this.endpoint=endpoint;this.authEndpoint=authEndpoint;this.idFactory=idFactory;this.storage=storage;this.pending=new Set();this.requestCache=new Map();
  }
