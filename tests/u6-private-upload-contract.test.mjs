@@ -57,3 +57,64 @@ test('Server rejects unauthenticated, unsupported user roles and absent private 
  assert.equal((await call({role:'student'})).status,403);
  assert.equal((await call({role:'teacher'})).status,503);
 });
+
+test('Server only stores private, SHA-verified image for authenticated Teacher on Preview (synthetic bytes)',async()=>{
+ const {createHash}=await import('node:crypto');
+ const png=Buffer.alloc(1800);
+ Buffer.from([137,80,78,71,13,10,26,10]).copy(png,0);
+ png.write('IHDR',12,'ascii');png.writeUInt32BE(190,16);png.writeUInt32BE(143,20);
+ const digest=createHash('sha256').update(png).digest('hex');
+ const modified=source.replace(SHA[0],digest);
+ assert.notEqual(source,modified);
+ const uploads=[],sqlEvents=[];
+ const sql=async(strings,...args)=>{
+  const q=strings.join('?').replace(/\\s+/g,' ');
+  sqlEvents.push(q);
+  if(q.includes('SELECT asset_id,client_sha256 FROM studio_media_v1'))return [];
+  if(q.includes('INSERT INTO studio_media_v1'))return [{asset_id:'20000000-0000-4000-8000-000000000001'}];
+  throw Error('Unsupported SQL: '+q);
+ };
+ const ctx=vm.createContext({console,Buffer,process:{env:{
+  VERCEL_ENV:'preview',STUDIO_U6_PRIVATE_UPLOAD_ENABLED:'true',BLOB_STORE_ID:'store_u4AgJ1AqUMRUMMz2'
+ }}});
+ const libs={
+  'node:crypto':{createHash},
+  '../server/_research-db.js':{getResearchDb:()=>sql},
+  '../server/_auth.js':{
+   requireAuth:async(req,res)=>req.actor,
+   requireSameOrigin:()=>true
+  },
+  '@vercel/blob':{
+   put:async(path,buffer,options)=>{
+    uploads.push({path,bytes:buffer.length,options});
+    return {pathname:path+'-qa-random',url:'https://synthetic.invalid/u6'};
+   },
+   head:async()=>({size:png.length,contentType:'image/png'})
+  }
+ };
+ const linked=new Map();
+ const resolve=async name=>{
+  if(!libs[name])throw Error('unexpected import '+name);
+  if(!linked.has(name))linked.set(name,new vm.SyntheticModule(Object.keys(libs[name]),function(){
+   for(const [key,value]of Object.entries(libs[name]))this.setExport(key,value);
+  },{context:ctx,identifier:name}));
+  return linked.get(name);
+ };
+ const module=new vm.SourceTextModule(modified,{context:ctx,importModuleDynamically:async name=>{
+  const m=await resolve(name);
+  if(m.status==='unlinked')await m.link(resolve);
+  if(m.status==='linked')await m.evaluate();
+  return m;
+ }});
+ await module.link(resolve);await module.evaluate();
+ const result={status:200,body:null};
+ const res={setHeader(){return this;},status(n){result.status=n;return this;},json(body){result.body=JSON.parse(JSON.stringify(body));return this;}};
+ await module.namespace.default({method:'POST',actor:{role:'teacher',user_id:'10000000-0000-4000-8000-000000000004'},
+  body:{person:'Mavis Carver',fileBase64:png.toString('base64')},headers:{}},res);
+ assert.equal(result.status,201,JSON.stringify(result.body));
+ assert.equal(result.body.assetId,'20000000-0000-4000-8000-000000000001');
+ assert.equal(uploads.length,1);
+ assert.equal(uploads[0].options.access,'private');
+ assert.equal(uploads[0].bytes,png.length);
+ assert.equal(sqlEvents.some(q=>q.includes('INSERT INTO studio_media_v1')),true);
+});
