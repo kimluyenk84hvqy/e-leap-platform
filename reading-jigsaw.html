@@ -305,6 +305,47 @@ async function start(){
    for(const k of ['A','B','C'])passage[k]=input('Account '+k,existing.accounts?.[k]||'',true);
    const photoNames=['Mavis Carver','Anita Green','Neil Johnson'].map((name,i)=>input('Photo '+(i+1)+' name',existing.photo_labels?.[i]||name));
    const photoIds=[0,1,2].map(i=>input('Photo '+(i+1)+' media asset ID',existing.photo_assets?.[i]?.assetId||''));
+   const originals=['Mavis Carver','Anita Green','Neil Johnson'];
+   const uploadSection=document.createElement('section');uploadSection.className='section';
+   const uploadHeading=element('h2','Upload original Reading photographs');
+   const uploadHelp=element('p','Choose each original photograph from page 41. Keep every face and photograph unchanged.');
+   const uploadFields=originals.map((person,i)=>{
+     const label=element('label','Photograph '+(i+1)+' · '+person);label.className='field';
+     const file=document.createElement('input');file.type='file';file.accept='image/png';
+     label.append(file);uploadSection.append(label);return file;
+   });
+   const uploadButton=element('button','Upload 3 original photographs');
+   uploadButton.type='button';const uploadStatus=element('p','');
+   uploadStatus.setAttribute('role','status');uploadStatus.className='note';
+   uploadSection.prepend(uploadHeading,uploadHelp);
+   uploadSection.append(uploadButton,uploadStatus);
+   photoIds[0].closest('.field').parentNode.insertBefore(uploadSection,photoIds[0].closest('.field'));
+   async function asBase64(file){
+     return await new Promise((resolve,reject)=>{
+       const reader=new FileReader();
+       reader.onerror=()=>reject(new Error('Unable to read selected image'));
+       reader.onload=()=>resolve(String(reader.result||'').split(',')[1]||'');
+       reader.readAsDataURL(file);
+     });
+   }
+   uploadButton.addEventListener('click',async()=>{
+     if(uploadFields.some(f=>!f.files?.length)){
+       uploadStatus.textContent='Select all three original PNG photographs first.';return;
+     }
+     uploadButton.disabled=true;
+     try{
+       for(let i=0;i<3;i++){
+         uploadStatus.textContent='Uploading photograph '+(i+1)+' of 3…';
+         const file=uploadFields[i].files[0];
+         if(file.type!=='image/png'||file.size>190000)throw new Error('Use the original page-41 PNG file');
+         const result=await api('/api/u6-photo-upload',{method:'POST',
+           body:JSON.stringify({person:originals[i],fileBase64:await asBase64(file)})});
+         photoIds[i].value=result.assetId;
+       }
+       uploadStatus.textContent='All three original photographs are in your private Media Library. Save the source draft and review the textbook before confirming.';
+     }catch(ex){uploadStatus.textContent='Photo upload not confirmed: '+ex.message}
+     finally{uploadButton.disabled=false}
+   });
    const questions=[0,1].map((i)=>input('Original Reading exercise '+(i+1),existing.original_questions?.[i]||'',true));
    const sourcePage=input('Source page',String(existing.source_page||41));
    $('saveDraft').onclick=async()=>{
