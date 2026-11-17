@@ -15,7 +15,8 @@ test('Only Preview, exact private store and dedicated U6 flag can upload genuine
  assert.match(source,/requireAuth\(req,res,\['teacher','admin'\]\)/);
  assert.match(source,/requireSameOrigin\(req,res\)/);
  assert.match(source,/access:'private'/);
- assert.match(source,/contentType:'image\/png'/);
+ assert.match(source,/contentType:mime/);
+ assert.match(source,/const mime=approvedWebp/);
  assert.match(source,/addRandomSuffix:true/);
  assert.match(source,/head\(blob\.url\)/);
  for(const hash of SHA)assert.ok(source.includes(hash),'Missing authentic source SHA '+hash);
