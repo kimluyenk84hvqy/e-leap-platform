@@ -311,7 +311,7 @@ async function start(){
    const uploadHelp=element('p','Choose each original photograph from page 41. Keep every face and photograph unchanged.');
    const uploadFields=originals.map((person,i)=>{
      const label=element('label','Photograph '+(i+1)+' · '+person);label.className='field';
-     const file=document.createElement('input');file.type='file';file.accept='image/png';
+     const file=document.createElement('input');file.type='file';file.accept='image/png,image/webp';
      label.append(file);uploadSection.append(label);return file;
    });
    const uploadButton=element('button','Upload 3 original photographs');
@@ -337,7 +337,7 @@ async function start(){
        for(let i=0;i<3;i++){
          uploadStatus.textContent='Uploading photograph '+(i+1)+' of 3…';
          const file=uploadFields[i].files[0];
-         if(file.type!=='image/png'||file.size>190000)throw new Error('Use the original page-41 PNG file');
+         if(!['image/png','image/webp'].includes(file.type)||file.size>190000)throw new Error('Use the approved original photograph or its optimized WebP copy');
          const result=await api('/api/u6-photo-upload',{method:'POST',
            body:JSON.stringify({person:originals[i],fileBase64:await asBase64(file)})});
          photoIds[i].value=result.assetId;
