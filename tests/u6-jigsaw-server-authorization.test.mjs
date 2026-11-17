@@ -27,6 +27,8 @@ function fixture(){
    state.group[args[2]]=args[3];return [{student_user_id:args[2],account:args[3]}];
   }
   if(q.includes('SELECT photo_assets FROM reading_jigsaw_materials'))return state.material?[{photo_assets:state.assets}]:[];
+  if(q.includes('SELECT created_by FROM reading_jigsaw_materials'))return [{created_by:uu.teacher}];
+  if(q.includes('SELECT asset_id FROM studio_media_v1'))return state.assets.some(asset=>asset.assetId===args[0])&&args[1]===uu.teacher?[{asset_id:args[0]}]:[];
   if(q.includes('UPDATE reading_jigsaw_materials')){state.verified=true;state.photos=true;return [{assignment_id:ID,source_text_verified:true,photo_assets_verified:true}]}
   if(q.includes('INSERT INTO reading_jigsaw_materials')){state.material=true;state.verified=false;state.photos=false;return [{assignment_id:ID,source_text_verified:false,photo_assets_verified:false}]}
   throw Error('Unsupported QA query: '+q);
@@ -72,7 +74,7 @@ test('Jigsaw role-bound API fails closed until teacher verifies text and 3 media
  const verifyMissing=await request(handler,teacher,{method:'POST',action:'verify',confirmSourceText:true,confirmOriginalPhotos:true});
  assert.equal(verifyMissing.status,409);
  assert.equal(verifyMissing.data.code,'PHOTO_ASSETS_MISSING');
- f.state.assets=[{assetId:'private-A',alt:'Mavis'},{assetId:'private-B',alt:'Anita'},{assetId:'private-C',alt:'Neil'}];
+ f.state.assets=[{assetId:'20000000-0000-4000-8000-000000000001',alt:'Mavis'},{assetId:'20000000-0000-4000-8000-000000000002',alt:'Anita'},{assetId:'20000000-0000-4000-8000-000000000003',alt:'Neil'}];
  const approved=await request(handler,teacher,{method:'POST',action:'verify',confirmSourceText:true,confirmOriginalPhotos:true});
  assert.equal(approved.status,200);
  const a=await request(handler,studentA),b=await request(handler,studentB);
