@@ -28,6 +28,10 @@ button:disabled{opacity:.55;cursor:wait}.hint{background:#f0f8d8;border-left:5px
 .student-work .checklist{display:flex;align-items:center;gap:9px}
 .student-work .checklist input{width:auto}
 .note-status{font-size:14px;color:var(--muted);min-height:22px}
+.evidence-panel{border:1px solid #accf9a;border-radius:14px;background:#f6faec;padding:17px}
+.evidence-panel .passage{max-height:320px;overflow:auto;white-space:pre-wrap;font-size:19px}
+.evidence-panel mark{background:#ffe680;padding:2px;border-radius:3px}
+.evidence-panel:focus{outline:2px solid var(--green);outline-offset:3px}
 @media(max-width:680px){.step-nav{grid-template-columns:repeat(2,minmax(0,1fr))}.section{padding:18px}.step-button{font-size:14px}.passage{font-size:19px}}
 </style></head><body><main>
 <header><strong>E-LEAP · READING</strong><a href="/index.html">Back to Courses</a></header>
@@ -70,7 +74,8 @@ button:disabled{opacity:.55;cursor:wait}.hint{background:#f0f8d8;border-left:5px
 <form id="answerForm" class="form">
 <label class="field">Which photograph or person matches your account?<select id="photo" required><option value="">Select a person</option></select></label>
 <label class="field">Evidence — quote a short phrase from your text<textarea id="evidence" required maxlength="800" placeholder="A short phrase from your account"></textarea></label>
-<button type="button" id="findEvidence" style="background:#e1edaf;color:#183e31">Find evidence in my text</button><div id="evidenceStatus" role="status" class="note"></div>
+<button type="button" id="findEvidence" style="background:#e1edaf;color:#183e31">Find evidence in my text</button><div id="evidenceStatus" role="status" class="note" aria-live="polite"></div>
+<div id="evidencePanel" class="evidence-panel" tabindex="-1" aria-label="My assigned account and evidence"><strong>My assigned account · source evidence</strong><div id="evidencePassage" class="passage"></div></div>
 <label class="field">Why does this phrase support your choice?<textarea id="why" required maxlength="1200" placeholder="Explain your reason"></textarea></label>
 <label class="field">Estimated year / period<input id="year" required maxlength="80" placeholder="Your estimate"></label>
 <button id="submit" type="submit">Submit</button><div id="success" role="status"></div>
@@ -107,7 +112,7 @@ async function start(){
  try{
   const data=await api('/api/research/reading-jigsaw?assignmentId='+encodeURIComponent(assignmentId));
   if(session.user.role==='student'){
-   $('studentSection').hidden=false;$('role').textContent='Account '+data.account;$('passage').textContent=data.passage;
+   $('studentSection').hidden=false;$('role').textContent='Account '+data.account;$('passage').textContent=data.passage;$('evidencePassage').textContent=data.passage;
    const letters=['A','B','C'],partners=letters.filter(k=>k!==data.account);
    $('partnerLabel1').firstChild.textContent='Partner '+partners[0]+' — new information';
    $('partnerLabel2').firstChild.textContent='Partner '+partners[1]+' — new information';
@@ -181,16 +186,16 @@ async function start(){
    $('findEvidence').addEventListener('click',()=>{
     const phrase=$('evidence').value.trim(),text=data.passage||'';
     const i=phrase.length>=5?text.toLocaleLowerCase().indexOf(phrase.toLocaleLowerCase()):-1;
-    const box=$('passage');box.replaceChildren();
+    const box=$('evidencePassage');box.replaceChildren();
     if(i<0){
      box.textContent=text;$('evidenceStatus').textContent='Choose a short exact phrase from your own account.';
-     return;
+     $('evidencePanel').focus();return;
     }
     const highlight=document.createElement('mark');
     highlight.textContent=text.slice(i,i+phrase.length);
     box.append(document.createTextNode(text.slice(0,i)),highlight,document.createTextNode(text.slice(i+phrase.length)));
-    $('evidenceStatus').textContent='Evidence found in your assigned account.';
-    highlight.scrollIntoView({block:'center',behavior:'smooth'});
+    $('evidenceStatus').textContent='Evidence found and highlighted in your assigned account.';
+    highlight.scrollIntoView({block:'nearest',behavior:'smooth'});
    });
    $('answerForm').addEventListener('submit',async e=>{
     e.preventDefault();
