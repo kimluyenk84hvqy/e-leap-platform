@@ -46,3 +46,12 @@ test('Submitted book work requires individual clues, expert discussion and both 
  assert.match(html,/data-note="shared"/);
  assert.match(html,/showStage\('home'\);return/);
 });
+
+test('Evidence & Why shows and highlights assigned passage on its own visible step',()=>{
+ assert.match(html,/id="evidencePanel"/);
+ assert.match(html,/id="evidencePassage"/);
+ assert.match(html,/\$\('evidencePassage'\)\.textContent=data\.passage/);
+ assert.match(html,/const box=\$\('evidencePassage'\);box\.replaceChildren\(\)/);
+ assert.match(html,/highlight\.scrollIntoView/);
+ assert.doesNotMatch(html,/const box=\$\('passage'\);box\.replaceChildren\(\)/);
+});
