@@ -39,7 +39,7 @@ jobs:
       - name: API handler integration (isolated synthetic auth and SQL adapter)
         run: node --experimental-vm-modules --test tests/m3-api-handler-integration.test.mjs
       - name: U6 Reading Jigsaw review, source-gate and server-role contracts
-        run: node --experimental-vm-modules --test tests/u6-jigsaw-server-authorization.test.mjs tests/u6-reading-private-photos.test.mjs tests/studio-u6-evidence-why.test.mjs tests/studio-u6-jigsaw-contract.test.mjs tests/studio-u6-role-review-projection.test.mjs tests/studio-u6-three-account-reading.test.mjs tests/studio-u6-preview-safety.test.mjs
+        run: node --experimental-vm-modules --test tests/u6-jigsaw-server-authorization.test.mjs tests/u6-reading-private-photos.test.mjs tests/u6-reading-projector-typography.test.mjs tests/studio-u6-evidence-why.test.mjs tests/studio-u6-jigsaw-contract.test.mjs tests/studio-u6-role-review-projection.test.mjs tests/studio-u6-three-account-reading.test.mjs tests/studio-u6-preview-safety.test.mjs
       - name: Static JS parse check
         run: |
           node --check assets/js/app.js
