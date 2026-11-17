@@ -32,6 +32,11 @@ button:disabled{opacity:.55;cursor:wait}.hint{background:#f0f8d8;border-left:5px
 .evidence-panel .passage{max-height:320px;overflow:auto;white-space:pre-wrap;font-size:19px}
 .evidence-panel mark{background:#ffe680;padding:2px;border-radius:3px}
 .evidence-panel:focus{outline:2px solid var(--green);outline-offset:3px}
+.source-photos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.source-photo{margin:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:white}
+.source-photo img{display:block;width:100%;aspect-ratio:4/3;object-fit:contain;background:#f1f4ee}
+.source-photo figcaption{font-size:16px;padding:9px 12px;font-weight:750}
+@media(max-width:680px){.source-photos{grid-template-columns:1fr}}
 @media(max-width:680px){.step-nav{grid-template-columns:repeat(2,minmax(0,1fr))}.section{padding:18px}.step-button{font-size:14px}.passage{font-size:19px}}
 </style></head><body><main>
 <header><strong>E-LEAP · READING</strong><a href="/index.html">Back to Courses</a></header>
@@ -41,7 +46,8 @@ button:disabled{opacity:.55;cursor:wait}.hint{background:#f0f8d8;border-left:5px
 <nav class="step-nav" id="learningSteps" aria-label="Jigsaw learning steps"></nav>
 <section class="section step-panel" data-jigsaw-stage="predict">
 <span class="eyebrow">Step 1 · Look & predict</span><h2>Who might have written these accounts?</h2>
-<p>Look at the three original photographs on page 41 of your book. Make your first prediction. Don't decide yet.</p>
+<p>Look at the three original photographs. Make your first prediction. Don't decide yet.</p>
+<div id="originalPhotos" class="source-photos" aria-label="Original three textbook photographs"></div>
 <div class="student-work"><label class="field">My prediction and one reason<textarea data-note="prediction" placeholder="I think ... because ..."></textarea></label></div>
 </section>
 <section class="section step-panel" data-jigsaw-stage="assigned" hidden>
@@ -65,7 +71,7 @@ button:disabled{opacity:.55;cursor:wait}.hint{background:#f0f8d8;border-left:5px
 </section>
 <section class="section step-panel" data-jigsaw-stage="complete" hidden>
 <span class="eyebrow">Step 5 · Group task</span><h2>Complete BOTH original Reading exercises</h2>
-<div id="questions"></div><p class="note">Use the three original photographs on textbook page 41. Compare the clues. Year estimates are open answers, not automatically graded.</p>
+<div id="questions"></div><p class="note">Use the three original photographs shown in Step 1. Compare the clues. Year estimates are open answers, not automatically graded.</p>
 <div id="groupAnswers" class="student-work"></div>
 </section>
 <section class="section step-panel" data-jigsaw-stage="evidence" hidden>
@@ -114,6 +120,18 @@ async function start(){
   if(session.user.role==='student'){
    $('studentSection').hidden=false;$('role').textContent='Account '+data.account;$('passage').textContent=data.passage;$('evidencePassage').textContent=data.passage;
    const letters=['A','B','C'],partners=letters.filter(k=>k!==data.account);
+   const pictures=Array.isArray(data.photoAssets)?data.photoAssets:[];
+   if(pictures.length!==3||pictures.some(p=>!UUID.test(String(p?.assetId||'')))){
+     throw new Error('Three verified original photographs are required.');
+   }
+   for(const [i,photo] of pictures.entries()){
+     const figure=document.createElement('figure');figure.className='source-photo';
+     const picture=document.createElement('img');picture.alt=photo.alt||('Textbook photograph '+(i+1));
+     picture.loading='lazy';picture.decoding='async';
+     picture.src='/api/research/reading-jigsaw-photo?assignmentId='+encodeURIComponent(assignmentId)+'&assetId='+encodeURIComponent(photo.assetId);
+     const caption=element('figcaption','Photograph '+(i+1));
+     figure.append(picture,caption);$('originalPhotos').append(figure);
+   }
    $('partnerLabel1').firstChild.textContent='Partner '+partners[0]+' — new information';
    $('partnerLabel2').firstChild.textContent='Partner '+partners[1]+' — new information';
    const stateKey='eleap-u6-group-notes:'+assignmentId+':'+session.user.user_id;
