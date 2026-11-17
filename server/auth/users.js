@@ -1,9 +1,9 @@
-import { ensureAuthSchema,requireAuth,requireSameOrigin,normalizeEmail,normalizeStudentId,hashPassword } from '../_auth.js';
+import { ensureAuthSchema,requireAuth,requireSameOrigin,normalizeEmail,normalizeStudentId,validStudentId,hashPassword } from '../_auth.js';
 export default async function handler(req,res){
   try{
     const sql=await ensureAuthSchema(); const actor=await requireAuth(req,res,['admin']); if(!actor)return;
     if(req.method==='GET'){
-      const rows=await sql`SELECT user_id,email,student_id,display_name,role,status,must_change_password,created_at FROM auth_users ORDER BY created_at DESC LIMIT 500`;
+      const rows=await sql`SELECT user_id,email,student_id,display_name,role,status,must_change_password,(password_hash IS NOT NULL) AS credential_enrolled,created_at FROM auth_users ORDER BY created_at DESC LIMIT 500`;
       return res.status(200).json({ok:true,users:rows});
     }
     if(req.method==='POST'){
@@ -24,6 +24,21 @@ export default async function handler(req,res){
       const userId=String(req.body?.userId||'').trim();
       const action=String(req.body?.action||'reset-teacher-password').trim();
       if(!userId)return res.status(400).json({ok:false,error:'userId is required'});
+      if(action==='set-student-pin'){
+        const studentId=normalizeStudentId(req.body?.studentId),pin=String(req.body?.pin||'');
+        if(!validStudentId(studentId))return res.status(400).json({ok:false,error:'Enter a valid Student ID.'});
+        if(!/^\d{6}$/.test(pin))return res.status(400).json({ok:false,error:'PIN must contain exactly 6 digits.'});
+        const updated=await sql`WITH changed AS (
+          UPDATE auth_users SET student_id=${studentId},password_hash=${hashPassword(pin)},updated_at=NOW()
+          WHERE user_id=${userId} AND role='student' AND status='active'
+          AND (student_id IS NULL OR student_id=${studentId})
+          RETURNING user_id,student_id,display_name,role
+        ), revoked AS (
+          DELETE FROM auth_sessions WHERE user_id IN (SELECT user_id FROM changed)
+        ) SELECT * FROM changed`;
+        if(!updated.length)return res.status(409).json({ok:false,error:'Active student not found or existing Student ID does not match.'});
+        return res.status(200).json({ok:true,user:updated[0],message:'PIN set. Student can sign in normally.'});
+      }
       if(action==='reset-student-pin'){
         const rows=await sql`UPDATE auth_users SET password_hash=NULL,updated_at=NOW() WHERE user_id=${userId} AND role='student' RETURNING user_id,student_id,display_name,role`;
         if(!rows.length)return res.status(404).json({ok:false,error:'Student not found'});
