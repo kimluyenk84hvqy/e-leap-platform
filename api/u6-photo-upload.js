@@ -5,9 +5,9 @@ import {getResearchDb} from '../server/_research-db.js';
 import {requireAuth,requireSameOrigin} from '../server/_auth.js';
 const STORE_ID='store_u4AgJ1AqUMRUMMz2';
 const PHOTO={
- 'Mavis Carver':{hash:'fd749a893ec2a46f7949c0490c93225bd72ca58276753e6abd4d01c326c2e7bb',width:190,height:143,webp:'af4d6146ed4e6c8b6bb5f1e5fb2ea185bada093f35967cc1b3606271ee2e6cae',path:'mavis-carver'},
- 'Anita Green':{hash:'296e6ec023996e998b0a9e068264ae47e9b37e3c38577bfca48662253f5a9aa3',width:199,height:182,webp:'b4dd38e3815b3a58451fdd253c90a83f327ea6c6336c3f60916b7bba62b3cf5d',path:'anita-green'},
- 'Neil Johnson':{hash:'a4cb1aa5db2674cec7701b28106f202ed05b40bd78832865b3398f8a2be1ab69',width:158,height:187,webp:'988fdc2b2aac823fef53db914ad6fcfc1964187bd415384ab3a4674a30c519b1',path:'neil-johnson'}
+ 'Mavis Carver':{hash:'fd749a893ec2a46f7949c0490c93225bd72ca58276753e6abd4d01c326c2e7bb',width:190,height:143,webp:'3ded69976fd41af29d049559dc2a42ca4f2208cdd39a4544e85e3af970cf0074',path:'mavis-carver'},
+ 'Anita Green':{hash:'296e6ec023996e998b0a9e068264ae47e9b37e3c38577bfca48662253f5a9aa3',width:199,height:182,webp:'18e73ba40023e48ecb54d6fc929330121ad7dca31567528018a18a1582dd7fc1',path:'anita-green'},
+ 'Neil Johnson':{hash:'a4cb1aa5db2674cec7701b28106f202ed05b40bd78832865b3398f8a2be1ab69',width:158,height:187,webp:'f91c48ca04dc6dcaa937c91571ff35233bbb851d6ac4c6b0a5c97cf7004a632f',path:'neil-johnson'}
 };
 const ready=()=>process.env.VERCEL_ENV==='preview'&&
  process.env.STUDIO_U6_PRIVATE_UPLOAD_ENABLED==='true'&&
@@ -32,7 +32,7 @@ export default async function handler(req,res){
   const authenticPng=digest===spec.hash&&bytes.subarray(0,8).equals(pngSignature)&&
     bytes.toString('ascii',12,16)==='IHDR'&&bytes.readUInt32BE(16)===spec.width&&
     bytes.readUInt32BE(20)===spec.height;
-  // Q90 WebP derivative of the same source crop (visually compared against original);
+  // Q82 WebP derivative of the same source crop (visually compared against original);
   // fixed digest prevents arbitrary images, and the actual original PNG is also accepted.
   const approvedWebp=digest===spec.webp&&bytes.toString('ascii',0,4)==='RIFF'&&
     bytes.toString('ascii',8,12)==='WEBP';
