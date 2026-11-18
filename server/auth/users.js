@@ -24,6 +24,37 @@ export default async function handler(req,res){
       const userId=String(req.body?.userId||'').trim();
       const action=String(req.body?.action||'reset-teacher-password').trim();
       if(!userId)return res.status(400).json({ok:false,error:'userId is required'});
+      if(action==='change-role'||action==='set-status'){
+        if(userId===String(actor.user_id))return res.status(409).json({ok:false,error:'You cannot change your own role or account status.'});
+        const role=String(req.body?.role||''),status=String(req.body?.status||'');
+        if(action==='change-role'&&!['admin','teacher'].includes(role))return res.status(400).json({ok:false,error:'Only Teacher and Admin roles can be exchanged.'});
+        if(action==='set-status'&&!['active','inactive'].includes(status))return res.status(400).json({ok:false,error:'Invalid account status.'});
+        // Serialize lifecycle changes; recheck actor authority after acquiring the lock.
+        // Never change identity or class membership. Do not grant Admin before password setup.
+        const results=await sql.transaction([
+          sql`SELECT pg_advisory_xact_lock(724601)`,
+          sql`WITH changed AS (
+            UPDATE auth_users AS target SET
+              role=CASE WHEN ${action}='change-role' THEN ${role} ELSE target.role END,
+              status=CASE WHEN ${action}='set-status' THEN ${status} ELSE target.status END,
+              updated_at=NOW()
+            WHERE target.user_id=${userId} AND target.user_id<>${actor.user_id}
+              AND EXISTS (SELECT 1 FROM auth_users WHERE user_id=${actor.user_id} AND role='admin' AND status='active' AND must_change_password=FALSE)
+              AND (${action}='set-status' OR (target.role IN ('teacher','admin') AND target.status='active' AND target.email IS NOT NULL AND target.password_hash IS NOT NULL AND target.must_change_password=FALSE))
+            RETURNING user_id,email,student_id,display_name,role,status,must_change_password
+          ), revoked AS (
+            DELETE FROM auth_sessions WHERE user_id IN (SELECT user_id FROM changed)
+          ), linked AS (
+            UPDATE users AS u SET
+              role=CASE WHEN c.role='admin' THEN 'research_lead' WHEN c.role='teacher' THEN 'teacher' ELSE u.role END,
+              is_active=(c.status='active'),updated_at=NOW()
+            FROM changed c WHERE u.external_auth_id=c.user_id::text
+          ) SELECT * FROM changed`
+        ]);
+        const rows=results[1];
+        if(!rows.length)return res.status(409).json({ok:false,error:'Account unavailable, authority changed, or password setup must be completed first.'});
+        return res.status(200).json({ok:true,user:rows[0],message:'Account updated. Existing sessions revoked.'});
+      }
       if(action==='set-student-pin'){
         const studentId=normalizeStudentId(req.body?.studentId),pin=String(req.body?.pin||'');
         if(!validStudentId(studentId))return res.status(400).json({ok:false,error:'Enter a valid Student ID.'});
@@ -45,6 +76,7 @@ export default async function handler(req,res){
         await sql`DELETE FROM auth_sessions WHERE user_id=${userId}`;
         return res.status(200).json({ok:true,user:rows[0],message:'Student PIN reset. Student must create a new PIN through class join.'});
       }
+      if(action!=='reset-teacher-password')return res.status(400).json({ok:false,error:'Unsupported action'});
       const password=String(req.body?.password||'');
       if(password.length<10)return res.status(400).json({ok:false,error:'Temporary password must be at least 10 characters'});
       const rows=await sql`UPDATE auth_users SET password_hash=${hashPassword(password)},must_change_password=TRUE,updated_at=NOW() WHERE user_id=${userId} AND role='teacher' RETURNING user_id,email,display_name,role,must_change_password`;
