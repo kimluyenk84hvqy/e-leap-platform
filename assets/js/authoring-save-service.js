@@ -1,5 +1,5 @@
 export class ELeapAuthoringSaveService{
- constructor({endpoint='/api/authoring/lessons',fetcher=fetch}={}){this.endpoint=endpoint;this.fetcher=fetcher;}
+ constructor({endpoint='/api/authoring/lessons',fetcher=(...args)=>globalThis.fetch(...args)}={}){this.endpoint=endpoint;this.fetcher=fetcher;}
  localKey(id){return 'e-leap-authoring-v1.1:'+id;}
  saveLocal(lesson){const record={lesson,version:Number(lesson.version||1),savedAt:new Date().toISOString()};localStorage.setItem(this.localKey(lesson.id),JSON.stringify(record));return record;}
  loadLocal(id){try{return JSON.parse(localStorage.getItem(this.localKey(id))||'null')}catch{return null}}
