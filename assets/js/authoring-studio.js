@@ -14,6 +14,7 @@ import {auditLesson} from './quality-gate.js';
 import {ELeapAuthoringSaveService} from './authoring-save-service.js';
 import {suggestCoursePlan} from './authoring/course-adaptive-plan.js';
 import {inspectPdfLesson,requestPdfAiLesson,toUnverifiedLessonDraft,getPdfAiCapability} from './authoring/pdf-ai-intake.js';
+import {createReviewRequest,importChatGPTResponse,revertChatGPTRevision,recordTeacherReview,validateChatGPTResponse} from './authoring/chatgpt-authoring-bridge.js';
 import {parseLessonRanges,runLessonBatch,assessExtractedSource,validateBatchForPaidRun} from './authoring/pdf-batch-plan.js';
 import {controlModelForRole} from './controls/control-shell.js';
 import {createLesson as modelCreateLesson,ensureLessonSchema as modelEnsureLessonSchema,createScreen as modelCreateScreen,createBlock as modelCreateBlock,normaliseActivity as modelNormaliseActivity,defaultActivityPrompt,legacyToBlocks as modelLegacyToBlocks,clone as modelClone,uid as modelUid,parsePipeLines,duplicateLesson as modelDuplicateLesson} from './authoring/lesson-model.js';
@@ -57,6 +58,7 @@ const saveService=new ELeapAuthoringSaveService();
 let serverDraftIndex=[],savingDraft=false,pendingSave=false,adaptiveFocus='Reading',adaptivePlan=null;
 let pdfAiFile=null,pdfAiExtracted=null,pdfAiBusy=false,pdfAiStart=1,pdfAiEnd=8,pdfAiRights=false,pdfAiConsent=false,pdfAiCapability=null,pdfAiMessage='Select a PDF and lesson pages; PDF bytes stay in your browser.';
 let pdfAiExpectedPassages=0,pdfAiSourceGate=null,pdfAiBatchRanges='',pdfAiBatchPlan=null,pdfAiBatchMessage='Plan a small batch by page ranges.';
+let chatgptIncludeSource=false,chatgptResponseText='',chatgptApprovalChecks={source:false,media:false,activities:false},chatgptApprovalNote='',chatgptMessage='Send a lesson request to ChatGPT; paste its structured JSON reply here.';
 let lesson=null, selectedScreen=0, selectedBlock=0, dirty=false, previewRole='teacher', autosaveTimer=null;
 const jigsawPreviewAccounts=new Map(); // Teacher-only UI filter; NOT an authorized learner assignment.
 const u6SourceByScreen=new Map(),u6AnswersByScreen=new Map(),u6AccountByScreen=new Map(),u6SourceErrors=new Map(); // Private teacher preview; never serialized to lesson.
@@ -328,6 +330,40 @@ function lessonProps(){
  <div class="token-note">Each choice creates a separate draft after confirmation. Your current lesson is never renamed or replaced.</div>
  <div class="studio-field"><label>Current library</label><input value="${esc(active?.label||lesson.courseLabel||'Unmapped legacy course')}" readonly aria-readonly="true"></div>
  ${skillPath}
+ <div class="studio-course-selector studio-chatgpt-bridge" aria-label="ChatGPT-assisted authoring">
+  <b>ChatGPT-Assisted Authoring</b>
+  <p class="helper">Use the ChatGPT subscription you already have. No paid API connection: copy a review request, work with ChatGPT, then import its JSON reply.</p>
+  <label><input type="checkbox" data-chatgpt-source ${chatgptIncludeSource?'checked':''}> Include extracted PDF text in ChatGPT request (only if permitted)</label>
+  <div class="studio-course-options">
+   <button type="button" class="studio-btn" data-chatgpt-send>Send to AI Review · Copy</button>
+   <button type="button" class="studio-btn" data-chatgpt-download>Download request JSON</button>
+  </div>
+  <label>Import AI Lesson · Paste ChatGPT response JSON
+   <textarea data-chatgpt-response rows="4" placeholder="Paste the complete JSON object returned by ChatGPT…">${esc(chatgptResponseText)}</textarea>
+  </label>
+  <div class="studio-course-options">
+   <button type="button" class="studio-btn primary" data-chatgpt-import>Import AI Lesson</button>
+   <label class="studio-btn" style="cursor:pointer">Choose response JSON<input type="file" data-chatgpt-file accept=".json,application/json" style="display:none"></label>
+  </div>
+  ${lesson.assistedAuthoring?.reviews?`<div class="token-note">
+   <b>Revision ${Number(lesson.assistedAuthoring.revision)||0} · ${esc(lesson.assistedAuthoring.status||'Teacher review required')}</b>
+   ${['academic','visual','critical'].map(role=>{
+     const r=lesson.assistedAuthoring.reviews[role]||{};
+     return `<p class="helper"><b>${role.toUpperCase()}</b> · ${esc((r.findings||[]).join('; ').slice(0,1200))} ${r.issues?.length?'<b>Issues:</b> '+esc(r.issues.join('; ').slice(0,1200)):''}</p>`;
+   }).join('')}
+   <p class="helper">Missing media: ${esc((lesson.assistedAuthoring.reviews.critical?.missingMedia||[]).join('; ').slice(0,1200))||'None recorded; verification still required'}</p>
+  </div>
+  <label><input type="checkbox" data-chatgpt-approve-source ${chatgptApprovalChecks.source?'checked':''}> I verified the original textbook and all source references</label>
+  <label><input type="checkbox" data-chatgpt-approve-media ${chatgptApprovalChecks.media?'checked':''}> I checked all images, audio and missing media</label>
+  <label><input type="checkbox" data-chatgpt-approve-activities ${chatgptApprovalChecks.activities?'checked':''}> I checked exercises, role controls and learner instructions</label>
+  <label>Teacher review notes <textarea rows="2" data-chatgpt-note placeholder="Specific corrections and observations…">${esc(chatgptApprovalNote)}</textarea></label>
+  <div class="studio-course-options">
+   <button type="button" class="studio-btn" data-chatgpt-approve>Approve for Preview only</button>
+   <button type="button" class="studio-btn" data-chatgpt-revert ${!lesson.assistedAuthoring.history?.length?'disabled':''}>Restore previous revision</button>
+  </div>
+  `:''}
+  <p class="helper" role="status">${esc(chatgptMessage)}</p>
+ </div>
  <div class="studio-course-selector studio-pdf-ai" role="group" aria-label="PDF to AI Lesson Builder">
   <b>PDF → AI Lesson Builder</b>
   <p class="helper">Select pages for ONE lesson (maximum 12). Text is extracted locally; scanned pages may need OCR. No automatic publication.</p>
@@ -388,7 +424,7 @@ function colorField(label,path,val){return `<div class="studio-field"><label>${e
 function area(label,path,val){return `<div class="studio-field"><label>${esc(label)}</label><textarea data-path="${esc(path)}">${esc(val??'')}</textarea></div>`}
 function select(label,path,val,opts){return `<div class="studio-field"><label>${esc(label)}</label><select data-path="${esc(path)}">${opts.map(o=>`<option value="${esc(o)}" ${String(o)===String(val)?'selected':''}>${esc(o)}</option>`).join('')}</select></div>`}
 function renderAddDialog(){return `<div class="add-panel" data-add-panel><div class="add-dialog"><div class="add-dialog-head"><div><h2>Add content or activity</h2><small>Choose a reusable E-LEAP block. Behavior comes from the shared engine.</small></div><button class="studio-btn" data-close-library>Close</button></div><div class="activity-library"><section class="library-group"><h3>Certified slide templates</h3><div class="library-grid">${Object.entries(CERTIFIED_TEMPLATES).map(([id,t])=>`<button class="library-card" data-add-certified="${id}"><div class="library-icon">▣</div><b>${esc(t.label)}</b><small>${acceptedLayoutVariants(id).length?esc(acceptedLayoutVariants(id).map(v=>t.variants.find(x=>x.id===v)?.label||v).join(' · ')):'Use draft layout · Review optional'}</small></button>`).join('')}</div></section><section class="library-group"><h3>Lesson Cover / Consolidation / Thank You</h3><div class="library-grid">${Object.entries(FUNCTION_SLIDES).map(([key,t])=>`<button class="library-card" data-add-functional="${key}"><div class="library-icon">▣</div><b>${esc(t.label)}</b><small>${esc(t.description)}</small></button>`).join('')}</div></section><section class="library-group"><h3>Teaching combos · Warm-up / Lead-in first</h3><div class="library-grid">${['Warm-up / Lead-in','Vocabulary','Grammar','Listening','Reading','Speaking','Writing'].map(group=>Object.entries(METHOD_COMBOS).filter(([,m])=>m.group===group).map(([key,t])=>`<button class="library-card" data-add-combo="${key}"><div class="library-icon">◈</div><b>${esc(t.label)}</b><small>${esc(t.description)} · Structure only</small></button>`).join('')).join('')}</div></section><section class="library-group"><h3>Other activity templates · Draft</h3><div class="library-grid">${Object.entries(E_LEAP_SMART_TEMPLATES).filter(([key])=>!['cover','aims','leadin'].includes(key)).map(([key,t])=>`<button class="library-card" data-add-template="${key}"><div class="library-icon">✦</div><b>${esc(t.label)}</b><small>${esc(t.description)}</small></button>`).join('')}</div></section>${Object.entries(LIBRARY).map(([group,items])=>`<section class="library-group"><h3>${esc(group)}</h3><div class="library-grid">${items.map(([type,icon,label,desc])=>`<button class="library-card" data-add-type="${type}"><div class="library-icon">${icon}</div><b>${esc(label)}</b><small>${esc(desc)}</small></button>`).join('')}</div></section>`).join('')}</div></div></div>`}
-function runQuality(){const issues=auditLesson(lesson);if(lesson.pdfAiReview?.teacherApproved!==true)issues.push(['error','AI-generated lesson requires source verification and teacher approval before publishing.']);issues.push(['error','Three-AI authoring, server Publish and live-device QA have not passed. Publishing is disabled.']);for(const msg of validateCourseIdentity(lesson))issues.push(['error',msg]);if(lesson.resourceBank){issues.push(['error','Resource Bank assembly is a Preview draft. Publish requires complete source, audio Evidence, image and role-control QA.']);if(lesson.resourceBank.quality?.audioEvidence!=='VERIFIED')issues.push(['error','Audio Evidence segments are not verified; do not publish.']);}return issues;}
+function runQuality(){const issues=auditLesson(lesson);if(lesson.assistedAuthoring?.reviews&&lesson.assistedAuthoring?.teacherApproved!==true)issues.push(['error','ChatGPT-assisted lesson requires original-source, media and teacher review.']);if(lesson.pdfAiReview?.teacherApproved!==true)issues.push(['error','AI-generated lesson requires source verification and teacher approval before publishing.']);issues.push(['error','Three-AI authoring, server Publish and live-device QA have not passed. Publishing is disabled.']);for(const msg of validateCourseIdentity(lesson))issues.push(['error',msg]);if(lesson.resourceBank){issues.push(['error','Resource Bank assembly is a Preview draft. Publish requires complete source, audio Evidence, image and role-control QA.']);if(lesson.resourceBank.quality?.audioEvidence!=='VERIFIED')issues.push(['error','Audio Evidence segments are not verified; do not publish.']);}return issues;}
 function renderQualityPanel(){const issues=runQuality();const good=issues.filter(x=>x[0]==='error').length===0;return `<aside class="quality-panel" data-quality-panel><div class="quality-head"><b>Quality check</b><button class="studio-btn ghost" data-close-quality>×</button></div><div class="quality-body">${good?'<div class="quality-item ok">No blocking issues. Lesson can be staged for publishing.</div>':''}${issues.map(([k,m])=>`<div class="quality-item ${k}">${esc(m)}</div>`).join('')||'<div class="quality-item ok">All checks passed.</div>'}</div></aside>`}
 function revealEvidence(quote){
   const textNode=document.querySelector('.lesson-canvas.template-reading-task .studio-text-role.role-body');
@@ -788,6 +824,86 @@ function wire(){
       draftKey=`e-leap-studio-v1:${id}`;selectedScreen=selectedBlock=0;
       localStorage.setItem(LAST_DRAFT_KEY,id);render();
     }catch(error){status('Cannot open draft: '+error.message)}
+  });
+  document.querySelector('[data-chatgpt-source]')?.addEventListener('change',e=>{chatgptIncludeSource=e.target.checked;});
+  document.querySelector('[data-chatgpt-response]')?.addEventListener('input',e=>{chatgptResponseText=e.target.value;});
+  document.querySelector('[data-chatgpt-note]')?.addEventListener('input',e=>{chatgptApprovalNote=e.target.value;});
+  for(const [key,selector] of [['source','[data-chatgpt-approve-source]'],['media','[data-chatgpt-approve-media]'],['activities','[data-chatgpt-approve-activities]']]){
+    document.querySelector(selector)?.addEventListener('change',e=>{chatgptApprovalChecks[key]=e.target.checked;});
+  }
+  async function sendChatGPTReview(download=false){
+    try{
+      const id=lesson.assistedAuthoring?.pendingReviewId||modelUid('review');
+      const req=createReviewRequest(lesson,{
+        requestId:id,includeSource:chatgptIncludeSource,
+        sourcePages:pdfAiExtracted?.pages||[]
+      });
+      // Only explicit teacher action exports source. Original PDF and resource ZIP are never included.
+      localStorage.setItem('e-leap-chatgpt-review-request:'+lesson.id,JSON.stringify(req));
+      lesson.assistedAuthoring={...(lesson.assistedAuthoring||{}),pendingReviewId:id};
+      snapshotDraft();
+      const serialized=JSON.stringify(req,null,2);
+      if(download){
+        const blob=new Blob([serialized],{type:'application/json'});
+        const a=document.createElement('a'),url=URL.createObjectURL(blob);
+        a.href=url;a.download='eleap-review-'+lesson.id+'.json';a.click();
+        setTimeout(()=>URL.revokeObjectURL(url),1000);
+        chatgptMessage='Review request downloaded. Upload the JSON into ChatGPT for the three-role review.';
+      }else{
+        if(!navigator.clipboard?.writeText)throw Error('Browser clipboard unavailable. Use Download request JSON.');
+        await navigator.clipboard.writeText(serialized);
+        chatgptMessage='Review request copied. Paste it into ChatGPT and ask for one JSON reply matching responseContract.';
+      }
+    }catch(error){chatgptMessage='Review export failed: '+String(error?.message||error)}
+    render();
+  }
+  document.querySelector('[data-chatgpt-send]')?.addEventListener('click',()=>sendChatGPTReview(false));
+  document.querySelector('[data-chatgpt-download]')?.addEventListener('click',()=>sendChatGPTReview(true));
+  document.querySelector('[data-chatgpt-file]')?.addEventListener('change',async event=>{
+    const file=event.target.files?.[0];if(!file)return;
+    if(file.size>350000||(!file.name.toLowerCase().endsWith('.json')&&file.type!=='application/json')){
+      chatgptMessage='Only JSON responses of up to 350 KB can be imported.';render();return;
+    }
+    try{chatgptResponseText=await file.text();chatgptMessage='JSON loaded. Select Import AI Lesson to validate and preview.';}
+    catch(error){chatgptMessage='Cannot read response JSON: '+error.message}
+    render();
+  });
+  document.querySelector('[data-chatgpt-import]')?.addEventListener('click',()=>{
+    try{
+      const raw=chatgptResponseText.trim();
+      if(!raw||raw.length>350000)throw Error('Paste one structured JSON response under 350 KB.');
+      const requestRaw=localStorage.getItem('e-leap-chatgpt-review-request:'+lesson.id);
+      if(!requestRaw)throw Error('Review request missing on this device. Export the review request first.');
+      const request=JSON.parse(requestRaw);
+      const response=JSON.parse(raw);
+      const issues=validateChatGPTResponse(response,request);
+      if(issues.length)throw Error(issues.slice(0,8).join('; '));
+      const draft=importChatGPTResponse(lesson,response,request,{
+        createScreen:modelCreateScreen,createBlock:modelCreateBlock});
+      if(!draft.ok)throw Error(draft.issues.join('; '));
+      if(!confirm('Replace this draft’s slide contents with the imported ChatGPT revision? Original revision will be kept for restoration.'))return;
+      snapshotDraft();lesson=draft.lesson;selectedScreen=selectedBlock=0;
+      chatgptResponseText='';chatgptApprovalChecks={source:false,media:false,activities:false};chatgptApprovalNote='';
+      chatgptMessage='Imported revision '+draft.revision+'. Review all three AI reports, original textbook and media. Publishing stays blocked.';
+      markDirty();render();
+    }catch(error){chatgptMessage='Import rejected: '+String(error?.message||error);render();}
+  });
+  document.querySelector('[data-chatgpt-revert]')?.addEventListener('click',()=>{
+    const restored=revertChatGPTRevision(lesson);
+    if(!restored.ok){chatgptMessage=restored.issues.join('; ');render();return;}
+    if(!confirm('Restore the previous lesson revision?'))return;
+    snapshotDraft();lesson=restored.lesson;selectedScreen=selectedBlock=0;
+    chatgptMessage='Previous revision restored. Teacher approval must be repeated.';
+    markDirty();render();
+  });
+  document.querySelector('[data-chatgpt-approve]')?.addEventListener('click',()=>{
+    try{
+      const approved=recordTeacherReview(lesson,{
+       verifiedSource:chatgptApprovalChecks.source,verifiedMedia:chatgptApprovalChecks.media,
+       verifiedActivities:chatgptApprovalChecks.activities,comment:chatgptApprovalNote.trim()});
+      lesson=approved;chatgptMessage='Teacher review recorded for Preview only. Final Publish remains disabled pending runtime QA.';
+      markDirty();render();
+    }catch(error){chatgptMessage='Approval not recorded: '+error.message;render();}
   });
   document.querySelector('[data-pdf-ai-file]')?.addEventListener('change',e=>{
     pdfAiFile=e.target.files?.[0]||null;pdfAiExtracted=null;pdfAiSourceGate=null;pdfAiBatchPlan=null;
