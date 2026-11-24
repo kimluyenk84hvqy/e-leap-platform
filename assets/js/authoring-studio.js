@@ -702,7 +702,7 @@ function wire(){
     if(resolveCourseProfile(lesson)?.kind!=='skills')return;
     const id=e.target.value;
     if(id&&!ADVANCED_SKILL_PATHS.some(x=>x.id===id))return;
-    lesson.advancedSkillId=id||null;markDirty();render();
+    lesson.advancedSkillId=id||null;lesson.courseLibraryShellId=id||'advanced-skills';markDirty();render();
   });
   document.querySelector('[data-open-draft]')?.addEventListener('change',e=>{
     const id=e.target.value;if(!id||id===lesson.id)return;
