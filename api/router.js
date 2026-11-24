@@ -1,4 +1,5 @@
 import authoringLessons from '../server/authoring/lessons.js';
+import authoringPdfAI from '../server/authoring/pdf-ai-build.js';
 import authLogin from '../server/auth/login.js';
 import authLogout from '../server/auth/logout.js';
 import authMe from '../server/auth/me.js';
@@ -28,6 +29,7 @@ import researchReadingJigsawPhoto from '../server/research/reading-jigsaw-photo.
 
 const ROUTES={
   'authoring/lessons':authoringLessons,
+  'authoring/pdf-ai-build':authoringPdfAI,
   'auth/login':authLogin,
   'auth/logout':authLogout,
   'auth/me':authMe,

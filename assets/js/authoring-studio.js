@@ -13,6 +13,7 @@ import {normaliseDeliveryPolicy,E_LEAP_DELIVERY_POLICIES} from './assessment-pol
 import {auditLesson} from './quality-gate.js';
 import {ELeapAuthoringSaveService} from './authoring-save-service.js';
 import {suggestCoursePlan} from './authoring/course-adaptive-plan.js';
+import {inspectPdfLesson,requestPdfAiLesson,toUnverifiedLessonDraft,getPdfAiCapability} from './authoring/pdf-ai-intake.js';
 import {controlModelForRole} from './controls/control-shell.js';
 import {createLesson as modelCreateLesson,ensureLessonSchema as modelEnsureLessonSchema,createScreen as modelCreateScreen,createBlock as modelCreateBlock,normaliseActivity as modelNormaliseActivity,defaultActivityPrompt,legacyToBlocks as modelLegacyToBlocks,clone as modelClone,uid as modelUid,parsePipeLines,duplicateLesson as modelDuplicateLesson} from './authoring/lesson-model.js';
 import {E_LEAP_LAYOUT_IDS} from './authoring/layout-registry.js';
@@ -53,6 +54,7 @@ const THEMES=E_LEAP_THEME_PRESETS;
 const LIBRARY=E_LEAP_AUTHORING_LIBRARY;
 const saveService=new ELeapAuthoringSaveService();
 let serverDraftIndex=[],savingDraft=false,pendingSave=false,adaptiveFocus='Reading',adaptivePlan=null;
+let pdfAiFile=null,pdfAiExtracted=null,pdfAiBusy=false,pdfAiStart=1,pdfAiEnd=8,pdfAiRights=false,pdfAiConsent=false,pdfAiCapability=null,pdfAiMessage='Select a PDF and lesson pages; PDF bytes stay in your browser.';
 let lesson=null, selectedScreen=0, selectedBlock=0, dirty=false, previewRole='teacher', autosaveTimer=null;
 const jigsawPreviewAccounts=new Map(); // Teacher-only UI filter; NOT an authorized learner assignment.
 const u6SourceByScreen=new Map(),u6AnswersByScreen=new Map(),u6AccountByScreen=new Map(),u6SourceErrors=new Map(); // Private teacher preview; never serialized to lesson.
@@ -112,6 +114,7 @@ if(!canOpenStudio){
   }
   render();
   if(!source&&!localReviewId)refreshServerDrafts();
+  getPdfAiCapability().then(value=>{pdfAiCapability=value;render();}).catch(()=>{pdfAiCapability={configured:false,reason:'AI connection unavailable'};render();});
   if(lesson.resourceBank)rehydrateResourceBank(lesson.resourceBank).then(()=>render()).catch(()=>status('Local resource assets unavailable; re-import Resource ZIP.'));
 }
 
@@ -323,6 +326,22 @@ function lessonProps(){
  <div class="token-note">Each choice creates a separate draft after confirmation. Your current lesson is never renamed or replaced.</div>
  <div class="studio-field"><label>Current library</label><input value="${esc(active?.label||lesson.courseLabel||'Unmapped legacy course')}" readonly aria-readonly="true"></div>
  ${skillPath}
+ <div class="studio-course-selector studio-pdf-ai" role="group" aria-label="PDF to AI Lesson Builder">
+  <b>PDF → AI Lesson Builder</b>
+  <p class="helper">Select pages for ONE lesson (maximum 12). Text is extracted locally; scanned pages may need OCR. No automatic publication.</p>
+  <label>Textbook PDF <input type="file" accept=".pdf,application/pdf" data-pdf-ai-file></label>
+  <p class="helper">${pdfAiFile?esc(pdfAiFile.name):'No PDF selected'}</p>
+  <div class="field-row"><label>From page <input type="number" min="1" value="${pdfAiStart}" data-pdf-ai-start></label>
+  <label>To page <input type="number" min="1" value="${pdfAiEnd}" data-pdf-ai-end></label></div>
+  <button class="studio-btn" type="button" data-pdf-ai-extract ${pdfAiBusy?'disabled':''}>1 · Extract & check PDF</button>
+  ${pdfAiExtracted?`<p class="helper">${pdfAiExtracted.pages.length} pages · ${pdfAiExtracted.pages.reduce((n,p)=>n+p.text.length,0)} characters. ${esc(pdfAiExtracted.warnings.join(' '))}</p>`:''}
+  <label><input type="checkbox" data-pdf-ai-rights ${pdfAiRights?'checked':''}> I have permission to use this learning material.</label>
+  <label><input type="checkbox" data-pdf-ai-consent ${pdfAiConsent?'checked':''}> I agree to send extracted page text to the configured AI service.</label>
+  <p class="helper">AI connection: ${pdfAiCapability?.configured?'Configured':esc(pdfAiCapability?.reason||'Checking...')}</p>
+  <button class="studio-btn primary" type="button" data-pdf-ai-generate ${pdfAiBusy||!pdfAiExtracted||pdfAiCapability?.configured!==true?'disabled':''}>2 · Generate three-AI lesson draft</button>
+  <p class="helper" role="status">${esc(pdfAiMessage)}</p>
+  ${lesson.pdfAiReview?`<div class="token-note">AI-generated draft requires textbook verification and teacher approval. Issues: ${esc([...(lesson.pdfAiReview.issues||[]),...(lesson.pdfAiReview.missingMedia||[])].join('; ')||'No reviewer issues recorded; source and media checks remain mandatory.')}</div>`:''}
+ </div>
  <div class="studio-course-selector"><b>Course-guided recommendations (not AI-generated)</b>
  <label>Lesson focus <select data-adaptive-focus>${['Reading','Listening','Speaking','Writing','Grammar','Vocabulary'].map(k=>`<option value="${k}" ${adaptiveFocus===k?'selected':''}>${k}</option>`).join('')}</select></label>
  <button class="studio-btn" type="button" data-adaptive-plan>Recommend activities</button>
@@ -359,7 +378,7 @@ function colorField(label,path,val){return `<div class="studio-field"><label>${e
 function area(label,path,val){return `<div class="studio-field"><label>${esc(label)}</label><textarea data-path="${esc(path)}">${esc(val??'')}</textarea></div>`}
 function select(label,path,val,opts){return `<div class="studio-field"><label>${esc(label)}</label><select data-path="${esc(path)}">${opts.map(o=>`<option value="${esc(o)}" ${String(o)===String(val)?'selected':''}>${esc(o)}</option>`).join('')}</select></div>`}
 function renderAddDialog(){return `<div class="add-panel" data-add-panel><div class="add-dialog"><div class="add-dialog-head"><div><h2>Add content or activity</h2><small>Choose a reusable E-LEAP block. Behavior comes from the shared engine.</small></div><button class="studio-btn" data-close-library>Close</button></div><div class="activity-library"><section class="library-group"><h3>Certified slide templates</h3><div class="library-grid">${Object.entries(CERTIFIED_TEMPLATES).map(([id,t])=>`<button class="library-card" data-add-certified="${id}"><div class="library-icon">▣</div><b>${esc(t.label)}</b><small>${acceptedLayoutVariants(id).length?esc(acceptedLayoutVariants(id).map(v=>t.variants.find(x=>x.id===v)?.label||v).join(' · ')):'Use draft layout · Review optional'}</small></button>`).join('')}</div></section><section class="library-group"><h3>Lesson Cover / Consolidation / Thank You</h3><div class="library-grid">${Object.entries(FUNCTION_SLIDES).map(([key,t])=>`<button class="library-card" data-add-functional="${key}"><div class="library-icon">▣</div><b>${esc(t.label)}</b><small>${esc(t.description)}</small></button>`).join('')}</div></section><section class="library-group"><h3>Teaching combos · Warm-up / Lead-in first</h3><div class="library-grid">${['Warm-up / Lead-in','Vocabulary','Grammar','Listening','Reading','Speaking','Writing'].map(group=>Object.entries(METHOD_COMBOS).filter(([,m])=>m.group===group).map(([key,t])=>`<button class="library-card" data-add-combo="${key}"><div class="library-icon">◈</div><b>${esc(t.label)}</b><small>${esc(t.description)} · Structure only</small></button>`).join('')).join('')}</div></section><section class="library-group"><h3>Other activity templates · Draft</h3><div class="library-grid">${Object.entries(E_LEAP_SMART_TEMPLATES).filter(([key])=>!['cover','aims','leadin'].includes(key)).map(([key,t])=>`<button class="library-card" data-add-template="${key}"><div class="library-icon">✦</div><b>${esc(t.label)}</b><small>${esc(t.description)}</small></button>`).join('')}</div></section>${Object.entries(LIBRARY).map(([group,items])=>`<section class="library-group"><h3>${esc(group)}</h3><div class="library-grid">${items.map(([type,icon,label,desc])=>`<button class="library-card" data-add-type="${type}"><div class="library-icon">${icon}</div><b>${esc(label)}</b><small>${esc(desc)}</small></button>`).join('')}</div></section>`).join('')}</div></div></div>`}
-function runQuality(){const issues=auditLesson(lesson);issues.push(['error','Three-AI authoring, server Publish and live-device QA have not passed. Publishing is disabled.']);for(const msg of validateCourseIdentity(lesson))issues.push(['error',msg]);if(lesson.resourceBank){issues.push(['error','Resource Bank assembly is a Preview draft. Publish requires complete source, audio Evidence, image and role-control QA.']);if(lesson.resourceBank.quality?.audioEvidence!=='VERIFIED')issues.push(['error','Audio Evidence segments are not verified; do not publish.']);}return issues;}
+function runQuality(){const issues=auditLesson(lesson);if(lesson.pdfAiReview?.teacherApproved!==true)issues.push(['error','AI-generated lesson requires source verification and teacher approval before publishing.']);issues.push(['error','Three-AI authoring, server Publish and live-device QA have not passed. Publishing is disabled.']);for(const msg of validateCourseIdentity(lesson))issues.push(['error',msg]);if(lesson.resourceBank){issues.push(['error','Resource Bank assembly is a Preview draft. Publish requires complete source, audio Evidence, image and role-control QA.']);if(lesson.resourceBank.quality?.audioEvidence!=='VERIFIED')issues.push(['error','Audio Evidence segments are not verified; do not publish.']);}return issues;}
 function renderQualityPanel(){const issues=runQuality();const good=issues.filter(x=>x[0]==='error').length===0;return `<aside class="quality-panel" data-quality-panel><div class="quality-head"><b>Quality check</b><button class="studio-btn ghost" data-close-quality>×</button></div><div class="quality-body">${good?'<div class="quality-item ok">No blocking issues. Lesson can be staged for publishing.</div>':''}${issues.map(([k,m])=>`<div class="quality-item ${k}">${esc(m)}</div>`).join('')||'<div class="quality-item ok">All checks passed.</div>'}</div></aside>`}
 function revealEvidence(quote){
   const textNode=document.querySelector('.lesson-canvas.template-reading-task .studio-text-role.role-body');
@@ -759,6 +778,40 @@ function wire(){
       draftKey=`e-leap-studio-v1:${id}`;selectedScreen=selectedBlock=0;
       localStorage.setItem(LAST_DRAFT_KEY,id);render();
     }catch(error){status('Cannot open draft: '+error.message)}
+  });
+  document.querySelector('[data-pdf-ai-file]')?.addEventListener('change',e=>{
+    pdfAiFile=e.target.files?.[0]||null;pdfAiExtracted=null;
+    pdfAiMessage=pdfAiFile?'PDF selected. Choose lesson pages and extract text.':'No PDF selected.';render();
+  });
+  document.querySelector('[data-pdf-ai-start]')?.addEventListener('change',e=>{pdfAiStart=Number(e.target.value);pdfAiExtracted=null;});
+  document.querySelector('[data-pdf-ai-end]')?.addEventListener('change',e=>{pdfAiEnd=Number(e.target.value);pdfAiExtracted=null;});
+  document.querySelector('[data-pdf-ai-rights]')?.addEventListener('change',e=>{pdfAiRights=e.target.checked;});
+  document.querySelector('[data-pdf-ai-consent]')?.addEventListener('change',e=>{pdfAiConsent=e.target.checked;});
+  document.querySelector('[data-pdf-ai-extract]')?.addEventListener('click',async()=>{
+    if(pdfAiBusy)return;
+    if(!pdfAiFile){pdfAiMessage='Select a PDF file first.';render();return;}
+    pdfAiBusy=true;pdfAiMessage='Extracting PDF text in your browser…';render();
+    try{pdfAiExtracted=await inspectPdfLesson(pdfAiFile,{startPage:pdfAiStart,endPage:pdfAiEnd});
+      pdfAiMessage='PDF text extracted. Check the source pages before enabling AI generation.';}
+    catch(error){pdfAiExtracted=null;pdfAiMessage=String(error?.message||'PDF extraction failed');}
+    finally{pdfAiBusy=false;render();}
+  });
+  document.querySelector('[data-pdf-ai-generate]')?.addEventListener('click',async()=>{
+    if(pdfAiBusy||!pdfAiExtracted||pdfAiCapability?.configured!==true)return;
+    if(!pdfAiRights||!pdfAiConsent){pdfAiMessage='Please confirm material rights and AI transmission consent.';render();return;}
+    if(!resolveCourseProfile(lesson)||!courseIsSelectable(lesson.courseProfileId)){pdfAiMessage='Select an active textbook or skills library.';render();return;}
+    pdfAiBusy=true;pdfAiMessage='Running Academic → Visual → Critical Review AI (Preview only)…';render();
+    try{
+      const output=await requestPdfAiLesson({pages:pdfAiExtracted.pages,courseProfileId:lesson.courseProfileId,
+        focus:adaptiveFocus,rightsConfirmed:pdfAiRights,aiTransmissionConsent:pdfAiConsent});
+      const next=toUnverifiedLessonDraft(output,lesson.courseProfileId,{
+        pdfName:pdfAiFile?.name,sourcePages:pdfAiExtracted.pages.map(x=>x.page)});
+      if(!confirm('AI has created an unverified draft. Save the existing lesson and open this new draft?'))return;
+      snapshotDraft();lesson=next;draftKey='e-leap-studio-v1:'+lesson.id;selectedScreen=selectedBlock=0;
+      pdfAiMessage='AI draft created. Review original exercises, citations, images, and audio before any use.';
+      markDirty();
+    }catch(error){pdfAiMessage=String(error?.message||'AI generation failed safely');}
+    finally{pdfAiBusy=false;render();}
   });
   document.querySelector('[data-adaptive-focus]')?.addEventListener('change',e=>{adaptiveFocus=e.target.value;});
   document.querySelector('[data-adaptive-plan]')?.addEventListener('click',()=>{
