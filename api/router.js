@@ -1,3 +1,4 @@
+import authoringLessons from '../server/authoring/lessons.js';
 import authLogin from '../server/auth/login.js';
 import authLogout from '../server/auth/logout.js';
 import authMe from '../server/auth/me.js';
@@ -26,6 +27,7 @@ import researchReadingJigsaw from '../server/research/reading-jigsaw.js';
 import researchReadingJigsawPhoto from '../server/research/reading-jigsaw-photo.js';
 
 const ROUTES={
+  'authoring/lessons':authoringLessons,
   'auth/login':authLogin,
   'auth/logout':authLogout,
   'auth/me':authMe,

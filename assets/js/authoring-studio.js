@@ -12,6 +12,7 @@ import {E_LEAP_SMART_TEMPLATES,createSmartTemplate} from './smart-templates.js';
 import {normaliseDeliveryPolicy,E_LEAP_DELIVERY_POLICIES} from './assessment-policy.js';
 import {auditLesson} from './quality-gate.js';
 import {ELeapAuthoringSaveService} from './authoring-save-service.js';
+import {suggestCoursePlan} from './authoring/course-adaptive-plan.js';
 import {controlModelForRole} from './controls/control-shell.js';
 import {createLesson as modelCreateLesson,ensureLessonSchema as modelEnsureLessonSchema,createScreen as modelCreateScreen,createBlock as modelCreateBlock,normaliseActivity as modelNormaliseActivity,defaultActivityPrompt,legacyToBlocks as modelLegacyToBlocks,clone as modelClone,uid as modelUid,parsePipeLines,duplicateLesson as modelDuplicateLesson} from './authoring/lesson-model.js';
 import {E_LEAP_LAYOUT_IDS} from './authoring/layout-registry.js';
@@ -51,6 +52,7 @@ const DEFAULT_THEME=E_LEAP_THEME_DEFAULT;
 const THEMES=E_LEAP_THEME_PRESETS;
 const LIBRARY=E_LEAP_AUTHORING_LIBRARY;
 const saveService=new ELeapAuthoringSaveService();
+let serverDraftIndex=[],savingDraft=false,pendingSave=false,adaptiveFocus='Reading',adaptivePlan=null;
 let lesson=null, selectedScreen=0, selectedBlock=0, dirty=false, previewRole='teacher', autosaveTimer=null;
 const jigsawPreviewAccounts=new Map(); // Teacher-only UI filter; NOT an authorized learner assignment.
 const u6SourceByScreen=new Map(),u6AnswersByScreen=new Map(),u6AccountByScreen=new Map(),u6SourceErrors=new Map(); // Private teacher preview; never serialized to lesson.
@@ -109,6 +111,7 @@ if(!canOpenStudio){
     }catch(error){console.warn('Foundation import rejected:',error.message);}
   }
   render();
+  if(!source&&!localReviewId)refreshServerDrafts();
   if(lesson.resourceBank)rehydrateResourceBank(lesson.resourceBank).then(()=>render()).catch(()=>status('Local resource assets unavailable; re-import Resource ZIP.'));
 }
 
@@ -139,7 +142,36 @@ function snapshotDraft(){
   localStorage.setItem(LAST_DRAFT_KEY,lesson.id);
 }
 function markDirty(){dirty=true;status('Unsaved changes');clearTimeout(autosaveTimer);autosaveTimer=setTimeout(saveDraft,700)}
-function saveDraft(){try{snapshotDraft();dirty=false;if(lesson.resourceBank||lesson.screens?.some(s=>s.sourceReviewDraft)){status('Restricted source review draft saved in this browser only · not synced to server');return;}status('Saving draft…');saveService.saveDraft(lesson).then(r=>status(r.mode==='server'?'Draft saved to server':'Draft saved locally')).catch(()=>status('Draft saved locally'))}catch(e){dirty=true;status('Local save failed: '+e.message)}}
+async function refreshServerDrafts(){
+ try{serverDraftIndex=await saveService.listDrafts();render();}
+ catch(error){status('Server draft list unavailable; local drafts remain accessible.');}
+}
+async function saveDraft(){
+ try{snapshotDraft()}catch(error){dirty=true;status('Local save failed: '+error.message);return}
+ if(lesson.resourceBank||lesson.screens?.some(s=>s.sourceReviewDraft||s.resourceStage)){
+  dirty=false;status('Restricted source review saved on this device only');return;
+ }
+ if(savingDraft){pendingSave=true;return}
+ savingDraft=true;
+ const record=lesson,revKey='e-leap-studio-server-revision:'+record.id;
+ const expectedRevision=Number(localStorage.getItem(revKey)||0);
+ try{
+  status('Saving draft to Preview server…');
+  const result=await saveService.saveDraft(record,{expectedRevision});
+  if(result.mode==='server'){
+   localStorage.setItem(revKey,String(result.revision));
+   dirty=lesson.id===record.id?false:dirty;
+   status('Saved on Preview server · revision '+result.revision);
+  }else status('Saved locally only');
+ }catch(error){
+  dirty=true;status(error?.code==='VERSION_CONFLICT'?
+   'Server conflict: local draft preserved. Reopen the latest server revision first.':
+   'Local draft preserved; server save failed: '+String(error?.message||'offline'));
+ }finally{
+  savingDraft=false;
+  if(pendingSave){pendingSave=false;saveDraft();}
+ }
+}
 function status(msg){const e=document.querySelector('[data-studio-status]');if(e)e.textContent=msg}
 
 function render(){
@@ -150,7 +182,7 @@ function render(){
     <header class="studio-topbar">
       <div class="studio-brand"><div class="studio-logo">E</div><div><b>E-LEAP Authoring Studio</b><small data-studio-status>${dirty?'Unsaved changes':'Draft ready'}</small></div></div>
       <div class="studio-top-actions">
-        <a class="studio-btn primary" href="./index.html?view=gallery" target="_blank" rel="noopener">Template Gallery & Review</a><a class="studio-btn" href="./index.html?view=foundation" target="_blank" rel="noopener">Foundation Lab</a><a class="studio-btn" href="./index.html?view=methods" target="_blank" rel="noopener">Teaching Combo Library</a><button class="studio-btn" data-open-template-gallery>Choose Template</button><label class="studio-btn" style="cursor:pointer">Import Resource Pack<input type="file" accept=".zip" data-import-resource style="display:none"></label><a class="studio-btn" href="../index.html">← Platform</a><a class="studio-btn" href="?pilot=life-u12" title="Open the canonical LIFE Unit 12 acceptance draft">LIFE U12 pilot</a><select class="studio-btn" data-open-draft aria-label="Open a saved Studio draft"><option value="">Open saved draft…</option>${readDraftIndex().map(d=>`<option value="${esc(d.id)}">${esc(d.course)} · ${esc(d.title)}</option>`).join('')}</select><button class="studio-btn" data-new>New lesson</button><button class="studio-btn" data-duplicate-lesson>Duplicate</button><button class="studio-btn" data-toggle-properties aria-pressed="${propertiesVisible?'true':'false'}">${propertiesVisible?'Hide properties':'Show properties'}</button><button class="studio-btn" data-quality>Quality check</button><button class="studio-btn" data-export>Export JSON</button><button class="studio-btn" data-save>Save draft</button><button class="studio-btn primary" data-publish>${verifiedUser?.role==='admin'?'Publish candidate':'Request publish'}</button>
+        <a class="studio-btn primary" href="./index.html?view=gallery" target="_blank" rel="noopener">Template Gallery & Review</a><a class="studio-btn" href="./index.html?view=foundation" target="_blank" rel="noopener">Foundation Lab</a><a class="studio-btn" href="./index.html?view=methods" target="_blank" rel="noopener">Teaching Combo Library</a><button class="studio-btn" data-open-template-gallery>Choose Template</button><label class="studio-btn" style="cursor:pointer">Import Resource Pack<input type="file" accept=".zip" data-import-resource style="display:none"></label><a class="studio-btn" href="../index.html">← Platform</a><a class="studio-btn" href="?pilot=life-u12" title="Open the canonical LIFE Unit 12 acceptance draft">LIFE U12 pilot</a><select class="studio-btn" data-open-draft aria-label="Open a saved Studio draft"><option value="">Open saved draft…</option>${[...new Map([...readDraftIndex(),...serverDraftIndex.map(d=>({...d,course:d.courseProfileId}))].map(d=>[d.id,d])).values()].map(d=>`<option value="${esc(d.id)}">${esc(d.course||d.courseProfileId)} · ${esc(d.title)}</option>`).join('')}</select><button class="studio-btn" data-new>New lesson</button><button class="studio-btn" data-duplicate-lesson>Duplicate</button><button class="studio-btn" data-toggle-properties aria-pressed="${propertiesVisible?'true':'false'}">${propertiesVisible?'Hide properties':'Show properties'}</button><button class="studio-btn" data-quality>Quality check</button><button class="studio-btn" data-export>Export JSON</button><button class="studio-btn" data-save>Save draft</button><button class="studio-btn primary" data-publish>${verifiedUser?.role==='admin'?'Publish candidate':'Request publish'}</button>
       </div>
     </header>
     <div class="studio-layout ${propertiesVisible?'':'properties-collapsed'}">
@@ -291,6 +323,11 @@ function lessonProps(){
  <div class="token-note">Each choice creates a separate draft after confirmation. Your current lesson is never renamed or replaced.</div>
  <div class="studio-field"><label>Current library</label><input value="${esc(active?.label||lesson.courseLabel||'Unmapped legacy course')}" readonly aria-readonly="true"></div>
  ${skillPath}
+ <div class="studio-course-selector"><b>Course-guided recommendations (not AI-generated)</b>
+ <label>Lesson focus <select data-adaptive-focus>${['Reading','Listening','Speaking','Writing','Grammar','Vocabulary'].map(k=>`<option value="${k}" ${adaptiveFocus===k?'selected':''}>${k}</option>`).join('')}</select></label>
+ <button class="studio-btn" type="button" data-adaptive-plan>Recommend activities</button>
+ ${adaptivePlan?`<p class="helper">${adaptivePlan.suggestions.map(x=>esc(x.label)).join(' · ')||esc(adaptivePlan.issues.join('; '))}. The three AI stages still require provider connection, source verification and teacher approval.</p>`:''}
+ </div>
  ${active?.preferredMethods?.length?`<div class="helper">Methods to consider (subject to textbook analysis): ${esc(active.preferredMethods.join(' · '))}</div>`:''}
  ${field('Lesson title','lesson.title',lesson.title)}
  <div class="studio-field"><label>Course (managed by Course Profile)</label><input value="${esc(lesson.courseLabel||'')}" readonly aria-readonly="true"></div>
@@ -322,7 +359,7 @@ function colorField(label,path,val){return `<div class="studio-field"><label>${e
 function area(label,path,val){return `<div class="studio-field"><label>${esc(label)}</label><textarea data-path="${esc(path)}">${esc(val??'')}</textarea></div>`}
 function select(label,path,val,opts){return `<div class="studio-field"><label>${esc(label)}</label><select data-path="${esc(path)}">${opts.map(o=>`<option value="${esc(o)}" ${String(o)===String(val)?'selected':''}>${esc(o)}</option>`).join('')}</select></div>`}
 function renderAddDialog(){return `<div class="add-panel" data-add-panel><div class="add-dialog"><div class="add-dialog-head"><div><h2>Add content or activity</h2><small>Choose a reusable E-LEAP block. Behavior comes from the shared engine.</small></div><button class="studio-btn" data-close-library>Close</button></div><div class="activity-library"><section class="library-group"><h3>Certified slide templates</h3><div class="library-grid">${Object.entries(CERTIFIED_TEMPLATES).map(([id,t])=>`<button class="library-card" data-add-certified="${id}"><div class="library-icon">▣</div><b>${esc(t.label)}</b><small>${acceptedLayoutVariants(id).length?esc(acceptedLayoutVariants(id).map(v=>t.variants.find(x=>x.id===v)?.label||v).join(' · ')):'Use draft layout · Review optional'}</small></button>`).join('')}</div></section><section class="library-group"><h3>Lesson Cover / Consolidation / Thank You</h3><div class="library-grid">${Object.entries(FUNCTION_SLIDES).map(([key,t])=>`<button class="library-card" data-add-functional="${key}"><div class="library-icon">▣</div><b>${esc(t.label)}</b><small>${esc(t.description)}</small></button>`).join('')}</div></section><section class="library-group"><h3>Teaching combos · Warm-up / Lead-in first</h3><div class="library-grid">${['Warm-up / Lead-in','Vocabulary','Grammar','Listening','Reading','Speaking','Writing'].map(group=>Object.entries(METHOD_COMBOS).filter(([,m])=>m.group===group).map(([key,t])=>`<button class="library-card" data-add-combo="${key}"><div class="library-icon">◈</div><b>${esc(t.label)}</b><small>${esc(t.description)} · Structure only</small></button>`).join('')).join('')}</div></section><section class="library-group"><h3>Other activity templates · Draft</h3><div class="library-grid">${Object.entries(E_LEAP_SMART_TEMPLATES).filter(([key])=>!['cover','aims','leadin'].includes(key)).map(([key,t])=>`<button class="library-card" data-add-template="${key}"><div class="library-icon">✦</div><b>${esc(t.label)}</b><small>${esc(t.description)}</small></button>`).join('')}</div></section>${Object.entries(LIBRARY).map(([group,items])=>`<section class="library-group"><h3>${esc(group)}</h3><div class="library-grid">${items.map(([type,icon,label,desc])=>`<button class="library-card" data-add-type="${type}"><div class="library-icon">${icon}</div><b>${esc(label)}</b><small>${esc(desc)}</small></button>`).join('')}</div></section>`).join('')}</div></div></div>`}
-function runQuality(){const issues=auditLesson(lesson);for(const msg of validateCourseIdentity(lesson))issues.push(['error',msg]);if(lesson.resourceBank){issues.push(['error','Resource Bank assembly is a Preview draft. Publish requires complete source, audio Evidence, image and role-control QA.']);if(lesson.resourceBank.quality?.audioEvidence!=='VERIFIED')issues.push(['error','Audio Evidence segments are not verified; do not publish.']);}return issues;}
+function runQuality(){const issues=auditLesson(lesson);issues.push(['error','Three-AI authoring, server Publish and live-device QA have not passed. Publishing is disabled.']);for(const msg of validateCourseIdentity(lesson))issues.push(['error',msg]);if(lesson.resourceBank){issues.push(['error','Resource Bank assembly is a Preview draft. Publish requires complete source, audio Evidence, image and role-control QA.']);if(lesson.resourceBank.quality?.audioEvidence!=='VERIFIED')issues.push(['error','Audio Evidence segments are not verified; do not publish.']);}return issues;}
 function renderQualityPanel(){const issues=runQuality();const good=issues.filter(x=>x[0]==='error').length===0;return `<aside class="quality-panel" data-quality-panel><div class="quality-head"><b>Quality check</b><button class="studio-btn ghost" data-close-quality>×</button></div><div class="quality-body">${good?'<div class="quality-item ok">No blocking issues. Lesson can be staged for publishing.</div>':''}${issues.map(([k,m])=>`<div class="quality-item ${k}">${esc(m)}</div>`).join('')||'<div class="quality-item ok">All checks passed.</div>'}</div></aside>`}
 function revealEvidence(quote){
   const textNode=document.querySelector('.lesson-canvas.template-reading-task .studio-text-role.role-body');
@@ -704,17 +741,29 @@ function wire(){
     if(id&&!ADVANCED_SKILL_PATHS.some(x=>x.id===id))return;
     lesson.advancedSkillId=id||null;lesson.courseLibraryShellId=id||'advanced-skills';markDirty();render();
   });
-  document.querySelector('[data-open-draft]')?.addEventListener('change',e=>{
+  document.querySelector('[data-open-draft]')?.addEventListener('change',async e=>{
     const id=e.target.value;if(!id||id===lesson.id)return;
     try{
       snapshotDraft();
-      const raw=localStorage.getItem('e-leap-studio-v1:'+id);
-      const loaded=raw?JSON.parse(raw):null;
-      if(!loaded||loaded.id!==id||!Array.isArray(loaded.screens))throw Error('Saved draft is unavailable.');
+      let loaded=null;
+      if(serverDraftIndex.some(d=>d.id===id)){
+        const item=await saveService.loadDraft(id);
+        loaded=item.draft;
+        localStorage.setItem('e-leap-studio-server-revision:'+id,String(item.revision));
+      }else{
+        const raw=localStorage.getItem('e-leap-studio-v1:'+id);
+        loaded=raw?JSON.parse(raw):null;
+      }
+      if(!loaded||loaded.id!==id||!Array.isArray(loaded.screens))throw Error('Saved draft unavailable.');
       lesson=normaliseCourseIdentity(modelEnsureLessonSchema(loaded));
       draftKey=`e-leap-studio-v1:${id}`;selectedScreen=selectedBlock=0;
       localStorage.setItem(LAST_DRAFT_KEY,id);render();
-    }catch(e){status('Cannot open saved draft: '+e.message)}
+    }catch(error){status('Cannot open draft: '+error.message)}
+  });
+  document.querySelector('[data-adaptive-focus]')?.addEventListener('change',e=>{adaptiveFocus=e.target.value;});
+  document.querySelector('[data-adaptive-plan]')?.addEventListener('click',()=>{
+    adaptivePlan=suggestCoursePlan({courseProfileId:lesson.courseProfileId,focus:adaptiveFocus});
+    render();
   });
   document.querySelectorAll('[data-path]').forEach(el=>el.addEventListener('input',()=>{applyPath(el.dataset.path,el.type==='number'?Number(el.value):el.value);markDirty();renderSoft()}));
   document.querySelectorAll('[contenteditable][data-edit]').forEach(el=>el.addEventListener('blur',()=>{const key=el.dataset.edit;if(key==='screen-title')currentScreen().title=el.textContent.trim();if(key==='screen-instruction')currentScreen().instruction=el.textContent.trim();if(key==='block-text')currentBlock().content.text=el.textContent.trim();markDirty();render()}));

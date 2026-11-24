@@ -4,10 +4,10 @@
  */
 const freezeProfile=profile=>Object.freeze({...profile,preferredMethods:Object.freeze(profile.preferredMethods||[])});
 export const COURSE_PROFILES=Object.freeze([
- freezeProfile({id:'objective-pet-b1',label:'Objective PET B1',kind:'coursebook',availability:'active',shellId:null,cefr:'B1',preferredMethods:['guided-reading','jigsaw-reading','think-pair-share']}),
- freezeProfile({id:'objective-first-b2',label:'Objective First B2',kind:'coursebook',availability:'active',shellId:'objective-first-b2',cefr:'B2',preferredMethods:['guided-grammar','process-writing','reciprocal-reading']}),
- freezeProfile({id:'life',label:'LIFE',kind:'coursebook',availability:'active',shellId:'life-intermediate',cefr:null,preferredMethods:['think-pair-share','process-writing','reciprocal-reading']}),
- freezeProfile({id:'advanced-skills',label:'Advanced Skills',kind:'skills',availability:'active',shellId:'advanced-skills',cefr:null,preferredMethods:[]}),
+ freezeProfile({id:'objective-pet-b1',label:'Objective PET B1',kind:'coursebook',availability:'active',shellId:null,shellStatus:'unmapped',cefr:'B1',preferredMethods:['master-guided-reading-four-step','jigsaw-reading','think-pair-share']}),
+ freezeProfile({id:'objective-first-b2',label:'Objective First B2',kind:'coursebook',availability:'active',shellId:'objective-first-b2',shellStatus:'published',cefr:'B2',preferredMethods:['guided-grammar','process-writing','reciprocal-reading']}),
+ freezeProfile({id:'life',label:'LIFE',kind:'coursebook',availability:'active',shellId:'life-intermediate',shellStatus:'planned',cefr:null,preferredMethods:['think-pair-share','process-writing','reciprocal-reading']}),
+ freezeProfile({id:'advanced-skills',label:'Advanced Skills',kind:'skills',availability:'active',shellId:'advanced-skills',shellStatus:'published',cefr:null,preferredMethods:[]}),
  freezeProfile({id:'esp-medicine',label:'English for Medical Purposes',kind:'coursebook',availability:'planned',shellId:'medical-english',cefr:null,preferredMethods:[]}),
  freezeProfile({id:'esp-pharmacy',label:'English for Pharmaceutical Purposes',kind:'coursebook',availability:'planned',shellId:'english-for-pharmacy',cefr:null,preferredMethods:[]})
 ]);
@@ -63,5 +63,7 @@ export function validateCourseIdentity(lesson){
  if(profile.kind!=='skills'&&lesson?.advancedSkillId)
   issues.push('Advanced Skills branch cannot be attached to a textbook lesson.');
  if(profile.shellId===null)issues.push('Course has no verified Platform shell mapping; publishing must remain blocked.');
+ if(profile.shellStatus!=='published')issues.push('Course Library destination is not published or is not yet verified.');
+ if(profile.shellId&&profile.kind==='coursebook'&&lesson.courseLibraryShellId!==profile.shellId)issues.push('Course Library shell ID and lesson destination disagree.');
  return issues;
 }
