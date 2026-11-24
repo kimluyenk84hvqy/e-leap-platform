@@ -54,3 +54,14 @@ html,body{background:#F2F7F4;color:#183E31;font-family:Poppins,Inter,system-ui,s
 .studio-layout.properties-collapsed>.studio-right{display:none}
 @media(max-width:1180px){.studio-layout.properties-collapsed{grid-template-columns:230px minmax(0,1fr)}}
 @media(max-width:800px){.studio-layout.properties-collapsed{display:block}}
+
+/* Shared Course Profile selection: existing Studio, no extra application shell. */
+.studio-course-selector{display:grid;gap:9px;margin:5px 0 17px}
+.studio-course-selector>b{font-size:13px;color:#244f3a}
+.studio-course-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.studio-course-choice{min-height:51px;padding:9px 11px;text-align:left;overflow-wrap:anywhere;font-size:13px;line-height:1.25}
+.studio-course-choice small{display:block;margin-top:5px;font-size:11px;color:#697c71;font-weight:600}
+.studio-course-choice:disabled{opacity:.72;cursor:not-allowed;background:#f4f7f5;color:#596f62}
+.studio-skills-selector{padding-top:13px;border-top:1px solid #e2ebe5}
+.studio-skills-selector .studio-course-options{grid-template-columns:1fr}
+@media(max-width:420px){.studio-course-options{grid-template-columns:1fr}}
