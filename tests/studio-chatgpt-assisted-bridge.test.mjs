@@ -66,7 +66,9 @@ test('Import refuses wrong course, wrong review ID, missing critique, invented c
   {...a,reviews:{...a.reviews,critical:null}},
   {...a,slides:[{...a.slides[0],sourceEvidence:'an invented source statement'}]},
   {...a,slides:[{...a.slides[0],blocks:[{type:'mcq',text:'Fake multiple choice',answerKey:'A'}]}]},
-  {...a,slides:[{...a.slides[0],sourcePage:41}]}
+  {...a,slides:[{...a.slides[0],sourcePage:41}]},
+  {...a,slides:[{...a.slides[0],sourceEvidence:''}]},
+  {...a,reviews:{...a.reviews,critical:{...a.reviews.critical,missingMedia:[{unsafe:'bad'}]}}}
  ]){
   const out=importChatGPTResponse(x,bad,q,{createScreen,createBlock});
   assert.equal(out.ok,false);

@@ -833,7 +833,7 @@ function wire(){
   }
   async function sendChatGPTReview(download=false){
     try{
-      const id=lesson.assistedAuthoring?.pendingReviewId||modelUid('review');
+      const id=modelUid('review'); // Fresh ID invalidates earlier responses for this draft.
       const req=createReviewRequest(lesson,{
         requestId:id,includeSource:chatgptIncludeSource,
         sourcePages:pdfAiExtracted?.pages||[]

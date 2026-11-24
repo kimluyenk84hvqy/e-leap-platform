@@ -82,6 +82,8 @@ export function validateChatGPTResponse(response,request,{maxSlides=60}={}){
   }
   if(s.sourcePage!==null&&s.sourcePage!==undefined&&(!Number.isInteger(s.sourcePage)||s.sourcePage<1))issues.push('Invalid page reference on slide '+(i+1));
   if(s.sourceEvidence!==undefined&&typeof s.sourceEvidence!=='string')issues.push('Invalid evidence on slide '+(i+1));
+  if((request?.source?.pages||[]).length&&(!Number.isInteger(s.sourcePage)||!cleanString(s.sourceEvidence,300)))
+   issues.push('Source page and exact evidence are required on slide '+(i+1));
   const pages=request?.source?.pages||[];
   if(s.sourceEvidence&&pages.length){
    const cited=pages.find(p=>p.page===s.sourcePage);
@@ -91,6 +93,7 @@ export function validateChatGPTResponse(response,request,{maxSlides=60}={}){
  }
  if(!response.reviews||!['academic','visual','critical'].every(k=>validReview(response.reviews[k])))issues.push('All three review reports are required');
  if(response.reviews?.critical?.missingMedia&&!Array.isArray(response.reviews.critical.missingMedia))issues.push('Invalid missing media report');
+ if(Array.isArray(response.reviews?.critical?.missingMedia)&&!response.reviews.critical.missingMedia.every(x=>typeof x==='string'&&x.length<=400))issues.push('Invalid missing media entries');
  if(Array.isArray(response.reviews?.critical?.missingMedia)&&response.reviews.critical.missingMedia.length>30)issues.push('Too many missing media items');
  if(JSON.stringify(response).length>350000)issues.push('Response size limit exceeded');
  return issues;
