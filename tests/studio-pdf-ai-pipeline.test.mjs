@@ -30,7 +30,7 @@ test('PDF AI endpoint rejects invalid and nonconsented sources; no invented veri
    if(!roles.includes(req.actor.role)){res.status(403).json({ok:false});return null;}
    return req.actor;
   }},
-  '../_research-db.js':{isBoundToExpectedPreviewDatabase:()=>true},
+  '../_research-db.js':{isBoundToExpectedPreviewDatabase:()=>true,getResearchDb:()=>{throw Error('No AI calls should occur in unconfigured preview test')}},
   '../../assets/js/authoring/course-profile-registry.js':{courseProfileById}
  };
  const ctx=vm.createContext({process:{env:{VERCEL_ENV:'preview'}},console,AbortController,setTimeout,clearTimeout});
@@ -63,4 +63,46 @@ test('Studio contains PDF upload, page range and teacher consent controls',()=>{
  for(const marker of ['data-pdf-ai-file','data-pdf-ai-extract','data-pdf-ai-generate','data-pdf-ai-rights','data-pdf-ai-consent','toUnverifiedLessonDraft','inspectPdfLesson'])assert.ok(studio.includes(marker),marker);
  const router=readFileSync(new URL('../api/router.js',import.meta.url),'utf8');
  assert.match(router,/authoring\/pdf-ai-build/);
+});
+
+test('Batch planner rejects overlap and caps lesson counts before paid AI use',async()=>{
+ const {parseLessonRanges,validateBatchForPaidRun,runLessonBatch,assessExtractedSource}=
+  await import('../assets/js/authoring/pdf-batch-plan.js');
+ assert.equal(parseLessonRanges('1-4; 5-8').jobs.length,2);
+ assert.equal(parseLessonRanges('1-4; 4-8').ok,false);
+ assert.equal(parseLessonRanges('1-4; 5-8; 9-12; 13-16').ok,false);
+ assert.equal(parseLessonRanges('1-20').ok,false);
+ const p=parseLessonRanges('1-4; 5-8');
+ assert.equal(validateBatchForPaidRun(p,{confirmed:true,providerConfigured:true,budgetVerified:false}).allowed,false);
+ const scan=assessExtractedSource([{page:1,text:'A\nReading passage one\nB\nReading passage two',method:'local-ocr'}],{expectedPassages:3});
+ assert.equal(scan.ok,false);
+ assert.ok(scan.errors.some(x=>x.includes('Passage C')));
+ assert.equal(scan.sourceVerified,false);
+ const calls=[];
+ const output=await runLessonBatch(p,{
+  extract:async job=>({pages:[{page:job.startPage,text:'A relevant page'}]}),
+  generate:async job=>{calls.push(job.index);if(job.index===2)throw Error('Source missing');return {ok:true}},
+  onUpdate:()=>{}
+ });
+ assert.equal(output.completed,1);
+ assert.equal(output.halted,true);
+ assert.deepEqual(calls,[1,2]);
+});
+test('OCR integration is available but never labels extracted text verified',async()=>{
+ const pdf=await import('../assets/js/authoring/source-pdf-local.js');
+ const mockFile={name:'scanned.pdf',size:1024,arrayBuffer:async()=>new ArrayBuffer(8)};
+ let destroyed=false;
+ const mockPdfjs={getDocument:()=>({promise:Promise.resolve({
+  numPages:1,
+  async getPage(){return {getTextContent:async()=>({items:[]})}},
+  async destroy(){destroyed=true}
+ })})};
+ const out=await pdf.extractLocalPdfText(mockFile,mockPdfjs,{
+  maxPages:1,ocrPage:async()=>({text:'A\nReading passage one\nB\nReading passage two',confidence:76})
+ });
+ assert.equal(out.pages[0].method,'local-ocr');
+ assert.equal(out.pages[0].verified,false);
+ assert.equal(out.pages[0].ocrConfidence,76);
+ assert.equal(destroyed,true);
+ assert.ok(out.warnings.some(x=>x.includes('local OCR')));
 });

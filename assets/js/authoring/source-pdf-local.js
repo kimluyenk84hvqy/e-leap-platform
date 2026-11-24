@@ -2,7 +2,7 @@
  * E-LEAP Resource Workshop. This is *not* OCR or source verification.
  * Process bytes only in browser memory. No uploads/network of PDF bytes.
  */
-export async function extractLocalPdfText(file,pdfjs,{maxBytes=150*1024*1024,maxPages=12,startPage=1,endPage=null}={}){
+export async function extractLocalPdfText(file,pdfjs,{maxBytes=150*1024*1024,maxPages=12,startPage=1,endPage=null,ocrPage=null}={}){
  if(!file||!(/\.pdf$/i.test(file.name)||file.type==='application/pdf'))throw Error('Select a PDF file.');
  if(file.size<=0||file.size>maxBytes)throw Error('PDF file exceeds the local extraction limit (150 MB).');
  if(!pdfjs||typeof pdfjs.getDocument!=='function')throw Error('PDF reader unavailable.');
@@ -28,9 +28,14 @@ export async function extractLocalPdfText(file,pdfjs,{maxBytes=150*1024*1024,max
     if(item.hasEOL){lines.push(current.trim());current='';lastY=null;lastX=-Infinity;}
    }
    if(current.trim())lines.push(current.trim());
-   const text=lines.filter(Boolean).join('\n');
+   let text=lines.filter(Boolean).join('\n'),method='pdf-text',ocrConfidence=null;
+   if(text.length<90&&typeof ocrPage==='function'){
+    const scanned=await ocrPage(page,n);
+    if(scanned?.text?.length>text.length){text=String(scanned.text);method='local-ocr';ocrConfidence=Number(scanned.confidence||0);}
+    warnings.push('Page '+n+' used local OCR. Check source reading order, missing passages, captions, and all questions against the original page.');
+   }
    if(!text)warnings.push('Page '+n+' has no extractable text: scanned PDF / OCR required.');
-   pages.push({page:n,text,verified:false});
+   pages.push({page:n,text,verified:false,method,ocrConfidence});
   }
   if(startPage>1||selectedEnd<total)warnings.push('Only pages '+startPage+'–'+selectedEnd+' of '+total+' processed.');
   warnings.push('Reading order is heuristic; review columns, tables and question numbering against the rendered PDF.');

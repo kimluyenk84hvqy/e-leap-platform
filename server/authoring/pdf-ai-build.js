@@ -1,5 +1,5 @@
 import {requireAuth,requireSameOrigin} from '../_auth.js';
-import {isBoundToExpectedPreviewDatabase} from '../_research-db.js';
+import {isBoundToExpectedPreviewDatabase,getResearchDb} from '../_research-db.js';
 import {courseProfileById} from '../../assets/js/authoring/course-profile-registry.js';
 const fail=(res,status,code,error)=>res.status(status).json({ok:false,code,error});
 export function validatePdfInput(value){
@@ -44,12 +44,22 @@ export default async function handler(req,res){
  if(!requireSameOrigin(req,res))return;
  const user=await requireAuth(req,res,['teacher','admin']);if(!user)return;
  if(process.env.VERCEL_ENV!=='preview'||isBoundToExpectedPreviewDatabase()!==true)return fail(res,423,'PREVIEW_ONLY','Verified Preview required');
- const configured=process.env.ELEAP_PDF_AI_ENABLED==='true'&&Boolean(process.env.AI_GATEWAY_API_KEY)&&Boolean(process.env.ELEAP_AI_MODEL);
- if(req.method==='GET')return res.status(200).json({ok:true,configured,reason:configured?'AI build enabled in Preview':'AI provider or budget approval not yet configured'});
+ const budgetVerified=process.env.ELEAP_AI_EXTERNAL_BUDGET_VERIFIED==='true';
+ const dailyLimit=Math.max(1,Math.min(3,Number(process.env.ELEAP_AI_MAX_DAILY_JOBS)||1));
+ const configured=budgetVerified&&process.env.ELEAP_PDF_AI_ENABLED==='true'&&Boolean(process.env.AI_GATEWAY_API_KEY)&&Boolean(process.env.ELEAP_AI_MODEL);
+ if(req.method==='GET')return res.status(200).json({ok:true,configured,dailyLimit,budgetVerified,reason:configured?'Preview AI available within verified external budget and daily request limit':'AI provider and externally enforced spend budget must be configured and verified'});
  const errors=validatePdfInput(req.body);
  if(errors.length)return fail(res,422,'PDF_SOURCE_INVALID',errors.join('; '));
- if(process.env.ELEAP_PDF_AI_ENABLED!=='true'||!process.env.AI_GATEWAY_API_KEY||!process.env.ELEAP_AI_MODEL)
-  return fail(res,503,'AI_NOT_CONFIGURED','AI provider and controlled spending must be configured in Preview.');
+ if(!configured)return fail(res,503,'AI_NOT_CONFIGURED','External AI spending cap and Preview provider must be verified before generating.');
+ try{
+  const sql=getResearchDb();
+  const reservations=await sql`INSERT INTO studio_ai_daily_quota_v1(owner_user_id,usage_day,used_jobs)
+    VALUES(${user.user_id},CURRENT_DATE,1)
+    ON CONFLICT(owner_user_id,usage_day) DO UPDATE SET used_jobs=studio_ai_daily_quota_v1.used_jobs+1
+    WHERE studio_ai_daily_quota_v1.used_jobs < ${dailyLimit}
+    RETURNING used_jobs`;
+  if(!reservations.length)return fail(res,429,'DAILY_AI_QUOTA','Daily AI generation quota reached. Further calls are blocked.');
+ }catch(error){console.error('AI quota reservation failed',error?.message);return fail(res,503,'QUOTA_UNAVAILABLE','AI quota storage unavailable. No AI calls made.');}
  const {pages,focus,courseProfileId}=req.body;
  const source=pages.map(x=>'[PDF PAGE '+x.page+']\n'+x.text).join('\n\n');
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),45000);

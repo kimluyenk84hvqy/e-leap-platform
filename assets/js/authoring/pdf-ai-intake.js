@@ -3,6 +3,7 @@
  * Output always remains a teacher-review draft and never publishes.
  */
 import {extractLocalPdfText} from './source-pdf-local.js';
+import {createLocalOcrReader} from './ocr-browser.js';
 import {createLesson,createScreen,createBlock} from './lesson-model.js';
 import {createCourseDraft} from './course-profile-registry.js';
 let pdfJsPromise=null;
@@ -26,9 +27,20 @@ async function pdfJs(){
 export async function inspectPdfLesson(file,{startPage=1,endPage=8}={}){
  if(!Number.isInteger(startPage)||!Number.isInteger(endPage)||startPage<1||endPage<startPage||endPage-startPage+1>12)
   throw Error('Select 1–12 consecutive pages of one lesson.');
- const scanned=await extractLocalPdfText(file,await pdfJs(),{startPage,endPage,maxPages:12,maxBytes:150*1024*1024});
+ let reader=null;
+ let scanned;
+ try{
+  scanned=await extractLocalPdfText(file,await pdfJs(),{
+   startPage,endPage,maxPages:12,maxBytes:150*1024*1024,
+   ocrPage:async(page)=>{
+    if(!reader)reader=await createLocalOcrReader();
+    return reader.read(page);
+   }
+  });
+ }finally{if(reader)await reader.close()}
+
  const text=scanned.pages.reduce((n,p)=>n+p.text.length,0);
- if(text<160)throw Error('Very little text was extracted. This may be a scanned PDF requiring OCR, or the wrong pages were selected.');
+ if(text<160)throw Error('Very little text was extracted even after local OCR. Select the correct pages or provide better-quality scans.');
  if(text>24000)throw Error('Too much extracted text for one controlled AI batch. Select fewer pages.');
  if(scanned.pages.some(p=>p.text.length>5500))throw Error('A PDF page exceeds the AI input limit; select a smaller source segment.');
  return scanned;

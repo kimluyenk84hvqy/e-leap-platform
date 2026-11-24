@@ -14,6 +14,7 @@ import {auditLesson} from './quality-gate.js';
 import {ELeapAuthoringSaveService} from './authoring-save-service.js';
 import {suggestCoursePlan} from './authoring/course-adaptive-plan.js';
 import {inspectPdfLesson,requestPdfAiLesson,toUnverifiedLessonDraft,getPdfAiCapability} from './authoring/pdf-ai-intake.js';
+import {parseLessonRanges,runLessonBatch,assessExtractedSource,validateBatchForPaidRun} from './authoring/pdf-batch-plan.js';
 import {controlModelForRole} from './controls/control-shell.js';
 import {createLesson as modelCreateLesson,ensureLessonSchema as modelEnsureLessonSchema,createScreen as modelCreateScreen,createBlock as modelCreateBlock,normaliseActivity as modelNormaliseActivity,defaultActivityPrompt,legacyToBlocks as modelLegacyToBlocks,clone as modelClone,uid as modelUid,parsePipeLines,duplicateLesson as modelDuplicateLesson} from './authoring/lesson-model.js';
 import {E_LEAP_LAYOUT_IDS} from './authoring/layout-registry.js';
@@ -55,6 +56,7 @@ const LIBRARY=E_LEAP_AUTHORING_LIBRARY;
 const saveService=new ELeapAuthoringSaveService();
 let serverDraftIndex=[],savingDraft=false,pendingSave=false,adaptiveFocus='Reading',adaptivePlan=null;
 let pdfAiFile=null,pdfAiExtracted=null,pdfAiBusy=false,pdfAiStart=1,pdfAiEnd=8,pdfAiRights=false,pdfAiConsent=false,pdfAiCapability=null,pdfAiMessage='Select a PDF and lesson pages; PDF bytes stay in your browser.';
+let pdfAiExpectedPassages=0,pdfAiSourceGate=null,pdfAiBatchRanges='',pdfAiBatchPlan=null,pdfAiBatchMessage='Plan a small batch by page ranges.';
 let lesson=null, selectedScreen=0, selectedBlock=0, dirty=false, previewRole='teacher', autosaveTimer=null;
 const jigsawPreviewAccounts=new Map(); // Teacher-only UI filter; NOT an authorized learner assignment.
 const u6SourceByScreen=new Map(),u6AnswersByScreen=new Map(),u6AccountByScreen=new Map(),u6SourceErrors=new Map(); // Private teacher preview; never serialized to lesson.
@@ -333,12 +335,20 @@ function lessonProps(){
   <p class="helper">${pdfAiFile?esc(pdfAiFile.name):'No PDF selected'}</p>
   <div class="field-row"><label>From page <input type="number" min="1" value="${pdfAiStart}" data-pdf-ai-start></label>
   <label>To page <input type="number" min="1" value="${pdfAiEnd}" data-pdf-ai-end></label></div>
+  <label>Separate reading passages expected (0 = not specified) <input type="number" min="0" max="6" data-pdf-ai-passages value="${pdfAiExpectedPassages}"></label>
   <button class="studio-btn" type="button" data-pdf-ai-extract ${pdfAiBusy?'disabled':''}>1 · Extract & check PDF</button>
   ${pdfAiExtracted?`<p class="helper">${pdfAiExtracted.pages.length} pages · ${pdfAiExtracted.pages.reduce((n,p)=>n+p.text.length,0)} characters. ${esc(pdfAiExtracted.warnings.join(' '))}</p>`:''}
+  ${pdfAiSourceGate&&!pdfAiSourceGate.ok?`<p class="helper" role="alert">SOURCE INCOMPLETE: ${esc(pdfAiSourceGate.errors.join('; '))}</p>`:''}
   <label><input type="checkbox" data-pdf-ai-rights ${pdfAiRights?'checked':''}> I have permission to use this learning material.</label>
   <label><input type="checkbox" data-pdf-ai-consent ${pdfAiConsent?'checked':''}> I agree to send extracted page text to the configured AI service.</label>
   <p class="helper">AI connection: ${pdfAiCapability?.configured?'Configured':esc(pdfAiCapability?.reason||'Checking...')}</p>
-  <button class="studio-btn primary" type="button" data-pdf-ai-generate ${pdfAiBusy||!pdfAiExtracted||pdfAiCapability?.configured!==true?'disabled':''}>2 · Generate three-AI lesson draft</button>
+  <button class="studio-btn primary" type="button" data-pdf-ai-generate ${pdfAiBusy||!pdfAiExtracted||pdfAiSourceGate?.ok!==true||pdfAiCapability?.configured!==true?'disabled':''}>2 · Generate three-AI lesson draft</button>
+  <div class="studio-course-selector"><b>Batch · multiple lessons from one PDF</b>
+  <label>Lesson page ranges (e.g. 1-4; 5-8) <input type="text" data-pdf-ai-batch-ranges value="${esc(pdfAiBatchRanges)}" placeholder="1-4; 5-8"></label>
+  <button class="studio-btn" type="button" data-pdf-ai-batch-plan>Plan batch · maximum 3 lessons</button>
+  ${pdfAiBatchPlan?.ok?`<p class="helper">${pdfAiBatchPlan.jobs.map(j=>`Lesson ${j.index}: PDF pages ${j.startPage}–${j.endPage}`).join(' · ')}. Each output is saved as a separate local review draft.</p>`:''}
+  <button class="studio-btn primary" type="button" data-pdf-ai-batch-run ${pdfAiBusy||!pdfAiBatchPlan?.ok||pdfAiCapability?.configured!==true?'disabled':''}>Generate approved batch</button>
+  <p class="helper" role="status">${esc(pdfAiBatchMessage)}</p></div>
   <p class="helper" role="status">${esc(pdfAiMessage)}</p>
   ${lesson.pdfAiReview?`<div class="token-note">AI-generated draft requires textbook verification and teacher approval. Issues: ${esc([...(lesson.pdfAiReview.issues||[]),...(lesson.pdfAiReview.missingMedia||[])].join('; ')||'No reviewer issues recorded; source and media checks remain mandatory.')}</div>`:''}
  </div>
@@ -780,11 +790,12 @@ function wire(){
     }catch(error){status('Cannot open draft: '+error.message)}
   });
   document.querySelector('[data-pdf-ai-file]')?.addEventListener('change',e=>{
-    pdfAiFile=e.target.files?.[0]||null;pdfAiExtracted=null;
+    pdfAiFile=e.target.files?.[0]||null;pdfAiExtracted=null;pdfAiSourceGate=null;pdfAiBatchPlan=null;
     pdfAiMessage=pdfAiFile?'PDF selected. Choose lesson pages and extract text.':'No PDF selected.';render();
   });
   document.querySelector('[data-pdf-ai-start]')?.addEventListener('change',e=>{pdfAiStart=Number(e.target.value);pdfAiExtracted=null;});
   document.querySelector('[data-pdf-ai-end]')?.addEventListener('change',e=>{pdfAiEnd=Number(e.target.value);pdfAiExtracted=null;});
+  document.querySelector('[data-pdf-ai-passages]')?.addEventListener('change',e=>{pdfAiExpectedPassages=Number(e.target.value)||0;pdfAiSourceGate=null;pdfAiExtracted=null;});
   document.querySelector('[data-pdf-ai-rights]')?.addEventListener('change',e=>{pdfAiRights=e.target.checked;});
   document.querySelector('[data-pdf-ai-consent]')?.addEventListener('change',e=>{pdfAiConsent=e.target.checked;});
   document.querySelector('[data-pdf-ai-extract]')?.addEventListener('click',async()=>{
@@ -792,12 +803,13 @@ function wire(){
     if(!pdfAiFile){pdfAiMessage='Select a PDF file first.';render();return;}
     pdfAiBusy=true;pdfAiMessage='Extracting PDF text in your browser…';render();
     try{pdfAiExtracted=await inspectPdfLesson(pdfAiFile,{startPage:pdfAiStart,endPage:pdfAiEnd});
-      pdfAiMessage='PDF text extracted. Check the source pages before enabling AI generation.';}
-    catch(error){pdfAiExtracted=null;pdfAiMessage=String(error?.message||'PDF extraction failed');}
+      pdfAiSourceGate=assessExtractedSource(pdfAiExtracted.pages,{expectedPassages:pdfAiExpectedPassages});
+      pdfAiMessage=pdfAiSourceGate.ok?'PDF text extracted. Teacher must verify all passages, images, and tasks.':'Source incomplete. Fix page selection or OCR before generation.';}
+    catch(error){pdfAiExtracted=null;pdfAiSourceGate=null;pdfAiMessage=String(error?.message||'PDF extraction failed');}
     finally{pdfAiBusy=false;render();}
   });
   document.querySelector('[data-pdf-ai-generate]')?.addEventListener('click',async()=>{
-    if(pdfAiBusy||!pdfAiExtracted||pdfAiCapability?.configured!==true)return;
+    if(pdfAiBusy||!pdfAiExtracted||pdfAiSourceGate?.ok!==true||pdfAiCapability?.configured!==true)return;
     if(!pdfAiRights||!pdfAiConsent){pdfAiMessage='Please confirm material rights and AI transmission consent.';render();return;}
     if(!resolveCourseProfile(lesson)||!courseIsSelectable(lesson.courseProfileId)){pdfAiMessage='Select an active textbook or skills library.';render();return;}
     pdfAiBusy=true;pdfAiMessage='Running Academic → Visual → Critical Review AI (Preview only)…';render();
@@ -812,6 +824,55 @@ function wire(){
       markDirty();
     }catch(error){pdfAiMessage=String(error?.message||'AI generation failed safely');}
     finally{pdfAiBusy=false;render();}
+  });
+  document.querySelector('[data-pdf-ai-batch-ranges]')?.addEventListener('input',e=>{
+    pdfAiBatchRanges=e.target.value;pdfAiBatchPlan=null;
+  });
+  document.querySelector('[data-pdf-ai-batch-plan]')?.addEventListener('click',()=>{
+    pdfAiBatchPlan=parseLessonRanges(pdfAiBatchRanges,{maxJobs:3,maxPagesPerJob:12});
+    pdfAiBatchMessage=pdfAiBatchPlan.ok?'Review ranges and source pages before confirming a paid run.':
+      pdfAiBatchPlan.errors.join('; ');
+    render();
+  });
+  document.querySelector('[data-pdf-ai-batch-run]')?.addEventListener('click',async()=>{
+    if(pdfAiBusy||!pdfAiFile)return;
+    const gate=validateBatchForPaidRun(pdfAiBatchPlan,{
+      confirmed:pdfAiRights&&pdfAiConsent,providerConfigured:pdfAiCapability?.configured===true,
+      budgetVerified:pdfAiCapability?.budgetVerified===true
+    });
+    if(!gate.allowed){pdfAiBatchMessage=gate.errors.join('; ');render();return;}
+    if(pdfAiBatchPlan.jobs.length>(pdfAiCapability?.dailyLimit||1)){
+      pdfAiBatchMessage='This batch exceeds the Preview daily AI request cap. Use fewer lessons.';render();return;
+    }
+    if(!confirm('Run '+pdfAiBatchPlan.jobs.length+' lessons using the configured AI Gateway budget? AI charges may apply.'))return;
+    pdfAiBusy=true;pdfAiBatchMessage='Beginning batch. Completed lessons will require teacher review.';render();
+    const current=lesson,currentKey=draftKey;
+    try{
+      const output=await runLessonBatch(pdfAiBatchPlan,{
+        extract:async job=>{
+          const scan=await inspectPdfLesson(pdfAiFile,{startPage:job.startPage,endPage:job.endPage});
+          const gate=assessExtractedSource(scan.pages);
+          if(!gate.ok)throw Error(gate.errors.join('; '));
+          return scan;
+        },
+        generate:async job=>{
+          const result=await requestPdfAiLesson({
+            pages:job.pages,courseProfileId:current.courseProfileId,focus:adaptiveFocus,
+            rightsConfirmed:pdfAiRights,aiTransmissionConsent:pdfAiConsent
+          });
+          const draft=toUnverifiedLessonDraft(result,current.courseProfileId,{
+            pdfName:pdfAiFile.name,sourcePages:job.pages.map(p=>p.page)});
+          lesson=draft;draftKey='e-leap-studio-v1:'+draft.id;
+          snapshotDraft();
+          lesson=current;draftKey=currentKey;
+          return result;
+        },
+        onUpdate:({job,status})=>{pdfAiBatchMessage='Lesson '+job.index+': '+status;}
+      });
+      pdfAiBatchMessage=output.completed+' review drafts saved locally. '+
+        (output.halted?'Batch stopped at first failure. ':'')+'Open saved draft to review source and media.';
+    }catch(error){pdfAiBatchMessage='Batch halted: '+String(error?.message||error)}
+    finally{lesson=current;draftKey=currentKey;pdfAiBusy=false;render();}
   });
   document.querySelector('[data-adaptive-focus]')?.addEventListener('change',e=>{adaptiveFocus=e.target.value;});
   document.querySelector('[data-adaptive-plan]')?.addEventListener('click',()=>{
