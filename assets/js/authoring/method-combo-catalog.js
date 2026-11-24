@@ -101,6 +101,20 @@ const nonblank=v=>typeof v==='string'&&v.trim().length>0;
 export function checkMethodSource(id,source={}){
  const method=METHOD_COMBOS[id];if(!method)return ['Unknown method combo.'];
  const issues=[];
+ if(id==='master-u6-reading-six-step'||id==='master-guided-reading-four-step'){
+  if(source.sourceVerified!==true||typeof source.sourceRef!=='string'||!source.sourceRef.trim())
+   issues.push('A verified source and traceable sourceRef are required before mapping the Master Reading method.');
+  if(id==='master-u6-reading-six-step'){
+   const sections=source.sections;
+   const labels=Array.isArray(sections)?sections.map(item=>String(item?.label||'').trim()):[];
+   if(!Array.isArray(sections)||sections.length!==3||labels.join(',')!=='A,B,C')
+    issues.push('U6 Jigsaw requires three verified, distinct accounts labelled A, B, C.');
+   if(source.photoAssetsVerified!==true||!Array.isArray(source.photoAssetIds)||source.photoAssetIds.length!==3||new Set(source.photoAssetIds).size!==3||source.photoAssetIds.some(x=>typeof x!=='string'||!x.trim()))
+    issues.push('Three verified, distinct photograph Media IDs are required for the U6 source.');
+   if(source.roleSelectionPersisted!==true)
+    issues.push('Per-student A/B/C selection must be persisted and server-authorized before runtime publication.');
+  }
+ }
  for(const key of method.required){
   const v=source[key];
   if(key==='questions'){
