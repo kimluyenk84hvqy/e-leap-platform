@@ -5,6 +5,7 @@ import {sourceIntakeToStudioReviewScreen,projectJigsawRoleForReview} from './aut
 import {recommendTeachingMethod,previewStepInstructionEdit,acceptStepInstructionEdit,undoStepInstructionEdit,fingerprintReviewSource} from './authoring/studio-review-workbench.js';
 import {importResourceZip,rehydrateResourceBank,createResourceScreens,renderResourceStage,renderResourceProperties,wireResourceStage} from './authoring/resource-bank-assembly.js';
 import {E_LEAP_ACTIVITY_TYPES,E_LEAP_AUTHORING_LIBRARY} from './activity-registry.js';
+import {fetchU6TeacherSource} from './authoring/u6-source-review.js';
 import {E_LEAP_THEME_DEFAULT,E_LEAP_THEME_PRESETS,E_LEAP_ALLOWED_FONTS,applyThemePreset} from './theme-tokens.js';
 import {E_LEAP_SMART_TEMPLATES,createSmartTemplate} from './smart-templates.js';
 import {normaliseDeliveryPolicy,E_LEAP_DELIVERY_POLICIES} from './assessment-policy.js';
@@ -51,6 +52,7 @@ const LIBRARY=E_LEAP_AUTHORING_LIBRARY;
 const saveService=new ELeapAuthoringSaveService();
 let lesson=null, selectedScreen=0, selectedBlock=0, dirty=false, previewRole='teacher', autosaveTimer=null;
 const jigsawPreviewAccounts=new Map(); // Teacher-only UI filter; NOT an authorized learner assignment.
+const u6SourceByScreen=new Map(),u6AnswersByScreen=new Map(),u6AccountByScreen=new Map(),u6SourceErrors=new Map(); // Private teacher preview; never serialized to lesson.
 let pendingInstructionReview=null,previousInstructionUndo=null,workbenchStatus='';
 let draftKey='';
 let layoutEditMode=false,layoutGuidesVisible=true,selectedLayoutRegion=null;
@@ -151,7 +153,7 @@ function render(){
 function slideItem(s,i){return `<button class="slide-item ${i===selectedScreen?'active':''}" data-slide="${i}"><span class="slide-thumb">${i+1}</span><span class="slide-title"><b>${esc(s.title||'Untitled')}</b><small>${esc(s.stage||'Slide')}</small></span><span class="slide-more">⋮</span></button>`}
 function renderCanvas(s){
  if(s.sourceReviewDraft&&['student','guest','presentation'].includes(previewRole))return '<div class="canvas-wrap"><section class="lesson-canvas"><p class="studio-no-content">This source activity is awaiting teacher review and is not available to learners.</p></section></div>';
- if(s.resourceStage)return renderResourceStage(s,lesson.resourceBank,previewRole);if(s.functionalDraft)return renderFunctionalSlide(s,previewRole);if(s.methodDraft)return renderMethodTemplateCanvas(s,previewRole);if(s.certifiedTemplate)return renderCertifiedVisual(s,previewRole,certifiedQuestionIndex.get(s.id)||0,certifiedAnswers.has(s.id),certifiedResponses.get(s.id+':'+(certifiedQuestionIndex.get(s.id)||0))||'');const t=lesson.theme;return `<div class="canvas-wrap" style="--canvas-font:${cssFont(t.fontFamily)};--canvas-title-size:${Number(t.titleSize)||36}px;--canvas-body-size:${Number(t.bodySize)||18}px;--canvas-text:${safeColor(t.textColor,'#173f38')};--canvas-accent:${safeColor(t.accentColor,'#0d7d6d')};--canvas-bg:${safeColor(t.backgroundColor,'#fff')}"><div class="preview-strip"><b>${cap(previewRole)} preview</b><span>${esc(t.preset)} · ${esc(t.fontFamily)}</span></div><section class="lesson-canvas layout-${esc(s.layout||'standard')} template-${esc(s.templateId||'custom')} variant-${esc(s.visualVariant||'default')} preview-${esc(previewRole)}"><header class="canvas-hero"><div class="canvas-kicker">${esc(s.stage||'')}</div><h1 class="canvas-title" contenteditable="${!['student','guest','presentation'].includes(previewRole)}" data-edit="screen-title">${esc(s.title||'')}</h1><p class="canvas-instruction" contenteditable="${!['student','guest','presentation'].includes(previewRole)}" data-edit="screen-instruction">${esc(s.instruction||'')}</p></header><div class="canvas-body">${renderComboSteps(s)}${renderRoleReviewBlocks(s)}${['student','guest','presentation'].includes(previewRole)&&!s.blocks.some(b=>(!b.comboStep||b.comboStep===comboStep(s)?.id)&&learnerBlockReady(b))?'<p class="studio-no-content">This activity is not yet available.</p>':''}${['student','guest','presentation'].includes(previewRole)?'':'<div class="add-block"><button class="studio-btn primary" data-open-library>+ Add content / activity</button></div>'}</div></section></div>`}
+ if(s.resourceStage)return renderResourceStage(s,lesson.resourceBank,previewRole);if(s.functionalDraft)return renderFunctionalSlide(s,previewRole);if(s.methodDraft)return renderMethodTemplateCanvas(s,previewRole,u6SourceByScreen.get(s.id)||null,u6AnswersByScreen.get(s.id)||{},u6AccountByScreen.get(s.id)||'A',u6SourceErrors.get(s.id)||'');if(s.certifiedTemplate)return renderCertifiedVisual(s,previewRole,certifiedQuestionIndex.get(s.id)||0,certifiedAnswers.has(s.id),certifiedResponses.get(s.id+':'+(certifiedQuestionIndex.get(s.id)||0))||'');const t=lesson.theme;return `<div class="canvas-wrap" style="--canvas-font:${cssFont(t.fontFamily)};--canvas-title-size:${Number(t.titleSize)||36}px;--canvas-body-size:${Number(t.bodySize)||18}px;--canvas-text:${safeColor(t.textColor,'#173f38')};--canvas-accent:${safeColor(t.accentColor,'#0d7d6d')};--canvas-bg:${safeColor(t.backgroundColor,'#fff')}"><div class="preview-strip"><b>${cap(previewRole)} preview</b><span>${esc(t.preset)} · ${esc(t.fontFamily)}</span></div><section class="lesson-canvas layout-${esc(s.layout||'standard')} template-${esc(s.templateId||'custom')} variant-${esc(s.visualVariant||'default')} preview-${esc(previewRole)}"><header class="canvas-hero"><div class="canvas-kicker">${esc(s.stage||'')}</div><h1 class="canvas-title" contenteditable="${!['student','guest','presentation'].includes(previewRole)}" data-edit="screen-title">${esc(s.title||'')}</h1><p class="canvas-instruction" contenteditable="${!['student','guest','presentation'].includes(previewRole)}" data-edit="screen-instruction">${esc(s.instruction||'')}</p></header><div class="canvas-body">${renderComboSteps(s)}${renderRoleReviewBlocks(s)}${['student','guest','presentation'].includes(previewRole)&&!s.blocks.some(b=>(!b.comboStep||b.comboStep===comboStep(s)?.id)&&learnerBlockReady(b))?'<p class="studio-no-content">This activity is not yet available.</p>':''}${['student','guest','presentation'].includes(previewRole)?'':'<div class="add-block"><button class="studio-btn primary" data-open-library>+ Add content / activity</button></div>'}</div></section></div>`}
 function renderRoleReviewBlocks(s){
  if(!s.sourceReviewDraft||s.sourceReviewDraft.jigsawGroupSize!==3)
   return s.blocks.map((b,i)=>renderBlock(b,i)).join('');
@@ -613,6 +615,29 @@ function wire(){
   document.querySelectorAll('[data-functional-variant]').forEach(b=>b.onclick=()=>{const draft=currentScreen().functionalDraft;if(!draft||!FUNCTION_SLIDES[draft.type]?.variants.includes(b.dataset.functionalVariant))return;draft.variant=b.dataset.functionalVariant;markDirty();render()});
   document.querySelectorAll('[data-add-combo]').forEach(b=>b.onclick=()=>{const screen=createMethodTemplateScreen(b.dataset.addCombo);if(!screen){status('Method template is not available for review.');return;}lesson.screens.splice(selectedScreen+1,0,screen);selectedScreen++;selectedBlock=0;markDirty();render()});
   document.querySelectorAll('[data-method-draft-step]').forEach(b=>b.onclick=()=>{if(changeMethodStep(currentScreen(),b.dataset.methodDraftStep))render()});
+  document.querySelector('[data-u6-load-source]')?.addEventListener('click',async ()=>{
+    const screenId=currentScreen().id;
+    const assignmentId=document.querySelector('[data-u6-assignment-id]')?.value?.trim()||'';
+    const button=document.querySelector('[data-u6-load-source]');if(button)button.disabled=true;
+    u6SourceErrors.delete(screenId);
+    try{const material=await fetchU6TeacherSource(assignmentId);
+      u6SourceByScreen.set(screenId,material);
+      u6AccountByScreen.set(screenId,'A');
+      u6AnswersByScreen.set(screenId,{});
+      if(currentScreen().id===screenId)render();
+    }catch(error){u6SourceErrors.set(screenId,String(error?.message||'Could not load source.'));
+      if(currentScreen().id===screenId)render();
+    }
+  });
+  document.querySelectorAll('[data-u6-review-account]').forEach(b=>b.addEventListener('click',()=>{
+    u6AccountByScreen.set(currentScreen().id,b.dataset.u6ReviewAccount);render();
+  }));
+  document.querySelectorAll('[data-u6-review-answer]').forEach(field=>field.addEventListener('input',()=>{
+    const screenId=currentScreen().id;
+    const answers=u6AnswersByScreen.get(screenId)||{};
+    answers[field.dataset.u6ReviewAnswer]=field.value;
+    u6AnswersByScreen.set(screenId,answers);
+  }));
   document.querySelectorAll('[data-add-template]').forEach(b=>b.onclick=()=>{const s=createSmartTemplate(b.dataset.addTemplate);if(!s)return;lesson.screens.splice(selectedScreen+1,0,s);selectedScreen++;selectedBlock=0;markDirty();render()});
   document.querySelectorAll('[data-path]').forEach(el=>el.addEventListener('input',()=>{applyPath(el.dataset.path,el.type==='number'?Number(el.value):el.value);markDirty();renderSoft()}));
   document.querySelectorAll('[contenteditable][data-edit]').forEach(el=>el.addEventListener('blur',()=>{const key=el.dataset.edit;if(key==='screen-title')currentScreen().title=el.textContent.trim();if(key==='screen-instruction')currentScreen().instruction=el.textContent.trim();if(key==='block-text')currentBlock().content.text=el.textContent.trim();markDirty();render()}));
