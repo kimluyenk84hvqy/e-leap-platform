@@ -14,7 +14,7 @@ export function validateU6TeacherSource(payload) {
   return {ok:false,error:'A, B and C must contain the full verified texts.'};
  if(!Array.isArray(m.photo_labels)||m.photo_labels.length!==3||!Array.isArray(m.original_questions)||m.original_questions.length!==2)
   return {ok:false,error:'The original three photographs and two questions must be present.'};
- if(!Array.isArray(m.photo_assets)||m.photo_assets.length!==3||new Set(m.photo_assets.map(v=>v.assetId)).size!==3)
+ if(!Array.isArray(m.photo_assets)||m.photo_assets.length!==3||new Set(m.photo_assets.map(v=>v.assetId)).size!==3||m.photo_assets.some(v=>!validUuid(v?.assetId)))
   return {ok:false,error:'Three distinct verified photo assets are required.'};
  return {ok:true,material:m};
 }
@@ -35,7 +35,8 @@ export function renderU6TeacherReview(screen,source,answers={},selectedAccount='
  if(!m)return '<section class="u6-source-preview">'+intro+'<div class="u6-source-connection"><label><b>Verified U6 Reading assignment</b><input data-u6-assignment-id value="'+escapeHtml(U6_PREVIEW_ASSIGNMENT_ID)+'" aria-label="U6 assignment identifier"></label><button type="button" class="studio-btn primary" data-u6-load-source>Load verified source</button>'+(error?'<p class="u6-review-error" role="alert">'+escapeHtml(error)+'</p>':'')+'</div></section>';
  const text=m.accounts?.[selectedAccount]||'';
  const passage='<article class="u6-source-paragraph"><div class="u6-source-paragraph-head"><strong>Paragraph '+escapeHtml(selectedAccount)+'</strong><span>Textbook p. '+escapeHtml(m.source_page)+'</span></div><p>'+escapeHtml(text)+'</p></article>';
- const match='<div class="u6-original-questions">'+m.original_questions.map((q,i)=>task(i+1,q)).join('')+'</div>';
+ const photos='<div class="u6-review-photos">'+m.photo_assets.map((asset,i)=>'<figure><img loading="lazy" alt="'+escapeHtml(asset.alt||m.photo_labels[i]||'Person')+'" src="/api/research/reading-jigsaw-photo-review?assignmentId='+encodeURIComponent(m.__reviewAssignmentId||'')+'&assetId='+encodeURIComponent(asset.assetId||'')+'"><figcaption>'+escapeHtml(m.photo_labels[i]||asset.alt||'Photo '+(i+1))+'</figcaption></figure>').join('')+'</div>';
+ const match='<div class="u6-original-questions">'+photos+m.original_questions.map((q,i)=>task(i+1,q)).join('')+'</div>';
  let content='';
  switch(st){
  case 'read':
