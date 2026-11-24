@@ -8,8 +8,10 @@ import { requireAuth, requireSameOrigin, getAuth } from '../server/_auth.js';
 
 // Feature is OFF until private-store upload and callback are verified on Preview.
 const enabled=()=>process.env.STUDIO_MEDIA_UPLOAD_ENABLED==='true' && process.env.STUDIO_MEDIA_PRIVATE_STORE_VERIFIED==='true';
+const documentStoreId='store_u4AgJ1AqUMRUMMz2';
+const documentStoreHost=documentStoreId.slice('store_'.length).toLowerCase()+'.private.blob.vercel-storage.com';
 const documentUploadEnabled=()=>process.env.STUDIO_DOCUMENT_UPLOAD_ENABLED==='true' &&
- process.env.BLOB_STORE_ID==='store_u4AgJ1AqUMRUMMz2';
+ process.env.BLOB_STORE_ID===documentStoreId;
 const limits={
  'application/pdf':150e6,
  'application/vnd.openxmlformats-officedocument.presentationml.presentation':200e6,
@@ -69,7 +71,7 @@ export default async function handler(req,res){
     let stored;
     try{stored=await head(item.blob_path);}
     catch(error){if(error instanceof BlobNotFoundError)continue;throw error;}
-    if(new URL(stored.url).hostname!=='u4agj1aqumrunmmz2.private.blob.vercel-storage.com'||
+    if(new URL(stored.url).hostname!==documentStoreHost||
       stored.size!==bytes||stored.contentType!==mime)continue;
     const rows=await sql`UPDATE studio_media_v1 SET status='active'
       WHERE asset_id=${item.asset_id} AND owner_id=${owner} AND status IN ('pending','active')
@@ -107,10 +109,10 @@ export default async function handler(req,res){
        VALUES(${owner},${name},${category},${mime},${bytes},${sha256},${pathname},'pending')`;
      return {token,urlOptions:{allowedContentTypes:[mime],maximumSizeInBytes:bytes,allowOverwrite:false}};
     },
-    onUploadCompleted:async({blob,tokenPayload})=>{
+    onUploadCompleted:req.body.type==='blob.upload-completed'?async({blob,tokenPayload})=>{
      const meta=JSON.parse(tokenPayload||'{}');
      if(blob.pathname!==meta.pathname||
-       new URL(blob.url).hostname!=='u4agj1aqumrunmmz2.private.blob.vercel-storage.com')
+       new URL(blob.url).hostname!==documentStoreHost)
       throw Error('Unexpected Blob pathname or visibility');
      const {head}=await import('@vercel/blob');
      const actual=await head(blob.url);
@@ -119,7 +121,7 @@ export default async function handler(req,res){
      await sql`INSERT INTO studio_media_v1(owner_id,original_name,category,content_type,bytes,client_sha256,blob_path)
        VALUES(${meta.owner},${meta.name},${meta.category},${meta.mime},${actual.size},${meta.sha256},${blob.pathname})
        ON CONFLICT(blob_path) DO NOTHING`;
-    }
+    }:undefined
    });
    return res.status(200).json(response);
   }
