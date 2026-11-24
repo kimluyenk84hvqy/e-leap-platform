@@ -69,6 +69,7 @@ const srcBad=/\b(?:textbook|life_page|book_page|page_scan)[_-]?\d{1,4}\.(?:png|j
 const instructionQuestion=/\?/;
 
 const MEDIA_SOURCE=/^(?:https:\/\/[^\s"'<>]+|\.\.?\/[^\s"'<>]+|\/(?!\/)[^\s"'<>]+)$/i;
+const STUDIO_PRIVATE_IMAGE=/^\/api\/studio-media\?document=1&open=[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
 const ASSET_IMAGE_EXT=/\.(?:png|jpe?g|webp|avif)(?:[?#].*)?$/i;
 const VAGUE_GOAL=/^(?:identify|describe|explain|apply|use|interpret|demonstrate|collaborate|discuss|reflect|evaluate|analyse|analyze)\s+(?:something|anything|the lesson|the topic|the material|things|it)\b/i;
 const placeholder=/\b(?:lorem ipsum|your text here|insert|add an image|test image|example\.com|example\.org|placeholder)\b/i;
@@ -98,7 +99,7 @@ export function validateCertifiedTemplate(data,{draft=false,sourceBlocks=null}={
   if(value.length>slot.limit)issues.push(slot.label+' exceeds '+slot.limit+' characters.');
  }
  if(isReal(v.imageSrc)&&!isSupportedImageSource(v.imageSrc))issues.push('Image source must be an approved HTTPS URL or a relative image path; full-page scans and placeholders are blocked.');
- if(isReal(v.imageSrc)&&!/^https:\/\//i.test(v.imageSrc)&&ASSET_IMAGE_EXT.test(v.imageSrc)===false)issues.push('Local image path must end in PNG, JPEG, WebP, or AVIF.');
+ if(isReal(v.imageSrc)&&!/^https:\/\//i.test(v.imageSrc)&&!STUDIO_PRIVATE_IMAGE.test(v.imageSrc)&&ASSET_IMAGE_EXT.test(v.imageSrc)===false)issues.push('Local image path must end in PNG, JPEG, WebP, or AVIF.');
  if(isReal(v.imageSrc)&&!isReal(v.imageAlt))issues.push('Image alt description is required.');
  if(isReal(v.imageSrc)&&(!data.mediaCheck||data.mediaCheck.src!==v.imageSrc||data.mediaCheck.loaded!==true))issues.push('Image has not been loaded and verified in Studio Preview.');
  if(data.family==='aims')for(const key of Object.keys(spec.slots)){
