@@ -85,7 +85,7 @@ test('Explicit teacher checks and substantive note required; approval remains pr
  assert.equal(approved.status,'draft');
  assert.equal(draft.assistedAuthoring.teacherApproved,false);
 });
-test('Studio wires copy/download, JSON file/paste, import, revision, teacher QA controls',()=>{
+test('Studio wires copy/download, JSON file/paste, import, revision, teacher QA controls',async()=>{
  const fs=await import('node:fs/promises');
  const s=await fs.readFile(new URL('../assets/js/authoring-studio.js',import.meta.url),'utf8');
  for(const marker of ['data-chatgpt-send','data-chatgpt-download','data-chatgpt-response','data-chatgpt-import','data-chatgpt-file','data-chatgpt-revert','data-chatgpt-approve','e-leap-chatgpt-review-request:','runQuality()']){
