@@ -6,7 +6,7 @@
 import {METHOD_COMBOS} from './method-combo-catalog.js';
 import {hybridStepContract,evaluateHybridCombo} from './hybrid-pedagogy-contract.js';
 import {comboTypographyStyle} from './combo-typography.js';
-import {renderU6TeacherReview} from './u6-source-review.js';
+import {renderU6TeacherReview,U6_STUDENT_PARITY_STEPS} from './u6-source-review.js';
 
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid=()=>('method-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8));
@@ -58,7 +58,7 @@ export function renderMethodTemplateCanvas(screen,role='teacher',reviewSource=nu
  const draft=screen.methodDraft,step=selectedMethodStep(screen),student=noStudentContent(role);
  if(student)return '<div class="canvas-wrap"><section class="lesson-canvas method-draft-hidden"><p class="studio-no-content">This lesson activity is not yet available.</p></section></div>';
  if(!step)return '';
- if(draft.methodId==='master-u6-reading-six-step')return '<div class="canvas-wrap"><section class="lesson-canvas method-template-canvas" style="'+comboTypographyStyle()+'"><div class="method-draft-heading"><small>Reading · TEACHER SOURCE REVIEW · NOT PUBLISHED</small><h1>'+esc(screen.title)+'</h1></div><nav class="combo-step-nav">'+draft.steps.map((s,i)=>'<button type="button" data-method-draft-step="'+esc(s.id)+'" class="combo-step-button '+(s.id===step.id?'active':'')+'"><small>'+String(i+1)+'</small>'+esc(s.label)+'</button>').join('')+'</nav>'+renderU6TeacherReview(screen,reviewSource,reviewAnswers,reviewAccount,reviewError)+'</section></div>';
+ if(draft.methodId==='master-u6-reading-six-step')return '<div class="canvas-wrap"><section class="lesson-canvas method-template-canvas" style="'+comboTypographyStyle()+'"><div class="method-draft-heading"><small>Reading · CURRENT STUDENT QA BASELINE · NOT PUBLISHED</small><h1>'+esc(screen.title)+'</h1></div><nav class="combo-step-nav">'+U6_STUDENT_PARITY_STEPS.map((s,i)=>'<button type="button" data-method-draft-step="'+esc(s.id)+'" class="combo-step-button '+(s.id===step.id?'active':'')+'"><small>'+String(i+1)+'</small>'+esc(s.label)+'</button>').join('')+'</nav>'+renderU6TeacherReview(screen,reviewSource,reviewAnswers,reviewAccount,reviewError)+'</section></div>';
  const mk=(k,label)=>'<div class="method-slot" data-method-slot="'+esc(k)+'"><strong>'+esc(label)+'</strong><span>Reserved content space</span></div>';
  const slots=step.placeholders||[];
  const labels={instruction:'Instruction',guidedSteps:'Guided Steps',workedExample:'Worked Example',sentenceSupport:'Sentence Support',sourceMaterial:'Text / Audio / Image',learnerResponse:'Individual Response',peerTask:'Pair / Group Task',reportShare:'Share / Report',feedback:'Feedback / Check',answerKey:'Teacher Answer',evidence:'Evidence',why:'Why'};
