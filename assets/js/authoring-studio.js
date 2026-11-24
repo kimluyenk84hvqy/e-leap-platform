@@ -621,7 +621,7 @@ function wire(){
     const button=document.querySelector('[data-u6-load-source]');if(button)button.disabled=true;
     u6SourceErrors.delete(screenId);
     try{const material=await fetchU6TeacherSource(assignmentId);
-      u6SourceByScreen.set(screenId,material);
+      u6SourceByScreen.set(screenId,{...material,__reviewAssignmentId:assignmentId});
       u6AccountByScreen.set(screenId,'A');
       u6AnswersByScreen.set(screenId,{});
       if(currentScreen().id===screenId)render();
