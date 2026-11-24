@@ -19,7 +19,7 @@ export function validatePdfInput(value){
  return [...new Set(issues)];
 }
 export function validateAcademicPlan(plan,pages){
- const errors=[],text=pages.map(x=>x.text).join(' ').replace(/\s+/g,' ').toLowerCase();
+ const errors=[],pageText=new Map(pages.map(p=>[p.page,String(p.text||'').replace(/\s+/g,' ').toLowerCase()]));
  if(typeof plan?.title!=='string'||plan.title.length<4||plan.title.length>140)errors.push('Invalid lesson title');
  if(!Array.isArray(plan?.slides)||plan.slides.length<3||plan.slides.length>10)errors.push('3–10 slides required');
  else for(let i=0;i<plan.slides.length;i++){
@@ -28,7 +28,7 @@ export function validateAcademicPlan(plan,pages){
   if(typeof s.instruction!=='string'||s.instruction.length<5||s.instruction.length>400)errors.push('Invalid instruction '+i);
   if(typeof s.body!=='string'||s.body.length<10||s.body.length>1400)errors.push('Invalid body '+i);
   if(!Number.isInteger(s.sourcePage)||!pages.some(p=>p.page===s.sourcePage))errors.push('Missing PDF page '+i);
-  if(typeof s.evidence!=='string'||s.evidence.length<8||!text.includes(s.evidence.replace(/\s+/g,' ').toLowerCase()))errors.push('Source quotation missing '+i);
+  if(typeof s.evidence!=='string'||s.evidence.length<8||!pageText.get(s.sourcePage)?.includes(s.evidence.replace(/\s+/g,' ').toLowerCase()))errors.push('Source quotation missing from cited PDF page '+i);
   if(!['text','discussion'].includes(s.activityKind))errors.push('Unsupported activity '+i);
  }
  return errors;

@@ -48,6 +48,11 @@ test('PDF AI endpoint rejects invalid and nonconsented sources; no invented veri
  assert.ok(validatePdfInput({...valid,rightsConfirmed:false}).length>0);
  assert.ok(validatePdfInput({...valid,pages:[pages[1],pages[0]]}).length>0);
  assert.equal(validateAcademicPlan({title:'School memories',slides},pages).length,0);
+ const crossPage=[{...pages[0],text:'Unique first page quote with at least eight characters.'},
+  {...pages[1],text:'Different material found on second PDF page.'},...pages.slice(2)];
+ const wrongPage=slides.map((slide,i)=>({...slide,sourcePage:i+1,evidence:i===0?'Different material': 'classroom memory'}));
+ assert.ok(validateAcademicPlan({title:'School memories',slides:wrongPage},crossPage)
+  .some(issue=>issue.includes('cited PDF page')),'Evidence quoted from page 2 must not be accepted as page 1');
  assert.ok(validateAcademicPlan({title:'School memories',slides:[...slides,{...slides[0],evidence:'invented quote'}]},pages).length>0);
  const response=()=>({statusCode:null,payload:null,setHeader(){},status(n){this.statusCode=n;return this},json(x){this.payload=x;return this}});
  let res=response();
