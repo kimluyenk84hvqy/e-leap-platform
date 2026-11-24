@@ -28,31 +28,42 @@ export async function fetchU6TeacherSource(assignmentId,{fetcher=fetch}={}){
 }
 const label=(title,placeholder,key,ans)=>'<label class="u6-review-field"><strong>'+escapeHtml(title)+'</strong><textarea data-u6-review-answer="'+escapeHtml(key)+'" placeholder="'+escapeHtml(placeholder)+'" rows="2">'+escapeHtml(ans?.[key]||'')+'</textarea></label>';
 const task=(n,value)=>'<div class="u6-original-task"><b>Task '+n+' · Original textbook</b><p>'+escapeHtml(value)+'</p></div>';
-const chooser=(value)=>'<div class="u6-paragraph-picker" role="group" aria-label="Choose paragraph for teacher review">'+['A','B','C'].map(k=>'<button type="button" class="studio-btn '+(k===value?'primary':'')+'" data-u6-review-account="'+k+'" aria-pressed="'+(k===value?'true':'false')+'">Paragraph '+k+'</button>').join('')+'</div>';
+const chooser=(value)=>'<div class="u6-paragraph-picker" role="group" aria-label="Choose a paragraph to review as Teacher">'+['A','B','C'].map(k=>'<button type="button" class="studio-btn '+(k===value?'primary':'')+'" data-u6-review-account="'+k+'" aria-pressed="'+(k===value?'true':'false')+'">Paragraph '+k+'</button>').join('')+'</div>';
+/* Exact six-step Student QA baseline in reading-jigsaw.html. Do NOT silently publish
+ * the separate proposed six-step method until its authenticated runtime exists.
+ * ID maps let existing methodDraft screens remain valid without losing their saves.
+ */
+export const U6_STUDENT_PARITY_STEPS=Object.freeze([
+ {id:'read',label:'Look & Predict',studentStage:'predict'},
+ {id:'clues',label:'Individual Reading',studentStage:'assigned'},
+ {id:'share',label:'Expert Group',studentStage:'expert'},
+ {id:'match',label:'Home Group',studentStage:'home'},
+ {id:'justify',label:'Original Tasks',studentStage:'complete'},
+ {id:'submit',label:'Evidence & Why / Submit',studentStage:'evidence'}
+]);
 export function renderU6TeacherReview(screen,source,answers={},selectedAccount='A',error=''){
  const st=screen?.methodDraft?.activeStep||'read',m=source||null;
- const intro='<p class="u6-review-intro">Teacher preview · U6 “My first day”. This is not a student submission.</p>';
+ const intro='<p class="u6-review-intro">Teacher source review · same activity order as the existing Student QA lesson · NOT PUBLISHED</p>';
  if(!m)return '<section class="u6-source-preview">'+intro+'<div class="u6-source-connection"><label><b>Verified U6 Reading assignment</b><input data-u6-assignment-id value="'+escapeHtml(U6_PREVIEW_ASSIGNMENT_ID)+'" aria-label="U6 assignment identifier"></label><button type="button" class="studio-btn primary" data-u6-load-source>Load verified source</button>'+(error?'<p class="u6-review-error" role="alert">'+escapeHtml(error)+'</p>':'')+'</div></section>';
  const text=m.accounts?.[selectedAccount]||'';
  const passage='<article class="u6-source-paragraph"><div class="u6-source-paragraph-head"><strong>Paragraph '+escapeHtml(selectedAccount)+'</strong><span>Textbook p. '+escapeHtml(m.source_page)+'</span></div><p>'+escapeHtml(text)+'</p></article>';
- const photos='<div class="u6-review-photos">'+m.photo_assets.map((asset,i)=>'<figure><img loading="lazy" alt="'+escapeHtml(asset.alt||m.photo_labels[i]||'Person')+'" src="/api/research/reading-jigsaw-photo-review?assignmentId='+encodeURIComponent(m.__reviewAssignmentId||'')+'&assetId='+encodeURIComponent(asset.assetId||'')+'"><figcaption>'+escapeHtml(m.photo_labels[i]||asset.alt||'Photo '+(i+1))+'</figcaption></figure>').join('')+'</div>';
- const match='<div class="u6-original-questions">'+photos+m.original_questions.map((q,i)=>task(i+1,q)).join('')+'</div>';
+ const photos='<div class="u6-review-photos" aria-label="Three original textbook photographs">'+m.photo_assets.map((asset,i)=>'<figure><img loading="lazy" alt="'+escapeHtml(asset.alt||m.photo_labels[i]||'Person')+'" src="/api/research/reading-jigsaw-photo-review?assignmentId='+encodeURIComponent(m.__reviewAssignmentId||'')+'&assetId='+encodeURIComponent(asset.assetId||'')+'"><figcaption>'+escapeHtml(m.photo_labels[i]||asset.alt||'Photo '+(i+1))+'</figcaption></figure>').join('')+'</div>';
+ const questions='<div class="u6-original-questions">'+m.original_questions.map((q,i)=>task(i+1,q)).join('')+'</div>';
  let content='';
  switch(st){
  case 'read':
-  content='<p>Work in a group of three. Agree who reads A, B or C. Each student chooses a different paragraph.</p>'+chooser(selectedAccount)+passage;
-  break;
+  content='<h2>Look at the three photographs</h2>'+photos+task(1,m.original_questions[0])+label('My first prediction','I think ... because ...','prediction',answers);break;
  case 'clues':
-  content=chooser(selectedAccount)+passage+label('School detail','Copy a short school-related phrase from your paragraph.','school',answers)+label('Time or experience clue','Quote a second useful phrase from the text.','time',answers);break;
+  content='<h2>Read one account</h2><p>Teacher review: switch between A, B and C. In the existing Student lesson, each learner sees only the account assigned to them.</p>'+chooser(selectedAccount)+passage+label('Clue 1 from my account','Copy a short clue from this paragraph.','individual1',answers)+label('Clue 2 from my account','Copy another useful clue.','individual2',answers);break;
  case 'share':
-  content='<p>Explain your two clues. Listen to your teammates and record evidence from the other two paragraphs.</p>'+label('Evidence from teammate 1','Quote or paraphrase one useful clue.','peer1',answers)+label('Evidence from teammate 2','Quote or paraphrase a different clue.','peer2',answers);break;
+  content='<h2>Expert Group</h2><p>Meet readers of the same account. Compare your clues and identify the writer’s feelings and a possible time clue.</p>'+chooser(selectedAccount)+passage+label('Our best text evidence','Quote the most useful phrase.','expertEvidence',answers)+label('Why does it matter?','What do the feeling and time clues suggest?','expertWhy',answers);break;
  case 'match':
-  content=match+['Mavis Carver','Anita Green','Neil Johnson'].map((p,i)=>label(p+' · Paragraph & estimated year','E.g. paragraph letter, approximate year and a reason.','match'+i,answers)).join('');break;
+  content='<h2>Home Group</h2><p>Return to a group with readers A, B and C. Teach one another. Listen and record one useful clue from each partner.</p>'+label('Partner 1 · New information','What evidence did your partner share?','partner1',answers)+label('Partner 2 · New information','Record a different clue.','partner2',answers);break;
  case 'justify':
-  content='<p>Support one match or year estimate with an exact phrase from the reading.</p>'+chooser(selectedAccount)+passage+label('Evidence · Exact quote','Copy an exact phrase.','quote',answers)+label('Why does it support your answer?','Explain the connection between this phrase and your answer.','why',answers);break;
+  content='<h2>Complete both textbook tasks</h2>'+photos+questions+['Mavis Carver','Anita Green','Neil Johnson'].map((p,i)=>label(p+' · paragraph and estimated starting year','Choose paragraph A/B/C, estimate the year and record one supporting detail.','match'+i,answers)).join('');break;
  case 'submit':
-  content='<p>Check the group answers and your quotation. Submission is not enabled in this Teacher preview.</p>'+match+'<div class="u6-review-blocked">Submit remains locked until authenticated learner role selection and Responses have passed end-to-end tests.</div>';break;
- default:content='<p>Choose a reading step.</p>';
+  content='<h2>Evidence & Why</h2><p>Use a quotation from your own paragraph to explain your match. Review the group answers before submitting.</p>'+chooser(selectedAccount)+passage+label('Which person matches this account?','Write the person's name.','photoName',answers)+label('Evidence · Exact quotation','Copy a short phrase from the source text.','quote',answers)+label('Why?','Explain why that phrase supports the match.','why',answers)+label('Estimated year','Estimate a year or period.','year',answers)+'<div class="u6-review-blocked">Teacher preview only. Actual learner Submit is in the existing authenticated Student activity; this Studio review does not submit or alter Responses.</div>';break;
+ default:content='<p>Select one of the six review steps.</p>';
  }
  return '<section class="u6-source-preview">'+intro+'<div class="u6-source-badge">Verified textbook source · Page '+escapeHtml(m.source_page)+'</div>'+content+'</section>';
 }
