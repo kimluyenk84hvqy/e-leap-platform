@@ -50,6 +50,8 @@ const canOpenStudio=verifiedUser?.role==='admin'||(verifiedUser?.role==='teacher
 
 const qs=new URLSearchParams(location.search);
 const source=qs.get('source')||'';
+const requestedServerDraft=qs.get('serverDraft');
+let openedServerDraftId=null,openedServerRevision=0;
 const esc=s=>String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));
 const clone=modelClone;
 const uid=modelUid;
@@ -83,46 +85,60 @@ if(!canOpenStudio){
 }else if(qs.get('view')==='foundation'){
   mountFoundationLab(root,{role:verifiedUser?.role||'teacher'});
 }else{
-  lesson=await loadLesson();
-  // Reopen the last locally saved Studio draft only for an ordinary Studio entry.
-  // Explicit source, pilot and imported review flows always keep their own identity.
-  if(!source&&!qs.get('pilot')&&!qs.get('fresh')&&!qs.get('importFoundation')&&!qs.get('localReview')){
-    try{const last=localStorage.getItem(LAST_DRAFT_KEY);
-      const raw=last&&localStorage.getItem('e-leap-studio-v1:'+last);
-      const restored=raw?JSON.parse(raw):null;
-      if(restored?.id===last&&Array.isArray(restored.screens))lesson=restored;
-    }catch(_){}
-  }
-  ensureSchema();
-  const localReviewId=/^[a-zA-Z0-9_-]{1,120}$/.test(qs.get('localReview')||'')?qs.get('localReview'):null;
-  draftKey=`e-leap-studio-v1:${source||localReviewId||lesson.id||'new'}`;
-  const saved=localStorage.getItem(draftKey);
-  if(saved && !qs.get('fresh')){try{const loaded=JSON.parse(saved);if(localReviewId&&(loaded?.id!==localReviewId||!loaded?.screens?.some(s=>s.sourceReviewDraft)))throw Error('Invalid local review draft');lesson=loaded;ensureSchema();if(localReviewId){const index=lesson.screens.findIndex(s=>s.sourceReviewDraft);if(index>=0){selectedScreen=index;selectedBlock=0;}}}catch{}}
-  if(qs.get('importFoundation')==='1'){
-    const raw=sessionStorage.getItem('e-leap-source-review-import-v1');
+  if(requestedServerDraft!==null){
     try{
-      if(!raw)throw Error('No pending Reading review');
-      const pending=JSON.parse(raw);
-      if(pending?.schemaVersion!=='e-leap-source-review-import-v1'||typeof pending.text!=='string'||pending.text.length>128000||Date.now()-pending.createdAt>10*60*1000)
-        throw Error('Expired or invalid Reading review');
-      const output=sourceIntakeToStudioReviewScreen(pending.text,{sourcePages:pending.sourcePages||[]});
-      if(!output.ok)throw Error('Source requires review: '+output.issues.join('; '));
-      if(lesson.status!=='draft')throw Error('Only draft lessons may be modified');
-      if(confirm('Insert unverified Reading activity after the current slide? Its original questions will be review-only; publication remains blocked.')){
-        lesson.screens.splice(selectedScreen+1,0,output.screen);
-        selectedScreen++;selectedBlock=0;
-        draftKey='e-leap-studio-v1:'+lesson.id;
-        history.replaceState(null,'','./index.html?localReview='+encodeURIComponent(lesson.id));
-        markDirty();
-        sessionStorage.removeItem('e-leap-source-review-import-v1');
-      }
-    }catch(error){console.warn('Foundation import rejected:',error.message);}
+      const record=await saveService.loadDraft(requestedServerDraft);
+      if(record.draft?.id!==requestedServerDraft||!Array.isArray(record.draft.screens)||!Number.isSafeInteger(record.revision))throw Error('Invalid server draft.');
+      lesson=record.draft;
+      openedServerDraftId=lesson.id;
+      openedServerRevision=record.revision;
+      selectedScreen=Math.max(0,Math.min(lesson.screens.length-1,(Number(qs.get('slide'))||1)-1));
+      if(!Number.isInteger(selectedScreen))selectedScreen=0;
+    }catch{
+      root.innerHTML='<section class="studio-denied"><h1>Could not open saved server draft</h1><p>Check your Studio account and try again.</p><a href="./">Back to Studio</a></section>';
+    }
+  }else lesson=await loadLesson();
+  if(lesson){
+    // Reopen the last locally saved Studio draft only for an ordinary Studio entry.
+    // Explicit source, pilot and imported review flows always keep their own identity.
+    if(!openedServerDraftId&&!source&&!qs.get('pilot')&&!qs.get('fresh')&&!qs.get('importFoundation')&&!qs.get('localReview')){
+      try{const last=localStorage.getItem(LAST_DRAFT_KEY);
+        const raw=last&&localStorage.getItem('e-leap-studio-v1:'+last);
+        const restored=raw?JSON.parse(raw):null;
+        if(restored?.id===last&&Array.isArray(restored.screens))lesson=restored;
+      }catch(_){}
+    }
+    ensureSchema();
+    const localReviewId=/^[a-zA-Z0-9_-]{1,120}$/.test(qs.get('localReview')||'')?qs.get('localReview'):null;
+    draftKey=openedServerDraftId?`e-leap-studio-server-copy:${openedServerDraftId}`:`e-leap-studio-v1:${source||localReviewId||lesson.id||'new'}`;
+    const saved=localStorage.getItem(draftKey);
+    if(saved && !openedServerDraftId && !qs.get('fresh')){try{const loaded=JSON.parse(saved);if(localReviewId&&(loaded?.id!==localReviewId||!loaded?.screens?.some(s=>s.sourceReviewDraft)))throw Error('Invalid local review draft');lesson=loaded;ensureSchema();if(localReviewId){const index=lesson.screens.findIndex(s=>s.sourceReviewDraft);if(index>=0){selectedScreen=index;selectedBlock=0;}}}catch{}}
+    if(!openedServerDraftId&&qs.get('importFoundation')==='1'){
+      const raw=sessionStorage.getItem('e-leap-source-review-import-v1');
+      try{
+        if(!raw)throw Error('No pending Reading review');
+        const pending=JSON.parse(raw);
+        if(pending?.schemaVersion!=='e-leap-source-review-import-v1'||typeof pending.text!=='string'||pending.text.length>128000||Date.now()-pending.createdAt>10*60*1000)
+          throw Error('Expired or invalid Reading review');
+        const output=sourceIntakeToStudioReviewScreen(pending.text,{sourcePages:pending.sourcePages||[]});
+        if(!output.ok)throw Error('Source requires review: '+output.issues.join('; '));
+        if(lesson.status!=='draft')throw Error('Only draft lessons may be modified');
+        if(confirm('Insert unverified Reading activity after the current slide? Its original questions will be review-only; publication remains blocked.')){
+          lesson.screens.splice(selectedScreen+1,0,output.screen);
+          selectedScreen++;selectedBlock=0;
+          draftKey='e-leap-studio-v1:'+lesson.id;
+          history.replaceState(null,'','./index.html?localReview='+encodeURIComponent(lesson.id));
+          markDirty();
+          sessionStorage.removeItem('e-leap-source-review-import-v1');
+        }
+      }catch(error){console.warn('Foundation import rejected:',error.message);}
+    }
+    render();
+    if(!source&&!localReviewId)refreshServerDrafts();
+    getPdfAiCapability().then(value=>{pdfAiCapability=value;render();}).catch(()=>{pdfAiCapability={configured:false,reason:'AI connection unavailable'};render();});
+    restoreDocumentMedia();
+    if(lesson.resourceBank)rehydrateResourceBank(lesson.resourceBank).then(()=>render()).catch(()=>status('Local resource assets unavailable; re-import Resource ZIP.'));
   }
-  render();
-  if(!source&&!localReviewId)refreshServerDrafts();
-  getPdfAiCapability().then(value=>{pdfAiCapability=value;render();}).catch(()=>{pdfAiCapability={configured:false,reason:'AI connection unavailable'};render();});
-  restoreDocumentMedia();
-  if(lesson.resourceBank)rehydrateResourceBank(lesson.resourceBank).then(()=>render()).catch(()=>status('Local resource assets unavailable; re-import Resource ZIP.'));
 }
 
 async function loadLesson(){
@@ -145,7 +161,7 @@ function snapshotDraft(){
   if(!lesson?.id||!draftKey)return;
   localStorage.setItem(draftKey,JSON.stringify(lesson));
   // Source-review drafts stay browser-local and are not mixed into ordinary lesson switching.
-  if(source||lesson.resourceBank||lesson.screens?.some(x=>x.sourceReviewDraft))return;
+  if(draftKey.startsWith('e-leap-studio-server-copy:')||source||lesson.resourceBank||lesson.screens?.some(x=>x.sourceReviewDraft))return;
   const list=readDraftIndex().filter(x=>x.id!==lesson.id);
   list.unshift({id:lesson.id,title:String(lesson.title||'New Lesson').slice(0,90),course:lesson.courseLabel||'',courseProfileId:lesson.courseProfileId||''});
   localStorage.setItem(DRAFT_INDEX_KEY,JSON.stringify(list.slice(0,30)));
@@ -174,12 +190,14 @@ async function saveDraft(){
  if(savingDraft){pendingSave=true;return}
  savingDraft=true;
  const record=lesson,revKey='e-leap-studio-server-revision:'+record.id;
- const expectedRevision=Number(localStorage.getItem(revKey)||0);
+ const openedCopy=draftKey===`e-leap-studio-server-copy:${record.id}`;
+ const expectedRevision=openedCopy?openedServerRevision:Number(localStorage.getItem(revKey)||0);
  try{
   status('Saving draft to Preview server…');
   const result=await saveService.saveDraft(record,{expectedRevision});
   if(result.mode==='server'){
-   localStorage.setItem(revKey,String(result.revision));
+   if(openedCopy)openedServerRevision=result.revision;
+   else localStorage.setItem(revKey,String(result.revision));
    dirty=lesson.id===record.id?false:dirty;
    status('Saved on Preview server · revision '+result.revision);
   }else status('Saved locally only');
@@ -195,7 +213,7 @@ async function saveDraft(){
 function status(msg){const e=document.querySelector('[data-studio-status]');if(e)e.textContent=msg}
 
 function render(){
-  if(lesson.screens?.[0]&&syncCoverMetadata(lesson.screens[0],lesson,{initial:true}))markDirty();
+  if(lesson.screens?.[0]&&syncCoverMetadata(lesson.screens[0],lesson,{initial:true})&&!draftKey.startsWith('e-leap-studio-server-copy:'))markDirty();
   const s=currentScreen(); if(selectedBlock>=s.blocks.length)selectedBlock=Math.max(0,s.blocks.length-1);
   if(s.combo&&!activeComboBlocks(s).includes(s.blocks[selectedBlock]))selectedBlock=Math.max(0,s.blocks.indexOf(activeComboBlocks(s)[0]));
   root.innerHTML=`<section class="studio-shell">
