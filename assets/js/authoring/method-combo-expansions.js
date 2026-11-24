@@ -268,5 +268,31 @@ export const EXPANDED_METHOD_COMBOS={
  s('explain','Pair Explain','Explain your choice to a partner.','pollQuestion','pair'),
  s('compare','Compare','Compare the class results and give reasons.','pollOptions','class'),
  s('predict','Predict','Predict how the lesson may explore the issue.','leadQuestions','pair')
- ]}
+ ]},
+ 'master-u6-reading-six-step':{
+  label:'U6 · Jigsaw Reading (6-step draft)',group:'Reading',method:'Learner-selected three-account Jigsaw with text evidence',
+  description:'Read → Find Clues → Share → Match → Justify → Submit',
+  bestFor:'Three distinct accounts and three photographs; groups of three; source-verified U6 only',
+  required:['passage','questions','sections'],optional:['photoSrc','groupTask','reportPrompt'],
+  steps:[
+   s('read','Read','In a group of three, agree who will read A, B or C. Choose a different paragraph each and read it.','sections','group',true),
+   s('clues','Find Clues','Find two useful details in your paragraph: a school detail and a clue about the time or experience.','sections','individual',true),
+   s('share','Share','Tell your group your two clues. Listen and note useful evidence from the other two paragraphs.','groupTask','group'),
+   s('match','Match','Match the three people and photographs with paragraphs A–C. Estimate each starting year.','questions','group',true),
+   s('justify','Justify','Choose an exact quotation. Explain how it supports one match or year estimate.','questions','individual',true),
+   s('submit','Submit','Compare your group answers. Check your evidence and explanation, then submit your own response.','questions','individual',true)
+  ]
+ },
+ 'master-guided-reading-four-step':{
+  label:'Single-text Reading · Gist & Evidence (draft)',group:'Reading',method:'Guided single-text reading with evidence-based comprehension',
+  description:'Read for Gist → Scan → Evidence & Why → Submit',
+  bestFor:'One coherent reading passage; no information split; original or teacher-verified text',
+  required:['passage','questions'],optional:['photoSrc','groupTask','reflection'],
+  steps:[
+   s('gist','Read for Gist','Read the full text. Choose its main idea and identify one supporting detail.','passage','individual',true),
+   s('scan','Scan','Find the specific information needed to answer each question.','questions','individual',true),
+   s('evidence','Evidence & Why','Select an exact phrase from the text and explain why it supports your answer.','passage','pair',true),
+   s('submit','Submit','Check your answers and evidence. Submit your own response.','questions','individual',true)
+  ]
+ }
 };
