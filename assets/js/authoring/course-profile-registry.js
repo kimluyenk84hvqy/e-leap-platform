@@ -58,6 +58,8 @@ export function validateCourseIdentity(lesson){
  if(lesson.courseLabel!==profile.label)issues.push('Course label and ID disagree; do not silently relabel an existing lesson.');
  if(profile.kind==='skills'&&!ADVANCED_SKILL_PATHS.some(s=>s.id===lesson?.advancedSkillId))
   issues.push('Choose the existing Advanced Skills branch: Listening, Speaking, Reading or Writing.');
+ if(profile.kind==='skills'&&lesson?.advancedSkillId&&lesson?.courseLibraryShellId!==lesson.advancedSkillId)
+  issues.push('Advanced Skills content destination must match its selected branch.');
  if(profile.kind!=='skills'&&lesson?.advancedSkillId)
   issues.push('Advanced Skills branch cannot be attached to a textbook lesson.');
  if(profile.shellId===null)issues.push('Course has no verified Platform shell mapping; publishing must remain blocked.');
