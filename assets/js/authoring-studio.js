@@ -53,6 +53,7 @@ const saveService=new ELeapAuthoringSaveService();
 let lesson=null, selectedScreen=0, selectedBlock=0, dirty=false, previewRole='teacher', autosaveTimer=null;
 const jigsawPreviewAccounts=new Map(); // Teacher-only UI filter; NOT an authorized learner assignment.
 const u6SourceByScreen=new Map(),u6AnswersByScreen=new Map(),u6AccountByScreen=new Map(),u6SourceErrors=new Map(); // Private teacher preview; never serialized to lesson.
+const u6AutoLoadRequested=new Set(); // One staff-only attempt per screen; manual retry remains available.
 let pendingInstructionReview=null,previousInstructionUndo=null,workbenchStatus='';
 let draftKey='';
 let layoutEditMode=false,layoutGuidesVisible=true,selectedLayoutRegion=null;
@@ -629,6 +630,16 @@ function wire(){
       if(currentScreen().id===screenId)render();
     }
   });
+  // For the U6 QA lesson, load original source and photographs automatically in Teacher/Admin preview.
+  // The authenticated API retains the class authorization boundary. Never auto-fetch for learner roles.
+  if(['teacher','admin'].includes(previewRole)&&currentScreen()?.methodDraft?.methodId==='master-u6-reading-six-step'){
+    const id=currentScreen().id;
+    const loadButton=document.querySelector('[data-u6-load-source]');
+    if(loadButton&&!u6AutoLoadRequested.has(id)){
+      u6AutoLoadRequested.add(id);
+      loadButton.click();
+    }
+  }
   document.querySelectorAll('[data-u6-review-account]').forEach(b=>b.addEventListener('click',()=>{
     u6AccountByScreen.set(currentScreen().id,b.dataset.u6ReviewAccount);render();
   }));
