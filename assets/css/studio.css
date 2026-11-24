@@ -48,3 +48,9 @@ html,body{background:#F2F7F4;color:#183E31;font-family:Poppins,Inter,system-ui,s
 .studio-logo,.studio-btn.primary{background:#1F4D3A;border-color:#1F4D3A}.studio-btn.primary:hover{background:#2F6B4F;border-color:#2F6B4F}
 .slide-item.active{background:#E4F0E9;border-color:#A9C9B8}.library-card:hover{border-color:#2F6B4F;background:#F6FAF7}
 .lesson-canvas{border-color:#D3E2D9;box-shadow:0 12px 34px rgba(24,62,49,.08)}
+
+/* Editor canvas focus: Properties can be hidden without affecting lesson content. */
+.studio-layout.properties-collapsed{grid-template-columns:260px minmax(0,1fr)}
+.studio-layout.properties-collapsed>.studio-right{display:none}
+@media(max-width:1180px){.studio-layout.properties-collapsed{grid-template-columns:230px minmax(0,1fr)}}
+@media(max-width:800px){.studio-layout.properties-collapsed{display:block}}
