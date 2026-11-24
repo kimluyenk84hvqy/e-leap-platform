@@ -29,18 +29,18 @@ test('M3 teacher-supplied answer keys are NEVER scored as verified',()=>{
 test('M1 rejects task-local errors, not only document-global errors',()=>{
  const bad=analyseExtractedText('UNIT: Test\nTASK: 1 | reading | Demo\nQ1: Where?\nA) Only one\nKEY1: B');
  assert.equal(bad.ok,false);
- assert.ok(bad.problems.some(x=>x.includes('PASSAGE missing')));
+ assert.ok(bad.problems.some(x=>/PASSAGE.*missing/.test(x)));
  assert.ok(bad.problems.some(x=>x.includes('fewer than 2 options')));
  assert.ok(bad.problems.some(x=>x.includes('outside option list')));
 });
 test('M1 detects unexpected PDF page marker text as unparsed, not silently approved',()=>{
- const res=analyseExtractedText('[PDF PAGE 1 — UNVERIFIED]\nUNIT: Test\nTASK: 1 | reading | Demo\nPASSAGE: Test\nQ1: Where?\nA) A\nB) B');
+ const res=analyseExtractedText('[PDF PAGE UNKNOWN — UNVERIFIED]\nUNIT: Test\nTASK: 1 | reading | Demo\nPASSAGE: Test\nQ1: Where?\nA) A\nB) B');
  assert.equal(res.ok,false);
  assert.ok(res.problems.some(x=>/unrecognized source lines/.test(x)));
 });
 
 test('M1 preserves real PDF page markers for tasks and questions without silently verifying',()=>{
- const txt='[PDF PAGE 141 — UNVERIFIED]\\nUNIT: 12\\nTASK: 1 | reading | Read a text\\nPASSAGE: Maya visits the library.\\nQ1: Where?\\nA) Library\\nB) Stadium\\n[PDF PAGE 142 — UNVERIFIED]\\nQ2: When?\\nA) Monday\\nB) Friday';
+ const txt='[PDF PAGE 141 — UNVERIFIED]\nUNIT: 12\nTASK: 1 | reading | Read a text\nPASSAGE: Maya visits the library.\nQ1: Where?\nA) Library\nB) Stadium\n[PDF PAGE 142 — UNVERIFIED]\nQ2: When?\nA) Monday\nB) Friday';
  const parsed=analyseExtractedText(txt);
  assert.equal(parsed.ok,true);
  assert.equal(parsed.source.tasks[0].sourcePage,141);
@@ -49,7 +49,7 @@ test('M1 preserves real PDF page markers for tasks and questions without silentl
  assert.equal(parsed.readyForPublish,false);
 });
 test('M1 refuses source pages in an impossible order',()=>{
- const txt='[PDF PAGE 3 — UNVERIFIED]\\nUNIT: 12\\n[PDF PAGE 2 — UNVERIFIED]\\nTASK: 1 | reading | Demo\\nPASSAGE: Hello\\nQ1: Who?\\nA) A\\nB) B';
+ const txt='[PDF PAGE 3 — UNVERIFIED]\nUNIT: 12\n[PDF PAGE 2 — UNVERIFIED]\nTASK: 1 | reading | Demo\nPASSAGE: Hello\nQ1: Who?\nA) A\nB) B';
  const parsed=analyseExtractedText(txt);
  assert.equal(parsed.ok,false);
  assert.ok(parsed.problems.some(p=>p.includes('not strictly increasing')));

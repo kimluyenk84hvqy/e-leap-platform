@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import {METHOD_COMBOS,checkMethodSource,mapMethodToStates} from '../assets/js/authoring/method-combo-catalog.js';
-assert.equal(Object.keys(METHOD_COMBOS).length,29);
+assert.equal(Object.keys(METHOD_COMBOS).length,31);
+assert.deepEqual(METHOD_COMBOS['master-u6-reading-six-step'].steps.map(s=>s.label),['Read','Find Clues','Share','Match','Justify','Submit']);
+assert.deepEqual(METHOD_COMBOS['master-guided-reading-four-step'].steps.map(s=>s.label),['Read for Gist','Scan','Evidence & Why','Submit']);
 assert.ok(Object.values(METHOD_COMBOS).every(c=>c.steps.some(s=>s.mode==='individual')&&c.steps.some(s=>s.mode==='pair'||s.mode==='group')));
 assert.ok(Object.values(METHOD_COMBOS).filter(c=>c.group==='Listening').length>=5);
 assert.ok(Object.values(METHOD_COMBOS).filter(c=>c.group==='Reading').length>=4);

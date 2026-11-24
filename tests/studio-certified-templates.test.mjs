@@ -5,7 +5,7 @@ import {
 } from '../assets/js/authoring/certified-templates.js';
 import {renderCertifiedVisual,renderCertifiedEditor} from '../assets/js/authoring/certified-template-render.js';
 assert.deepEqual(Object.keys(CERTIFIED_TEMPLATES),['cover','aims','opener']);
-assert.deepEqual(Object.values(CERTIFIED_TEMPLATES).map(s=>s.variants.length),[3,2,3]);
+assert.deepEqual(Object.values(CERTIFIED_TEMPLATES).map(s=>s.variants.length),[3,3,3]);
 for(const family of Object.keys(CERTIFIED_TEMPLATES)){
  const data=makeCertifiedTemplate(family);
  const original=JSON.stringify(data.values);
