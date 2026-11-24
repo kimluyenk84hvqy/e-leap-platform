@@ -8,6 +8,8 @@ import { requireAuth, requireSameOrigin, getAuth } from '../server/_auth.js';
 
 // Feature is OFF until private-store upload and callback are verified on Preview.
 const enabled=()=>process.env.STUDIO_MEDIA_UPLOAD_ENABLED==='true' && process.env.STUDIO_MEDIA_PRIVATE_STORE_VERIFIED==='true';
+const documentUploadEnabled=()=>process.env.STUDIO_DOCUMENT_UPLOAD_ENABLED==='true' &&
+ process.env.BLOB_STORE_ID==='store_u4AgJ1AqUMRUMMz2';
 const limits={
  'application/pdf':150e6,
  'application/vnd.openxmlformats-officedocument.presentationml.presentation':200e6,
@@ -50,7 +52,7 @@ export default async function handler(req,res){
    return res.json({ok:true,uploadEnabled:enabled(),privateStoreVerified:false});
   }
   if(documentMode&&req.method==='POST'&&req.body?.type){
-   if(!enabled()||process.env.BLOB_STORE_ID!=='store_u4AgJ1AqUMRUMMz2')
+   if(!documentUploadEnabled())
     return err(res,503,'Private document upload is disabled on this Preview.');
    const {handleUploadPresigned}=await import('@vercel/blob/client');
    const response=await handleUploadPresigned({
@@ -174,7 +176,7 @@ export default async function handler(req,res){
    const files=await sql`SELECT asset_id,original_name,content_type,bytes FROM studio_media_v1
      WHERE owner_id=${owner} AND status='active' AND content_type IN ('application/pdf','application/vnd.openxmlformats-officedocument.presentationml.presentation')
      ORDER BY created_at DESC LIMIT 250`;
-   return res.json({ok:true,files,uploadEnabled:enabled()&&process.env.BLOB_STORE_ID==='store_u4AgJ1AqUMRUMMz2'});
+   return res.json({ok:true,files,uploadEnabled:documentUploadEnabled()});
   }
   if(req.method==='GET'){
    const files=await sql`SELECT asset_id,original_name,category,content_type,bytes,created_at,status

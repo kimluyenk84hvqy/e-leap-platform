@@ -17,6 +17,7 @@ export function openDocumentImport({owner,insert,getRemainingSlides}){
     <p role="status" data-import-status></p>
     <div class="studio-document-actions">
       <button type="button" class="studio-btn" data-close>Cancel</button>
+      <button class="studio-btn" type="submit" data-store-source disabled>Save source only</button>
       <button class="studio-btn primary" type="submit">Import slides</button>
     </div>
   </form>`;
@@ -25,31 +26,41 @@ export function openDocumentImport({owner,insert,getRemainingSlides}){
   const {file,source,start,end,sync}=form.elements;
   const status=dialog.querySelector('[data-import-status]');
   const close=dialog.querySelector('[data-close]');
-  const submit=form.querySelector('[type="submit"]');
+  const submit=form.querySelector('[type="submit"].primary');
+  const storeSource=form.querySelector('[data-store-source]');
   let sources=[],busy=false,finished=false,capability=false;
   dialog.addEventListener('close',()=>dialog.remove(),{once:true});
   close.onclick=()=>dialog.close();
   dialog.addEventListener('cancel',event=>{if(busy)event.preventDefault();});
-  file.onchange=()=>{if(file.files.length)source.value='';};
-  source.onchange=()=>{if(source.value)file.value='';};
+  file.onchange=()=>{if(file.files.length)source.value='';storeSource.disabled=!capability||!file.files.length;};
+  source.onchange=()=>{if(source.value){file.value='';storeSource.disabled=true;}};
   dialog.showModal();
   listDocumentSources().then(result=>{
     sources=result.files;
     capability=result.uploadEnabled===true;
     source.replaceChildren(new Option(sources.length?'Choose a stored document…':'No stored PDFs or PPTX',''));
     for(const item of sources)source.add(new Option(item.original_name,item.asset_id));
-    if(!busy&&!finished){source.disabled=!sources.length;sync.disabled=!capability;}
+    if(!busy&&!finished){source.disabled=!sources.length;sync.disabled=!capability;storeSource.disabled=!capability||!file.files.length;}
   }).catch(()=>{source.replaceChildren(new Option('Library unavailable in this session',''));});
   form.onsubmit=async event=>{
     event.preventDefault();
     if(busy||finished)return;
     const local=file.files[0],selected=sources.find(item=>item.asset_id===source.value);
     if(!local&&!selected){status.textContent='Choose a PDF or PPTX to import.';return;}
+    const sourceOnly=event.submitter===storeSource;
+    if(sourceOnly&&(!local||!capability))return;
     const first=Number(start.value),last=end.value?Number(end.value):null,server=sync.checked&&capability;
     busy=true;
     for(const element of form.elements)element.disabled=true;
-    status.textContent='Extracting document…';
+    status.textContent=sourceOnly?'Saving original to private Preview Media Library…':'Extracting document…';
     try{
+      if(sourceOnly){
+        await persistDocumentMedia([],local);
+        status.textContent='Source saved to private Preview Media Library. It can be opened in Studio from this account.';
+        finished=true;
+        close.textContent='Done';
+        return;
+      }
       const result=await extractDocument(local||await openDocumentSource(selected),{start:first,end:last});
       if(result.pages.length>getRemainingSlides())throw Error('This draft would exceed 100 slides. Select fewer pages or slides.');
       if(server){
@@ -72,8 +83,9 @@ export function openDocumentImport({owner,insert,getRemainingSlides}){
         for(const element of form.elements)element.disabled=false;
         source.disabled=!sources.length;
         sync.disabled=!capability;
+        storeSource.disabled=!capability||!file.files.length;
       }
-      if(finished)submit.hidden=true;
+      if(finished){submit.hidden=true;storeSource.hidden=true;}
     }
   };
 }
