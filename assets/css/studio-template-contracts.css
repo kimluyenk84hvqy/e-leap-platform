@@ -195,3 +195,32 @@
 .lesson-canvas.template-reading-task .evidence-actions{margin:2px 0 10px}
 .lesson-canvas.template-reading-task .evidence-actions .studio-btn{background:#f0f7f1;color:#174d37;border:1px solid #a8cab5;border-radius:10px}
 .lesson-canvas.template-reading-task .evidence-actions .studio-btn:hover{background:#d9ecdc}
+
+/* Teacher-only U6 verified source review in the existing Studio method canvas.
+ * No student runtime controls are registered by these styles.
+ */
+.u6-source-preview{padding:20px 26px 30px;display:grid;gap:15px;color:#193e2d;font-family:inherit}
+.u6-source-preview>p{font-size:clamp(17px,1.5vw,23px);line-height:1.45;margin:0}
+.u6-review-intro{color:#557465!important;font-size:13px!important;font-weight:700}
+.u6-source-badge{width:max-content;max-width:100%;font-weight:800;font-size:13px;letter-spacing:.02em;background:#e6f4ea;border-radius:11px;padding:8px 12px}
+.u6-source-connection{display:flex;gap:12px;flex-wrap:wrap;align-items:end;border:1px solid #cfdfd3;background:#f7faf8;padding:18px;border-radius:14px}
+.u6-source-connection label{display:grid;gap:6px;flex:1;min-width:230px}
+.u6-source-connection input,.u6-review-field textarea{width:100%;background:#fff;border:1px solid #b9cfc2;border-radius:10px;padding:10px 12px;color:#193e2d}
+.u6-review-error{color:#a13c3c;font-weight:700}
+.u6-paragraph-picker{display:flex;gap:10px;flex-wrap:wrap}
+.u6-paragraph-picker .studio-btn{min-height:48px;font-size:16px}
+.u6-source-paragraph{border:1px solid #c8ddd0;border-radius:14px;background:#fff;padding:17px 20px}
+.u6-source-paragraph-head{display:flex;justify-content:space-between;gap:15px;font-size:16px;margin-bottom:10px;color:#285b3f}
+.u6-source-paragraph p{font-size:clamp(17px,1.55vw,22px);line-height:1.6;margin:0;white-space:pre-wrap}
+.u6-original-questions{display:grid;gap:12px}
+.u6-original-task{border-left:4px solid #397850;padding:12px 15px;background:#eff7f0;border-radius:10px}
+.u6-original-task p{font-size:18px;line-height:1.5;margin:6px 0 0}
+.u6-review-field{display:grid;gap:8px;font-size:16px}
+.u6-review-field strong{font-size:17px}
+.u6-review-field textarea{font-size:17px;line-height:1.4;resize:vertical}
+.u6-review-photos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.u6-review-photos figure{margin:0;border:1px solid #d2e1d7;border-radius:13px;overflow:hidden;background:#fff}
+.u6-review-photos img{display:block;width:100%;aspect-ratio:3/4;object-fit:contain;background:#f3f6f4}
+.u6-review-photos figcaption{padding:9px;text-align:center;font-weight:800;font-size:15px}
+.u6-review-blocked{padding:13px;border:1px solid #dccb9d;border-radius:10px;background:#fff9e8;font-weight:700}
+@media(max-width:780px){.u6-source-preview{padding:14px 12px}.u6-review-photos{gap:6px}.u6-review-photos figcaption{font-size:12px}.u6-source-paragraph{padding:14px}.u6-source-paragraph p{font-size:17px}.u6-paragraph-picker .studio-btn{flex:1}}
