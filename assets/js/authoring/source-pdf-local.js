@@ -2,12 +2,12 @@
  * E-LEAP Resource Workshop. This is *not* OCR or source verification.
  * Process bytes only in browser memory. No uploads/network of PDF bytes.
  */
-export async function extractLocalPdfText(file,pdfjs,{maxBytes=150*1024*1024,maxPages=12,startPage=1,endPage=null,ocrPage=null}={}){
+export async function extractLocalPdfText(file,pdfjs,{maxBytes=150*1024*1024,maxPages=12,startPage=1,endPage=null,ocrPage=null,inspectPage=null}={}){
  if(!file||!(/\.pdf$/i.test(file.name)||file.type==='application/pdf'))throw Error('Select a PDF file.');
  if(file.size<=0||file.size>maxBytes)throw Error('PDF file exceeds the local extraction limit (150 MB).');
  if(!pdfjs||typeof pdfjs.getDocument!=='function')throw Error('PDF reader unavailable.');
  const bytes=new Uint8Array(await file.arrayBuffer());
- const job=pdfjs.getDocument({data:bytes});
+ const job=pdfjs.getDocument({data:bytes,isEvalSupported:false});
  const document=await job.promise;
  const pages=[],warnings=[];
  try{
@@ -35,7 +35,8 @@ export async function extractLocalPdfText(file,pdfjs,{maxBytes=150*1024*1024,max
     warnings.push('Page '+n+' used local OCR. Check source reading order, missing passages, captions, and all questions against the original page.');
    }
    if(!text)warnings.push('Page '+n+' has no extractable text: scanned PDF / OCR required.');
-   pages.push({page:n,text,verified:false,method,ocrConfidence});
+   const extra=inspectPage?await inspectPage(page,document):{};
+   pages.push({page:n,text,verified:false,method,ocrConfidence,...extra});
   }
   if(startPage>1||selectedEnd<total)warnings.push('Only pages '+startPage+'–'+selectedEnd+' of '+total+' processed.');
   warnings.push('Reading order is heuristic; review columns, tables and question numbering against the rendered PDF.');

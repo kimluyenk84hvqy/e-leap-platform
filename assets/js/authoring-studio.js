@@ -1,3 +1,5 @@
+import {openDocumentImport} from './authoring/document-import-dialog.js';
+import {documentMediaUrl,loadDocumentAssets,hasLocalDocumentMedia} from './authoring/document-import.js';
 import {ELeapRuntimeContext} from './runtime-context.js';
 import {mountFoundationLab} from './authoring/foundation-lab.js';
 import {ELeapNativeActivity} from './native-activity.js';
@@ -119,6 +121,7 @@ if(!canOpenStudio){
   render();
   if(!source&&!localReviewId)refreshServerDrafts();
   getPdfAiCapability().then(value=>{pdfAiCapability=value;render();}).catch(()=>{pdfAiCapability={configured:false,reason:'AI connection unavailable'};render();});
+  restoreDocumentMedia();
   if(lesson.resourceBank)rehydrateResourceBank(lesson.resourceBank).then(()=>render()).catch(()=>status('Local resource assets unavailable; re-import Resource ZIP.'));
 }
 
@@ -148,6 +151,13 @@ function snapshotDraft(){
   localStorage.setItem(DRAFT_INDEX_KEY,JSON.stringify(list.slice(0,30)));
   localStorage.setItem(LAST_DRAFT_KEY,lesson.id);
 }
+function restoreDocumentMedia(){
+ const active=lesson;
+ if(!hasLocalDocumentMedia(active))return;
+ loadDocumentAssets(verifiedUser.id||verifiedUser.user_id,active).then(()=>{
+   if(lesson===active)render();
+ }).catch(()=>status('Imported media could not be reopened from this device.'));
+}
 function markDirty(){dirty=true;status('Unsaved changes');clearTimeout(autosaveTimer);autosaveTimer=setTimeout(saveDraft,700)}
 async function refreshServerDrafts(){
  try{serverDraftIndex=await saveService.listDrafts();render();}
@@ -155,6 +165,9 @@ async function refreshServerDrafts(){
 }
 async function saveDraft(){
  try{snapshotDraft()}catch(error){dirty=true;status('Local save failed: '+error.message);return}
+ if(hasLocalDocumentMedia(lesson)){
+  dirty=false;status('Draft and imported media saved on this device');return;
+ }
  if(lesson.resourceBank||lesson.screens?.some(s=>s.sourceReviewDraft||s.resourceStage)){
   dirty=false;status('Restricted source review saved on this device only');return;
  }
@@ -189,7 +202,7 @@ function render(){
     <header class="studio-topbar">
       <div class="studio-brand"><div class="studio-logo">E</div><div><b>E-LEAP Authoring Studio</b><small data-studio-status>${dirty?'Unsaved changes':'Draft ready'}</small></div></div>
       <div class="studio-top-actions">
-        <a class="studio-btn primary" href="./index.html?view=gallery" target="_blank" rel="noopener">Template Gallery & Review</a><a class="studio-btn" href="./index.html?view=foundation" target="_blank" rel="noopener">Foundation Lab</a><a class="studio-btn" href="./index.html?view=methods" target="_blank" rel="noopener">Teaching Combo Library</a><button class="studio-btn" data-open-template-gallery>Choose Template</button><label class="studio-btn" style="cursor:pointer">Import Resource Pack<input type="file" accept=".zip" data-import-resource style="display:none"></label><a class="studio-btn" href="../index.html">← Platform</a><a class="studio-btn" href="?pilot=life-u12" title="Open the canonical LIFE Unit 12 acceptance draft">LIFE U12 pilot</a><select class="studio-btn" data-open-draft aria-label="Open a saved Studio draft"><option value="">Open saved draft…</option>${[...new Map([...readDraftIndex(),...serverDraftIndex.map(d=>({...d,course:d.courseProfileId}))].map(d=>[d.id,d])).values()].map(d=>`<option value="${esc(d.id)}">${esc(d.course||d.courseProfileId)} · ${esc(d.title)}</option>`).join('')}</select><button class="studio-btn" data-new>New lesson</button><button class="studio-btn" data-duplicate-lesson>Duplicate</button><button class="studio-btn" data-toggle-properties aria-pressed="${propertiesVisible?'true':'false'}">${propertiesVisible?'Hide properties':'Show properties'}</button><button class="studio-btn" data-quality>Quality check</button><button class="studio-btn" data-export>Export JSON</button><button class="studio-btn" data-save>Save draft</button><button class="studio-btn primary" data-publish>${verifiedUser?.role==='admin'?'Publish candidate':'Request publish'}</button>
+        <a class="studio-btn primary" href="./index.html?view=gallery" target="_blank" rel="noopener">Template Gallery & Review</a><a class="studio-btn" href="./index.html?view=foundation" target="_blank" rel="noopener">Foundation Lab</a><a class="studio-btn" href="./index.html?view=methods" target="_blank" rel="noopener">Teaching Combo Library</a><button class="studio-btn" data-open-template-gallery>Choose Template</button><button type="button" class="studio-btn" data-import-document>Import PDF / PPTX</button><label class="studio-btn" style="cursor:pointer">Import Resource Pack<input type="file" accept=".zip" data-import-resource style="display:none"></label><a class="studio-btn" href="../index.html">← Platform</a><a class="studio-btn" href="?pilot=life-u12" title="Open the canonical LIFE Unit 12 acceptance draft">LIFE U12 pilot</a><select class="studio-btn" data-open-draft aria-label="Open a saved Studio draft"><option value="">Open saved draft…</option>${[...new Map([...readDraftIndex(),...serverDraftIndex.map(d=>({...d,course:d.courseProfileId}))].map(d=>[d.id,d])).values()].map(d=>`<option value="${esc(d.id)}">${esc(d.course||d.courseProfileId)} · ${esc(d.title)}</option>`).join('')}</select><button class="studio-btn" data-new>New lesson</button><button class="studio-btn" data-duplicate-lesson>Duplicate</button><button class="studio-btn" data-toggle-properties aria-pressed="${propertiesVisible?'true':'false'}">${propertiesVisible?'Hide properties':'Show properties'}</button><button class="studio-btn" data-quality>Quality check</button><button class="studio-btn" data-export>Export JSON</button><button class="studio-btn" data-save>Save draft</button><button class="studio-btn primary" data-publish>${verifiedUser?.role==='admin'?'Publish candidate':'Request publish'}</button>
       </div>
     </header>
     <div class="studio-layout ${propertiesVisible?'':'properties-collapsed'}">
@@ -232,16 +245,17 @@ function slotForBlock(b){return ['image','video','audio'].includes(b.type)?'medi
 function renderBlock(b,i){if(b.audience==='teacher'||b.audience==='internal')return '';if(b.jigsawAssignment&&['assigned','expert'].includes(comboStep(currentScreen())?.id)&&b.jigsawAssignment!==(jigsawPreviewAccounts.get(currentScreen().id)||'A'))return '';if(b.comboStep&&comboStep(currentScreen())?.id!==b.comboStep)return '';if(!learnerBlockReady(b)&&['student','guest','presentation'].includes(previewRole))return '';return `<section class="block ${i===selectedBlock?'selected':''}" data-slot="${slotForBlock(b)}" data-block="${i}">${blockPreview(b)}</section>`}
 function allowedMediaUrl(src){const s=String(src||'').trim();return (/^https:\/\/[^\s"'<>]+$/i.test(s)||/^(?:\/(?!\/)|\.\.?\/)[^\s"'<>]+$/.test(s))?s:''}
 function blockPreview(b){
+  const mediaSrc=allowedMediaUrl(b.content?.src)||documentMediaUrl(b.content?.assetId);
   const visibleLabels=!(['student','guest','presentation'].includes(previewRole));
   if(b.type==='text')return `<div class="studio-text-role role-${esc(b.content?.role||'body')}" contenteditable="${!['student','guest','presentation'].includes(previewRole)}" data-edit="block-text">${esc(b.content?.text||'')}</div>`;
   if(b.type==='image'&&['student','guest','presentation'].includes(previewRole)&&!b.content?.src&&!b.content?.assetId)return '<div class="media-placeholder">Image unavailable</div>';
-  if(b.type==='image'&&allowedMediaUrl(b.content?.src))return `<div class="block-label" ${visibleLabels?'':'hidden'}>Image</div><figure class="studio-asset"><img loading="lazy" src="${esc(allowedMediaUrl(b.content.src))}" alt="${esc(b.content?.alt||'')}"/><figcaption>${esc(b.content?.caption||'')}</figcaption></figure>`;
+  if(b.type==='image'&&mediaSrc)return `<div class="block-label" ${visibleLabels?'':'hidden'}>Image</div><figure class="studio-asset"><img loading="lazy" src="${esc(mediaSrc)}" alt="${esc(b.content?.alt||'')}"/><figcaption>${esc(b.content?.caption||'')}</figcaption></figure>`;
   if(b.type==='image')return `<div class="block-label" ${visibleLabels?'':'hidden'}>Image</div><div class="media-placeholder"><div><strong>▧ ${esc(b.content?.caption||'Image')}</strong>${b.content?.src?esc(b.content.src):(b.content?.assetId?`Asset: ${esc(b.content.assetId)}`:'Choose an image from Media Library or paste a media path.')}</div></div>`;
   if(b.type==='audio'&&['student','guest','presentation'].includes(previewRole)&&!b.content?.src&&!b.content?.assetId)return '<div class="media-placeholder">Audio unavailable</div>';
-  if(b.type==='audio'&&allowedMediaUrl(b.content?.src))return `<div class="block-label" ${visibleLabels?'':'hidden'}>Audio</div><audio controls preload="none" src="${esc(allowedMediaUrl(b.content.src))}"></audio>`;
+  if(b.type==='audio'&&mediaSrc)return `<div class="block-label" ${visibleLabels?'':'hidden'}>Audio</div><audio controls preload="none" src="${esc(mediaSrc)}"></audio>`;
   if(b.type==='audio')return `<div class="block-label" ${visibleLabels?'':'hidden'}>Audio</div><div class="media-placeholder"><div><strong>♪ ${esc(b.content?.label||'Audio')}</strong>${b.content?.src?esc(b.content.src):(b.content?.assetId?`Asset: ${esc(b.content.assetId)}`:'Add audio source')}</div></div>`;
   if(b.type==='video'&&['student','guest','presentation'].includes(previewRole)&&!b.content?.src&&!b.content?.assetId)return '<div class="media-placeholder">Video unavailable</div>';
-  if(b.type==='video'&&allowedMediaUrl(b.content?.src))return `<div class="block-label" ${visibleLabels?'':'hidden'}>Video</div><video controls preload="metadata" src="${esc(allowedMediaUrl(b.content.src))}"></video>`;
+  if(b.type==='video'&&mediaSrc)return `<div class="block-label" ${visibleLabels?'':'hidden'}>Video</div><video controls preload="metadata" src="${esc(mediaSrc)}"></video>`;
   if(b.type==='video')return `<div class="block-label" ${visibleLabels?'':'hidden'}>Video</div><div class="media-placeholder"><div><strong>▶ ${esc(b.content?.label||'Video')}</strong>${b.content?.src?esc(b.content.src):(b.content?.assetId?`Asset: ${esc(b.content.assetId)}`:'Add video source')}</div></div>`;
   if(b.type==='vocabulary')return `<div class="block-label" ${visibleLabels?'':'hidden'}>Vocabulary</div><div class="activity-card">${(b.content?.items||[]).map(x=>`<p><b>${esc(x.word)}</b> — ${esc(x.meaning)} <small>${esc(x.example||'')}</small></p>`).join('')}</div>`;
   if(b.type==='grammar-note')return `<div class="block-label" ${visibleLabels?'':'hidden'}>Grammar note</div><div class="activity-card"><h3>${esc(b.content?.rule||'Rule')}</h3><p><b>${esc(b.content?.form||'')}</b></p>${(b.content?.examples||[]).map(x=>`<p>${esc(x)}</p>`).join('')}</div>`;
@@ -440,6 +454,24 @@ function revealEvidence(quote){
   return true;
 }
 function wire(){
+  document.querySelector('[data-import-document]')?.addEventListener('click',()=>{
+    const target=lesson;
+    if(target.status!=='draft'||target.resourceBank||target.screens.some(screen=>screen.sourceReviewDraft||screen.resourceStage)){
+      status('Open an editable lesson draft before importing a document.');
+      return;
+    }
+    openDocumentImport({
+      owner:verifiedUser.id||verifiedUser.user_id,
+      getRemainingSlides:()=>lesson===target?100-target.screens.length:0,
+      insert:screens=>{
+        lesson.screens.splice(selectedScreen+1,0,...screens);
+        selectedScreen++;
+        selectedBlock=0;
+        markDirty();
+        render();
+      }
+    });
+  });
   const workbenchRoot=document.querySelector('[data-source-workbench]');
   if(workbenchRoot){
     workbenchRoot.querySelector('[data-workbench-method]')?.addEventListener('click',()=>{
@@ -810,18 +842,17 @@ function wire(){
     const id=e.target.value;if(!id||id===lesson.id)return;
     try{
       snapshotDraft();
-      let loaded=null;
-      if(serverDraftIndex.some(d=>d.id===id)){
+      const raw=localStorage.getItem('e-leap-studio-v1:'+id);
+      const local=raw?JSON.parse(raw):null;
+      let loaded=local;
+      if(!hasLocalDocumentMedia(local)&&serverDraftIndex.some(d=>d.id===id)){
         const item=await saveService.loadDraft(id);
         loaded=item.draft;
         localStorage.setItem('e-leap-studio-server-revision:'+id,String(item.revision));
-      }else{
-        const raw=localStorage.getItem('e-leap-studio-v1:'+id);
-        loaded=raw?JSON.parse(raw):null;
       }
       if(!loaded||loaded.id!==id||!Array.isArray(loaded.screens))throw Error('Saved draft unavailable.');
       lesson=normaliseCourseIdentity(modelEnsureLessonSchema(loaded));
-      draftKey=`e-leap-studio-v1:${id}`;selectedScreen=selectedBlock=0;
+      draftKey=`e-leap-studio-v1:${id}`;selectedScreen=selectedBlock=0;restoreDocumentMedia();
       localStorage.setItem(LAST_DRAFT_KEY,id);render();
     }catch(error){status('Cannot open draft: '+error.message)}
   });

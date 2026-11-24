@@ -7,7 +7,7 @@ import {createLocalOcrReader} from './ocr-browser.js';
 import {createLesson,createScreen,createBlock} from './lesson-model.js';
 import {createCourseDraft} from './course-profile-registry.js';
 let pdfJsPromise=null;
-async function pdfJs(){
+export async function pdfJs(){
  if(globalThis.pdfjsLib)return globalThis.pdfjsLib;
  if(!pdfJsPromise)pdfJsPromise=new Promise((resolve,reject)=>{
   const tag=document.createElement('script');

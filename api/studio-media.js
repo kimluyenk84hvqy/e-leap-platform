@@ -3,7 +3,7 @@
 // was omitted from a deployment's function trace.
 // Blob SDK is loaded only for enabled upload and authorized file downloads.
 // Listing remains independent of the optional Blob package.
-import { getResearchDb } from '../server/_research-db.js';
+import { getResearchDb, isBoundToExpectedPreviewDatabase } from '../server/_research-db.js';
 import { requireAuth, requireSameOrigin, getAuth } from '../server/_auth.js';
 
 // Feature is OFF until private-store upload and callback are verified on Preview.
@@ -12,9 +12,9 @@ const limits={
  'application/pdf':150e6,
  'application/vnd.openxmlformats-officedocument.presentationml.presentation':200e6,
  'application/vnd.openxmlformats-officedocument.wordprocessingml.document':40e6,
- 'image/jpeg':15e6,'image/png':15e6,'image/webp':15e6,
+ 'image/jpeg':15e6,'image/png':15e6,'image/webp':15e6,'image/gif':15e6,
  'audio/mpeg':200e6,'audio/wav':200e6,'audio/mp4':200e6,
- 'video/mp4':200e6
+ 'audio/ogg':200e6,'video/mp4':200e6,'video/webm':200e6,'video/quicktime':200e6
 };
 const MAX_LIBRARY=3e9;
 const err=(res,status,message)=>res.status(status).json({ok:false,error:message});
@@ -42,9 +42,59 @@ async function used(sql,owner){
 export default async function handler(req,res){
  res.setHeader('Cache-Control','no-store');
  try{
+  const documentMode=req.query?.document==='1';
+  const verifiedPreview=()=>process.env.VERCEL_ENV==='preview'&&isBoundToExpectedPreviewDatabase()===true;
+  if(documentMode&&!verifiedPreview())return err(res,423,'Document library requires a verified Preview database.');
   if(req.method==='GET'&&req.query?.status==='1'){
    const user=await requireAuth(req,res,['teacher','admin']);if(!user)return;
    return res.json({ok:true,uploadEnabled:enabled(),privateStoreVerified:false});
+  }
+  if(documentMode&&req.method==='POST'&&req.body?.type){
+   if(!enabled()||process.env.BLOB_STORE_ID!=='store_u4AgJ1AqUMRUMMz2')
+    return err(res,503,'Private document upload is disabled on this Preview.');
+   const {handleUploadPresigned}=await import('@vercel/blob/client');
+   const response=await handleUploadPresigned({
+    body:req.body,request:req,
+    getSignedToken:async(pathname,clientPayload)=>{
+     const user=await getAuth(req);
+     const origin=req.headers.origin;
+     const base='https://'+(req.headers['x-forwarded-host']||req.headers.host);
+     if(!user||!['teacher','admin'].includes(user.role)||origin!==base)
+      throw Error('Same-origin Teacher/Admin session required');
+     if(!/^studio-library\/document-[0-9a-f-]{36}\/[0-9a-f-]{36}-[a-z0-9]{2,6}$/.test(pathname))
+      throw Error('Invalid document asset path');
+     const {name,mime,bytes,sha256,category}=JSON.parse(clientPayload||'{}');
+     const documentType=mime==='application/pdf'||mime==='application/vnd.openxmlformats-officedocument.presentationml.presentation';
+     if(!nameOK(name)||!hashOK(sha256)||!limits[mime]||!Number.isSafeInteger(bytes)||bytes<1||bytes>limits[mime]||
+       (documentType?category!=='temporary':!['image','audio','video'].includes(category)||!mime.startsWith(category+'/')))
+      throw Error('Document asset not allowed');
+     const owner=String(user.user_id),sql=getResearchDb();
+     await ensureSchema(sql);
+     if(await used(sql,owner)+bytes>MAX_LIBRARY)throw Error('Library quota reached');
+     const {issueSignedToken}=await import('@vercel/blob');
+     const validUntil=Date.now()+15*60*1000;
+     const token=await issueSignedToken({pathname,operations:['put'],validUntil});
+     return {token,urlOptions:{
+      allowedContentTypes:[mime],maximumSizeInBytes:bytes,allowOverwrite:false,
+      tokenPayload:JSON.stringify({owner,name,mime,bytes,sha256,category,pathname}),
+      callbackUrl:base+'/api/studio-media?document=1'
+     }};
+    },
+    onUploadCompleted:async({blob,tokenPayload})=>{
+     const meta=JSON.parse(tokenPayload||'{}');
+     if(blob.pathname!==meta.pathname||
+       new URL(blob.url).hostname!=='u4agj1aqumrunmmz2.private.blob.vercel-storage.com')
+      throw Error('Unexpected Blob pathname or visibility');
+     const {head}=await import('@vercel/blob');
+     const actual=await head(blob.url);
+     if(actual.size!==meta.bytes||actual.contentType!==meta.mime)throw Error('Private Blob metadata did not match');
+     const sql=getResearchDb();
+     await sql`INSERT INTO studio_media_v1(owner_id,original_name,category,content_type,bytes,client_sha256,blob_path)
+       VALUES(${meta.owner},${meta.name},${meta.category},${meta.mime},${actual.size},${meta.sha256},${blob.pathname})
+       ON CONFLICT(blob_path) DO NOTHING`;
+    }
+   });
+   return res.status(200).json(response);
   }
   if(req.method==='POST'&&req.body?.type){
    if(!enabled())return err(res,503,'Media upload is not enabled on this deployment.');
@@ -53,6 +103,7 @@ export default async function handler(req,res){
    const response=await handleUpload({
     body:req.body,request:req,
     onBeforeGenerateToken:async(pathname,clientPayload)=>{
+     if(pathname.startsWith('studio-library/document-'))throw Error('Use the Preview document intake endpoint');
      const origin=req.headers?.origin;
      const base=(req.headers?.['x-forwarded-proto']||'https')+'://'+(req.headers?.['x-forwarded-host']||req.headers?.host);
      if(origin && origin!==base)throw Error('Origin not allowed');
@@ -74,6 +125,7 @@ export default async function handler(req,res){
        tokenPayload:JSON.stringify({owner,category,name,mime,bytes,sha256:meta.sha256})};
     },
     onUploadCompleted:async({blob,tokenPayload})=>{
+     if(blob.pathname.startsWith('studio-library/document-'))throw Error('Use the Preview document intake endpoint');
      const meta=JSON.parse(tokenPayload||'{}'),sql=getResearchDb();
      await ensureSchema(sql);
      const {head}=await import('@vercel/blob');
@@ -93,14 +145,36 @@ export default async function handler(req,res){
    const rows=await sql`SELECT blob_path,content_type,original_name FROM studio_media_v1 WHERE asset_id::text=${id} AND owner_id=${owner} AND status='active' LIMIT 1`;
    if(!rows.length)return err(res,404,'File not found');
    const {get}=await import('@vercel/blob');
-   const file=await get(rows[0].blob_path,{access:'private'});
+   const range=documentMode&&String(req.headers.range||'');
+   if(range&&!/^bytes=(?:\d+-\d*|-\d+)$/.test(range))return err(res,416,'Unsupported byte range.');
+   const file=await get(rows[0].blob_path,{access:'private',headers:range?{range}:undefined});
    if(!file)return err(res,404,'File unavailable');
    res.setHeader('Content-Type',rows[0].content_type);
-   res.setHeader('Content-Disposition','attachment');
+   res.setHeader('Content-Disposition',documentMode?'inline':'attachment');
+   if(documentMode){
+    for(const header of ['content-range','content-length','accept-ranges']){
+     const value=file.headers.get(header);
+     if(value)res.setHeader(header,value);
+    }
+    if(file.headers.has('content-range'))res.status(206);
+   }
    res.setHeader('X-Content-Type-Options','nosniff');
    const reader=file.stream.getReader();
    while(true){const {done,value}=await reader.read();if(done)break;res.write(Buffer.from(value));}
    return res.end();
+  }
+  if(req.method==='GET'&&documentMode){
+   if(req.query?.hash){
+    const sha=String(req.query.hash),bytes=Number(req.query.bytes),mime=String(req.query.mime);
+    if(!hashOK(sha)||!Number.isSafeInteger(bytes)||bytes<1||!limits[mime])return err(res,400,'Invalid media fingerprint.');
+    const rows=await sql`SELECT asset_id FROM studio_media_v1 WHERE owner_id=${owner} AND client_sha256=${sha}
+      AND bytes=${bytes} AND content_type=${mime} AND status='active' ORDER BY created_at DESC LIMIT 1`;
+    return res.json({ok:true,assetId:rows[0]?.asset_id||null});
+   }
+   const files=await sql`SELECT asset_id,original_name,content_type,bytes FROM studio_media_v1
+     WHERE owner_id=${owner} AND status='active' AND content_type IN ('application/pdf','application/vnd.openxmlformats-officedocument.presentationml.presentation')
+     ORDER BY created_at DESC LIMIT 250`;
+   return res.json({ok:true,files,uploadEnabled:enabled()&&process.env.BLOB_STORE_ID==='store_u4AgJ1AqUMRUMMz2'});
   }
   if(req.method==='GET'){
    const files=await sql`SELECT asset_id,original_name,category,content_type,bytes,created_at,status

@@ -65,3 +65,14 @@ html,body{background:#F2F7F4;color:#183E31;font-family:Poppins,Inter,system-ui,s
 .studio-skills-selector{padding-top:13px;border-top:1px solid #e2ebe5}
 .studio-skills-selector .studio-course-options{grid-template-columns:1fr}
 @media(max-width:420px){.studio-course-options{grid-template-columns:1fr}}
+
+.studio-document-dialog{width:min(34rem,calc(100% - 2rem));max-height:85vh;overflow:auto;border:1px solid #b3cbc0;border-radius:14px;padding:1.5rem;color:#173f38;background:#fff}
+.studio-document-dialog::backdrop{background:#102b26a0}
+.studio-document-dialog form,.studio-document-dialog label{display:grid;gap:.45rem}
+.studio-document-dialog form{gap:1rem}
+.studio-document-dialog h2,.studio-document-dialog p{margin:0}
+.studio-document-dialog label:has(input[type="checkbox"]){display:flex;align-items:center}
+.studio-document-range{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem}
+.studio-document-range input{width:100%;min-width:0}
+.studio-document-actions{display:flex;justify-content:flex-end;gap:.5rem}
+.studio-text-role[data-edit="block-text"]{white-space:pre-wrap}
