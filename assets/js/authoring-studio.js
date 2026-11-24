@@ -5,7 +5,7 @@ import {sourceIntakeToStudioReviewScreen,projectJigsawRoleForReview} from './aut
 import {recommendTeachingMethod,previewStepInstructionEdit,acceptStepInstructionEdit,undoStepInstructionEdit,fingerprintReviewSource} from './authoring/studio-review-workbench.js';
 import {importResourceZip,rehydrateResourceBank,createResourceScreens,renderResourceStage,renderResourceProperties,wireResourceStage} from './authoring/resource-bank-assembly.js';
 import {E_LEAP_ACTIVITY_TYPES,E_LEAP_AUTHORING_LIBRARY} from './activity-registry.js';
-import {COURSE_PROFILES,courseIsSelectable} from './authoring/course-profile-registry.js';
+import {COURSE_PROFILES,ADVANCED_SKILL_PATHS,courseIsSelectable,resolveCourseProfile,normaliseCourseIdentity,createCourseDraft,validateCourseIdentity} from './authoring/course-profile-registry.js';
 import {fetchU6TeacherSource} from './authoring/u6-source-review.js';
 import {E_LEAP_THEME_DEFAULT,E_LEAP_THEME_PRESETS,E_LEAP_ALLOWED_FONTS,applyThemePreset} from './theme-tokens.js';
 import {E_LEAP_SMART_TEMPLATES,createSmartTemplate} from './smart-templates.js';
@@ -59,6 +59,7 @@ let pendingInstructionReview=null,previousInstructionUndo=null,workbenchStatus='
 let draftKey='';
 let layoutEditMode=false,layoutGuidesVisible=true,selectedLayoutRegion=null;
 let propertiesVisible=true; // UI-only: hiding the editor pane never changes lesson data.
+const DRAFT_INDEX_KEY='e-leap-studio-draft-index-v1',LAST_DRAFT_KEY='e-leap-studio-last-draft-id-v1';
 const layoutHistory=createLayoutHistory();
 const certifiedQuestionIndex=new Map(),certifiedAnswers=new Set(),certifiedResponses=new Map();
 
@@ -73,6 +74,15 @@ if(!canOpenStudio){
   mountFoundationLab(root,{role:verifiedUser?.role||'teacher'});
 }else{
   lesson=await loadLesson();
+  // Reopen the last locally saved Studio draft only for an ordinary Studio entry.
+  // Explicit source, pilot and imported review flows always keep their own identity.
+  if(!source&&!qs.get('pilot')&&!qs.get('fresh')&&!qs.get('importFoundation')&&!qs.get('localReview')){
+    try{const last=localStorage.getItem(LAST_DRAFT_KEY);
+      const raw=last&&localStorage.getItem('e-leap-studio-v1:'+last);
+      const restored=raw?JSON.parse(raw):null;
+      if(restored?.id===last&&Array.isArray(restored.screens))lesson=restored;
+    }catch(_){}
+  }
   ensureSchema();
   const localReviewId=/^[a-zA-Z0-9_-]{1,120}$/.test(qs.get('localReview')||'')?qs.get('localReview'):null;
   draftKey=`e-leap-studio-v1:${source||localReviewId||lesson.id||'new'}`;
@@ -109,7 +119,7 @@ async function loadLesson(){
   }
   return modelCreateLesson();
 }
-function ensureSchema(){lesson=modelEnsureLessonSchema(lesson);}
+function ensureSchema(){lesson=normaliseCourseIdentity(modelEnsureLessonSchema(lesson));}
 function legacyToBlocks(s){return modelLegacyToBlocks(s);}
 function newScreen(stage='New slide',title='New slide'){return modelCreateScreen(stage,title);}
 function newBlock(type){return modelCreateBlock(type);}
@@ -117,8 +127,19 @@ function normaliseActivity(a={},type){return modelNormaliseActivity(a,type);}
 function defaultPrompt(type){return defaultActivityPrompt(type);}
 function currentScreen(){return lesson.screens[selectedScreen]}
 function currentBlock(){return currentScreen().blocks[selectedBlock]||activeComboBlocks(currentScreen())[0]||currentScreen().blocks[0]}
+function readDraftIndex(){try{const rows=JSON.parse(localStorage.getItem(DRAFT_INDEX_KEY)||'[]');return Array.isArray(rows)?rows.filter(x=>x&&typeof x.id==='string'&&/^[a-zA-Z0-9_-]{1,120}$/.test(x.id)).slice(0,30):[]}catch{return []}}
+function snapshotDraft(){
+  if(!lesson?.id||!draftKey)return;
+  localStorage.setItem(draftKey,JSON.stringify(lesson));
+  // Source-review drafts stay browser-local and are not mixed into ordinary lesson switching.
+  if(source||lesson.resourceBank||lesson.screens?.some(x=>x.sourceReviewDraft))return;
+  const list=readDraftIndex().filter(x=>x.id!==lesson.id);
+  list.unshift({id:lesson.id,title:String(lesson.title||'New Lesson').slice(0,90),course:lesson.courseLabel||'',courseProfileId:lesson.courseProfileId||''});
+  localStorage.setItem(DRAFT_INDEX_KEY,JSON.stringify(list.slice(0,30)));
+  localStorage.setItem(LAST_DRAFT_KEY,lesson.id);
+}
 function markDirty(){dirty=true;status('Unsaved changes');clearTimeout(autosaveTimer);autosaveTimer=setTimeout(saveDraft,700)}
-function saveDraft(){try{localStorage.setItem(draftKey,JSON.stringify(lesson));dirty=false;if(lesson.resourceBank||lesson.screens?.some(s=>s.sourceReviewDraft)){status('Restricted source review draft saved in this browser only · not synced to server');return;}status('Saving draft…');saveService.saveDraft(lesson).then(r=>status(r.mode==='server'?'Draft saved to server':'Draft saved locally')).catch(()=>status('Draft saved locally'))}catch(e){dirty=true;status('Local save failed: '+e.message)}}
+function saveDraft(){try{snapshotDraft();dirty=false;if(lesson.resourceBank||lesson.screens?.some(s=>s.sourceReviewDraft)){status('Restricted source review draft saved in this browser only · not synced to server');return;}status('Saving draft…');saveService.saveDraft(lesson).then(r=>status(r.mode==='server'?'Draft saved to server':'Draft saved locally')).catch(()=>status('Draft saved locally'))}catch(e){dirty=true;status('Local save failed: '+e.message)}}
 function status(msg){const e=document.querySelector('[data-studio-status]');if(e)e.textContent=msg}
 
 function render(){
@@ -129,7 +150,7 @@ function render(){
     <header class="studio-topbar">
       <div class="studio-brand"><div class="studio-logo">E</div><div><b>E-LEAP Authoring Studio</b><small data-studio-status>${dirty?'Unsaved changes':'Draft ready'}</small></div></div>
       <div class="studio-top-actions">
-        <a class="studio-btn primary" href="./index.html?view=gallery" target="_blank" rel="noopener">Template Gallery & Review</a><a class="studio-btn" href="./index.html?view=foundation" target="_blank" rel="noopener">Foundation Lab</a><a class="studio-btn" href="./index.html?view=methods" target="_blank" rel="noopener">Teaching Combo Library</a><button class="studio-btn" data-open-template-gallery>Choose Template</button><label class="studio-btn" style="cursor:pointer">Import Resource Pack<input type="file" accept=".zip" data-import-resource style="display:none"></label><a class="studio-btn" href="../index.html">← Platform</a><a class="studio-btn" href="?pilot=life-u12" title="Open the canonical LIFE Unit 12 acceptance draft">LIFE U12 pilot</a><button class="studio-btn" data-new>New lesson</button><button class="studio-btn" data-duplicate-lesson>Duplicate</button><button class="studio-btn" data-toggle-properties aria-pressed="${propertiesVisible?'true':'false'}">${propertiesVisible?'Hide properties':'Show properties'}</button><button class="studio-btn" data-quality>Quality check</button><button class="studio-btn" data-export>Export JSON</button><button class="studio-btn" data-save>Save draft</button><button class="studio-btn primary" data-publish>${verifiedUser?.role==='admin'?'Publish candidate':'Request publish'}</button>
+        <a class="studio-btn primary" href="./index.html?view=gallery" target="_blank" rel="noopener">Template Gallery & Review</a><a class="studio-btn" href="./index.html?view=foundation" target="_blank" rel="noopener">Foundation Lab</a><a class="studio-btn" href="./index.html?view=methods" target="_blank" rel="noopener">Teaching Combo Library</a><button class="studio-btn" data-open-template-gallery>Choose Template</button><label class="studio-btn" style="cursor:pointer">Import Resource Pack<input type="file" accept=".zip" data-import-resource style="display:none"></label><a class="studio-btn" href="../index.html">← Platform</a><a class="studio-btn" href="?pilot=life-u12" title="Open the canonical LIFE Unit 12 acceptance draft">LIFE U12 pilot</a><select class="studio-btn" data-open-draft aria-label="Open a saved Studio draft"><option value="">Open saved draft…</option>${readDraftIndex().map(d=>`<option value="${esc(d.id)}">${esc(d.course)} · ${esc(d.title)}</option>`).join('')}</select><button class="studio-btn" data-new>New lesson</button><button class="studio-btn" data-duplicate-lesson>Duplicate</button><button class="studio-btn" data-toggle-properties aria-pressed="${propertiesVisible?'true':'false'}">${propertiesVisible?'Hide properties':'Show properties'}</button><button class="studio-btn" data-quality>Quality check</button><button class="studio-btn" data-export>Export JSON</button><button class="studio-btn" data-save>Save draft</button><button class="studio-btn primary" data-publish>${verifiedUser?.role==='admin'?'Publish candidate':'Request publish'}</button>
       </div>
     </header>
     <div class="studio-layout ${propertiesVisible?'':'properties-collapsed'}">
@@ -258,7 +279,22 @@ function renderContentMapper(){
   }).join('');
   return `<section class="property-section studio-mapper"><h3>Fill template · ${esc(schema.label)}</h3>${fields}<button class="studio-btn primary" type="button" data-apply-mapping>Apply to slide</button><p class="helper">Teacher notes are edited separately and never inserted into learner content.</p></section>`;
 }
-function lessonProps(){const t=lesson.theme;return `<section class="property-section"><h3>Lesson</h3><div class="studio-course-selector" role="group" aria-label="Textbook libraries"><b>Textbook Library</b><div class="studio-course-options">${COURSE_PROFILES.filter(p=>p.type!=='skills').map(p=>`<button type="button" class="studio-btn studio-course-choice ${p.availability==='active'&&lesson.courseLabel===p.label?'primary':''}" data-select-course="${esc(p.id)}" ${p.availability!=='active'?'disabled aria-disabled="true" title="Course profile reserved for future textbook"':''}>${esc(p.label)}${p.availability==='planned'?'<small>Coming soon</small>':''}</button>`).join('')}</div><div class="studio-course-selector studio-skills-selector" role="group" aria-label="Advanced Skills"><b>Specialised Skills</b><div class="studio-course-options">${COURSE_PROFILES.filter(p=>p.type==='skills').map(p=>`<button type="button" class="studio-btn studio-course-choice ${lesson.courseLabel===p.label?'primary':''}" data-select-course="${esc(p.id)}">${esc(p.label)}</button>`).join('')}</div></div></div>${field('Lesson title','lesson.title',lesson.title)}<div class="field-row">${field('Course','lesson.courseLabel',lesson.courseLabel||'')}${field('Lesson no.','lesson.lessonNumber',lesson.lessonNumber||'')}</div></section><section class="property-section"><h3>Theme & typography</h3>${select('Theme preset','theme.preset',t.preset,Object.keys(THEMES))}${select('Font','theme.fontFamily',t.fontFamily,E_LEAP_ALLOWED_FONTS)}${select('Use as','lesson.deliveryPolicy',lesson.deliveryPolicy?.id||'practice',Object.keys(E_LEAP_DELIVERY_POLICIES))}<div class="field-row">${numField('Title size','theme.titleSize',t.titleSize,28,52)}${numField('Body size','theme.bodySize',t.bodySize,14,26)}</div><div class="field-row">${colorField('Text','theme.textColor',t.textColor)}${colorField('Accent','theme.accentColor',t.accentColor)}</div>${colorField('Background','theme.backgroundColor',t.backgroundColor)}<div class="token-note">Default styling is inherited by every slide. Use overrides only when necessary so lessons stay consistent.</div></section>`}
+function lessonProps(){
+ const t=lesson.theme,active=resolveCourseProfile(lesson);
+ const buttons=COURSE_PROFILES.filter(p=>p.kind!=='skills').map(p=>
+  `<button type="button" class="studio-btn studio-course-choice ${active?.id===p.id?'primary':''}" data-select-course="${esc(p.id)}" ${p.availability==='planned'?'disabled aria-disabled="true" title="Course profile reserved for future textbook"':''}>${esc(p.label)}${p.availability==='planned'?'<small>Coming soon</small>':'<small>New separate draft</small>'}</button>`).join('');
+ const skillButtons=COURSE_PROFILES.filter(p=>p.kind==='skills').map(p=>`<button type="button" class="studio-btn studio-course-choice ${active?.id===p.id?'primary':''}" data-select-course="${esc(p.id)}"> ${esc(p.label)}<small>New separate draft</small></button>`).join('');
+ const skillPath=active?.kind==='skills'?`<div class="studio-field"><label for="advanced-skill-path">Advanced Skills branch</label><select id="advanced-skill-path" data-skill-path><option value="">Select a skill</option>${ADVANCED_SKILL_PATHS.map(p=>`<option value="${esc(p.id)}" ${lesson.advancedSkillId===p.id?'selected':''}>${esc(p.label)}</option>`).join('')}</select></div>`:'';
+ return `<section class="property-section"><h3>Lesson</h3>
+ <div class="studio-course-selector"><b>Textbook Library · Start a new lesson</b><div class="studio-course-options">${buttons}</div></div>
+ <div class="studio-course-selector studio-skills-selector"><b>Specialised Skills</b><div class="studio-course-options">${skillButtons}</div></div>
+ <div class="token-note">Each choice creates a separate draft after confirmation. Your current lesson is never renamed or replaced.</div>
+ <div class="studio-field"><label>Current library</label><input value="${esc(active?.label||lesson.courseLabel||'Unmapped legacy course')}" readonly aria-readonly="true"></div>
+ ${skillPath}
+ ${active?.preferredMethods?.length?`<div class="helper">Methods to consider (subject to textbook analysis): ${esc(active.preferredMethods.join(' · '))}</div>`:''}
+ ${field('Lesson title','lesson.title',lesson.title)}
+ <div class="studio-field"><label>Course (managed by Course Profile)</label><input value="${esc(lesson.courseLabel||'')}" readonly aria-readonly="true"></div>
+ ${field('Lesson no.','lesson.lessonNumber',lesson.lessonNumber||'')}</section><section class="property-section"><h3>Theme & typography</h3>${select('Theme preset','theme.preset',t.preset,Object.keys(THEMES))}${select('Font','theme.fontFamily',t.fontFamily,E_LEAP_ALLOWED_FONTS)}${select('Use as','lesson.deliveryPolicy',lesson.deliveryPolicy?.id||'practice',Object.keys(E_LEAP_DELIVERY_POLICIES))}<div class="field-row">${numField('Title size','theme.titleSize',t.titleSize,28,52)}${numField('Body size','theme.bodySize',t.bodySize,14,26)}</div><div class="field-row">${colorField('Text','theme.textColor',t.textColor)}${colorField('Accent','theme.accentColor',t.accentColor)}</div>${colorField('Background','theme.backgroundColor',t.backgroundColor)}<div class="token-note">Default styling is inherited by every slide. Use overrides only when necessary so lessons stay consistent.</div></section>`}
 function slideProps(){const s=currentScreen();return `<section class="property-section"><h3>Current slide</h3>${select('Teaching phase','screen.learningPhase',phaseForScreen(s),LEARNING_ARC.map(p=>p.id))}${field('Stage','screen.stage',s.stage||'')}${field('Title','screen.title',s.title||'')}${area('Instruction for learners','screen.instruction',s.instruction||'')}${area('Teacher notes (not shown to learners)','screen.teacherNotes',s.teacherNotes||'')}${variantOptions(s.templateId)?select('Visual design','screen.visualVariant',s.visualVariant||Object.keys(variantOptions(s.templateId))[0],Object.keys(variantOptions(s.templateId))):select('Layout','screen.layout',s.layout||'standard',E_LEAP_LAYOUT_IDS)}<div class="studio-inline-actions"><button class="studio-btn" data-slide-up ${selectedScreen===0?'disabled':''}>↑</button><button class="studio-btn" data-slide-down ${selectedScreen===lesson.screens.length-1?'disabled':''}>↓</button><button class="studio-btn" data-duplicate-slide>Duplicate</button><button class="studio-btn danger" data-delete-slide ${lesson.screens.length===1?'disabled':''}>Delete</button></div></section>`}
 function blockProps(){const b=currentBlock();if(!b)return '';let body=`<section class="property-section"><h3>Selected block</h3><div class="helper">${esc(typeLabel(b.type))}</div>`;
   if(b.type==='text')body+=area('Text','block.content.text',b.content?.text||'')+select('Text role','block.content.role',b.content?.role||'body',['institution','faculty','eyebrow','display','h1','h2','instruction','body','answer','caption']);
@@ -286,7 +322,7 @@ function colorField(label,path,val){return `<div class="studio-field"><label>${e
 function area(label,path,val){return `<div class="studio-field"><label>${esc(label)}</label><textarea data-path="${esc(path)}">${esc(val??'')}</textarea></div>`}
 function select(label,path,val,opts){return `<div class="studio-field"><label>${esc(label)}</label><select data-path="${esc(path)}">${opts.map(o=>`<option value="${esc(o)}" ${String(o)===String(val)?'selected':''}>${esc(o)}</option>`).join('')}</select></div>`}
 function renderAddDialog(){return `<div class="add-panel" data-add-panel><div class="add-dialog"><div class="add-dialog-head"><div><h2>Add content or activity</h2><small>Choose a reusable E-LEAP block. Behavior comes from the shared engine.</small></div><button class="studio-btn" data-close-library>Close</button></div><div class="activity-library"><section class="library-group"><h3>Certified slide templates</h3><div class="library-grid">${Object.entries(CERTIFIED_TEMPLATES).map(([id,t])=>`<button class="library-card" data-add-certified="${id}"><div class="library-icon">▣</div><b>${esc(t.label)}</b><small>${acceptedLayoutVariants(id).length?esc(acceptedLayoutVariants(id).map(v=>t.variants.find(x=>x.id===v)?.label||v).join(' · ')):'Use draft layout · Review optional'}</small></button>`).join('')}</div></section><section class="library-group"><h3>Lesson Cover / Consolidation / Thank You</h3><div class="library-grid">${Object.entries(FUNCTION_SLIDES).map(([key,t])=>`<button class="library-card" data-add-functional="${key}"><div class="library-icon">▣</div><b>${esc(t.label)}</b><small>${esc(t.description)}</small></button>`).join('')}</div></section><section class="library-group"><h3>Teaching combos · Warm-up / Lead-in first</h3><div class="library-grid">${['Warm-up / Lead-in','Vocabulary','Grammar','Listening','Reading','Speaking','Writing'].map(group=>Object.entries(METHOD_COMBOS).filter(([,m])=>m.group===group).map(([key,t])=>`<button class="library-card" data-add-combo="${key}"><div class="library-icon">◈</div><b>${esc(t.label)}</b><small>${esc(t.description)} · Structure only</small></button>`).join('')).join('')}</div></section><section class="library-group"><h3>Other activity templates · Draft</h3><div class="library-grid">${Object.entries(E_LEAP_SMART_TEMPLATES).filter(([key])=>!['cover','aims','leadin'].includes(key)).map(([key,t])=>`<button class="library-card" data-add-template="${key}"><div class="library-icon">✦</div><b>${esc(t.label)}</b><small>${esc(t.description)}</small></button>`).join('')}</div></section>${Object.entries(LIBRARY).map(([group,items])=>`<section class="library-group"><h3>${esc(group)}</h3><div class="library-grid">${items.map(([type,icon,label,desc])=>`<button class="library-card" data-add-type="${type}"><div class="library-icon">${icon}</div><b>${esc(label)}</b><small>${esc(desc)}</small></button>`).join('')}</div></section>`).join('')}</div></div></div>`}
-function runQuality(){const issues=auditLesson(lesson);if(lesson.resourceBank){issues.push(['error','Resource Bank assembly is a Preview draft. Publish requires complete source, audio Evidence, image and role-control QA.']);if(lesson.resourceBank.quality?.audioEvidence!=='VERIFIED')issues.push(['error','Audio Evidence segments are not verified; do not publish.']);}return issues;}
+function runQuality(){const issues=auditLesson(lesson);for(const msg of validateCourseIdentity(lesson))issues.push(['error',msg]);if(lesson.resourceBank){issues.push(['error','Resource Bank assembly is a Preview draft. Publish requires complete source, audio Evidence, image and role-control QA.']);if(lesson.resourceBank.quality?.audioEvidence!=='VERIFIED')issues.push(['error','Audio Evidence segments are not verified; do not publish.']);}return issues;}
 function renderQualityPanel(){const issues=runQuality();const good=issues.filter(x=>x[0]==='error').length===0;return `<aside class="quality-panel" data-quality-panel><div class="quality-head"><b>Quality check</b><button class="studio-btn ghost" data-close-quality>×</button></div><div class="quality-body">${good?'<div class="quality-item ok">No blocking issues. Lesson can be staged for publishing.</div>':''}${issues.map(([k,m])=>`<div class="quality-item ${k}">${esc(m)}</div>`).join('')||'<div class="quality-item ok">All checks passed.</div>'}</div></aside>`}
 function revealEvidence(quote){
   const textNode=document.querySelector('.lesson-canvas.template-reading-task .studio-text-role.role-body');
@@ -656,11 +692,30 @@ function wire(){
     const id=button.dataset.selectCourse;
     if(!courseIsSelectable(id))return;
     const profile=COURSE_PROFILES.find(p=>p.id===id);
-    if(!profile)return;
-    lesson.courseLabel=profile.label;
-    if(lesson.screens?.[0])syncCoverMetadata(lesson.screens[0],lesson,{initial:true});
+    if(!profile||!confirm('Start a NEW '+profile.label+' lesson? Your current lesson will remain a separate saved draft.'))return;
+    try{snapshotDraft()}catch(e){status('Cannot preserve current draft: '+e.message);return;}
+    lesson=createCourseDraft(id,modelCreateLesson);
+    selectedScreen=selectedBlock=0;draftKey=`e-leap-studio-v1:${lesson.id}`;
     markDirty();render();
   }));
+  document.querySelector('[data-skill-path]')?.addEventListener('change',e=>{
+    if(resolveCourseProfile(lesson)?.kind!=='skills')return;
+    const id=e.target.value;
+    if(id&&!ADVANCED_SKILL_PATHS.some(x=>x.id===id))return;
+    lesson.advancedSkillId=id||null;markDirty();render();
+  });
+  document.querySelector('[data-open-draft]')?.addEventListener('change',e=>{
+    const id=e.target.value;if(!id||id===lesson.id)return;
+    try{
+      snapshotDraft();
+      const raw=localStorage.getItem('e-leap-studio-v1:'+id);
+      const loaded=raw?JSON.parse(raw):null;
+      if(!loaded||loaded.id!==id||!Array.isArray(loaded.screens))throw Error('Saved draft is unavailable.');
+      lesson=normaliseCourseIdentity(modelEnsureLessonSchema(loaded));
+      draftKey=`e-leap-studio-v1:${id}`;selectedScreen=selectedBlock=0;
+      localStorage.setItem(LAST_DRAFT_KEY,id);render();
+    }catch(e){status('Cannot open saved draft: '+e.message)}
+  });
   document.querySelectorAll('[data-path]').forEach(el=>el.addEventListener('input',()=>{applyPath(el.dataset.path,el.type==='number'?Number(el.value):el.value);markDirty();renderSoft()}));
   document.querySelectorAll('[contenteditable][data-edit]').forEach(el=>el.addEventListener('blur',()=>{const key=el.dataset.edit;if(key==='screen-title')currentScreen().title=el.textContent.trim();if(key==='screen-instruction')currentScreen().instruction=el.textContent.trim();if(key==='block-text')currentBlock().content.text=el.textContent.trim();markDirty();render()}));
   document.querySelector('[data-add-slide]')?.addEventListener('click',()=>{lesson.screens.splice(selectedScreen+1,0,newScreen());selectedScreen++;selectedBlock=0;markDirty();render()});
@@ -677,7 +732,14 @@ function wire(){
   document.querySelector('[data-quality]')?.addEventListener('click',()=>document.querySelector('[data-quality-panel]').classList.add('open'));
   document.querySelector('[data-close-quality]')?.addEventListener('click',()=>document.querySelector('[data-quality-panel]').classList.remove('open'));
   document.querySelector('[data-publish]')?.addEventListener('click',()=>{const blocking=runQuality().filter(x=>x[0]==='error');status(blocking.length?`Fix ${blocking.length} blocking issue(s) before publish`:(verifiedUser?.role==='admin'?'Publishing candidate…':'Publish request staged for review'));if(blocking.length){document.querySelector('[data-quality-panel]').classList.add('open')}else if(verifiedUser?.role==='admin'){saveService.publish(lesson).then(()=>status('Server acknowledged publication request. Verify the published version before sharing.')).catch(error=>{status('Publish failed: '+error.message);document.querySelector('[data-quality-panel]')?.classList.add('open')})}});
-  document.querySelector('[data-new]')?.addEventListener('click',()=>{if(!confirm('Start a new lesson? Your current draft remains saved locally.'))return;lesson=modelCreateLesson();selectedScreen=selectedBlock=0;draftKey=`e-leap-studio-v1:${lesson.id}`;markDirty();render()});
+  document.querySelector('[data-new]')?.addEventListener('click',()=>{
+    const profile=resolveCourseProfile(lesson);
+    if(!profile||!courseIsSelectable(profile.id)){status('Choose a valid Course Profile to create a new lesson.');return;}
+    if(!confirm('Start a NEW '+profile.label+' lesson? Your current draft remains saved locally.'))return;
+    try{snapshotDraft()}catch(e){status('Cannot preserve current draft: '+e.message);return;}
+    lesson=createCourseDraft(profile.id,modelCreateLesson);
+    selectedScreen=selectedBlock=0;draftKey=`e-leap-studio-v1:${lesson.id}`;markDirty();render();
+  });
   document.querySelector('[data-duplicate-lesson]')?.addEventListener('click',()=>{lesson=modelDuplicateLesson(lesson);draftKey=`e-leap-studio-v1:${lesson.id}`;markDirty();render()});
 }
 function renderSoft(){/* Inputs remain active; full render happens on structural actions or blur. */}
@@ -687,8 +749,8 @@ function applyPath(path,value){
   if(path==='screen.visualVariant'){const result=setVisualVariant(currentScreen(),value);if(result.ok){lesson.screens[selectedScreen]=result.screen;render()}return}
   if(path==='lesson.deliveryPolicy'){lesson.deliveryPolicy=normaliseDeliveryPolicy({id:value});render();return}
   const b=currentBlock(),a=b?.activity;
-  if(path==='lesson.title')lesson.title=value;else if(path==='lesson.courseLabel')lesson.courseLabel=value;else if(path==='lesson.lessonNumber')lesson.lessonNumber=value;
-  if(['lesson.title','lesson.courseLabel','lesson.lessonNumber'].includes(path)&&lesson.screens?.[0])syncCoverMetadata(lesson.screens[0],lesson,{initial:true});
+  if(path==='lesson.title')lesson.title=value;else if(path==='lesson.courseLabel')return;else if(path==='lesson.lessonNumber')lesson.lessonNumber=value;
+  if(['lesson.title','lesson.lessonNumber'].includes(path)&&lesson.screens?.[0])syncCoverMetadata(lesson.screens[0],lesson,{initial:true});
   if(path.startsWith('theme.'))lesson.theme[path.split('.')[1]]=value;else if(path==='screen.stage')currentScreen().stage=value;else if(path==='screen.learningPhase')currentScreen().learningPhase=value;else if(path==='screen.title')currentScreen().title=value;else if(path==='screen.instruction')currentScreen().instruction=value;else if(path==='screen.teacherNotes')currentScreen().teacherNotes=value;else if(path==='screen.layout')currentScreen().layout=value;
   else if(path==='block.content.text')b.content.text=value;else if(path==='block.content.role')b.content.role=value;else if(path.startsWith('block.content.'))b.content[path.split('.')[2]]=value;
   else if(path==='block.vocabulary')b.content.items=parseLines(value,3).map(x=>({word:x[0],meaning:x[1],example:x[2]}));else if(path==='block.grammarExamples')b.content.examples=value.split('\n').map(x=>x.trim()).filter(Boolean);
