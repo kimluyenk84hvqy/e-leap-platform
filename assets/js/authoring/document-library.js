@@ -14,6 +14,15 @@ export async function openDocumentSource(source){
   if(!response.ok)throw Error('Could not open document from Media Library.');
   return new File([await response.blob()],source.original_name,{type:source.content_type});
 }
+async function confirmDocument(sha256,bytes,mime){
+  const response=await fetch(endpoint+'?document=1',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({action:'confirm-document',sha256,bytes,mime})
+  });
+  const body=await response.json();
+  if(!response.ok||!body.ok)throw Error(body.error||'Could not verify the private upload.');
+  return body.assetId;
+}
 export async function persistDocumentMedia(assets,original){
   const items=[...assets];
   if(original){
@@ -27,9 +36,8 @@ export async function persistDocumentMedia(assets,original){
   for(const asset of items){
     const sha256=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',await asset.blob.arrayBuffer())))
       .map(byte=>byte.toString(16).padStart(2,'0')).join('');
-    const query={hash:sha256,bytes:String(asset.blob.size),mime:asset.type};
-    const existing=await libraryRequest(query);
-    if(existing.assetId){asset.id=existing.assetId;continue;}
+    const existing=await confirmDocument(sha256,asset.blob.size,asset.type);
+    if(existing){asset.id=existing;continue;}
     const extension=asset.name.split('.').pop().toLowerCase();
     const path='studio-library/document-'+crypto.randomUUID()+'/'+crypto.randomUUID()+'-'+extension;
     await uploadPresigned(path,asset.blob,{
@@ -38,10 +46,10 @@ export async function persistDocumentMedia(assets,original){
       clientPayload:JSON.stringify({name:asset.name.slice(-170),bytes:asset.blob.size,mime:asset.type,sha256,category:asset.category||asset.type.split('/')[0]})
     });
     for(let attempt=0;attempt<12;attempt++){
-      const saved=await libraryRequest(query);
-      if(saved.assetId){asset.id=saved.assetId;break;}
+      const saved=await confirmDocument(sha256,asset.blob.size,asset.type);
+      if(saved){asset.id=saved;break;}
       await new Promise(resolve=>setTimeout(resolve,1000));
     }
-    if(asset.id.startsWith('document:'))throw Error('Media upload has yet to finish. Try importing again shortly.');
+    if(asset.id.startsWith('document:'))throw Error('Private storage did not confirm this upload. Retry Save source only to check the same file again.');
   }
 }

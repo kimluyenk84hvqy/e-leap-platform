@@ -51,6 +51,33 @@ export default async function handler(req,res){
    const user=await requireAuth(req,res,['teacher','admin']);if(!user)return;
    return res.json({ok:true,uploadEnabled:enabled(),privateStoreVerified:false});
   }
+  if(documentMode&&req.method==='POST'&&req.body?.action==='confirm-document'){
+   if(!documentUploadEnabled())return err(res,503,'Private document upload is disabled on this Preview.');
+   if(!requireSameOrigin(req,res))return;
+   const user=await requireAuth(req,res,['teacher','admin']);if(!user)return;
+   const {sha256,bytes,mime}=req.body;
+   if(!hashOK(sha256)||!Number.isSafeInteger(bytes)||bytes<1||!limits[mime]||bytes>limits[mime])
+    return err(res,400,'Invalid document fingerprint.');
+   const owner=String(user.user_id),sql=getResearchDb();
+   await ensureSchema(sql);
+   const candidates=await sql`SELECT asset_id,blob_path,status FROM studio_media_v1
+    WHERE owner_id=${owner} AND client_sha256=${sha256} AND bytes=${bytes} AND content_type=${mime}
+    AND status IN ('active','pending') ORDER BY (status='active') DESC,created_at DESC LIMIT 6`;
+   const {head,BlobNotFoundError}=await import('@vercel/blob');
+   for(const item of candidates){
+    if(item.status==='active')return res.json({ok:true,assetId:item.asset_id});
+    let stored;
+    try{stored=await head(item.blob_path);}
+    catch(error){if(error instanceof BlobNotFoundError)continue;throw error;}
+    if(new URL(stored.url).hostname!=='u4agj1aqumrunmmz2.private.blob.vercel-storage.com'||
+      stored.size!==bytes||stored.contentType!==mime)continue;
+    const rows=await sql`UPDATE studio_media_v1 SET status='active'
+      WHERE asset_id=${item.asset_id} AND owner_id=${owner} AND status IN ('pending','active')
+      RETURNING asset_id`;
+    if(rows.length)return res.json({ok:true,assetId:rows[0].asset_id});
+   }
+   return res.json({ok:true,assetId:null});
+  }
   if(documentMode&&req.method==='POST'&&req.body?.type){
    if(!documentUploadEnabled())
     return err(res,503,'Private document upload is disabled on this Preview.');
@@ -76,11 +103,9 @@ export default async function handler(req,res){
      const {issueSignedToken}=await import('@vercel/blob');
      const validUntil=Date.now()+15*60*1000;
      const token=await issueSignedToken({pathname,operations:['put'],validUntil});
-     return {token,urlOptions:{
-      allowedContentTypes:[mime],maximumSizeInBytes:bytes,allowOverwrite:false,
-      tokenPayload:JSON.stringify({owner,name,mime,bytes,sha256,category,pathname}),
-      callbackUrl:base+'/api/studio-media?document=1'
-     }};
+     await sql`INSERT INTO studio_media_v1(owner_id,original_name,category,content_type,bytes,client_sha256,blob_path,status)
+       VALUES(${owner},${name},${category},${mime},${bytes},${sha256},${pathname},'pending')`;
+     return {token,urlOptions:{allowedContentTypes:[mime],maximumSizeInBytes:bytes,allowOverwrite:false}};
     },
     onUploadCompleted:async({blob,tokenPayload})=>{
      const meta=JSON.parse(tokenPayload||'{}');
