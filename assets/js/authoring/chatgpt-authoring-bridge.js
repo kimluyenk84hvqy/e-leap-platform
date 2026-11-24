@@ -103,6 +103,8 @@ export function importChatGPTResponse(lesson,response,request,{createScreen,crea
  if(issues.length)return {ok:false,issues};
  if(!lesson||lesson.status!=='draft'||lesson.id!==request.lessonId||lesson.courseProfileId!==request.courseProfileId)
   return {ok:false,issues:['Review does not belong to the active draft']};
+ if(lesson.resourceBank||lesson.screens?.some(s=>s.sourceReviewDraft||s.resourceStage))
+  return {ok:false,issues:['Restricted source review drafts cannot be overwritten or synced by ChatGPT import. Create a separate ordinary lesson draft.']};
  if(typeof createScreen!=='function'||typeof createBlock!=='function')throw Error('Studio factories required');
  const previous={
   title:lesson.title,screens:clone(lesson.screens),

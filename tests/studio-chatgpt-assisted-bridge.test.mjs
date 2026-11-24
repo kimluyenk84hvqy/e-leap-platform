@@ -75,6 +75,10 @@ test('Import refuses wrong course, wrong review ID, missing critique, invented c
  }
  const altered={...x,id:'lesson-other'};
  assert.equal(importChatGPTResponse(altered,a,q,{createScreen,createBlock}).ok,false);
+ const restricted={...x,screens:[{...x.screens[0],sourceReviewDraft:{text:'confidential'}}]};
+ assert.equal(importChatGPTResponse(restricted,a,q,{createScreen,createBlock}).ok,false);
+ const resource={...x,resourceBank:{privateMedia:true}};
+ assert.equal(importChatGPTResponse(resource,a,q,{createScreen,createBlock}).ok,false);
 });
 test('Explicit teacher checks and substantive note required; approval remains preview only',()=>{
  const x=lesson(),q=request(x),a=response(q);
