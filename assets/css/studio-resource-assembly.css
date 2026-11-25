@@ -250,3 +250,89 @@
 .rs-aims-layout .rs-aims-header h1{font-weight:900;text-transform:uppercase;letter-spacing:.02em}
 .rs-picture-feature .rs-image{object-position:center center}
 @media(max-width:820px){.rs-canvas .rs-cross-layout{grid-template-columns:1fr}.rs-canvas .rs-cross-board-panel{max-height:none}.rs-canvas .rs-cross-full .rs-cross-cell{width:clamp(14px,2.1cqw,23px);height:clamp(14px,2.1cqw,23px)}}
+/* R3: scoped presentation reading layout; independent scroll, no font compression. */
+.lesson-canvas.auditorium-preview:has(.aud-reading-regions){height:1080px;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+.lesson-canvas.auditorium-preview:has(.aud-reading-regions) .canvas-hero{flex:0 0 auto;max-height:38%;overflow:auto}
+.lesson-canvas.auditorium-preview:has(.aud-reading-regions) .canvas-body{display:flex!important;flex-direction:column;flex:1;min-height:0;gap:12px;padding:16px 24px;overflow:hidden}
+.lesson-canvas.auditorium-preview:has(.aud-reading-regions) .combo-step-nav{flex:0 0 auto;max-height:20%;overflow:auto}
+.aud-reading-regions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;flex:1;min-height:0;min-width:0}
+.aud-reading-region{overflow:auto;overscroll-behavior:contain;min-width:0;min-height:0;padding:12px;border:1px solid #9eb6a4;border-radius:12px;background:#f7fbf8;scrollbar-gutter:stable}
+.lesson-canvas.auditorium-preview .aud-reading-source .studio-text-role.role-body{font-size:var(--aud-reading,29px);white-space:pre-wrap;line-height:1.55}
+.lesson-canvas.auditorium-preview .local-preview-item .local-preview-key{font-size:var(--aud-key,30px);color:#921522;font-weight:800}
+.lesson-canvas.auditorium-preview .local-preview-evidence,.lesson-canvas.auditorium-preview .local-preview-why{font-size:var(--aud-why,29px)}
+.lesson-canvas.auditorium-preview .local-preview-item input,.lesson-canvas.auditorium-preview .local-preview-item select,.lesson-canvas.auditorium-preview .local-preview-item textarea{font-size:var(--aud-body,30px);box-sizing:border-box}
+.lesson-canvas.auditorium-preview .local-preview-item button,.lesson-canvas.auditorium-preview .interaction-row button{font-size:var(--aud-control,21px)}
+@media(max-width:800px){.aud-reading-regions{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) minmax(0,1fr)}}
+/* R4 mapped functional review; blank templates and publication gates unchanged. */
+.mapped-functional{padding:30px;display:flex;flex-direction:column;gap:24px;background:#f7fbf8;color:#073326;font-family:Poppins,Arial,sans-serif;overflow:auto}
+.mapped-functional.mapped-auditorium{height:1080px;min-height:0;font-size:30px;line-height:1.45}
+.mapped-functional-identity{font-weight:800;line-height:1.4;font-size:26px}
+.mapped-functional-cover{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;flex:1;min-height:0;align-items:center}
+.mapped-functional-cover:has(img){grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.mapped-functional-cover>div{min-width:0;overflow-wrap:anywhere}
+.mapped-functional h1{font-size:54px;line-height:1.12;margin:0;overflow-wrap:anywhere}
+.mapped-functional-cover h1{font-size:72px}
+.mapped-functional-photo{display:block;width:100%;height:100%;max-height:740px;min-height:0;object-fit:contain}
+.mapped-functional-review{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;flex:1;min-height:0;overflow:auto}
+.mapped-functional-review section{border:1px solid #9eb6a4;border-radius:12px;padding:20px;background:white;overflow-wrap:anywhere}
+.mapped-functional-review h2{font-size:35px;margin:0;color:#103d2b}
+.mapped-thank-you{background:#103f31;color:#fff}
+@media(max-width:800px){.mapped-functional-cover:has(img),.mapped-functional-review{grid-template-columns:1fr}}
+.local-answer-box{border:1px solid #a4bba9;border-radius:10px;min-width:0;overflow:hidden;background:#fff}
+.local-answer-box>.local-preview-key{border:0;border-top:1px solid #d7a8a8;border-radius:0;background:#fff7f4}
+.lesson-canvas.auditorium-preview:has(.aud-reading-regions) .canvas-body{align-items:stretch}
+.aud-reading-regions{width:100%;align-self:stretch;grid-template-rows:minmax(0,1fr)}
+@media(max-width:800px){.aud-reading-regions{grid-template-rows:minmax(0,1fr) minmax(0,1fr)}}
+.lesson-canvas.auditorium-preview .aud-reading-source .studio-text-role.role-body{max-height:none;overflow:visible}
+.lesson-canvas.auditorium-preview .aud-reading-source .block[data-slot="passage"] .studio-text-role{max-height:none;overflow:visible}
+/* R5.2: bounded standard auditorium slides; content remains scrollable at full size. */
+.lesson-canvas.auditorium-preview.layout-standard:not(:has(.aud-reading-regions)){height:1080px;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+.lesson-canvas.auditorium-preview.layout-standard:not(:has(.aud-reading-regions)) .canvas-hero{flex:0 0 auto;max-height:38%;overflow:auto}
+.lesson-canvas.auditorium-preview.layout-standard:not(:has(.aud-reading-regions)) .canvas-body{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;align-content:start;padding-bottom:24px}
+.local-preview-evidence mark,.studio-text-role mark[data-preview-evidence]{background:#ffe16b;color:#162219;font-weight:800}
+/* R5.2 shared picture selection, scoped to Studio preview. */
+.picture-reveal{grid-column:1/-1;width:100%;min-width:0;display:grid;gap:14px}
+.picture-reveal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.picture-choice{border:2px solid #9eb6a4;border-radius:12px;background:#fff;color:#173f38;display:flex;flex-direction:column;align-items:center;padding:12px;gap:8px;font:inherit;cursor:pointer}
+.picture-choice[aria-pressed="true"]{border-color:#174832;outline:3px solid #c8ed79}
+.picture-choice img,.picture-missing{width:100%;height:220px;object-fit:contain;display:grid;place-items:center}
+.picture-model{border:2px solid #9eb6a4;border-radius:12px;padding:16px;color:#921522;background:#fff;font-weight:800;font-size:var(--aud-key,30px);white-space:pre-wrap}
+.picture-model[hidden]{display:none}
+.picture-reveal-controls{display:flex;gap:12px;flex-wrap:wrap}
+
+/* R5.2A: presentation focus only; editor and specialist renderer contracts unchanged. */
+.studio-shell.studio-presentation{position:fixed;inset:0;z-index:100;background:#F2F7F4;overflow:auto}
+.studio-presentation>.studio-topbar,.studio-presentation>.studio-workspaces,.studio-presentation .studio-layout>.studio-left,.studio-presentation .studio-layout>.studio-right,.studio-presentation .canvas-toolbar,.studio-presentation .preview-strip{display:none!important}
+.studio-presentation>.studio-layout{display:block;min-height:0;width:100%;height:100%}
+.studio-presentation .studio-center{box-sizing:border-box;height:100%;padding:8px 12px;display:flex;flex-direction:column;gap:8px;min-width:0;min-height:0}
+.studio-presentation-nav{display:flex;flex:0 0 auto;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.studio-presentation-nav .studio-btn,.studio-presentation-count{font-size:21px;line-height:1.3}
+.studio-presentation-count{font-weight:700;color:#173f38}
+.studio-presentation-nav [data-exit-presentation]{margin-left:auto}
+.studio-presentation .studio-center>.canvas-wrap{flex:1;min-height:0;width:100%;max-width:1920px;overflow:auto;scrollbar-gutter:auto}
+.studio-presentation .lesson-canvas.auditorium-preview,.studio-presentation .lesson-canvas.mapped-auditorium{box-sizing:border-box;height:100%;min-height:0;width:100%;max-width:none}
+/* Preserve certified aspect ratio rather than clipping its fixed-slot design. */
+.studio-presentation .certified-wrap{max-width:min(1920px,100%,calc((100dvh - 92px)*16/9))!important;margin-inline:auto}
+@media(max-width:800px){.studio-presentation .studio-center{padding:6px;gap:6px}.studio-presentation-nav{gap:6px}.studio-presentation-nav .studio-btn,.studio-presentation-count{font-size:16px}.studio-presentation-nav [data-exit-presentation]{margin-left:0}.studio-presentation .certified-wrap{max-width:100%!important}}
+/* Match the previous fixed-height selectors' specificity; reserve room for navigation. */
+.studio-presentation .lesson-canvas.auditorium-preview:has(.aud-reading-regions),.studio-presentation .lesson-canvas.auditorium-preview.layout-standard:not(:has(.aud-reading-regions)){height:100%;min-height:0}
+
+/* R5.2B: auditorium content arrangements; no changes to editor or learner runtime. */
+.lesson-canvas.auditorium-preview .aud-writing-regions{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.lesson-canvas.auditorium-preview .aud-writing-regions .aud-reading-source .studio-text-role{font-size:var(--aud-reading,29px);white-space:pre-wrap;line-height:1.55;max-height:none;overflow:visible}
+.lesson-canvas.auditorium-preview .aud-language-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;width:100%;align-items:stretch;align-self:stretch}
+.lesson-canvas.auditorium-preview .aud-language-grid[data-columns="2"]{grid-template-columns:repeat(2,minmax(0,1fr))}
+.lesson-canvas.auditorium-preview .aud-language-grid[data-columns="4"]{grid-template-columns:repeat(2,minmax(0,1fr))}
+.lesson-canvas.auditorium-preview .aud-language-card{min-width:0;background:#fff;border:1px solid #c3d9c5;border-top:6px solid #527a28;border-radius:14px;padding:24px;overflow-wrap:anywhere}
+.lesson-canvas.auditorium-preview .aud-language-card .block{margin:0;padding:0;border:none;box-shadow:none;background:transparent}
+.lesson-canvas.auditorium-preview .aud-language-card .studio-text-role{font-size:var(--aud-reading,29px);line-height:1.65;white-space:pre-wrap}
+.lesson-canvas.auditorium-preview .aud-language-card .studio-text-role::first-line{font-weight:800;color:#103f31}
+@media(max-width:800px){.lesson-canvas.auditorium-preview .aud-writing-regions{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) minmax(0,1fr)}.lesson-canvas.auditorium-preview .aud-language-grid[data-columns]{grid-template-columns:1fr}}
+
+/* R5.2C: preserve DOM order and full font sizes; compact independent activity runs. */
+.lesson-canvas.auditorium-preview .aud-compact-content{width:100%;min-width:0;display:grid;gap:16px;align-content:start}
+.lesson-canvas.auditorium-preview .aud-compact-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start;min-width:0}
+.lesson-canvas.auditorium-preview .aud-compact-grid>.block{min-width:0;margin:0;overflow-wrap:anywhere}
+.lesson-canvas.auditorium-preview .aud-compact-images img,.lesson-canvas.auditorium-preview .aud-picture-task-regions .aud-reading-source img{width:100%;height:auto;max-height:420px;object-fit:contain}
+.lesson-canvas.auditorium-preview .aud-picture-task-regions{grid-template-columns:minmax(0,0.8fr) minmax(0,1.2fr)}
+@media(max-width:800px){.lesson-canvas.auditorium-preview .aud-compact-grid,.lesson-canvas.auditorium-preview .aud-picture-task-regions{grid-template-columns:1fr}}

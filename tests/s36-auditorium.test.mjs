@@ -1,0 +1,15 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {AUDITORIUM,auditoriumVariables,auditAuditorium} from '../assets/js/authoring/auditorium-quality.js';
+const lesson=blocks=>({theme:{fontFamily:'Poppins'},screens:[{stage:'Reading',instruction:'Read and share.',blocks}]});
+const text={type:'text',content:{text:'The fox lives in the forest.'}};
+const fill={type:'fill',activity:{items:[{id:'1'}],evidenceByItem:{'1':{quote:'lives in the forest',why:'It identifies habitat.'}}}};
+test('golden typography and valid variables',()=>{assert.equal(AUDITORIUM.title,54);assert.equal(AUDITORIUM.reading,29);assert.match(auditoriumVariables(),/--aud-body:30px/);assert.doesNotMatch(auditoriumVariables(),/--aud-width/)});
+test('valid quotation in reading step',()=>assert.equal(auditAuditorium(lesson([text,fill])).filter(x=>x[0]!=='info').length,0));
+test('missing evidence warns',()=>assert.ok(auditAuditorium(lesson([text,{type:'fill',activity:{items:[{id:'1'}]}}])).some(x=>x[1].includes('Evidence & Why'))));
+test('unmatched quotation warns, not automatic verification',()=>assert.ok(auditAuditorium(lesson([fill])).some(x=>x[1].includes('not found'))));
+test('internal blocks not counted as learner content',()=>assert.ok(auditAuditorium(lesson([{...text,audience:'internal'}])).some(x=>x[0]==='error')));
+test('photo presence not treated as photo authenticity',()=>assert.ok(auditAuditorium(lesson([{type:'image',content:{assetId:'x'}}])).some(x=>x[0]==='info'&&x[1].includes('actual photo'))));
+test('missing image is blocking',()=>assert.ok(auditAuditorium(lesson([{type:'image',content:{}}])).some(x=>x[0]==='error')));
+test('specialised renderer never certified by this audit',()=>assert.ok(auditAuditorium({screens:[{certifiedTemplate:{}}]}).some(x=>x[1].includes('specialised renderer'))));
+test('empty combo step blocks',()=>assert.ok(auditAuditorium({screens:[{blocks:[text],combo:{steps:[{id:'while'}]}}]}).some(x=>x[0]==='error')));
+test('audit read only',()=>{const l=lesson([text,fill]);const before=JSON.stringify(l);auditAuditorium(l);assert.equal(JSON.stringify(l),before)});

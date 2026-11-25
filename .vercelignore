@@ -1,0 +1,6 @@
+# Deployment-only exclusions: transport archives retained in GitHub.
+/U2.2_UPLOAD_02_MEDIA.zip
+/U2.2_UPLOAD_03_MEDIA.zip
+/U2.2_UPLOAD_05_MEDIA.zip
+/U2.2_UPLOAD_06_MEDIA.zip
+/packages/u3-1-online.zip

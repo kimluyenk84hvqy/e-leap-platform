@@ -1,3 +1,10 @@
+import {mapSharedPedagogy,pedagogyVisible,neutralPhoto,renderPedagogy,wirePedagogy} from './authoring/shared-pedagogy.js';
+import {mapPictureReveal,activePictureGroup,renderPictureReveal,wirePictureReveal} from './authoring/picture-reveal.js';
+import {renderReadingRegions} from './authoring/advanced-layout.js';
+import {createComposite} from './authoring/composite-slide.js';
+import {interactiveSupported,renderInteractivePreview,wireInteractivePreview} from './authoring/interactive-preview.js';
+import {auditAuditorium,auditoriumVariables} from './authoring/auditorium-quality.js';
+import {previewRefinement,createRefinementHistory} from './authoring/smart-refinement.js';
 import {openDocumentImport} from './authoring/document-import-dialog.js';
 import {documentMediaUrl,loadDocumentAssets,hasLocalDocumentMedia} from './authoring/document-import.js';
 import {ELeapRuntimeContext} from './runtime-context.js';
@@ -14,6 +21,7 @@ import {E_LEAP_SMART_TEMPLATES,createSmartTemplate} from './smart-templates.js';
 import {normaliseDeliveryPolicy,E_LEAP_DELIVERY_POLICIES} from './assessment-policy.js';
 import {auditLesson} from './quality-gate.js';
 import {ELeapAuthoringSaveService} from './authoring-save-service.js';
+import {validateNativePackage,nativeSourceReview,resolvePrivateMedia,sourceFromNativeDraft} from './authoring/native-blueprint.js';
 import {suggestCoursePlan} from './authoring/course-adaptive-plan.js';
 import {inspectPdfLesson,requestPdfAiLesson,toUnverifiedLessonDraft,getPdfAiCapability} from './authoring/pdf-ai-intake.js';
 import {createReviewRequest,importChatGPTResponse,revertChatGPTRevision,recordTeacherReview,validateChatGPTResponse} from './authoring/chatgpt-authoring-bridge.js';
@@ -35,10 +43,14 @@ import {showMethodReviewGallery} from './authoring/method-review-gallery.js';
 import {createMethodTemplateScreen,renderMethodTemplateCanvas,renderMethodTemplateProperties,changeMethodStep} from './authoring/method-template-builder.js';
 import {METHOD_COMBOS} from './authoring/method-combo-catalog.js';
 import {syncCoverMetadata,unlinkCoverSlot} from './authoring/cover-metadata-sync.js';
-import {FUNCTION_SLIDES,createFunctionalSlide,renderFunctionalSlide,renderFunctionalSlideProps} from './authoring/functional-slide-library.js';
+import {FUNCTION_SLIDES,createFunctionalSlide,renderFunctionalSlide,renderFunctionalSlideProps, mapFunctionalDraft} from './authoring/functional-slide-library.js';
 import {mountLayoutEditor,resetLayout,layoutSnapshot,createLayoutHistory,saveLayoutPreset,listLayoutPresets,applyLayoutPreset,setRegionBorder,borderForRegion,isTextLayoutRegion,textStyleForRegion,setRegionTextStyle,LAYOUT_TEXT_FONTS} from './authoring/visual-layout-editor.js';
 
+import {loadWorkspaceIndex,mountWorkspacePanel} from './authoring/workspace-panel.mjs';
+
 const root=document.getElementById('studio');
+let workspaceExpanded=false;
+const workspaceSelection={};
 let verifiedUser=null;
 try{
   const response=await fetch('/api/auth/me',{credentials:'same-origin',cache:'no-store'});
@@ -73,6 +85,16 @@ let layoutEditMode=false,layoutGuidesVisible=true,selectedLayoutRegion=null;
 let propertiesVisible=true; // UI-only: hiding the editor pane never changes lesson data.
 const DRAFT_INDEX_KEY='e-leap-studio-draft-index-v1',LAST_DRAFT_KEY='e-leap-studio-last-draft-id-v1';
 const layoutHistory=createLayoutHistory();
+const refinementHistory=createRefinementHistory();
+function canRefine(){return canOpenStudio&&['teacher','admin'].includes(previewRole)&&lesson.status==='draft'&&!savingDraft&&!pendingSave&&!pdfAiBusy;}
+function refineDesign(kind,value){
+ if(!canRefine()){status('Open an editable draft and finish saving first.');render();return false;}
+ const screen=currentScreen(),p=previewRefinement(screen,kind,value);
+ if(!p.ok){render();status(p.reason);return false;}
+ if(!confirm(`Change design: ${p.beforeLabel} → ${p.afterLabel}? Content and answers stay unchanged.${p.clearsOverrides?' Custom layout adjustments will be reset (Undo restores them).':''}`)){render();return false;}
+ const r=refinementHistory.apply(lesson,screen,p);if(!r.ok){status(r.reason);return false;}
+ layoutHistory.clear(currentScreen());lesson.screens[selectedScreen]=r.screen;selectedLayoutRegion=null;markDirty();render();return true;
+}
 const certifiedQuestionIndex=new Map(),certifiedAnswers=new Set(),certifiedResponses=new Map();
 
 if(!canOpenStudio){
@@ -212,20 +234,25 @@ async function saveDraft(){
 }
 function status(msg){const e=document.querySelector('[data-studio-status]');if(e)e.textContent=msg}
 
+let presentationReturnRole='teacher';
+function renderPresentationNavigation(index,total){
+ return `<nav class="studio-presentation-nav" aria-label="Presentation navigation"><button type="button" class="studio-btn" data-presentation-move="-1" ${index===0?'disabled':''}>Previous</button><span class="studio-presentation-count" aria-live="polite">Slide ${index+1} / ${total}</span><button type="button" class="studio-btn primary" data-presentation-move="1" ${index>=total-1?'disabled':''}>Next</button><button type="button" class="studio-btn" data-exit-presentation>Exit Presentation</button></nav>`;
+}
 function render(){
   if(lesson.screens?.[0]&&syncCoverMetadata(lesson.screens[0],lesson,{initial:true})&&!draftKey.startsWith('e-leap-studio-server-copy:'))markDirty();
   const s=currentScreen(); if(selectedBlock>=s.blocks.length)selectedBlock=Math.max(0,s.blocks.length-1);
   if(s.combo&&!activeComboBlocks(s).includes(s.blocks[selectedBlock]))selectedBlock=Math.max(0,s.blocks.indexOf(activeComboBlocks(s)[0]));
-  root.innerHTML=`<section class="studio-shell">
+  root.innerHTML=`<section class="studio-shell ${previewRole==='presentation'?'studio-presentation':''}">
     <header class="studio-topbar">
       <div class="studio-brand"><div class="studio-logo">E</div><div><b>E-LEAP Authoring Studio</b><small data-studio-status>${dirty?'Unsaved changes':'Draft ready'}</small></div></div>
       <div class="studio-top-actions">
         <a class="studio-btn primary" href="./index.html?view=gallery" target="_blank" rel="noopener">Template Gallery & Review</a><a class="studio-btn" href="./index.html?view=foundation" target="_blank" rel="noopener">Foundation Lab</a><a class="studio-btn" href="./index.html?view=methods" target="_blank" rel="noopener">Teaching Combo Library</a><button class="studio-btn" data-open-template-gallery>Choose Template</button><button type="button" class="studio-btn" data-import-document>Import PDF / PPTX</button><label class="studio-btn" style="cursor:pointer">Import Resource Pack<input type="file" accept=".zip" data-import-resource style="display:none"></label><a class="studio-btn" href="../index.html">← Platform</a><a class="studio-btn" href="?pilot=life-u12" title="Open the canonical LIFE Unit 12 acceptance draft">LIFE U12 pilot</a><select class="studio-btn" data-open-draft aria-label="Open a saved Studio draft"><option value="">Open saved draft…</option>${[...new Map([...readDraftIndex(),...serverDraftIndex.map(d=>({...d,course:d.courseProfileId}))].map(d=>[d.id,d])).values()].map(d=>`<option value="${esc(d.id)}">${esc(d.course||d.courseProfileId)} · ${esc(d.title)}</option>`).join('')}</select><button class="studio-btn" data-new>New lesson</button><button class="studio-btn" data-duplicate-lesson>Duplicate</button><button class="studio-btn" data-toggle-properties aria-pressed="${propertiesVisible?'true':'false'}">${propertiesVisible?'Hide properties':'Show properties'}</button><button class="studio-btn" data-quality>Quality check</button><button class="studio-btn" data-export>Export JSON</button><button class="studio-btn" data-save>Save draft</button><button class="studio-btn primary" data-publish>${verifiedUser?.role==='admin'?'Publish candidate':'Request publish'}</button>
       </div>
     </header>
+    <details class="studio-workspaces" style="padding:8px 12px" ${workspaceExpanded?'open':''}><summary>Course Workspaces</summary><div data-workspace-host></div></details>
     <div class="studio-layout ${propertiesVisible?'':'properties-collapsed'}">
       <aside class="studio-left"><div class="studio-pane-head"><div><h2>Lesson</h2><small>${esc(lesson.lessonNumber||'')} · ${esc(lesson.title||'')}</small></div></div><div class="studio-arc-strip" aria-label="Lesson learning arc">${LEARNING_ARC.map(p=>`<span title="${esc(p.purpose)}" class="${phaseForScreen(s)===p.id?'active':''}">${esc(p.label)}</span>`).join('')}</div><div class="slide-list">${lesson.screens.map((x,i)=>slideItem(x,i)).join('')}</div><div class="left-footer"><button class="studio-btn primary" data-add-slide style="width:100%">+ Add slide</button></div></aside>
-      <main class="studio-center"><div class="canvas-toolbar"><div class="studio-preview-modes"><b style="font-size:13px">Preview as</b>${['teacher','admin','student','guest','presentation'].map(r=>`<button class="studio-btn ${previewRole===r?'primary':''}" data-preview-role="${r}">${cap(r)}</button>`).join('')}</div><div class="studio-layout-tools">
+      <main class="studio-center">${previewRole==='presentation'?renderPresentationNavigation(selectedScreen,lesson.screens.length):''}<div class="canvas-toolbar"><div class="studio-preview-modes"><b style="font-size:13px">Preview as</b>${['teacher','admin','student','guest','presentation'].map(r=>`<button class="studio-btn ${previewRole===r?'primary':''}" data-preview-role="${r}">${cap(r)}</button>`).join('')}</div><div class="studio-layout-tools">
  <button type="button" class="studio-btn ${layoutEditMode?'primary':''}" data-layout-toggle ${['student','guest','presentation'].includes(previewRole)?'disabled':''}>${layoutEditMode?'Finish layout':'Edit layout'}</button>
  ${layoutEditMode?`<button type="button" class="studio-btn" data-layout-guides>${layoutGuidesVisible?'Hide guides':'Show guides'}</button><label class="studio-border-control">Box border <select data-layout-border><option value="default">Template default</option><option value="none">No border</option><option value="solid">Solid border</option><option value="dashed">Dashed border</option></select></label>`:''}
  ${layoutEditMode&&selectedLayoutRegion&&isTextLayoutRegion(selectedLayoutRegion)?`<div class="studio-text-toolbar">
@@ -236,18 +263,48 @@ function render(){
  <button type="button" class="studio-btn" data-layout-text-reset>Reset text</button>
  </div>`:''}
  ${layoutEditMode?'<button type="button" class="studio-btn" data-layout-undo>Undo</button><button type="button" class="studio-btn" data-layout-redo>Redo</button><button type="button" class="studio-btn" data-layout-reset>Reset layout</button><button type="button" class="studio-btn" data-layout-save-preset>Save as My Template</button>':''}${layoutEditMode&&listLayoutPresets(localStorage,s).length?'<select class="studio-layout-presets" data-layout-preset-select><option value="">My Templates…</option>'+listLayoutPresets(localStorage,s).map(name=>'<option value="'+esc(name)+'">'+esc(name)+'</option>').join('')+'</select>':''}
- <span class="status">${esc(s.stage)} · Slide ${selectedScreen+1}/${lesson.screens.length}</span></div></div>${renderCanvas(s)}</main>
+ ${canRefine()?'<button type="button" class="studio-btn" data-refinement-undo>Undo design change</button>':''}<span class="status">${esc(s.stage)} · Slide ${selectedScreen+1}/${lesson.screens.length}</span></div></div>${renderCanvas(s)}</main>
       <aside class="studio-right"><div class="studio-pane-head"><div><h2>Properties</h2><small>${currentBlock()?cap(typeLabel(currentBlock().type)):'Slide'}</small></div></div><div class="properties">${renderProperties()}</div></aside>
     </div>
     ${renderAddDialog()}${renderQualityPanel()}
   </section>`;
   wire();
+  wireCourseWorkspaces();
+}
+function wireCourseWorkspaces(){
+  if(!canOpenStudio)return;
+  const host=root.querySelector('[data-workspace-host]');if(!host)return;
+  const panel=host.parentElement;panel.ontoggle=()=>{workspaceExpanded=panel.open;if(panel.open)load()};
+  let started=false;
+  function load(){if(started)return;started=true;host.textContent='Loading course map…';
+    loadWorkspaceIndex().then(index=>{if(!host.isConnected)return;mountWorkspacePanel(host,index,{
+      activeId:resolveCourseProfile(lesson)?.id,activeLesson:lesson.lessonNumber,selection:workspaceSelection,
+      registry:{...E_LEAP_ACTIVITY_TYPES,...TEACHING_COMBOS,...METHOD_COMBOS,...FUNCTION_SLIDES},
+      canCreate:id=>!source&&!qs.get('localReview')&&!qs.get('importFoundation')&&!lesson.resourceBank&&!lesson.screens?.some(s=>s.sourceReviewDraft)&&courseIsSelectable(id),
+      onCreate:({id,lesson:chosen,skill})=>{
+        if(!canOpenStudio||source||qs.get('localReview')||qs.get('importFoundation')||lesson.resourceBank||lesson.screens?.some(s=>s.sourceReviewDraft)||!courseIsSelectable(id)||savingDraft||pendingSave||pdfAiBusy){status('Finish the current review or save before starting another lesson.');return;}
+        if(chosen){try{chosen=index.lesson(id,chosen.key)}catch(e){return;}}
+        if(id==='advanced-skills'?!skill||chosen:!chosen||skill)return;
+        if(skill&&!ADVANCED_SKILL_PATHS.some(x=>x.id===skill))return;
+        if(!confirm('Create a separate draft? The current draft will be preserved locally.'))return;
+        try{snapshotDraft()}catch(e){status('Cannot preserve current draft: '+e.message);return;}
+        clearTimeout(autosaveTimer);
+        const next=createCourseDraft(id,modelCreateLesson);
+        if(chosen){next.lessonNumber=chosen.id;next.title=chosen.unitTitle;}
+        if(skill){next.advancedSkillId=skill;next.courseLibraryShellId=skill;}
+        lesson=next;adaptivePlan=null;pdfAiFile=null;pdfAiExtracted=null;pdfAiSourceGate=null;pdfAiBatchPlan=null;pdfAiRights=false;pdfAiConsent=false;chatgptIncludeSource=false;chatgptApprovalNote='';chatgptResponseText='';chatgptApprovalChecks={source:false,media:false,activities:false};openedServerDraftId=null;openedServerRevision=0;selectedScreen=selectedBlock=0;draftKey=`e-leap-studio-v1:${lesson.id}`;
+        workspaceExpanded=false;markDirty();render();
+      }
+    })}).catch(e=>{started=false;if(host.isConnected)host.textContent='Course map unavailable. Close and reopen to retry.'});
+  }if(panel.open)load();
 }
 function slideItem(s,i){return `<button class="slide-item ${i===selectedScreen?'active':''}" data-slide="${i}"><span class="slide-thumb">${i+1}</span><span class="slide-title"><b>${esc(s.title||'Untitled')}</b><small>${esc(s.stage||'Slide')}</small></span><span class="slide-more">⋮</span></button>`}
 function renderCanvas(s){
  if(s.sourceReviewDraft&&['student','guest','presentation'].includes(previewRole))return '<div class="canvas-wrap"><section class="lesson-canvas"><p class="studio-no-content">This source activity is awaiting teacher review and is not available to learners.</p></section></div>';
- if(s.resourceStage)return renderResourceStage(s,lesson.resourceBank,previewRole);if(s.functionalDraft)return renderFunctionalSlide(s,previewRole);if(s.methodDraft)return renderMethodTemplateCanvas(s,previewRole,u6SourceByScreen.get(s.id)||null,u6AnswersByScreen.get(s.id+':'+(u6AccountByScreen.get(s.id)||'A'))||{},u6AccountByScreen.get(s.id)||'A',u6SourceErrors.get(s.id)||'');if(s.certifiedTemplate)return renderCertifiedVisual(s,previewRole,certifiedQuestionIndex.get(s.id)||0,certifiedAnswers.has(s.id),certifiedResponses.get(s.id+':'+(certifiedQuestionIndex.get(s.id)||0))||'');const t=lesson.theme;return `<div class="canvas-wrap" style="--canvas-font:${cssFont(t.fontFamily)};--canvas-title-size:${Number(t.titleSize)||36}px;--canvas-body-size:${Number(t.bodySize)||18}px;--canvas-text:${safeColor(t.textColor,'#173f38')};--canvas-accent:${safeColor(t.accentColor,'#0d7d6d')};--canvas-bg:${safeColor(t.backgroundColor,'#fff')}"><div class="preview-strip"><b>${cap(previewRole)} preview</b><span>${esc(t.preset)} · ${esc(t.fontFamily)}</span></div><section class="lesson-canvas layout-${esc(s.layout||'standard')} template-${esc(s.templateId||'custom')} variant-${esc(s.visualVariant||'default')} preview-${esc(previewRole)}"><header class="canvas-hero"><div class="canvas-kicker">${esc(s.stage||'')}</div><h1 class="canvas-title" contenteditable="${!['student','guest','presentation'].includes(previewRole)}" data-edit="screen-title">${esc(s.title||'')}</h1><p class="canvas-instruction" contenteditable="${!['student','guest','presentation'].includes(previewRole)}" data-edit="screen-instruction">${esc(s.instruction||'')}</p></header><div class="canvas-body">${renderComboSteps(s)}${renderRoleReviewBlocks(s)}${['student','guest','presentation'].includes(previewRole)&&!s.blocks.some(b=>(!b.comboStep||b.comboStep===comboStep(s)?.id)&&learnerBlockReady(b))?'<p class="studio-no-content">This activity is not yet available.</p>':''}${['student','guest','presentation'].includes(previewRole)?'':'<div class="add-block"><button class="studio-btn primary" data-open-library>+ Add content / activity</button></div>'}</div></section></div>`}
+ if(s.resourceStage)return renderResourceStage(s,lesson.resourceBank,previewRole);if(s.functionalDraft)return renderFunctionalSlide(s,previewRole);if(s.methodDraft)return renderMethodTemplateCanvas(s,previewRole,u6SourceByScreen.get(s.id)||null,u6AnswersByScreen.get(s.id+':'+(u6AccountByScreen.get(s.id)||'A'))||{},u6AccountByScreen.get(s.id)||'A',u6SourceErrors.get(s.id)||'');if(s.certifiedTemplate)return renderCertifiedVisual(s,previewRole,certifiedQuestionIndex.get(s.id)||0,certifiedAnswers.has(s.id),certifiedResponses.get(s.id+':'+(certifiedQuestionIndex.get(s.id)||0))||'');const t=lesson.theme;return `<div class="canvas-wrap" style="${auditoriumVariables()};--canvas-font:${cssFont(t.fontFamily)};--canvas-title-size:${Number(t.titleSize)||36}px;--canvas-body-size:${Number(t.bodySize)||18}px;--canvas-text:${safeColor(t.textColor,'#173f38')};--canvas-accent:${safeColor(t.accentColor,'#0d7d6d')};--canvas-bg:${safeColor(t.backgroundColor,'#fff')}"><div class="preview-strip"><b>${cap(previewRole)} preview</b><span>${esc(t.preset)} · ${esc(t.fontFamily)}</span></div><section class="lesson-canvas ${previewRole==='presentation'?'auditorium-preview':''} layout-${esc(s.layout||'standard')} template-${esc(s.templateId||'custom')} variant-${esc(s.visualVariant||'default')} preview-${esc(previewRole)}"><header class="canvas-hero"><div class="canvas-kicker">${esc(s.stage||'')}</div><h1 class="canvas-title" contenteditable="${!['student','guest','presentation'].includes(previewRole)}" data-edit="screen-title">${esc(s.title||'')}</h1><p class="canvas-instruction" contenteditable="${!['student','guest','presentation'].includes(previewRole)}" data-edit="screen-instruction">${esc(s.instruction||'')}</p></header><div class="canvas-body">${renderComboSteps(s)}${renderPedagogy(s,previewRole)}${previewRole==='presentation'&&!s.sourceReviewDraft?renderReadingRegions(s,renderBlock,renderRoleReviewBlocks):renderRoleReviewBlocks(s)}${['student','guest','presentation'].includes(previewRole)&&!s.blocks.some(b=>(!b.comboStep||b.comboStep===comboStep(s)?.id)&&learnerBlockReady(b))?'<p class="studio-no-content">This activity is not yet available.</p>':''}${['student','guest','presentation'].includes(previewRole)?'':'<div class="add-block"><button class="studio-btn primary" data-open-library>+ Add content / activity</button></div>'}</div></section></div>`}
 function renderRoleReviewBlocks(s){
+ const pictures=activePictureGroup(s);
+ if(pictures&&!s.sourceReviewDraft){const hidden=new Set(pictures.flatMap(p=>[p.modelId,p.imageId]));return s.blocks.map((b,i)=>hidden.has(b.id)?'':renderBlock(b,i)).join('')+renderPictureReveal(s,previewRole);}
  if(!s.sourceReviewDraft||s.sourceReviewDraft.jigsawGroupSize!==3)
   return s.blocks.map((b,i)=>renderBlock(b,i)).join('');
  // A/B/C selection exists only in Teacher/Admin review. This display
@@ -260,27 +317,27 @@ function renderRoleReviewBlocks(s){
 }
 function renderComboSteps(s){if(!s.combo?.steps?.length)return '';return `<nav class="combo-step-nav" aria-label="Learning steps">${s.combo.steps.map((step,i)=>`<button type="button" data-combo-step="${esc(step.id)}" class="combo-step-button ${comboStep(s)?.id===step.id?'active':''}" aria-current="${comboStep(s)?.id===step.id?'step':'false'}"><small>${i+1}</small>${esc(step.label)}</button>`).join('')}</nav>${s.sourceReviewDraft&&['assigned','expert'].includes(s.combo.activeStep)?'<div class="jigsaw-assignment-picker"><strong>Review Student A / B / C · not live learner access</strong> '+['A','B','C'].map(label=>'<button type="button" class="studio-btn" data-jigsaw-select="'+label+'" aria-pressed="'+(label===(jigsawPreviewAccounts.get(s.id)||'A')?'true':'false')+'">'+label+'</button>').join('')+'</div>':''}`}
 function slotForBlock(b){return ['image','video','audio'].includes(b.type)?'media':b.type==='vocabulary'?'word-list':b.type==='grammar-note'?'grammar':b.type==='text'?'passage':'activity'}
-function renderBlock(b,i){if(b.audience==='teacher'||b.audience==='internal')return '';if(b.jigsawAssignment&&['assigned','expert'].includes(comboStep(currentScreen())?.id)&&b.jigsawAssignment!==(jigsawPreviewAccounts.get(currentScreen().id)||'A'))return '';if(b.comboStep&&comboStep(currentScreen())?.id!==b.comboStep)return '';if(!learnerBlockReady(b)&&['student','guest','presentation'].includes(previewRole))return '';return `<section class="block ${i===selectedBlock?'selected':''}" data-slot="${slotForBlock(b)}" data-block="${i}">${blockPreview(b)}</section>`}
+function renderBlock(b,i){if(!pedagogyVisible(currentScreen(),b,previewRole))return '';if(b.audience==='teacher'||b.audience==='internal')return '';if(b.jigsawAssignment&&['assigned','expert'].includes(comboStep(currentScreen())?.id)&&b.jigsawAssignment!==(jigsawPreviewAccounts.get(currentScreen().id)||'A'))return '';if(b.comboStep&&comboStep(currentScreen())?.id!==b.comboStep)return '';if(!learnerBlockReady(b)&&['student','guest','presentation'].includes(previewRole))return '';return `<section class="block ${i===selectedBlock?'selected':''}" data-slot="${slotForBlock(b)}" data-block="${i}">${blockPreview(b)}</section>`}
 function allowedMediaUrl(src){const s=String(src||'').trim();return (/^https:\/\/[^\s"'<>]+$/i.test(s)||/^(?:\/(?!\/)|\.\.?\/)[^\s"'<>]+$/.test(s))?s:''}
 function blockPreview(b){
   const mediaSrc=allowedMediaUrl(b.content?.src)||documentMediaUrl(b.content?.assetId);
   const visibleLabels=!(['student','guest','presentation'].includes(previewRole));
   if(b.type==='text')return `<div class="studio-text-role role-${esc(b.content?.role||'body')}" contenteditable="${!['student','guest','presentation'].includes(previewRole)}" data-edit="block-text">${esc(b.content?.text||'')}</div>`;
   if(b.type==='image'&&['student','guest','presentation'].includes(previewRole)&&!b.content?.src&&!b.content?.assetId)return '<div class="media-placeholder">Image unavailable</div>';
-  if(b.type==='image'&&mediaSrc)return `<div class="block-label" ${visibleLabels?'':'hidden'}>Image</div><figure class="studio-asset"><img loading="lazy" src="${esc(mediaSrc)}" alt="${esc(b.content?.alt||'')}"/><figcaption>${esc(b.content?.caption||'')}</figcaption></figure>`;
+  if(b.type==='image'&&mediaSrc)return `<div class="block-label" ${visibleLabels?'':'hidden'}>Image</div><figure class="studio-asset"><img loading="lazy" src="${esc(mediaSrc)}" alt="${esc(neutralPhoto(currentScreen(),b)?'Selected animal photograph':b.content?.alt||'')}"/><figcaption>${esc(neutralPhoto(currentScreen(),b)?'':b.content?.caption||'')}</figcaption></figure>`;
   if(b.type==='image')return `<div class="block-label" ${visibleLabels?'':'hidden'}>Image</div><div class="media-placeholder"><div><strong>▧ ${esc(b.content?.caption||'Image')}</strong>${b.content?.src?esc(b.content.src):(b.content?.assetId?`Asset: ${esc(b.content.assetId)}`:'Choose an image from Media Library or paste a media path.')}</div></div>`;
   if(b.type==='audio'&&['student','guest','presentation'].includes(previewRole)&&!b.content?.src&&!b.content?.assetId)return '<div class="media-placeholder">Audio unavailable</div>';
   if(b.type==='audio'&&mediaSrc)return `<div class="block-label" ${visibleLabels?'':'hidden'}>Audio</div><audio controls preload="none" src="${esc(mediaSrc)}"></audio>`;
   if(b.type==='audio')return `<div class="block-label" ${visibleLabels?'':'hidden'}>Audio</div><div class="media-placeholder"><div><strong>♪ ${esc(b.content?.label||'Audio')}</strong>${b.content?.src?esc(b.content.src):(b.content?.assetId?`Asset: ${esc(b.content.assetId)}`:'Add audio source')}</div></div>`;
   if(b.type==='video'&&['student','guest','presentation'].includes(previewRole)&&!b.content?.src&&!b.content?.assetId)return '<div class="media-placeholder">Video unavailable</div>';
-  if(b.type==='video'&&mediaSrc)return `<div class="block-label" ${visibleLabels?'':'hidden'}>Video</div><video controls preload="metadata" src="${esc(mediaSrc)}"></video>`;
+  if(b.type==='video'&&mediaSrc)return `<div class="block-label" ${visibleLabels?'':'hidden'}>Video</div><video controls preload="none" src="${esc(mediaSrc)}"></video>`;
   if(b.type==='video')return `<div class="block-label" ${visibleLabels?'':'hidden'}>Video</div><div class="media-placeholder"><div><strong>▶ ${esc(b.content?.label||'Video')}</strong>${b.content?.src?esc(b.content.src):(b.content?.assetId?`Asset: ${esc(b.content.assetId)}`:'Add video source')}</div></div>`;
   if(b.type==='vocabulary')return `<div class="block-label" ${visibleLabels?'':'hidden'}>Vocabulary</div><div class="activity-card">${(b.content?.items||[]).map(x=>`<p><b>${esc(x.word)}</b> — ${esc(x.meaning)} <small>${esc(x.example||'')}</small></p>`).join('')}</div>`;
   if(b.type==='grammar-note')return `<div class="block-label" ${visibleLabels?'':'hidden'}>Grammar note</div><div class="activity-card"><h3>${esc(b.content?.rule||'Rule')}</h3><p><b>${esc(b.content?.form||'')}</b></p>${(b.content?.examples||[]).map(x=>`<p>${esc(x)}</p>`).join('')}</div>`;
-  const a=b.activity||{};return `<div class="block-label" ${visibleLabels?'':'hidden'}>${esc(typeLabel(b.type))}</div><div class="activity-card"><div class="activity-prompt">${esc(a.prompt||'')}</div>${activityDemo(b.type,a)}${visibleLabels?`<div class="interaction-row">${controlChips(b.type,a).map(x=>`<span class="${x.on?'on':''}">${esc(x.label)}</span>`).join('')}</div>`:''}</div>`;
+  const a=b.activity||{};return `<div class="block-label" ${visibleLabels?'':'hidden'}>${esc(typeLabel(b.type))}</div><div class="activity-card"><div class="activity-prompt">${esc(a.prompt||'')}</div>${!currentScreen().sourceReviewDraft&&interactiveSupported(b)?`${['listening','video-question'].includes(b.type)&&allowedMediaUrl(a.media?.src)?(b.type==='listening'?`<audio controls preload="none" src="${esc(allowedMediaUrl(a.media.src))}"></audio>`:`<video controls preload="none" src="${esc(allowedMediaUrl(a.media.src))}"></video>`):''}${renderInteractivePreview(b,previewRole)}`:activityDemo(b.type,a)}${visibleLabels&&(currentScreen().sourceReviewDraft||!interactiveSupported(b))?`<div class="interaction-row">${controlChips(b.type,a).map(x=>`<span class="${x.on?'on':''}">${esc(x.label)}</span>`).join('')}</div>`:''}</div>`;
 }
 function activityDemo(type,a){
-  if(['mcq','multi-select','true-false','poll','listening','video-question'].includes(type))return `<div class="option-list">${(a.options||[]).map(o=>`<div class="option-demo"><i>${esc(o.id||'')}</i><span>${esc(o.label||'')}</span></div>`).join('')}</div>`;
+  if(['mcq','multi-select','true-false','poll','listening','video-question'].includes(type))return `${['listening','video-question'].includes(type)&&allowedMediaUrl(a.media?.src)?(type==='listening'?`<audio controls preload="none" src="${esc(allowedMediaUrl(a.media.src))}"></audio>`:`<video controls preload="none" src="${esc(allowedMediaUrl(a.media.src))}"></video>`):''}<div class="option-list">${(a.options||[]).map(o=>`<div class="option-demo"><i>${esc(o.id||'')}</i><span>${esc(o.label||'')}</span></div>`).join('')}</div>`;
   if(type==='fill')return (a.items||[]).map(x=>{
     const e=a.evidenceByItem?.[x.id],authorised=['teacher','admin','presentation'].includes(previewRole);
     return `<div class="evidence-question"><div class="option-demo">${esc(x.prompt||'')} <b>[ answer ]</b></div>${e&&authorised?`<div class="evidence-actions"><button type="button" class="studio-btn" data-evidence-quote="${esc(e.quote)}">Evidence</button><button type="button" class="studio-btn" data-evidence-why="${esc(e.why)}">Why?</button></div>`:''}</div>`;
@@ -421,10 +478,12 @@ function lessonProps(){
   <p class="helper" role="status">${esc(pdfAiMessage)}</p>
   ${lesson.pdfAiReview?`<div class="token-note">AI-generated draft requires textbook verification and teacher approval. Issues: ${esc([...(lesson.pdfAiReview.issues||[]),...(lesson.pdfAiReview.missingMedia||[])].join('; ')||'No reviewer issues recorded; source and media checks remain mandatory.')}</div>`:''}
  </div>
- <div class="studio-course-selector"><b>Course-guided recommendations (not AI-generated)</b>
+ <div class="studio-course-selector"><b>Teaching method recommendations</b>
  <label>Lesson focus <select data-adaptive-focus>${['Reading','Listening','Speaking','Writing','Grammar','Vocabulary'].map(k=>`<option value="${k}" ${adaptiveFocus===k?'selected':''}>${k}</option>`).join('')}</select></label>
+ <label>Task type <select data-adaptive-kind>${[['','General'],['facts','Find facts'],['inference','Inference'],['sections','Independent reading sections'],['sequence','Sequence events'],['roles','Role-play'],['gap','Information gap'],['genre','Genre writing'],['discovery','Discover rules']].map(([k,v])=>`<option value="${k}" ${adaptivePlan?.taskKind===k?'selected':''}>${v}</option>`).join('')}</select></label>
+ <label>Minutes <input type="number" min="1" max="180" data-adaptive-minutes value="${adaptivePlan?.minutes??''}"></label><label>Learners <input type="number" min="1" max="200" data-adaptive-learners value="${adaptivePlan?.learnerCount??''}"></label>
  <button class="studio-btn" type="button" data-adaptive-plan>Recommend activities</button>
- ${adaptivePlan?`<p class="helper">${adaptivePlan.suggestions.map(x=>esc(x.label)).join(' · ')||esc(adaptivePlan.issues.join('; '))}. The three AI stages still require provider connection, source verification and teacher approval.</p>`:''}
+ ${adaptivePlan?.profileId===lesson.courseProfileId&&adaptivePlan?.lessonId===lesson.id&&adaptivePlan?.focus===adaptiveFocus?`<div class="helper">${adaptivePlan.suggestions.map(x=>`<p><b>${esc(x.label)}</b> · ${esc(x.steps.map(s=>s.label).join(' → '))}<br>${esc(x.blockers.join(' · ')||'Review required')}</p>`).join('')}</div>`:''}
  </div>
  ${active?.preferredMethods?.length?`<div class="helper">Methods to consider (subject to textbook analysis): ${esc(active.preferredMethods.join(' · '))}</div>`:''}
  ${field('Lesson title','lesson.title',lesson.title)}
@@ -457,7 +516,7 @@ function colorField(label,path,val){return `<div class="studio-field"><label>${e
 function area(label,path,val){return `<div class="studio-field"><label>${esc(label)}</label><textarea data-path="${esc(path)}">${esc(val??'')}</textarea></div>`}
 function select(label,path,val,opts){return `<div class="studio-field"><label>${esc(label)}</label><select data-path="${esc(path)}">${opts.map(o=>`<option value="${esc(o)}" ${String(o)===String(val)?'selected':''}>${esc(o)}</option>`).join('')}</select></div>`}
 function renderAddDialog(){return `<div class="add-panel" data-add-panel><div class="add-dialog"><div class="add-dialog-head"><div><h2>Add content or activity</h2><small>Choose a reusable E-LEAP block. Behavior comes from the shared engine.</small></div><button class="studio-btn" data-close-library>Close</button></div><div class="activity-library"><section class="library-group"><h3>Certified slide templates</h3><div class="library-grid">${Object.entries(CERTIFIED_TEMPLATES).map(([id,t])=>`<button class="library-card" data-add-certified="${id}"><div class="library-icon">▣</div><b>${esc(t.label)}</b><small>${acceptedLayoutVariants(id).length?esc(acceptedLayoutVariants(id).map(v=>t.variants.find(x=>x.id===v)?.label||v).join(' · ')):'Use draft layout · Review optional'}</small></button>`).join('')}</div></section><section class="library-group"><h3>Lesson Cover / Consolidation / Thank You</h3><div class="library-grid">${Object.entries(FUNCTION_SLIDES).map(([key,t])=>`<button class="library-card" data-add-functional="${key}"><div class="library-icon">▣</div><b>${esc(t.label)}</b><small>${esc(t.description)}</small></button>`).join('')}</div></section><section class="library-group"><h3>Teaching combos · Warm-up / Lead-in first</h3><div class="library-grid">${['Warm-up / Lead-in','Vocabulary','Grammar','Listening','Reading','Speaking','Writing'].map(group=>Object.entries(METHOD_COMBOS).filter(([,m])=>m.group===group).map(([key,t])=>`<button class="library-card" data-add-combo="${key}"><div class="library-icon">◈</div><b>${esc(t.label)}</b><small>${esc(t.description)} · Structure only</small></button>`).join('')).join('')}</div></section><section class="library-group"><h3>Other activity templates · Draft</h3><div class="library-grid">${Object.entries(E_LEAP_SMART_TEMPLATES).filter(([key])=>!['cover','aims','leadin'].includes(key)).map(([key,t])=>`<button class="library-card" data-add-template="${key}"><div class="library-icon">✦</div><b>${esc(t.label)}</b><small>${esc(t.description)}</small></button>`).join('')}</div></section>${Object.entries(LIBRARY).map(([group,items])=>`<section class="library-group"><h3>${esc(group)}</h3><div class="library-grid">${items.map(([type,icon,label,desc])=>`<button class="library-card" data-add-type="${type}"><div class="library-icon">${icon}</div><b>${esc(label)}</b><small>${esc(desc)}</small></button>`).join('')}</div></section>`).join('')}</div></div></div>`}
-function runQuality(){const issues=auditLesson(lesson);if(lesson.assistedAuthoring?.reviews&&lesson.assistedAuthoring?.teacherApproved!==true)issues.push(['error','ChatGPT-assisted lesson requires original-source, media and teacher review.']);if(lesson.pdfAiReview?.teacherApproved!==true)issues.push(['error','AI-generated lesson requires source verification and teacher approval before publishing.']);issues.push(['error','Three-AI authoring, server Publish and live-device QA have not passed. Publishing is disabled.']);for(const msg of validateCourseIdentity(lesson))issues.push(['error',msg]);if(lesson.resourceBank){issues.push(['error','Resource Bank assembly is a Preview draft. Publish requires complete source, audio Evidence, image and role-control QA.']);if(lesson.resourceBank.quality?.audioEvidence!=='VERIFIED')issues.push(['error','Audio Evidence segments are not verified; do not publish.']);}return issues;}
+function runQuality(){const issues=[...auditLesson(lesson),...auditAuditorium(lesson)];if(lesson.assistedAuthoring?.reviews&&lesson.assistedAuthoring?.teacherApproved!==true)issues.push(['error','ChatGPT-assisted lesson requires original-source, media and teacher review.']);if(lesson.pdfAiReview?.teacherApproved!==true)issues.push(['error','AI-generated lesson requires source verification and teacher approval before publishing.']);issues.push(['error','Three-AI authoring, server Publish and live-device QA have not passed. Publishing is disabled.']);for(const msg of validateCourseIdentity(lesson))issues.push(['error',msg]);if(lesson.resourceBank){issues.push(['error','Resource Bank assembly is a Preview draft. Publish requires complete source, audio Evidence, image and role-control QA.']);if(lesson.resourceBank.quality?.audioEvidence!=='VERIFIED')issues.push(['error','Audio Evidence segments are not verified; do not publish.']);}return issues;}
 function renderQualityPanel(){const issues=runQuality();const good=issues.filter(x=>x[0]==='error').length===0;return `<aside class="quality-panel" data-quality-panel><div class="quality-head"><b>Quality check</b><button class="studio-btn ghost" data-close-quality>×</button></div><div class="quality-body">${good?'<div class="quality-item ok">No blocking issues. Lesson can be staged for publishing.</div>':''}${issues.map(([k,m])=>`<div class="quality-item ${k}">${esc(m)}</div>`).join('')||'<div class="quality-item ok">All checks passed.</div>'}</div></aside>`}
 function revealEvidence(quote){
   const textNode=document.querySelector('.lesson-canvas.template-reading-task .studio-text-role.role-body');
@@ -477,13 +536,17 @@ async function importNativeLessonPackage(file){
  if(!file||file.size>12000000)throw Error('Choose a lesson JSON package under 12 MB.');
  const target=lesson;
  if(target.status!=='draft'||target.resourceBank||target.screens?.some(x=>x.sourceReviewDraft||x.resourceStage))throw Error('Open an ordinary editable lesson draft.');
+ const fingerprint=JSON.stringify(target);
  const pkg=JSON.parse(await file.text());
+ const title=validateNativePackage(pkg,target);
+ const sourcePackageReview=nativeSourceReview(pkg);
+ if(!pkg.courseProfileId&&!confirm('Legacy package: confirm this belongs to '+target.courseLabel+'.'))return;
  if(pkg.schema!=='eleap-native-lesson-package-v1'||String(pkg.lessonNumber).toLowerCase()!==String(target.lessonNumber).toLowerCase())throw Error('This package does not match the active lesson number.');
  if(!Array.isArray(pkg.screens)||!pkg.screens.length||pkg.screens.length>80||!Array.isArray(pkg.assets)||pkg.assets.length>40)throw Error('Invalid package size.');
  const limit=(v,n)=>{if(typeof v!=='string'||v.length>n)throw Error('Invalid text content.');return v;};
  const nonempty=(v,n)=>{const t=limit(v,n);if(!t.trim())throw Error('Empty teaching content.');return t;};
  const arr=(v,n)=>{if(!Array.isArray(v)||!v.length||v.length>n)throw Error('Invalid activity data.');return v;};
- const allowed=new Set(['text','image','mcq','multi-select','fill','matching','discussion','writing']);
+ const allowed=new Set(['text','image','mcq','multi-select','fill','matching','discussion','writing','audio','video','listening','video-question','true-false','ordering','categorising','poll']);
  const media=new Map();
  for(const a of pkg.assets){
    if(!/^document:[0-9a-f-]{36}$/.test(a.id)||media.has(a.id)||a.type!=='image/jpeg'||!/^[-a-zA-Z0-9_]+\.jpg$/.test(a.name)||typeof a.base64!=='string'||a.base64.length>2000000)throw Error('Invalid packaged image.');
@@ -493,38 +556,51 @@ async function importNativeLessonPackage(file){
  }
  const screens=pkg.screens.map(raw=>{
    const out=modelCreateScreen(nonempty(raw.stage,100),nonempty(raw.title,140));
-   out.instruction=nonempty(raw.instruction,500);
+   out.instruction=raw.functional?limit(raw.instruction||'',500):nonempty(raw.instruction,500);
    if(!E_LEAP_LAYOUT_IDS.includes(raw.layout))throw Error('Unknown layout.');
    out.layout=raw.layout;if(Number.isInteger(raw.sourcePage)&&raw.sourcePage>0)out.sourcePage=raw.sourcePage;
-   out.blocks=arr(raw.blocks,80).map(b=>{
+   out.blocks=(raw.functional&&raw.blocks.length===0?[]:arr(raw.blocks,80)).map(b=>{
      if(!allowed.has(b.type))throw Error('Unsupported block type.');
      const z=modelCreateBlock(b.type);
      if(b.type==='text'){z.content.text=nonempty(b.content?.text,10000);z.content.role=['body','eyebrow','display','heading'].includes(b.content?.role)?b.content.role:'body';}
      else if(b.type==='image'){
        if(!media.has(b.content?.assetId))throw Error('Missing packaged image.');
        Object.assign(z.content,{assetId:b.content.assetId,src:'',alt:nonempty(b.content.alt,200),caption:limit(b.content.caption||'',400),fit:'contain'});
+     }else if(['audio','video'].includes(b.type)){
+       Object.assign(z.content,{assetId:b.content.assetId,src:'',label:nonempty(b.content.label||b.type,200),transcript:limit(b.content.transcript||'',20000)});
      }else{
        const a=b.activity||{}, t=z.activity;
        t.prompt=nonempty(a.prompt,1000);
-       if(['mcq','multi-select'].includes(b.type)){
+       if(['mcq','multi-select','true-false','listening','video-question','poll'].includes(b.type)){
          t.options=arr(a.options,12).map(o=>({id:nonempty(o.id,20),label:nonempty(o.label,500)}));
          if(new Set(t.options.map(o=>o.id)).size!==t.options.length)throw Error('Duplicate option ID.');
-         t.answerKey=arr(a.answerKey,12).map(k=>nonempty(k,20));
-         if(t.answerKey.some(k=>!t.options.some(o=>o.id===k))||(b.type==='mcq'&&t.answerKey.length!==1))throw Error('Invalid answer key.');
+         if(b.type==='poll'){delete t.answerKey;t.points=0;}else t.answerKey=arr(a.answerKey,12).map(k=>nonempty(k,20));
+         if(b.type!=='poll'&&(t.answerKey.some(k=>!t.options.some(o=>o.id===k))||(['mcq','true-false','listening','video-question'].includes(b.type)&&t.answerKey.length!==1)))throw Error('Invalid answer key.');
+         if(a.evidenceByItem?.choice){const e=a.evidenceByItem.choice;t.evidenceByItem={choice:{quote:limit(e.quote||'',500),why:nonempty(e.why,700)}};}
+         if(['listening','video-question'].includes(b.type))t.media={assetId:a.media.assetId,src:'',kind:b.type==='listening'?'audio':'video'};
        }else if(b.type==='fill'){
          t.items=arr(a.items,16).map(x=>({id:nonempty(x.id,20),prompt:nonempty(x.prompt,1800),answers:arr(x.answers,10).map(y=>nonempty(y,300))}));
-         if(a.evidenceByItem){t.evidenceByItem={};for(const x of t.items){const e=a.evidenceByItem[x.id];if(e)t.evidenceByItem[x.id]={quote:nonempty(e.quote,500),why:nonempty(e.why,700)};}}
+         if(a.evidenceByItem){t.evidenceByItem={};for(const x of t.items){const e=a.evidenceByItem[x.id];if(e)t.evidenceByItem[x.id]={quote:limit(e.quote||'',500),why:nonempty(e.why,700)};}}
+       }else if(b.type==='ordering'){t.items=arr(a.items,30).map(x=>({id:nonempty(x.id,20),text:nonempty(x.text,1000)}));t.answerKey=[...a.answerKey];
+       }else if(b.type==='categorising'){t.categories=[...a.categories];t.items=arr(a.items,30).map(x=>({id:nonempty(x.id,20),text:nonempty(x.text,1000),category:x.category}));
        }else if(b.type==='matching'){
-         t.pairs=arr(a.pairs,16).map(x=>({id:nonempty(x.id,20),left:nonempty(x.left,500),right:nonempty(x.right,500)}));
+         t.pairs=arr(a.pairs,16).map(x=>({id:nonempty(x.id,20),left:nonempty(x.left,500),right:nonempty(x.right,500)}));if(a.evidenceByItem){t.evidenceByItem={};for(const x of t.pairs){const e=a.evidenceByItem[x.id];if(e)t.evidenceByItem[x.id]={quote:limit(e.quote||'',500),why:nonempty(e.why,700)};}}
        }else{t.modelAnswer=limit(a.modelAnswer||'',3000);t.rubric=limit(a.rubric||'',1000);}
      }
      if(b.comboStep)z.comboStep=nonempty(b.comboStep,40);
      return z;
    });
+   if(raw.functional){out.functionalDraft=mapFunctionalDraft(raw.functional);out.templateId='functional-slide';}
+   if(raw.composite){out.combo=createComposite(raw);out.instruction=out.combo.steps[0].instruction;}
    if(raw.comboId){const base=createTeachingCombo(raw.comboId)[0];if(!base)throw Error('Unknown teaching combo.');out.combo=base.combo;out.templateId=base.templateId;for(const step of out.combo.steps){if(!out.blocks.some(b=>b.comboStep===step.id))throw Error('Empty teaching step: '+step.label);if(raw.stepInstructions?.[step.id])step.instruction=nonempty(raw.stepInstructions[step.id],500);}if(out.blocks.some(b=>b.comboStep&&!out.combo.steps.some(x=>x.id===b.comboStep)))throw Error('Unknown teaching step.');out.instruction=out.combo.steps[0].instruction;}
-   if(raw.certified){const c=makeCertifiedTemplate(raw.certified.family);if(!c)throw Error('Unknown certified family.');const spec=CERTIFIED_TEMPLATES[c.family];if(!spec.variants.some(v=>v.id===raw.certified.variant))throw Error('Unknown certified variant.');c.variant=raw.certified.variant;for(const [k,slot] of Object.entries(spec.slots)){if(k==='imageSrc')continue;c.values[k]=limit(raw.certified.values?.[k]||'',slot.limit);if(spec.required.includes(k)&&!c.values[k].trim())throw Error('Missing certified slot: '+k);}if(spec.required.includes('imageSrc')&&!out.blocks.some(b=>b.type==='image'))throw Error('Certified image missing.');out.certifiedTemplate=c;out.templateId=spec.templateId;}
+   if(raw.certified){const c=makeCertifiedTemplate(raw.certified.family);if(!c)throw Error('Unknown certified family.');const spec=CERTIFIED_TEMPLATES[c.family];if(!spec.variants.some(v=>v.id===raw.certified.variant))throw Error('Unknown certified variant.');c.variant=raw.certified.variant;for(const [k,slot] of Object.entries(spec.slots)){if(k==='imageSrc')continue;c.values[k]=limit(raw.certified.values?.[k]||'',slot.limit);if(spec.required.includes(k)&&!c.values[k].trim())throw Error('Missing certified slot: '+k);}if(spec.required.includes('imageSrc')&&!out.blocks.some(b=>b.type==='image'))throw Error('Certified image missing.');if(spec.required.includes('imageSrc')&&!c.values.imageAlt?.trim())throw Error('Certified image alt missing.');out.certifiedTemplate=c;out.templateId=spec.templateId;const issues=validateCertifiedTemplate(c,{draft:true});if(issues.length)throw Error(issues.join('; '));}
+   if(raw.pictureReveal)out.pictureReveal=mapPictureReveal(raw,out);
+   if(raw.sharedPedagogy)out.sharedPedagogy=mapSharedPedagogy(raw,out);
    return out;
  });
+ for(const id of media.keys())if(!screens.some(sc=>sc.blocks.some(b=>b.type==='image'&&b.content.assetId===id)))media.delete(id);
+ await resolvePrivateMedia(screens);
+ if(lesson!==target||JSON.stringify(target)!==fingerprint)throw Error('Active draft changed.');
  if(!confirm('Replace the active '+target.lessonNumber+' draft with '+screens.length+' populated slides? The previous revision will be retained.'))return;
  if(media.size){
    const {persistDocumentMedia}=await import('./authoring/document-library.js');
@@ -537,17 +613,21 @@ async function importNativeLessonPackage(file){
      b.content.assetId=id;b.content.src='/api/studio-media?document=1&open='+encodeURIComponent(id);
    }
  }
- for(const screen of screens){if(screen.certifiedTemplate){const c=screen.certifiedTemplate;if(c.family!=='aims')c.values.imageSrc=screen.blocks.find(b=>b.type==='image')?.content.src||'';const issues=validateCertifiedTemplate(c,{draft:true}).filter(x=>!x.includes('loaded and verified'));if(issues.length)throw Error(issues.join('; '));}}
- if(lesson!==target)throw Error('Active draft changed. No lesson content replaced.');
+ for(const sc of screens)if(sc.functionalDraft){const img=sc.blocks.find(b=>b.type==='image');if(img){sc.functionalDraft.values.image=img.content.src;sc.functionalDraft.values.imageAlt=img.content.alt;}}
+ for(const sc of screens)if(sc.certifiedTemplate){const c=sc.certifiedTemplate;if(c.family!=='aims')c.values.imageSrc=sc.blocks.find(b=>b.type==='image')?.content.src||'';const issues=validateCertifiedTemplate(c,{draft:true}).filter(x=>!x.includes('loaded and verified'));if(issues.length)throw Error(issues.join('; '));}
+ if(lesson!==target||JSON.stringify(target)!==fingerprint)throw Error('Active draft changed. No lesson content replaced.');
  const previous={title:target.title,theme:modelClone(target.theme),screens:modelClone(target.screens),assistedAuthoring:modelClone({...target.assistedAuthoring,history:[]})};
  const history=(target.assistedAuthoring?.history||[]).slice(-2);history.push({revision:Number(target.assistedAuthoring?.revision||0),snapshot:previous});
- const title=nonempty(pkg.title,140);
  snapshotDraft();
- lesson={...target,title,screens,theme:pkg.designProfile==='objective-b2' ? {...target.theme,preset:'Objective First B2',fontFamily:'Poppins',titleSize:48,bodySize:26,textColor:'#203c18',accentColor:'#527a28',backgroundColor:'#F5F9EC'}:target.theme,assistedAuthoring:{schema:'e-leap-chatgpt-revision-v1',revision:Number(target.assistedAuthoring?.revision||0)+1,status:'teacher-review-required',teacherApproved:false,sourceVerified:false,history,reviews:{academic:{findings:['Source-based lesson package imported.'],issues:['Teacher must verify source wording and keys.']},visual:{findings:['Editable native layouts and verified private image references.'],issues:['Inspect slide fit and all media.']},critical:{findings:['Previous revision retained.'],issues:['Live interaction and role QA pending.'],missingMedia:[]}}}};
+ lesson={...target,title,screens,theme:pkg.designProfile==='objective-b2'&&target.courseProfileId==='objective-first-b2'?{...target.theme,preset:'Objective First B2',fontFamily:'Poppins',titleSize:48,bodySize:26,textColor:'#203c18',accentColor:'#527a28',backgroundColor:'#F5F9EC'}:target.theme,assistedAuthoring:{schema:'e-leap-chatgpt-revision-v1',revision:Number(target.assistedAuthoring?.revision||0)+1,status:'teacher-review-required',teacherApproved:false,sourceVerified:false,history,sourcePackageReview,reviews:{academic:{findings:['Source-based lesson package imported.'],issues:['Teacher must verify source wording and keys.',...(sourcePackageReview?.notes||[])]},visual:{findings:['Editable native layouts and verified private image references.'],issues:['Inspect slide fit and all media.']},critical:{findings:['Previous revision retained.'],issues:['Live interaction and role QA pending.'],missingMedia:[]}}}};
  selectedScreen=selectedBlock=0;ensureSchema();markDirty();render();
 }
 
 function wire(){
+ wirePedagogy(root,currentScreen(),previewRole,render);
+ document.querySelectorAll('[data-picture-reveal]').forEach(host=>wirePictureReveal(host,currentScreen(),previewRole));
+ document.querySelectorAll('[data-local-interaction]').forEach(host=>{const b=currentScreen().blocks[Number(host.closest('[data-block]')?.dataset.block)];if(b&&interactiveSupported(b))wireInteractivePreview(host,b,previewRole);});
+ document.querySelector('[data-refinement-undo]')?.addEventListener('click',()=>{if(!canRefine())return;const r=refinementHistory.undo(lesson,currentScreen());if(!r.ok){status(r.reason);return;}layoutHistory.clear(currentScreen());lesson.screens[selectedScreen]=r.screen;selectedLayoutRegion=null;markDirty();render();});
   document.querySelector('[data-native-lesson-file]')?.addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{await importNativeLessonPackage(file);}catch(error){status('Lesson package import failed: '+error.message);}finally{e.target.value='';}});
   document.querySelector('[data-import-document]')?.addEventListener('click',()=>{
     const target=lesson;
@@ -796,8 +876,7 @@ function wire(){
     lesson.screens[selectedScreen]=result.screen;markDirty();render();
   });
   document.querySelectorAll('[data-certified-variant]').forEach(b=>b.onclick=()=>{
-    const next=changeCertifiedVariant(currentScreen().certifiedTemplate,b.dataset.certifiedVariant);
-    if(!next)return;currentScreen().certifiedTemplate=next;markDirty();render();
+    refineDesign('certified',b.dataset.certifiedVariant);
   });
   document.querySelectorAll('[data-u51-photo-choice]').forEach(b=>b.addEventListener('click',()=>{
     const data=currentScreen()?.certifiedTemplate;if(data?.family!=='cover')return;
@@ -867,8 +946,10 @@ function wire(){
     const note=document.querySelector('.studio-evidence-note');if(note){note.hidden=false;note.textContent=button.dataset.evidenceWhy;}
   }));
   document.querySelectorAll('[data-slide]').forEach(b=>b.onclick=()=>{selectedScreen=+b.dataset.slide;selectedBlock=0;selectedLayoutRegion=null;render()});
-  document.querySelectorAll('[data-block]').forEach(b=>b.onclick=e=>{if(e.target.closest('[contenteditable],[data-evidence-quote],[data-evidence-why]'))return;selectedBlock=+b.dataset.block;render()});
-  document.querySelectorAll('[data-preview-role]').forEach(b=>b.onclick=()=>{previewRole=b.dataset.previewRole;certifiedAnswers.clear();render()});
+  document.querySelectorAll('[data-block]').forEach(b=>b.onclick=e=>{if(e.target.closest('[contenteditable],[data-evidence-quote],[data-evidence-why],[data-local-interaction],audio,video'))return;selectedBlock=+b.dataset.block;render()});
+  document.querySelectorAll('[data-preview-role]').forEach(b=>b.onclick=()=>{if(b.dataset.previewRole==='presentation'&&previewRole!=='presentation')presentationReturnRole=previewRole;previewRole=b.dataset.previewRole;certifiedAnswers.clear();render()});
+  document.querySelectorAll('[data-presentation-move]').forEach(b=>b.onclick=()=>{if(previewRole!=='presentation')return;const next=selectedScreen+Number(b.dataset.presentationMove);if(!Number.isInteger(next)||next<0||next>=lesson.screens.length)return;selectedScreen=next;selectedBlock=0;selectedLayoutRegion=null;render();root.querySelector(`[data-presentation-move="${b.dataset.presentationMove}"]:not(:disabled)`)?.focus();});
+  document.querySelector('[data-exit-presentation]')?.addEventListener('click',()=>{if(previewRole!=='presentation')return;previewRole=presentationReturnRole;certifiedAnswers.clear();render();root.querySelector('[data-preview-role="presentation"]')?.focus();});
   document.querySelector('[data-open-library]')?.addEventListener('click',()=>document.querySelector('[data-add-panel]').classList.add('open'));
   document.querySelector('[data-close-library]')?.addEventListener('click',()=>document.querySelector('[data-add-panel]').classList.remove('open'));
   document.querySelectorAll('[data-add-type]').forEach(b=>b.onclick=()=>{const next=newBlock(b.dataset.addType);if(currentScreen().combo)next.comboStep=comboStep(currentScreen()).id;currentScreen().blocks.splice(selectedBlock+1,0,next);selectedBlock++;markDirty();render()});
@@ -1116,12 +1197,15 @@ function wire(){
     }catch(error){pdfAiBatchMessage='Batch halted: '+String(error?.message||error)}
     finally{lesson=current;draftKey=currentKey;pdfAiBusy=false;render();}
   });
-  document.querySelector('[data-adaptive-focus]')?.addEventListener('change',e=>{adaptiveFocus=e.target.value;});
+  document.querySelector('[data-adaptive-focus]')?.addEventListener('change',e=>{adaptiveFocus=e.target.value;adaptivePlan=null;render();});
   document.querySelector('[data-adaptive-plan]')?.addEventListener('click',()=>{
-    adaptivePlan=suggestCoursePlan({courseProfileId:lesson.courseProfileId,focus:adaptiveFocus});
+    const taskKind=document.querySelector('[data-adaptive-kind]')?.value||'';
+    const minutes=Number(document.querySelector('[data-adaptive-minutes]')?.value)||null;
+    const learnerCount=Number(document.querySelector('[data-adaptive-learners]')?.value)||null;
+    adaptivePlan={...suggestCoursePlan({courseProfileId:lesson.courseProfileId,focus:adaptiveFocus,taskKind,minutes,learnerCount,source:sourceFromNativeDraft(lesson,adaptiveFocus)}),taskKind,minutes,learnerCount,lessonId:lesson.id};
     render();
   });
-  document.querySelectorAll('[data-path]').forEach(el=>el.addEventListener('input',()=>{applyPath(el.dataset.path,el.type==='number'?Number(el.value):el.value);markDirty();renderSoft()}));
+  document.querySelectorAll('[data-path]').forEach(el=>el.addEventListener('input',()=>{if(['screen.layout','screen.visualVariant'].includes(el.dataset.path)){refineDesign(el.dataset.path==='screen.layout'?'layout':'variant',el.value);return;}applyPath(el.dataset.path,el.type==='number'?Number(el.value):el.value);markDirty();renderSoft()}));
   document.querySelectorAll('[contenteditable][data-edit]').forEach(el=>el.addEventListener('blur',()=>{const key=el.dataset.edit;if(key==='screen-title')currentScreen().title=el.textContent.trim();if(key==='screen-instruction')currentScreen().instruction=el.textContent.trim();if(key==='block-text')currentBlock().content.text=el.textContent.trim();markDirty();render()}));
   document.querySelector('[data-add-slide]')?.addEventListener('click',()=>{lesson.screens.splice(selectedScreen+1,0,newScreen());selectedScreen++;selectedBlock=0;markDirty();render()});
   document.querySelector('[data-duplicate-slide]')?.addEventListener('click',()=>{const c=clone(currentScreen());c.id=uid('screen');c.blocks.forEach(b=>{b.id=uid('block');if(b.activity)b.activity.id=uid('activity')});lesson.screens.splice(selectedScreen+1,0,c);selectedScreen++;markDirty();render()});

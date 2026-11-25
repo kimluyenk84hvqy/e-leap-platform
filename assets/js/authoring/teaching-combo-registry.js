@@ -28,6 +28,7 @@ const sequence=(stage,title,templateId,layout,steps,teacherNotes='')=>{
  }];
 };
 export const TEACHING_COMBOS={
+ 'video-before-while-after':{label:'Before – While – After Viewing',group:'Listening',template:'listening-task',description:'Predict → Watch → Apply',build:()=>sequence('Video','Watch and discuss','listening-task','media-left',[state('before','Before Viewing','Predict the topic.',[activity('discussion','What do you expect?')]),state('while','While Viewing','Watch and complete the original task.',[createBlock('video'),activity('video-question','Watch and answer.')]),state('after','After Viewing','Discuss and apply.',[activity('discussion','What did you learn?')])])},
  'photo-predict':{
   label:'Photo prediction',group:'Warm-up',template:'lead-in',
   description:'Observe → Predict → Share (one slide)',

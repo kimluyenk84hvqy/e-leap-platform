@@ -211,3 +211,24 @@
 .studio-text-toolbar [data-layout-text-font]{min-width:126px}
 .studio-center .layout-edit-mode [data-layout-region^="text:"]:hover{outline:2px dashed #78b64a!important;outline-offset:3px;cursor:move}
 .studio-center .layout-edit-mode.layout-guides-hidden [data-layout-region^="text:"]:hover{outline:none!important}
+
+/* S3.6: standard Studio presentation preview only; no runtime changes. */
+.lesson-canvas.auditorium-preview .canvas-title{font-size:var(--aud-title,54px);font-weight:800;color:var(--aud-deep,#073326)}
+.lesson-canvas.auditorium-preview .canvas-instruction{font-size:var(--aud-instruction,32px);font-weight:600;color:var(--aud-ink,#101b16)}
+.lesson-canvas.auditorium-preview .canvas-body{font-size:var(--aud-body,30px);line-height:1.45;color:var(--aud-ink,#101b16);overflow-wrap:anywhere}
+.lesson-canvas.auditorium-preview .activity-prompt{font-size:var(--aud-body,30px)}
+.lesson-canvas.auditorium-preview .block h3{font-size:var(--aud-section,35px)}
+.lesson-canvas.auditorium-preview.template-reading-task .studio-text-role.role-body{font-size:var(--aud-reading,29px);line-height:1.55}
+.lesson-canvas.auditorium-preview .evidence-actions button,.lesson-canvas.auditorium-preview .combo-step-button{font-size:var(--aud-control,21px)}
+.lesson-canvas.auditorium-preview .studio-evidence-note{font-size:var(--aud-why,29px);color:#123b25}
+.lesson-canvas.auditorium-preview mark.studio-evidence-highlight{background:var(--aud-evidence,#ffe16b);color:#162219;font-weight:800}
+.lesson-canvas.auditorium-preview .studio-asset img{object-fit:contain;max-width:100%}
+.lesson-canvas.auditorium-preview .block{min-width:0}
+
+.lesson-canvas.auditorium-preview .option-demo,.lesson-canvas.auditorium-preview .studio-text-role.role-body{font-size:var(--aud-body,30px);color:var(--aud-ink,#101b16)}
+.lesson-canvas.auditorium-preview.template-reading-task .studio-text-role.role-body{font-size:var(--aud-reading,29px);line-height:1.55}
+.lesson-canvas.auditorium-preview .studio-text-role.role-answer,.lesson-canvas.auditorium-preview .cert-revealed-key{font-size:var(--aud-key,30px);color:var(--aud-keyColor,#921522);font-weight:800;background:#fff7f4}
+/* Studio-only interactive review; no live submission. */
+.local-preview-item{display:grid;gap:.4em;margin:.5em 0;min-width:0}
+.local-preview-item input[type=text],.local-preview-item select,.local-preview-item textarea{width:100%;min-width:0;font:inherit;padding:.35em;border:1px solid #789580;border-radius:6px;background:#fff;color:#101b16}
+.local-preview-item label{display:block}.local-preview-key{color:#921522;font-weight:800;border:1px solid #d7a8a8;border-radius:6px;padding:.35em;overflow-wrap:anywhere}.local-preview-evidence{background:#ffe16b;color:#101b16;padding:.25em;overflow-wrap:anywhere}

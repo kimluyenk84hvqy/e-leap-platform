@@ -75,7 +75,7 @@ const VAGUE_GOAL=/^(?:identify|describe|explain|apply|use|interpret|demonstrate|
 const placeholder=/\b(?:lorem ipsum|your text here|insert|add an image|test image|example\.com|example\.org|placeholder)\b/i;
 export const isSupportedImageSource=src=>MEDIA_SOURCE.test(String(src||'').trim())&&!srcBad.test(src)&&!placeholder.test(src);
 
-const bloom=/^(identify|describe|explain|compare|classify|recognize|recognise|apply|use|interpret|analyse|analyze|evaluate|construct|formulate|demonstrate|produce|present|collaborate|participate|justify|support|share|reflect|respond|respect|contribute|show|select|distinguish|summarize|summarise|organize|organise|discuss)\b/i;
+const bloom=/^(define|identify|describe|explain|compare|classify|recognize|recognise|apply|use|interpret|analyse|analyze|evaluate|construct|formulate|demonstrate|produce|present|collaborate|participate|justify|support|share|reflect|respond|respect|contribute|show|select|distinguish|summarize|summarise|organize|organise|discuss)\b/i;
 export function makeCertifiedTemplate(family){
  const spec=CERTIFIED_TEMPLATES[family];if(!spec)return null;
  const values=Object.fromEntries(Object.keys(spec.slots).map(k=>[k,'']));

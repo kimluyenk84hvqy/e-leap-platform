@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {suggestCoursePlan} from '../assets/js/authoring/course-adaptive-plan.js';
+const p={courseProfileId:'objective-first-b2',focus:'Reading',minutes:30,learnerCount:20};
+const source={sourceVerified:true,sourceRef:'p. 30',passage:'A sample',questions:[{text:'What?',answers:['A'],evidenceQuote:'A sample',why:'Explicit'}]};
+test('facts vs inference',()=>{assert.equal(suggestCoursePlan({...p,taskKind:'facts',source}).suggestions[0].id,'scanning-race');assert.equal(suggestCoursePlan({...p,taskKind:'inference',source}).suggestions[0].id,'claim-evidence-reading')});
+test('missing source never eligible',()=>assert.ok(suggestCoursePlan(p).suggestions.every(x=>!x.eligibleForTeacherReview&&!x.canPublish)));
+test('reserved course rejected',()=>assert.equal(suggestCoursePlan({...p,courseProfileId:'esp-pharmacy'}).ok,false));
+test('legacy method stays blocked',()=>assert.ok(suggestCoursePlan({...p,paragraphCount:3,source}).suggestions.find(x=>x.id==='master-u6-reading-six-step').blockers.length));
+test('source and teacher choice unchanged',()=>{const before=JSON.stringify(source);const r=suggestCoursePlan({...p,source,selectedMethod:'reciprocal-reading'});assert.equal(r.selectedMethod,'reciprocal-reading');assert.equal(JSON.stringify(source),before);assert.equal(r.canPublish,false)});
+test('insufficient time and learners',()=>assert.ok(suggestCoursePlan({...p,source,minutes:1,learnerCount:1}).suggestions.every(x=>!x.eligibleForTeacherReview)));
+test('invalid focus safe',()=>assert.equal(suggestCoursePlan({...p,focus:'constructor'}).ok,false));
+test('jigsaw requires source sections and sharing',()=>assert.ok(suggestCoursePlan({...p,source,taskKind:'sections'}).suggestions.find(x=>x.id==='jigsaw-reading').blockers.some(x=>x.includes('sharing'))));

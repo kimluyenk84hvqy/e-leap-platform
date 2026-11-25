@@ -85,11 +85,11 @@ export function applyMappedContent(screen,input){
  const put=(k)=>nonempty(input[k])?String(input[k]).trim():null;
  if(put('title')!==null)next.title=put('title');
  if(put('instruction')!==null)next.instruction=put('instruction');
- if(put('imageSrc')!==null)set('image',b=>{b.content={...b.content,src:put('imageSrc'),assetId:null};});
+ if(put('imageSrc')!==null)set('image',b=>{b.content={...b.content,src:put('imageSrc'),assetId:b.content.src===put('imageSrc')?b.content.assetId:null};});
  if(put('audioSrc')!==null){
-  set('audio',b=>{b.content={...b.content,src:put('audioSrc'),assetId:null};});
+  set('audio',b=>{b.content={...b.content,src:put('audioSrc'),assetId:b.content.src===put('audioSrc')?b.content.assetId:null};});
   const listening=primary(next,'listening');
-  if(listening){listening.activity.media={...(listening.activity.media||{}),src:put('audioSrc'),assetId:null,kind:'audio'};}
+  if(listening){listening.activity.media={...(listening.activity.media||{}),src:put('audioSrc'),assetId:listening.activity.media?.src===put('audioSrc')?listening.activity.media.assetId:null,kind:'audio'};}
  }
  if(put('unit')!==null){
   const b=(next.blocks||[]).find(b=>b.content?.role==='eyebrow');if(b)b.content.text=put('unit');

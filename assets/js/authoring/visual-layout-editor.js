@@ -205,7 +205,7 @@ export function createLayoutHistory(){
   perSlide.set(screen.id,r);
   return true;
  }
- return {change,undo:screen=>navigate(screen,'undo'),redo:screen=>navigate(screen,'redo')};
+ return {change,clear:screen=>perSlide.delete(screen.id),undo:screen=>navigate(screen,'undo'),redo:screen=>navigate(screen,'redo')};
 }
 
 /* Personal design presets are local to this browser. They contain layout

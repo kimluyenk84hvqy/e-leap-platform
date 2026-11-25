@@ -1,0 +1,14 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import {createWorkspaceIndex} from '../assets/js/authoring/course-workspaces.mjs';
+const c=JSON.parse(fs.readFileSync(new URL('../data/course-intelligence-v2.json',import.meta.url)));const x=createWorkspaceIndex(c);
+test('six workspaces and 144 lesson identities',()=>{assert.equal(x.list().length,6);assert.equal(x.list().reduce((n,w)=>n+w.lessons,0),144)});
+for(const [id,n,l] of [['objective-pet-b1',30,2],['objective-first-b2',24,2],['life',12,3]])test(id+' unit structure and source guard',()=>{const w=x.select(id);assert.equal(w.units.length,n);for(const u of w.units){assert.equal(u.lessons.length,l);for(const a of u.lessons){assert.equal(x.lesson(id,a.key).publicationAllowed,false);assert.equal(a.key,id+':'+a.id)}}});
+test('LIFE AB/CD/EF',()=>{for(const u of x.select('life').units)assert.deepEqual(u.lessons.map(l=>l.sections),['ab','cd','ef'])});
+test('cross-course rejection',()=>assert.throws(()=>x.lesson('life','objective-first-b2:U1.1')));
+test('unknown workspace rejection',()=>assert.throws(()=>x.select('unknown')));
+test('library filters scopes',()=>{for(const w of x.list()){const lib=x.select(w.id).library;if(w.id==='life')assert(!lib.some(t=>t.scope==='b2'));if(w.id==='objective-first-b2')assert(!lib.some(t=>t.scope==='life'));if(w.id.startsWith('esp-'))assert.equal(lib.length,0)}});
+test('advanced skills paths and reserved shells',()=>{assert.equal(x.select('advanced-skills').skills.length,4);for(const id of ['esp-medicine','esp-pharmacy'])assert.equal(x.select(id).units.length,0)});
+test('no mutation of source on selection',()=>{const w=x.select('life');w.units[0].title='changed';assert.notEqual(x.select('life').units[0].title,'changed')});
+test('invalid duplicate keys blocked',()=>{const d=structuredClone(c);d.courses[0].units[0].lessons.push(d.courses[0].units[0].lessons[0]);assert.throws(()=>createWorkspaceIndex(d))});
+test('reject missing course',()=>{const d=structuredClone(c);d.courses.pop();assert.throws(()=>createWorkspaceIndex(d))});
+test('reject duplicated workspace',()=>{const d=structuredClone(c);d.workspaceMap.push(d.workspaceMap[0]);assert.throws(()=>createWorkspaceIndex(d))});
+test('reject invalid LIFE sequence',()=>{const d=structuredClone(c);d.courses.find(x=>x.id==='life').units[0].lessons[0].sections='ef';assert.throws(()=>createWorkspaceIndex(d))});

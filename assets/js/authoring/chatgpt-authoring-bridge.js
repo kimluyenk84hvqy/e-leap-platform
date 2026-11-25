@@ -148,7 +148,7 @@ export function revertChatGPTRevision(lesson){
  const original=stack[stack.length-1].snapshot;
  if(!original||!Array.isArray(original.screens))return {ok:false,issues:['Invalid revision snapshot']};
  const next=clone(lesson);
- next.title=original.title;next.screens=original.screens;
+ next.title=original.title;next.screens=original.screens;if(original.theme)next.theme=clone(original.theme);
  next.assistedAuthoring={...(original.assistedAuthoring||{}),
   history:stack.slice(0,-1),status:'teacher-review-required',teacherApproved:false,sourceVerified:false};
  return {ok:true,lesson:next};
