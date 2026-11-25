@@ -375,6 +375,7 @@ function lessonProps(){
   </label>
   <div class="studio-course-options">
    <button type="button" class="studio-btn primary" data-chatgpt-import>Import AI Lesson</button>
+   <label class="studio-btn" style="cursor:pointer">Import complete lesson package<input type="file" data-native-lesson-file accept=".json,application/json" style="display:none"></label>
    <label class="studio-btn" style="cursor:pointer">Choose response JSON<input type="file" data-chatgpt-file accept=".json,application/json" style="display:none"></label>
   </div>
   ${lesson.assistedAuthoring?.reviews?`<div class="token-note">
@@ -471,7 +472,78 @@ function revealEvidence(quote){
   range.surroundContents(mark);mark.scrollIntoView({behavior:'smooth',block:'nearest'});
   return true;
 }
+
+async function importNativeLessonPackage(file){
+ if(!file||file.size>12000000)throw Error('Choose a lesson JSON package under 12 MB.');
+ const target=lesson;
+ if(target.status!=='draft'||target.resourceBank||target.screens?.some(x=>x.sourceReviewDraft||x.resourceStage))throw Error('Open an ordinary editable lesson draft.');
+ const pkg=JSON.parse(await file.text());
+ if(pkg.schema!=='eleap-native-lesson-package-v1'||String(pkg.lessonNumber).toLowerCase()!==String(target.lessonNumber).toLowerCase())throw Error('This package does not match the active lesson number.');
+ if(!Array.isArray(pkg.screens)||!pkg.screens.length||pkg.screens.length>80||!Array.isArray(pkg.assets)||pkg.assets.length>40)throw Error('Invalid package size.');
+ const limit=(v,n)=>{if(typeof v!=='string'||v.length>n)throw Error('Invalid text content.');return v;};
+ const nonempty=(v,n)=>{const t=limit(v,n);if(!t.trim())throw Error('Empty teaching content.');return t;};
+ const arr=(v,n)=>{if(!Array.isArray(v)||!v.length||v.length>n)throw Error('Invalid activity data.');return v;};
+ const allowed=new Set(['text','image','mcq','multi-select','fill','matching','discussion','writing']);
+ const media=new Map();
+ for(const a of pkg.assets){
+   if(!/^document:[0-9a-f-]{36}$/.test(a.id)||media.has(a.id)||a.type!=='image/jpeg'||!/^[-a-zA-Z0-9_]+\.jpg$/.test(a.name)||typeof a.base64!=='string'||a.base64.length>2000000)throw Error('Invalid packaged image.');
+   const bytes=Uint8Array.from(atob(a.base64),c=>c.charCodeAt(0));
+   if(bytes.length<4||bytes[0]!==255||bytes[1]!==216||bytes[2]!==255)throw Error('Invalid JPEG image.');
+   media.set(a.id,{id:a.id,name:a.name,type:a.type,blob:new Blob([bytes],{type:a.type})});
+ }
+ const screens=pkg.screens.map(raw=>{
+   const out=modelCreateScreen(nonempty(raw.stage,100),nonempty(raw.title,140));
+   out.instruction=nonempty(raw.instruction,500);
+   if(!E_LEAP_LAYOUT_IDS.includes(raw.layout))throw Error('Unknown layout.');
+   out.layout=raw.layout;if(Number.isInteger(raw.sourcePage)&&raw.sourcePage>0)out.sourcePage=raw.sourcePage;
+   out.blocks=arr(raw.blocks,16).map(b=>{
+     if(!allowed.has(b.type))throw Error('Unsupported block type.');
+     const z=modelCreateBlock(b.type);
+     if(b.type==='text'){z.content.text=nonempty(b.content?.text,10000);z.content.role=['body','eyebrow','display','heading'].includes(b.content?.role)?b.content.role:'body';}
+     else if(b.type==='image'){
+       if(!media.has(b.content?.assetId))throw Error('Missing packaged image.');
+       Object.assign(z.content,{assetId:b.content.assetId,src:'',alt:nonempty(b.content.alt,200),caption:limit(b.content.caption||'',400),fit:'contain'});
+     }else{
+       const a=b.activity||{}, t=z.activity;
+       t.prompt=nonempty(a.prompt,1000);
+       if(['mcq','multi-select'].includes(b.type)){
+         t.options=arr(a.options,12).map(o=>({id:nonempty(o.id,20),label:nonempty(o.label,500)}));
+         if(new Set(t.options.map(o=>o.id)).size!==t.options.length)throw Error('Duplicate option ID.');
+         t.answerKey=arr(a.answerKey,12).map(k=>nonempty(k,20));
+         if(t.answerKey.some(k=>!t.options.some(o=>o.id===k))||(b.type==='mcq'&&t.answerKey.length!==1))throw Error('Invalid answer key.');
+       }else if(b.type==='fill'){
+         t.items=arr(a.items,16).map(x=>({id:nonempty(x.id,20),prompt:nonempty(x.prompt,1800),answers:arr(x.answers,10).map(y=>nonempty(y,300))}));
+         if(a.evidenceByItem){t.evidenceByItem={};for(const x of t.items){const e=a.evidenceByItem[x.id];if(e)t.evidenceByItem[x.id]={quote:nonempty(e.quote,500),why:nonempty(e.why,700)};}}
+       }else if(b.type==='matching'){
+         t.pairs=arr(a.pairs,16).map(x=>({id:nonempty(x.id,20),left:nonempty(x.left,500),right:nonempty(x.right,500)}));
+       }else{t.modelAnswer=limit(a.modelAnswer||'',3000);t.rubric=limit(a.rubric||'',1000);}
+     }
+     return z;
+   });return out;
+ });
+ if(!confirm('Replace the active '+target.lessonNumber+' draft with '+screens.length+' populated slides? The previous revision will be retained.'))return;
+ if(media.size){
+   const {persistDocumentMedia}=await import('./authoring/document-library.js');
+   const oldIds=[...media.keys()],items=[...media.values()];
+   await persistDocumentMedia(items,null);
+   const resolved=new Map(oldIds.map((id,i)=>[id,items[i].id]));
+   for(const screen of screens)for(const b of screen.blocks)if(b.type==='image'){
+     const id=resolved.get(b.content.assetId);
+     if(!/^[0-9a-f-]{36}$/.test(id||''))throw Error('Private image upload not confirmed.');
+     b.content.assetId=id;b.content.src='/api/studio-media?document=1&open='+encodeURIComponent(id);
+   }
+ }
+ if(lesson!==target)throw Error('Active draft changed. No lesson content replaced.');
+ const previous={title:target.title,screens:modelClone(target.screens),assistedAuthoring:modelClone({...target.assistedAuthoring,history:[]})};
+ const history=(target.assistedAuthoring?.history||[]).slice(-2);history.push({revision:Number(target.assistedAuthoring?.revision||0),snapshot:previous});
+ const title=nonempty(pkg.title,140);
+ snapshotDraft();
+ lesson={...target,title,screens,assistedAuthoring:{schema:'e-leap-chatgpt-revision-v1',revision:Number(target.assistedAuthoring?.revision||0)+1,status:'teacher-review-required',teacherApproved:false,sourceVerified:false,history,reviews:{academic:{findings:['Source-based lesson package imported.'],issues:['Teacher must verify source wording and keys.']},visual:{findings:['Editable native layouts and verified private image references.'],issues:['Inspect slide fit and all media.']},critical:{findings:['Previous revision retained.'],issues:['Live interaction and role QA pending.'],missingMedia:[]}}}};
+ selectedScreen=selectedBlock=0;ensureSchema();markDirty();render();
+}
+
 function wire(){
+  document.querySelector('[data-native-lesson-file]')?.addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{await importNativeLessonPackage(file);}catch(error){status('Lesson package import failed: '+error.message);}finally{e.target.value='';}});
   document.querySelector('[data-import-document]')?.addEventListener('click',()=>{
     const target=lesson;
     if(target.status!=='draft'||target.resourceBank||target.screens.some(screen=>screen.sourceReviewDraft||screen.resourceStage)){
