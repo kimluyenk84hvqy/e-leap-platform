@@ -496,7 +496,7 @@ async function importNativeLessonPackage(file){
    out.instruction=nonempty(raw.instruction,500);
    if(!E_LEAP_LAYOUT_IDS.includes(raw.layout))throw Error('Unknown layout.');
    out.layout=raw.layout;if(Number.isInteger(raw.sourcePage)&&raw.sourcePage>0)out.sourcePage=raw.sourcePage;
-   out.blocks=arr(raw.blocks,16).map(b=>{
+   out.blocks=arr(raw.blocks,80).map(b=>{
      if(!allowed.has(b.type))throw Error('Unsupported block type.');
      const z=modelCreateBlock(b.type);
      if(b.type==='text'){z.content.text=nonempty(b.content?.text,10000);z.content.role=['body','eyebrow','display','heading'].includes(b.content?.role)?b.content.role:'body';}
@@ -518,8 +518,12 @@ async function importNativeLessonPackage(file){
          t.pairs=arr(a.pairs,16).map(x=>({id:nonempty(x.id,20),left:nonempty(x.left,500),right:nonempty(x.right,500)}));
        }else{t.modelAnswer=limit(a.modelAnswer||'',3000);t.rubric=limit(a.rubric||'',1000);}
      }
+     if(b.comboStep)z.comboStep=nonempty(b.comboStep,40);
      return z;
-   });return out;
+   });
+   if(raw.comboId){const base=createTeachingCombo(raw.comboId)[0];if(!base)throw Error('Unknown teaching combo.');out.combo=base.combo;out.templateId=base.templateId;for(const step of out.combo.steps){if(!out.blocks.some(b=>b.comboStep===step.id))throw Error('Empty teaching step: '+step.label);if(raw.stepInstructions?.[step.id])step.instruction=nonempty(raw.stepInstructions[step.id],500);}if(out.blocks.some(b=>b.comboStep&&!out.combo.steps.some(x=>x.id===b.comboStep)))throw Error('Unknown teaching step.');out.instruction=out.combo.steps[0].instruction;}
+   if(raw.certified){const c=makeCertifiedTemplate(raw.certified.family);if(!c)throw Error('Unknown certified family.');const spec=CERTIFIED_TEMPLATES[c.family];if(!spec.variants.some(v=>v.id===raw.certified.variant))throw Error('Unknown certified variant.');c.variant=raw.certified.variant;for(const [k,slot] of Object.entries(spec.slots)){if(k==='imageSrc')continue;c.values[k]=limit(raw.certified.values?.[k]||'',slot.limit);if(spec.required.includes(k)&&!c.values[k].trim())throw Error('Missing certified slot: '+k);}if(spec.required.includes('imageSrc')&&!out.blocks.some(b=>b.type==='image'))throw Error('Certified image missing.');out.certifiedTemplate=c;out.templateId=spec.templateId;}
+   return out;
  });
  if(!confirm('Replace the active '+target.lessonNumber+' draft with '+screens.length+' populated slides? The previous revision will be retained.'))return;
  if(media.size){
@@ -533,12 +537,13 @@ async function importNativeLessonPackage(file){
      b.content.assetId=id;b.content.src='/api/studio-media?document=1&open='+encodeURIComponent(id);
    }
  }
+ for(const screen of screens){if(screen.certifiedTemplate){const c=screen.certifiedTemplate;if(c.family!=='aims')c.values.imageSrc=screen.blocks.find(b=>b.type==='image')?.content.src||'';const issues=validateCertifiedTemplate(c,{draft:true}).filter(x=>!x.includes('loaded and verified'));if(issues.length)throw Error(issues.join('; '));}}
  if(lesson!==target)throw Error('Active draft changed. No lesson content replaced.');
- const previous={title:target.title,screens:modelClone(target.screens),assistedAuthoring:modelClone({...target.assistedAuthoring,history:[]})};
+ const previous={title:target.title,theme:modelClone(target.theme),screens:modelClone(target.screens),assistedAuthoring:modelClone({...target.assistedAuthoring,history:[]})};
  const history=(target.assistedAuthoring?.history||[]).slice(-2);history.push({revision:Number(target.assistedAuthoring?.revision||0),snapshot:previous});
  const title=nonempty(pkg.title,140);
  snapshotDraft();
- lesson={...target,title,screens,assistedAuthoring:{schema:'e-leap-chatgpt-revision-v1',revision:Number(target.assistedAuthoring?.revision||0)+1,status:'teacher-review-required',teacherApproved:false,sourceVerified:false,history,reviews:{academic:{findings:['Source-based lesson package imported.'],issues:['Teacher must verify source wording and keys.']},visual:{findings:['Editable native layouts and verified private image references.'],issues:['Inspect slide fit and all media.']},critical:{findings:['Previous revision retained.'],issues:['Live interaction and role QA pending.'],missingMedia:[]}}}};
+ lesson={...target,title,screens,theme:pkg.designProfile==='objective-b2' ? {...target.theme,preset:'Objective First B2',fontFamily:'Poppins',titleSize:48,bodySize:26,textColor:'#203c18',accentColor:'#527a28',backgroundColor:'#F5F9EC'}:target.theme,assistedAuthoring:{schema:'e-leap-chatgpt-revision-v1',revision:Number(target.assistedAuthoring?.revision||0)+1,status:'teacher-review-required',teacherApproved:false,sourceVerified:false,history,reviews:{academic:{findings:['Source-based lesson package imported.'],issues:['Teacher must verify source wording and keys.']},visual:{findings:['Editable native layouts and verified private image references.'],issues:['Inspect slide fit and all media.']},critical:{findings:['Previous revision retained.'],issues:['Live interaction and role QA pending.'],missingMedia:[]}}}};
  selectedScreen=selectedBlock=0;ensureSchema();markDirty();render();
 }
 
