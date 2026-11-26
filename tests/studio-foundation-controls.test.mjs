@@ -8,7 +8,7 @@ test('Locked controls define permissions; no invented Submit in the lab',()=>{
  assert.equal(foundationPermissions('student',{synthetic:true,phase:1}).score,true);
  assert.equal(foundationPermissions('student',{synthetic:true,phase:1}).reveal,false);
  assert.equal(foundationPermissions('admin',{synthetic:true,phase:1}).reveal,true);
- assert.equal(foundationPermissions('presentation',{synthetic:true,phase:1}).check,false);
+ assert.equal(foundationPermissions('presentation',{synthetic:true,phase:1}).check,true);
  assert.equal(foundationPermissions('guest',{synthetic:true,phase:1}).submit,false);
 });
 test('Score is hidden until student explicitly requests it and disappears on reset',()=>{

@@ -1,4 +1,5 @@
 {
+  "git": { "deploymentEnabled": { "qa/**": false } },
   "rewrites": [
     { "source": "/api/auth/:name", "destination": "/api/router?group=auth&name=:name" },
     { "source": "/api/authoring/:name", "destination": "/api/router?group=authoring&name=:name" },

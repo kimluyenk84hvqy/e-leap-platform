@@ -27,6 +27,8 @@ import {inspectPdfLesson,requestPdfAiLesson,toUnverifiedLessonDraft,getPdfAiCapa
 import {createReviewRequest,importChatGPTResponse,revertChatGPTRevision,recordTeacherReview,validateChatGPTResponse} from './authoring/chatgpt-authoring-bridge.js';
 import {parseLessonRanges,runLessonBatch,assessExtractedSource,validateBatchForPaidRun} from './authoring/pdf-batch-plan.js';
 import {controlModelForRole} from './controls/control-shell.js';
+import {renderStudioControlDock,wireStudioControlDock} from './controls/studio-control-dock.js';
+import {hasObjectiveEditor,renderObjectiveEditor,applyObjectiveContent} from './authoring/activity-content-editor.js';
 import {createLesson as modelCreateLesson,ensureLessonSchema as modelEnsureLessonSchema,createScreen as modelCreateScreen,createBlock as modelCreateBlock,normaliseActivity as modelNormaliseActivity,defaultActivityPrompt,legacyToBlocks as modelLegacyToBlocks,clone as modelClone,uid as modelUid,parsePipeLines,duplicateLesson as modelDuplicateLesson} from './authoring/lesson-model.js';
 import {E_LEAP_LAYOUT_IDS} from './authoring/layout-registry.js';
 import {TEACHING_COMBOS,createTeachingCombo,comboStep,activeComboBlocks,setComboStep} from './authoring/teaching-combo-registry.js';
@@ -43,7 +45,7 @@ import {showMethodReviewGallery} from './authoring/method-review-gallery.js';
 import {createMethodTemplateScreen,renderMethodTemplateCanvas,renderMethodTemplateProperties,changeMethodStep} from './authoring/method-template-builder.js';
 import {METHOD_COMBOS} from './authoring/method-combo-catalog.js';
 import {syncCoverMetadata,unlinkCoverSlot} from './authoring/cover-metadata-sync.js';
-import {FUNCTION_SLIDES,createFunctionalSlide,renderFunctionalSlide,renderFunctionalSlideProps, mapFunctionalDraft} from './authoring/functional-slide-library.js';
+import {FUNCTION_SLIDES,createFunctionalSlide,renderFunctionalSlide,renderFunctionalSlideProps, mapFunctionalDraft,applyFunctionalContent,verifyFunctionalImageReference} from './authoring/functional-slide-library.js';
 import {mountLayoutEditor,resetLayout,layoutSnapshot,createLayoutHistory,saveLayoutPreset,listLayoutPresets,applyLayoutPreset,setRegionBorder,borderForRegion,isTextLayoutRegion,textStyleForRegion,setRegionTextStyle,LAYOUT_TEXT_FONTS} from './authoring/visual-layout-editor.js';
 
 import {loadWorkspaceIndex,mountWorkspacePanel} from './authoring/workspace-panel.mjs';
@@ -252,7 +254,7 @@ function render(){
     <details class="studio-workspaces" style="padding:8px 12px" ${workspaceExpanded?'open':''}><summary>Course Workspaces</summary><div data-workspace-host></div></details>
     <div class="studio-layout ${propertiesVisible?'':'properties-collapsed'}">
       <aside class="studio-left"><div class="studio-pane-head"><div><h2>Lesson</h2><small>${esc(lesson.lessonNumber||'')} · ${esc(lesson.title||'')}</small></div></div><div class="studio-arc-strip" aria-label="Lesson learning arc">${LEARNING_ARC.map(p=>`<span title="${esc(p.purpose)}" class="${phaseForScreen(s)===p.id?'active':''}">${esc(p.label)}</span>`).join('')}</div><div class="slide-list">${lesson.screens.map((x,i)=>slideItem(x,i)).join('')}</div><div class="left-footer"><button class="studio-btn primary" data-add-slide style="width:100%">+ Add slide</button></div></aside>
-      <main class="studio-center">${previewRole==='presentation'?renderPresentationNavigation(selectedScreen,lesson.screens.length):''}<div class="canvas-toolbar"><div class="studio-preview-modes"><b style="font-size:13px">Preview as</b>${['teacher','admin','student','guest','presentation'].map(r=>`<button class="studio-btn ${previewRole===r?'primary':''}" data-preview-role="${r}">${cap(r)}</button>`).join('')}</div><div class="studio-layout-tools">
+      <main class="studio-center">${previewRole==='presentation'?renderPresentationNavigation(selectedScreen,lesson.screens.length):''}<div class="canvas-toolbar"><div class="studio-preview-modes"><b style="font-size:13px">Preview as</b>${['teacher','admin','student','guest','presentation'].map(r=>`<button class="studio-btn ${previewRole===r?'primary':''}" data-preview-role="${r}" ${r==='presentation'&&['student','guest'].includes(previewRole)?'disabled':''}>${cap(r)}</button>`).join('')}</div><div class="studio-layout-tools">
  <button type="button" class="studio-btn ${layoutEditMode?'primary':''}" data-layout-toggle ${['student','guest','presentation'].includes(previewRole)?'disabled':''}>${layoutEditMode?'Finish layout':'Edit layout'}</button>
  ${layoutEditMode?`<button type="button" class="studio-btn" data-layout-guides>${layoutGuidesVisible?'Hide guides':'Show guides'}</button><label class="studio-border-control">Box border <select data-layout-border><option value="default">Template default</option><option value="none">No border</option><option value="solid">Solid border</option><option value="dashed">Dashed border</option></select></label>`:''}
  ${layoutEditMode&&selectedLayoutRegion&&isTextLayoutRegion(selectedLayoutRegion)?`<div class="studio-text-toolbar">
@@ -263,12 +265,13 @@ function render(){
  <button type="button" class="studio-btn" data-layout-text-reset>Reset text</button>
  </div>`:''}
  ${layoutEditMode?'<button type="button" class="studio-btn" data-layout-undo>Undo</button><button type="button" class="studio-btn" data-layout-redo>Redo</button><button type="button" class="studio-btn" data-layout-reset>Reset layout</button><button type="button" class="studio-btn" data-layout-save-preset>Save as My Template</button>':''}${layoutEditMode&&listLayoutPresets(localStorage,s).length?'<select class="studio-layout-presets" data-layout-preset-select><option value="">My Templates…</option>'+listLayoutPresets(localStorage,s).map(name=>'<option value="'+esc(name)+'">'+esc(name)+'</option>').join('')+'</select>':''}
- ${canRefine()?'<button type="button" class="studio-btn" data-refinement-undo>Undo design change</button>':''}<span class="status">${esc(s.stage)} · Slide ${selectedScreen+1}/${lesson.screens.length}</span></div></div>${renderCanvas(s)}</main>
-      <aside class="studio-right"><div class="studio-pane-head"><div><h2>Properties</h2><small>${currentBlock()?cap(typeLabel(currentBlock().type)):'Slide'}</small></div></div><div class="properties">${renderProperties()}</div></aside>
+ ${canRefine()?'<button type="button" class="studio-btn" data-refinement-undo>Undo design change</button>':''}<span class="status">${esc(s.stage)} · Slide ${selectedScreen+1}/${lesson.screens.length}</span></div></div>${s.resourceStage||s.sourceReviewDraft||s.methodDraft?'':renderStudioControlDock(previewRole)}${renderCanvas(s)}</main>
+      <aside class="studio-right"><div class="studio-pane-head"><div><h2>Properties</h2><small>${currentBlock()?cap(typeLabel(currentBlock().type)):'Slide'}</small></div></div><div class="properties"><button type="button" class="studio-btn" data-refresh-content>Refresh slide preview</button>${renderProperties()}</div></aside>
     </div>
     ${renderAddDialog()}${renderQualityPanel()}
   </section>`;
   wire();
+  wireStudioControlDock(root,previewRole);
   wireCourseWorkspaces();
 }
 function wireCourseWorkspaces(){
@@ -489,8 +492,8 @@ function lessonProps(){
  ${field('Lesson title','lesson.title',lesson.title)}
  <div class="studio-field"><label>Course (managed by Course Profile)</label><input value="${esc(lesson.courseLabel||'')}" readonly aria-readonly="true"></div>
  ${field('Lesson no.','lesson.lessonNumber',lesson.lessonNumber||'')}</section><section class="property-section"><h3>Theme & typography</h3>${select('Theme preset','theme.preset',t.preset,Object.keys(THEMES))}${select('Font','theme.fontFamily',t.fontFamily,E_LEAP_ALLOWED_FONTS)}${select('Use as','lesson.deliveryPolicy',lesson.deliveryPolicy?.id||'practice',Object.keys(E_LEAP_DELIVERY_POLICIES))}<div class="field-row">${numField('Title size','theme.titleSize',t.titleSize,28,52)}${numField('Body size','theme.bodySize',t.bodySize,14,26)}</div><div class="field-row">${colorField('Text','theme.textColor',t.textColor)}${colorField('Accent','theme.accentColor',t.accentColor)}</div>${colorField('Background','theme.backgroundColor',t.backgroundColor)}<div class="token-note">Default styling is inherited by every slide. Use overrides only when necessary so lessons stay consistent.</div></section>`}
-function slideProps(){const s=currentScreen();return `<section class="property-section"><h3>Current slide</h3>${select('Teaching phase','screen.learningPhase',phaseForScreen(s),LEARNING_ARC.map(p=>p.id))}${field('Stage','screen.stage',s.stage||'')}${field('Title','screen.title',s.title||'')}${area('Instruction for learners','screen.instruction',s.instruction||'')}${area('Teacher notes (not shown to learners)','screen.teacherNotes',s.teacherNotes||'')}${variantOptions(s.templateId)?select('Visual design','screen.visualVariant',s.visualVariant||Object.keys(variantOptions(s.templateId))[0],Object.keys(variantOptions(s.templateId))):select('Layout','screen.layout',s.layout||'standard',E_LEAP_LAYOUT_IDS)}<div class="studio-inline-actions"><button class="studio-btn" data-slide-up ${selectedScreen===0?'disabled':''}>↑</button><button class="studio-btn" data-slide-down ${selectedScreen===lesson.screens.length-1?'disabled':''}>↓</button><button class="studio-btn" data-duplicate-slide>Duplicate</button><button class="studio-btn danger" data-delete-slide ${lesson.screens.length===1?'disabled':''}>Delete</button></div></section>`}
-function blockProps(){const b=currentBlock();if(!b)return '';let body=`<section class="property-section"><h3>Selected block</h3><div class="helper">${esc(typeLabel(b.type))}</div>`;
+function slideProps(){const s=currentScreen();return `<section class="property-section"><h3>Current slide</h3>${select('Teaching phase','screen.learningPhase',phaseForScreen(s),LEARNING_ARC.map(p=>p.id))}${field('Stage','screen.stage',s.stage||'')}${field('Title','screen.title',s.title||'')}${area(s.combo?'Instruction for current step':'Instruction for learners','screen.instruction',s.instruction||'')}${area('Teacher notes (not shown to learners)','screen.teacherNotes',s.teacherNotes||'')}${variantOptions(s.templateId)?select('Visual design','screen.visualVariant',s.visualVariant||Object.keys(variantOptions(s.templateId))[0],Object.keys(variantOptions(s.templateId))):select('Layout','screen.layout',s.layout||'standard',E_LEAP_LAYOUT_IDS)}<div class="studio-inline-actions"><button class="studio-btn" data-slide-up ${selectedScreen===0?'disabled':''}>↑</button><button class="studio-btn" data-slide-down ${selectedScreen===lesson.screens.length-1?'disabled':''}>↓</button><button class="studio-btn" data-duplicate-slide>Duplicate</button><button class="studio-btn danger" data-delete-slide ${lesson.screens.length===1?'disabled':''}>Delete</button></div></section>`}
+function blockProps(){const b=currentBlock();if(!b)return '';const active=activeComboBlocks(currentScreen());let body=`<section class="property-section"><h3>Selected block</h3>${currentScreen().sourceReviewDraft?'':`<label>Content block <select data-edit-block>${currentScreen().blocks.map((x,i)=>active.includes(x)?`<option value="${i}" ${i===selectedBlock?'selected':''}>${i+1}. ${esc(typeLabel(x.type))} · ${esc(String(x.activity?.prompt||x.content?.caption||x.content?.text||'').slice(0,70))}</option>`:'').join('')}</select></label>`}<div class="helper">${esc(typeLabel(b.type))}</div>`;
   if(b.type==='text')body+=area('Text','block.content.text',b.content?.text||'')+select('Text role','block.content.role',b.content?.role||'body',['institution','faculty','eyebrow','display','h1','h2','instruction','body','answer','caption']);
   else if(b.type==='image')body+=field('Media Asset ID','block.content.assetId',b.content?.assetId||'')+field('Media path / URL','block.content.src',b.content?.src||'')+field('Alt text','block.content.alt',b.content?.alt||'')+field('Caption','block.content.caption',b.content?.caption||'')+select('Fit','block.content.fit',b.content?.fit||'contain',['contain','cover']);
   else if(b.type==='audio')body+=field('Media Asset ID','block.content.assetId',b.content?.assetId||'')+field('Audio path / URL','block.content.src',b.content?.src||'')+field('Label','block.content.label',b.content?.label||'')+area('Transcript (optional)','block.content.transcript',b.content?.transcript||'');
@@ -499,12 +502,14 @@ function blockProps(){const b=currentBlock();if(!b)return '';let body=`<section 
   else if(b.type==='grammar-note')body+=field('Rule','block.content.rule',b.content?.rule||'')+field('Form','block.content.form',b.content?.form||'')+area('Examples (one per line)','block.grammarExamples',(b.content?.examples||[]).join('\n'));
   else body+=activityProps(b);
   body+=`<div class="studio-block-actions"><button class="studio-btn" data-block-up ${selectedBlock===0?'disabled':''}>↑</button><button class="studio-btn" data-block-down ${selectedBlock===currentScreen().blocks.length-1?'disabled':''}>↓</button><button class="studio-btn" data-duplicate-block>Duplicate</button><button class="studio-btn danger" data-delete-block ${currentScreen().blocks.length===1?'disabled':''}>Delete</button></div></section>`;return body;}
-function activityProps(b){const a=b.activity||{};let out=area('Prompt','activity.prompt',a.prompt||'')+numField('Points','activity.points',a.points||1,0,100);
+function activityProps(b){const a=b.activity||{};let out=numField('Points','activity.points',a.points||1,0,100);
+  if(hasObjectiveEditor(b)&&!currentScreen().sourceReviewDraft&&(lesson.assistedAuthoring||a.evidenceByItem))out+=renderObjectiveEditor(b);else{out+=area('Prompt','activity.prompt',a.prompt||'');
   if(['mcq','multi-select','true-false','poll','listening','video-question'].includes(b.type))out+=area('Options: ID | Label','activity.options',(a.options||[]).map(o=>`${o.id} | ${o.label}`).join('\n'))+(b.type!=='poll'?field('Correct answer IDs','activity.answerKey',(a.answerKey||[]).join(', ')):'');
   if(b.type==='fill')out+=area('Items: prompt | accepted answer(s separated by ;)','activity.fillItems',(a.items||[]).map(x=>`${x.prompt} | ${(x.answers||[]).join('; ')}`).join('\n'));
   if(b.type==='matching')out+=area('Pairs: left | right','activity.pairs',(a.pairs||[]).map(x=>`${x.left} | ${x.right}`).join('\n'));
   if(b.type==='ordering')out+=area('Correct order (one item per line)','activity.orderItems',(a.items||[]).map(x=>x.text).join('\n'));
   if(b.type==='categorising')out+=area('Categories (one per line)','activity.categories',(a.categories||[]).join('\n'))+area('Items: item | category','activity.categoryItems',(a.items||[]).map(x=>`${x.text} | ${x.category}`).join('\n'));
+  }
   if(['writing','discussion'].includes(b.type))out+=field('Placeholder','activity.placeholder',a.placeholder||'')+area('Rubric / teacher criteria','activity.rubric',a.rubric||'')+area('Model answer (optional)','activity.modelAnswer',a.modelAnswer||'');
   if(b.type==='speaking-record')out+=numField('Max seconds','activity.maxSeconds',a.maxSeconds||120,15,600)+area('Rubric / teacher criteria','activity.rubric',a.rubric||'');
   if(['listening','video-question'].includes(b.type))out+=field('Media Asset ID','activity.media.assetId',a.media?.assetId||'')+field(b.type==='listening'?'Audio path / URL':'Video path / URL','activity.media.src',a.media?.src||'');
@@ -947,7 +952,7 @@ function wire(){
   }));
   document.querySelectorAll('[data-slide]').forEach(b=>b.onclick=()=>{selectedScreen=+b.dataset.slide;selectedBlock=0;selectedLayoutRegion=null;render()});
   document.querySelectorAll('[data-block]').forEach(b=>b.onclick=e=>{if(e.target.closest('[contenteditable],[data-evidence-quote],[data-evidence-why],[data-local-interaction],audio,video'))return;selectedBlock=+b.dataset.block;render()});
-  document.querySelectorAll('[data-preview-role]').forEach(b=>b.onclick=()=>{if(b.dataset.previewRole==='presentation'&&previewRole!=='presentation')presentationReturnRole=previewRole;previewRole=b.dataset.previewRole;certifiedAnswers.clear();render()});
+  document.querySelectorAll('[data-preview-role]').forEach(b=>b.onclick=()=>{if(b.dataset.previewRole==='presentation'&&previewRole!=='presentation'){if(!['teacher','admin'].includes(previewRole))return;presentationReturnRole=previewRole;}previewRole=b.dataset.previewRole;certifiedAnswers.clear();render()});
   document.querySelectorAll('[data-presentation-move]').forEach(b=>b.onclick=()=>{if(previewRole!=='presentation')return;const next=selectedScreen+Number(b.dataset.presentationMove);if(!Number.isInteger(next)||next<0||next>=lesson.screens.length)return;selectedScreen=next;selectedBlock=0;selectedLayoutRegion=null;render();root.querySelector(`[data-presentation-move="${b.dataset.presentationMove}"]:not(:disabled)`)?.focus();});
   document.querySelector('[data-exit-presentation]')?.addEventListener('click',()=>{if(previewRole!=='presentation')return;previewRole=presentationReturnRole;certifiedAnswers.clear();render();root.querySelector('[data-preview-role="presentation"]')?.focus();});
   document.querySelector('[data-open-library]')?.addEventListener('click',()=>document.querySelector('[data-add-panel]').classList.add('open'));
@@ -960,6 +965,25 @@ function wire(){
     lesson.screens[selectedScreen]=result.screen;markDirty();render();status('Template content updated');
   });
   document.querySelectorAll('[data-add-functional]').forEach(b=>b.onclick=()=>{const screen=createFunctionalSlide(b.dataset.addFunctional);if(!screen)return;lesson.screens.splice(selectedScreen+1,0,screen);selectedScreen++;selectedBlock=0;markDirty();render()});
+  root.querySelector('[data-refresh-content]')?.addEventListener('click',()=>{if(['teacher','admin'].includes(previewRole))render();});
+  root.querySelector('[data-edit-block]')?.addEventListener('change',e=>{
+   const i=Number(e.target.value);if(!['teacher','admin'].includes(previewRole)||!activeComboBlocks(currentScreen()).includes(currentScreen().blocks[i]))return;
+   selectedBlock=i;render();
+  });
+  root.querySelector('[data-objective-apply]')?.addEventListener('click',()=>{
+   if(!canOpenStudio||!['teacher','admin'].includes(previewRole)||lesson.status!=='draft'||currentScreen().sourceReviewDraft)return;
+   try{const fields=Object.fromEntries([...root.querySelectorAll('[data-objective-field]')].map(el=>[el.dataset.objectiveField,el.value]));
+    if(applyObjectiveContent(currentBlock(),fields)){invalidateImportedReview();markDirty();render();status('Question updated');}
+   }catch(error){root.querySelector('[data-objective-message]').textContent=error.message;}
+  });
+  document.querySelector('[data-functional-apply]')?.addEventListener('click',async()=>{
+   if(!canOpenStudio||!['teacher','admin'].includes(previewRole)||lesson.status!=='draft')return;
+   try{const target=lesson,screen=currentScreen(),fingerprint=JSON.stringify(screen.functionalDraft);const values=Object.fromEntries([...root.querySelectorAll('[data-functional-value]')].map(el=>[el.dataset.functionalValue,el.value]));
+    if(values.image!==undefined&&values.image.trim()!==String(screen.functionalDraft.values.image||''))await verifyFunctionalImageReference(values.image.trim());
+    if(lesson!==target||currentScreen()!==screen||JSON.stringify(screen.functionalDraft)!==fingerprint)throw Error('Slide changed; apply again to the current slide.');
+    if(applyFunctionalContent(screen,values)){invalidateImportedReview();markDirty();render();status('Functional slide updated');}
+   }catch(error){const note=root.querySelector('[data-functional-message]');if(note)note.textContent=error.message;else status(error.message);}
+  });
   document.querySelectorAll('[data-functional-variant]').forEach(b=>b.onclick=()=>{const draft=currentScreen().functionalDraft;if(!draft||!FUNCTION_SLIDES[draft.type]?.variants.includes(b.dataset.functionalVariant))return;draft.variant=b.dataset.functionalVariant;markDirty();render()});
   document.querySelectorAll('[data-add-combo]').forEach(b=>b.onclick=()=>{const screen=createMethodTemplateScreen(b.dataset.addCombo);if(!screen){status('Method template is not available for review.');return;}lesson.screens.splice(selectedScreen+1,0,screen);selectedScreen++;selectedBlock=0;markDirty();render()});
   document.querySelectorAll('[data-method-draft-step]').forEach(b=>b.onclick=()=>{if(changeMethodStep(currentScreen(),b.dataset.methodDraftStep))render()});
@@ -1205,8 +1229,8 @@ function wire(){
     adaptivePlan={...suggestCoursePlan({courseProfileId:lesson.courseProfileId,focus:adaptiveFocus,taskKind,minutes,learnerCount,source:sourceFromNativeDraft(lesson,adaptiveFocus)}),taskKind,minutes,learnerCount,lessonId:lesson.id};
     render();
   });
-  document.querySelectorAll('[data-path]').forEach(el=>el.addEventListener('input',()=>{if(['screen.layout','screen.visualVariant'].includes(el.dataset.path)){refineDesign(el.dataset.path==='screen.layout'?'layout':'variant',el.value);return;}applyPath(el.dataset.path,el.type==='number'?Number(el.value):el.value);markDirty();renderSoft()}));
-  document.querySelectorAll('[contenteditable][data-edit]').forEach(el=>el.addEventListener('blur',()=>{const key=el.dataset.edit;if(key==='screen-title')currentScreen().title=el.textContent.trim();if(key==='screen-instruction')currentScreen().instruction=el.textContent.trim();if(key==='block-text')currentBlock().content.text=el.textContent.trim();markDirty();render()}));
+  document.querySelectorAll('[data-path]').forEach(el=>el.addEventListener('input',()=>{if(!['teacher','admin'].includes(previewRole))return;if(['screen.layout','screen.visualVariant'].includes(el.dataset.path)){refineDesign(el.dataset.path==='screen.layout'?'layout':'variant',el.value);return;}applyPath(el.dataset.path,el.type==='number'?Number(el.value):el.value);invalidateImportedReview();markDirty();renderSoft()}));
+  document.querySelectorAll('[contenteditable="true"][data-edit]').forEach(el=>{const initial=el.textContent;el.addEventListener('blur',()=>{if(!['teacher','admin'].includes(previewRole)||!el.isConnected||el.textContent===initial)return;const key=el.dataset.edit;if(key==='screen-title')currentScreen().title=el.textContent.trim();if(key==='screen-instruction')applyPath('screen.instruction',el.textContent.trim());if(key==='block-text'){const b=currentScreen().blocks[Number(el.closest('[data-block]')?.dataset.block)];if(b?.type==='text')b.content.text=el.textContent.trim();}invalidateImportedReview();markDirty();});});
   document.querySelector('[data-add-slide]')?.addEventListener('click',()=>{lesson.screens.splice(selectedScreen+1,0,newScreen());selectedScreen++;selectedBlock=0;markDirty();render()});
   document.querySelector('[data-duplicate-slide]')?.addEventListener('click',()=>{const c=clone(currentScreen());c.id=uid('screen');c.blocks.forEach(b=>{b.id=uid('block');if(b.activity)b.activity.id=uid('activity')});lesson.screens.splice(selectedScreen+1,0,c);selectedScreen++;markDirty();render()});
   document.querySelector('[data-delete-slide]')?.addEventListener('click',()=>{if(lesson.screens.length<=1)return;lesson.screens.splice(selectedScreen,1);selectedScreen=Math.max(0,selectedScreen-1);selectedBlock=0;markDirty();render()});
@@ -1231,6 +1255,9 @@ function wire(){
   });
   document.querySelector('[data-duplicate-lesson]')?.addEventListener('click',()=>{lesson=modelDuplicateLesson(lesson);draftKey=`e-leap-studio-v1:${lesson.id}`;markDirty();render()});
 }
+function invalidateImportedReview(){
+ const r=lesson.assistedAuthoring;if(r){r.teacherApproved=false;r.sourceVerified=false;r.status='teacher-review-required';}
+}
 function renderSoft(){/* Inputs remain active; full render happens on structural actions or blur. */}
 function move(arr,index,delta,after){const to=index+delta;if(to<0||to>=arr.length)return;[arr[index],arr[to]]=[arr[to],arr[index]];after();markDirty();render()}
 function applyPath(path,value){
@@ -1240,7 +1267,7 @@ function applyPath(path,value){
   const b=currentBlock(),a=b?.activity;
   if(path==='lesson.title')lesson.title=value;else if(path==='lesson.courseLabel')return;else if(path==='lesson.lessonNumber')lesson.lessonNumber=value;
   if(['lesson.title','lesson.lessonNumber'].includes(path)&&lesson.screens?.[0])syncCoverMetadata(lesson.screens[0],lesson,{initial:true});
-  if(path.startsWith('theme.'))lesson.theme[path.split('.')[1]]=value;else if(path==='screen.stage')currentScreen().stage=value;else if(path==='screen.learningPhase')currentScreen().learningPhase=value;else if(path==='screen.title')currentScreen().title=value;else if(path==='screen.instruction')currentScreen().instruction=value;else if(path==='screen.teacherNotes')currentScreen().teacherNotes=value;else if(path==='screen.layout')currentScreen().layout=value;
+  if(path.startsWith('theme.'))lesson.theme[path.split('.')[1]]=value;else if(path==='screen.stage')currentScreen().stage=value;else if(path==='screen.learningPhase')currentScreen().learningPhase=value;else if(path==='screen.title')currentScreen().title=value;else if(path==='screen.instruction'){const s=currentScreen(),step=comboStep(s);s.instruction=value;if(step&&!s.sourceReviewDraft)step.instruction=value;}else if(path==='screen.teacherNotes')currentScreen().teacherNotes=value;else if(path==='screen.layout')currentScreen().layout=value;
   else if(path==='block.content.text')b.content.text=value;else if(path==='block.content.role')b.content.role=value;else if(path.startsWith('block.content.'))b.content[path.split('.')[2]]=value;
   else if(path==='block.vocabulary')b.content.items=parseLines(value,3).map(x=>({word:x[0],meaning:x[1],example:x[2]}));else if(path==='block.grammarExamples')b.content.examples=value.split('\n').map(x=>x.trim()).filter(Boolean);
   else if(path==='activity.prompt')a.prompt=value;else if(path==='activity.points')a.points=Number(value)||0;else if(path==='activity.placeholder')a.placeholder=value;else if(path==='activity.rubric')a.rubric=value;else if(path==='activity.modelAnswer')a.modelAnswer=value;else if(path==='activity.maxSeconds')a.maxSeconds=Number(value)||120;

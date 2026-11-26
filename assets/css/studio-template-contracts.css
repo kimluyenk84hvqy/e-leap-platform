@@ -175,7 +175,8 @@
 .lesson-canvas.preview-guest .block:hover,
 .lesson-canvas.preview-presentation .block:hover{border-color:transparent;background:transparent}
 .lesson-canvas:is(.preview-student,.preview-guest,.preview-presentation) .block-label,
-.lesson-canvas:is(.preview-student,.preview-guest,.preview-presentation) .interaction-row{display:none!important}
+/* Hide noninteractive demonstration chips, never live activity controls or status. */
+.lesson-canvas:is(.preview-student,.preview-guest,.preview-presentation) .interaction-row:not([data-local-interaction] .interaction-row){display:none!important}
 .lesson-canvas .studio-no-content{font-size:19px;color:#365c4a;background:#f0f6f1;padding:20px 24px;border-radius:12px;grid-column:1/-1}
 /* One visual frame per state; reading text and task occupy stable functional zones. */
 .lesson-canvas:has(.combo-step-nav) .canvas-body>.block[data-slot="passage"]{grid-column:1}

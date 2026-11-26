@@ -96,7 +96,7 @@ export class UnifiedLessonControls{
       if(canTeach){this._available(this.checkBtn,c.check,'Check');this._available(this.resetBtn,c.reset,'Reset');this._available(this.revealBtn,c.reveal,'Show answer');}
       if(this.role==='student'){this._available(this.checkBtn,c.check,'Check');this._available(this.resetBtn,c.reset,'Reset');this._available(this.submitBtn,c.submit,'Submit');}
       if(this.role==='guest'){this._available(this.checkBtn,c.check,'Check');this._available(this.resetBtn,c.reset,'Reset');}
-    }else if(canTeach){this._available(this.resetBtn,c.reset,'Reset');this._available(this.revealBtn,c.reveal,'Show answer');}
+    }else if(canTeach){this._available(this.checkBtn,c.check,'Check');this._available(this.resetBtn,c.reset,'Reset');this._available(this.revealBtn,c.reveal,'Show answer');}
     if(this.lastActivityId!==c.activityId){
       this.lastActivityId=c.activityId;this.currentGrading=null;
       if(this.scorePill){this.scorePill.textContent='Score —';this.scorePill.title='Check the activity to see the score.';}

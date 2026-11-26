@@ -25,7 +25,7 @@ export const ROLE_CONTROL_CONTRACT = Object.freeze({
     utility: Object.freeze([])
   }),
   presentation: Object.freeze({
-    activity: Object.freeze(['reveal','reset']),
+    activity: Object.freeze(['check','reset','reveal']),
     classroom: Object.freeze(['exit-presentation']),
     utility: Object.freeze([])
   })
@@ -45,4 +45,5 @@ export const ROLE_CONTROL_SEMANTICS = Object.freeze({
   edit: 'Open Edit in Studio/content administration when permitted.'
 });
 
-export const LOCKED_ROLE_CONTROL_VERSION = 'R4-RC1.4.5';
+// S8.1 candidate: explicit teacher-presentation Check extension; all other roles unchanged.
+export const LOCKED_ROLE_CONTROL_VERSION = 'R4-RC1.4.5-S8.1-candidate';

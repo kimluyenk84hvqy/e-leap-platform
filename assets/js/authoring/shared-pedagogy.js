@@ -1,8 +1,8 @@
-import {readPreviewDraft} from './interactive-preview.js';
+import {readPreviewDraft,classroomPreviewStateRole} from './interactive-preview.js';
 import {renderPictureSelection} from './picture-reveal.js';
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const selections=new WeakMap();
-function state(screen,role){let roles=selections.get(screen);if(!roles)selections.set(screen,roles=new Map());if(!roles.has(role))roles.set(role,{expert:0,photo:0});return roles.get(role);}
+function state(screen,role){role=classroomPreviewStateRole(role);let roles=selections.get(screen);if(!roles)selections.set(screen,roles=new Map());if(!roles.has(role))roles.set(role,{expert:0,photo:0});return roles.get(role);}
 export function mapSharedPedagogy(raw,screen){
  const c=raw.sharedPedagogy;if(!c)return null;const steps=screen.combo?.steps||[];const step=id=>{if(!steps.some(s=>s.id===id))throw Error('Unknown pedagogical step');return id;};
  const ref=(i,type,at)=>{const b=screen.blocks[i];if(!Number.isInteger(i)||i<0||b?.type!==type||b.comboStep!==at)throw Error('Invalid pedagogical block reference');return b.id;};
