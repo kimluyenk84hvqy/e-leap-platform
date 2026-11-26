@@ -18,5 +18,11 @@ export class ELeapAuthoringSaveService{
   if(response.saved!==true||!Number.isSafeInteger(response.revision))throw Error('Server did not confirm saving the draft.');
   return {mode:'server',revision:response.revision,savedAt:response.savedAt};
  }
+ async publishCourse({draftId,revision,shellId}){
+  return this.request('/api/authoring/publish-course',{
+   method:'POST',headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({draftId,revision,shellId})
+  });
+ }
  async publish(){throw new Error('Restricted or unverified lessons cannot be published; Studio Quality Gate and server publication are not yet accepted.');}
 }

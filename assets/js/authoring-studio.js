@@ -1,3 +1,4 @@
+import {mountCourseLearner} from './authoring/course-learner-view.js';
 import {mapSharedPedagogy,pedagogyVisible,neutralPhoto,renderPedagogy,wirePedagogy} from './authoring/shared-pedagogy.js';
 import {mapPictureReveal,activePictureGroup,renderPictureReveal,wirePictureReveal} from './authoring/picture-reveal.js';
 import {renderReadingRegions} from './authoring/advanced-layout.js';
@@ -53,10 +54,10 @@ import {loadWorkspaceIndex,mountWorkspacePanel} from './authoring/workspace-pane
 const root=document.getElementById('studio');
 let workspaceExpanded=false;
 const workspaceSelection={};
-let verifiedUser=null;
+let verifiedUser=null, signedInRole=null;
 try{
   const response=await fetch('/api/auth/me',{credentials:'same-origin',cache:'no-store'});
-  if(response.ok){const data=await response.json();if(['admin','teacher'].includes(data?.user?.role))verifiedUser=data.user;}
+  if(response.ok){const data=await response.json();signedInRole=data?.user?.role;if(['admin','teacher'].includes(data?.user?.role))verifiedUser=data.user;}
 }catch(_){}
 const ctx=new ELeapRuntimeContext({role:verifiedUser?.role||'guest'});
 const teacherPermissions=[...(Array.isArray(verifiedUser?.permissions)?verifiedUser.permissions:[]),...(Array.isArray(verifiedUser?.capabilities)?verifiedUser.capabilities:[]),...(Array.isArray(verifiedUser?.grants)?verifiedUser.grants:[])];
@@ -65,6 +66,7 @@ const canOpenStudio=verifiedUser?.role==='admin'||(verifiedUser?.role==='teacher
 const qs=new URLSearchParams(location.search);
 const source=qs.get('source')||'';
 const requestedServerDraft=qs.get('serverDraft');
+const publishedCourseShell=qs.get('publishedCourse');
 let openedServerDraftId=null,openedServerRevision=0;
 const esc=s=>String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));
 const clone=modelClone;
@@ -99,7 +101,21 @@ function refineDesign(kind,value){
 }
 const certifiedQuestionIndex=new Map(),certifiedAnswers=new Set(),certifiedResponses=new Map();
 
-if(!canOpenStudio){
+if(publishedCourseShell!==null){
+  try{
+    const record=await saveService.request('/api/authoring/publish-course?shellId='+encodeURIComponent(publishedCourseShell));
+    if(signedInRole==='student'&&record.lesson?.screens?.length){
+      mountCourseLearner(root,record.lesson,saveService.request.bind(saveService),publishedCourseShell);
+    }else{
+    if(!verifiedUser||!record.lesson?.screens?.length)throw Error('Course lesson is unavailable.');
+    lesson=record.lesson;
+    previewRole=verifiedUser.role;
+    renderPublishedCourse();
+    }
+  }catch(error){
+    root.innerHTML=`<section class="studio-denied"><h1>Course lesson unavailable</h1><p>${esc(error.message)}</p><a href="../index.html">Back to Courses</a></section>`;
+  }
+}else if(!canOpenStudio){
   const next=encodeURIComponent(location.pathname+location.search);
   root.innerHTML=`<section class="studio-denied"><div class="studio-kicker">E-LEAP Studio</div><h1>${verifiedUser?'Studio permission required':'Sign in to E-LEAP'}</h1><p>${verifiedUser?'Your account is signed in but does not have the Studio content-edit grant. An administrator can assign this permission.':'Sign in with an Administrator account or an authorized Teacher account.'}</p>${!verifiedUser?`<a class="studio-btn primary" href="../signin.html?next=${next}">Sign in</a>`:''}<p><a href="../index.html">Back to Platform</a></p></section>`;
 }else if(qs.get('view')==='methods'){
@@ -234,6 +250,27 @@ async function saveDraft(){
   if(pendingSave){pendingSave=false;saveDraft();}
  }
 }
+let coursePublishPending=false;
+async function publishUnit4CourseDraft(){
+ const slots={'U4.1':'objective-first-b2-u04-l01','U4.2':'objective-first-b2-u04-l02'};
+ const shellId=lesson.courseProfileId==='objective-first-b2'&&slots[lesson.lessonNumber];
+ if(!shellId||verifiedUser?.role!=='admin')return false;
+ if(coursePublishPending)return true;
+ if(dirty||savingDraft||pendingSave){status('Finish saving the current draft before publishing.');return true;}
+ const draftId=lesson.id;
+ const revision=draftKey===`e-leap-studio-server-copy:${draftId}`
+  ?openedServerRevision:Number(localStorage.getItem('e-leap-studio-server-revision:'+draftId));
+ if(!Number.isSafeInteger(revision)||revision<1){status('Save the draft to Preview before publishing.');return true;}
+ coursePublishPending=true;
+ try{
+  status('Publishing the saved revision to Course B2…');
+  await saveService.publishCourse({draftId,revision,shellId});
+  if(lesson.id===draftId)status('Course B2 publication saved.');
+ }catch(error){
+  if(lesson.id===draftId)status('Publish failed: '+error.message);
+ }finally{coursePublishPending=false;}
+ return true;
+}
 function status(msg){const e=document.querySelector('[data-studio-status]');if(e)e.textContent=msg}
 
 let presentationReturnRole='teacher';
@@ -302,6 +339,31 @@ function wireCourseWorkspaces(){
   }if(panel.open)load();
 }
 function slideItem(s,i){return `<button class="slide-item ${i===selectedScreen?'active':''}" data-slide="${i}"><span class="slide-thumb">${i+1}</span><span class="slide-title"><b>${esc(s.title||'Untitled')}</b><small>${esc(s.stage||'Slide')}</small></span><span class="slide-more">⋮</span></button>`}
+function renderPublishedCourse(){
+ const screen=currentScreen();
+ root.innerHTML=`<main class="studio-center"><div class="canvas-toolbar">
+  <a class="studio-btn" href="../index.html">Back to Courses</a>
+  <strong>${esc(lesson.lessonNumber)} · ${esc(lesson.title)}</strong>
+  <button class="studio-btn" data-course-nav="-1" ${selectedScreen===0?'disabled':''}>Previous</button>
+  <span>Slide ${selectedScreen+1}/${lesson.screens.length}</span>
+  <button class="studio-btn" data-course-nav="1" ${selectedScreen===lesson.screens.length-1?'disabled':''}>Next</button>
+  </div>${renderStudioControlDock(previewRole)}${renderCanvas(screen)}</main>`;
+ root.querySelectorAll('[contenteditable]').forEach(field=>field.removeAttribute('contenteditable'));
+ root.querySelectorAll('[data-open-library]').forEach(button=>button.remove());
+ root.querySelectorAll('[data-course-nav]').forEach(button=>button.onclick=()=>{
+  selectedScreen+=Number(button.dataset.courseNav);renderPublishedCourse();
+ });
+ root.querySelectorAll('[data-local-interaction]').forEach(host=>{
+  const block=screen.blocks[Number(host.closest('[data-block]')?.dataset.block)];
+  if(block&&interactiveSupported(block))wireInteractivePreview(host,block,previewRole);
+ });
+ root.querySelectorAll('[data-picture-reveal]').forEach(host=>wirePictureReveal(host,screen,previewRole));
+ root.querySelectorAll('[data-combo-step]').forEach(button=>button.onclick=()=>{
+  if(setComboStep(screen,button.dataset.comboStep))renderPublishedCourse();
+ });
+ wirePedagogy(root,screen,previewRole,renderPublishedCourse);
+ wireStudioControlDock(root,previewRole);
+}
 function renderCanvas(s){
  if(s.sourceReviewDraft&&['student','guest','presentation'].includes(previewRole))return '<div class="canvas-wrap"><section class="lesson-canvas"><p class="studio-no-content">This source activity is awaiting teacher review and is not available to learners.</p></section></div>';
  if(s.resourceStage)return renderResourceStage(s,lesson.resourceBank,previewRole);if(s.functionalDraft)return renderFunctionalSlide(s,previewRole);if(s.methodDraft)return renderMethodTemplateCanvas(s,previewRole,u6SourceByScreen.get(s.id)||null,u6AnswersByScreen.get(s.id+':'+(u6AccountByScreen.get(s.id)||'A'))||{},u6AccountByScreen.get(s.id)||'A',u6SourceErrors.get(s.id)||'');if(s.certifiedTemplate)return renderCertifiedVisual(s,previewRole,certifiedQuestionIndex.get(s.id)||0,certifiedAnswers.has(s.id),certifiedResponses.get(s.id+':'+(certifiedQuestionIndex.get(s.id)||0))||'');const t=lesson.theme;return `<div class="canvas-wrap" style="${auditoriumVariables()};--canvas-font:${cssFont(t.fontFamily)};--canvas-title-size:${Number(t.titleSize)||36}px;--canvas-body-size:${Number(t.bodySize)||18}px;--canvas-text:${safeColor(t.textColor,'#173f38')};--canvas-accent:${safeColor(t.accentColor,'#0d7d6d')};--canvas-bg:${safeColor(t.backgroundColor,'#fff')}"><div class="preview-strip"><b>${cap(previewRole)} preview</b><span>${esc(t.preset)} · ${esc(t.fontFamily)}</span></div><section class="lesson-canvas ${previewRole==='presentation'?'auditorium-preview':''} layout-${esc(s.layout||'standard')} template-${esc(s.templateId||'custom')} variant-${esc(s.visualVariant||'default')} preview-${esc(previewRole)}"><header class="canvas-hero"><div class="canvas-kicker">${esc(s.stage||'')}</div><h1 class="canvas-title" contenteditable="${!['student','guest','presentation'].includes(previewRole)}" data-edit="screen-title">${esc(s.title||'')}</h1><p class="canvas-instruction" contenteditable="${!['student','guest','presentation'].includes(previewRole)}" data-edit="screen-instruction">${esc(s.instruction||'')}</p></header><div class="canvas-body">${renderComboSteps(s)}${renderPedagogy(s,previewRole)}${previewRole==='presentation'&&!s.sourceReviewDraft?renderReadingRegions(s,renderBlock,renderRoleReviewBlocks):renderRoleReviewBlocks(s)}${['student','guest','presentation'].includes(previewRole)&&!s.blocks.some(b=>(!b.comboStep||b.comboStep===comboStep(s)?.id)&&learnerBlockReady(b))?'<p class="studio-no-content">This activity is not yet available.</p>':''}${['student','guest','presentation'].includes(previewRole)?'':'<div class="add-block"><button class="studio-btn primary" data-open-library>+ Add content / activity</button></div>'}</div></section></div>`}
@@ -1244,7 +1306,7 @@ function wire(){
   document.querySelector('[data-export]')?.addEventListener('click',exportJSON);
   document.querySelector('[data-quality]')?.addEventListener('click',()=>document.querySelector('[data-quality-panel]').classList.add('open'));
   document.querySelector('[data-close-quality]')?.addEventListener('click',()=>document.querySelector('[data-quality-panel]').classList.remove('open'));
-  document.querySelector('[data-publish]')?.addEventListener('click',()=>{const blocking=runQuality().filter(x=>x[0]==='error');status(blocking.length?`Fix ${blocking.length} blocking issue(s) before publish`:(verifiedUser?.role==='admin'?'Publishing candidate…':'Publish request staged for review'));if(blocking.length){document.querySelector('[data-quality-panel]').classList.add('open')}else if(verifiedUser?.role==='admin'){saveService.publish(lesson).then(()=>status('Server acknowledged publication request. Verify the published version before sharing.')).catch(error=>{status('Publish failed: '+error.message);document.querySelector('[data-quality-panel]')?.classList.add('open')})}});
+  document.querySelector('[data-publish]')?.addEventListener('click',async()=>{if(await publishUnit4CourseDraft())return;const blocking=runQuality().filter(x=>x[0]==='error');status(blocking.length?`Fix ${blocking.length} blocking issue(s) before publish`:(verifiedUser?.role==='admin'?'Publishing candidate…':'Publish request staged for review'));if(blocking.length){document.querySelector('[data-quality-panel]').classList.add('open')}else if(verifiedUser?.role==='admin'){saveService.publish(lesson).then(()=>status('Server acknowledged publication request. Verify the published version before sharing.')).catch(error=>{status('Publish failed: '+error.message);document.querySelector('[data-quality-panel]')?.classList.add('open')})}});
   document.querySelector('[data-new]')?.addEventListener('click',()=>{
     const profile=resolveCourseProfile(lesson);
     if(!profile||!courseIsSelectable(profile.id)){status('Choose a valid Course Profile to create a new lesson.');return;}

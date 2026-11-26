@@ -15,3 +15,14 @@ jobs:
           node-version: 22
       - run: npm install --no-package-lock --ignore-scripts --no-audit --no-fund
       - run: node --experimental-vm-modules --test tests/*.test.mjs
+  course-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install playwright
+      - run: python -m playwright install --with-deps --only-shell chromium
+      - run: python tests/s81-course-browser.py
