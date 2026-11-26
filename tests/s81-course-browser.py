@@ -24,7 +24,7 @@ def run(browser, origin):
             "screens": [{"id": "qa-screen", "title": title, "stage": "Practice",
                          "layout": "standard", "blocks": []}],
         }
-        context = browser.new_context()
+        context = browser.new_context(service_workers="block")
         page = context.new_page()
         role = "admin"
 
@@ -41,8 +41,13 @@ def run(browser, origin):
                     "role": role, "user_id": "synthetic-" + role, "display_name": "Course QA"
                 }})
             if url.startswith("/api/auth/student"):
-                role = "student"
-                return route.fulfill(json={"ok": True, "user": {"role": role}})
+                if request.method == "POST":
+                    role = "student"
+                if role != "student":
+                    return route.fulfill(status=401, json=denied)
+                return route.fulfill(json={"ok": True, "user": {
+                    "role": role, "student_id": "TEST002", "display_name": "Course QA"
+                }, "memberships": [{"course_id": "objective-first-b2", "status": "active"}]})
             if url.startswith("/api/authoring/lessons"):
                 return route.fulfill(json={"ok": True, "draft": draft, "revision": 1, "drafts": []})
             if url.startswith("/api/authoring/publish-course"):

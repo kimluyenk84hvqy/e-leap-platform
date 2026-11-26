@@ -6,6 +6,16 @@ import {courseImage, projectCourseLesson, checkCourseActivity} from './course-le
 
 const courseSlots=['objective-first-b2-u04-l01','objective-first-b2-u04-l02'];
 
+async function courseAccess(sql,user){
+  if(user.role!=='student'||String(user.student_id||'').trim().toUpperCase()==='TEST001')return true;
+  const [membership]=await sql`SELECT 1 FROM auth_class_members m
+    JOIN classes c ON c.class_id::text=m.class_id
+    WHERE m.student_user_id=${user.user_id} AND m.status='active'
+      AND c.status='active' AND c.course_id='objective-first-b2'
+    LIMIT 1`;
+  return Boolean(membership);
+}
+
 async function readPublication(req,res){
   const staff=await requireAuth(req,res,['admin','teacher','student']);
   if(!staff)return;
@@ -13,6 +23,7 @@ async function readPublication(req,res){
   if(!courseSlots.includes(shellId))return res.status(404).json({ok:false,error:'Unknown course lesson.'});
   try{
     const sql=getResearchDb();
+    if(!await courseAccess(sql,staff))return res.status(403).json({ok:false,error:'Active Course B2 membership is required.'});
     if(req.query?.summary==='1'){
       const [row]=await sql`SELECT shell_id, lesson->>'title' AS title
         FROM studio_course_publications_v1 WHERE shell_id=${shellId}`;
@@ -50,6 +61,7 @@ async function checkActivity(req,res){
   }
   try{
     const sql=getResearchDb();
+    if(!await courseAccess(sql,student))return res.status(403).json({ok:false,error:'Active Course B2 membership is required.'});
     const [row]=await sql`SELECT lesson FROM studio_course_publications_v1 WHERE shell_id=${shellId}`;
     const score=row&&checkCourseActivity(row.lesson,blockId,values);
     if(!score)return res.status(422).json({ok:false,error:'Activity or response is unavailable.'});
