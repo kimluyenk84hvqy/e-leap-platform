@@ -1,5 +1,6 @@
 import {mapFunctionalDraft} from './functional-slide-library.js';
 import {createComposite} from './composite-slide.js';
+import {normalizeReviewReports} from './s82-authoring-plan.js';
 /* Draft-only validation. No grant of publication or learner access. */
 const uuid=x=>typeof x==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(x);
 const unique=a=>Array.isArray(a)&&a.length>0&&a.every(x=>typeof x==='string'&&x.trim())&&new Set(a).size===a.length;
@@ -34,7 +35,7 @@ export function nativeSourceReview(pkg){
  const source=r.source==null?'':text(r.source,2000);
  const notes=r.notes==null?[]:r.notes;
  if(!Array.isArray(notes)||notes.length>40)throw Error('Invalid package review notes.');
- return {source,notes:notes.map(v=>text(v,2000)),status:'teacher-review-required'};
+ return {source,notes:notes.map(v=>text(v,2000)),...(r.reports?{reports:normalizeReviewReports(r.reports)}:{}),status:'teacher-review-required'};
 }
 export async function resolvePrivateMedia(screens,fetcher=globalThis.fetch){
  const refs=[];for(const s of screens)for(const b of s.blocks){if(['audio','video'].includes(b.type))refs.push([b.content,b.type]);if(b.type==='image'&&uuid(b.content?.assetId))refs.push([b.content,'image']);if(['listening','video-question'].includes(b.type))refs.push([b.activity.media,b.type==='listening'?'audio':'video']);}

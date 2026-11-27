@@ -22,6 +22,7 @@ import {normaliseDeliveryPolicy,E_LEAP_DELIVERY_POLICIES} from './assessment-pol
 import {auditLesson} from './quality-gate.js';
 import {ELeapAuthoringSaveService} from './authoring-save-service.js';
 import {createNativeLessonRequest,bindTrackReferences} from './authoring/native-authoring-request.js';
+import {validateNativeAuthoringMetadata} from './authoring/s82-authoring-plan.js';
 import {validateNativePackage,nativeSourceReview,resolvePrivateMedia,sourceFromNativeDraft} from './authoring/native-blueprint.js';
 import {suggestCoursePlan} from './authoring/course-adaptive-plan.js';
 import {inspectPdfLesson,requestPdfAiLesson,toUnverifiedLessonDraft,getPdfAiCapability} from './authoring/pdf-ai-intake.js';
@@ -77,7 +78,7 @@ const saveService=new ELeapAuthoringSaveService();
 let serverDraftIndex=[],savingDraft=false,pendingSave=false,adaptiveFocus='Reading',adaptivePlan=null;
 let pdfAiFile=null,pdfAiExtracted=null,pdfAiBusy=false,pdfAiStart=1,pdfAiEnd=8,pdfAiRights=false,pdfAiConsent=false,pdfAiCapability=null,pdfAiMessage='Select a PDF and lesson pages; PDF bytes stay in your browser.';
 let pdfAiExpectedPassages=0,pdfAiSourceGate=null,pdfAiBatchRanges='',pdfAiBatchPlan=null,pdfAiBatchMessage='Plan a small batch by page ranges.';
-let nativeBrief='';
+let nativeBrief='',nativeRange='',nativeDuration='',nativeCovers='';
 let chatgptIncludeSource=false,chatgptResponseText='',chatgptApprovalChecks={source:false,media:false,activities:false},chatgptApprovalNote='',chatgptMessage='Send a lesson request to ChatGPT; paste its structured JSON reply here.';
 let lesson=null, selectedScreen=0, selectedBlock=0, dirty=false, previewRole='teacher', autosaveTimer=null;
 const jigsawPreviewAccounts=new Map(); // Teacher-only UI filter; NOT an authorized learner assignment.
@@ -431,7 +432,10 @@ function lessonProps(){
   <div class="studio-course-options">
    <button type="button" class="studio-btn" data-chatgpt-send>Send to AI Review · Copy</button>
    <button type="button" class="studio-btn" data-chatgpt-download>Download review JSON</button>
-  <label>Complete lesson brief<textarea data-native-brief rows="3" placeholder="Scope, duration, sections and teaching requirements">${esc(nativeBrief)}</textarea></label>
+  <label>Complete lesson brief<textarea data-native-brief rows="3" placeholder="Scope, sections and teaching requirements">${esc(nativeBrief)}</textarea></label>
+  <label>PDF page range<input data-native-range value="${esc(nativeRange)}" placeholder="47-51"></label>
+  <label>Lesson duration (minutes)<input data-native-duration type="number" min="1" max="720" value="${esc(nativeDuration)}"></label>
+  <label>Number of covers<input data-native-covers type="number" min="1" max="12" value="${esc(nativeCovers)}"></label>
   <button type="button" class="studio-btn primary" data-native-request>Download complete lesson request</button>
   </div>
   <label>Import AI Lesson · Paste ChatGPT response JSON
@@ -555,6 +559,8 @@ async function importNativeLessonPackage(file){
  }
  const title=validateNativePackage(pkg,target);
  const sourcePackageReview=nativeSourceReview(pkg);
+ let expectedPlan=null;try{expectedPlan=JSON.parse(localStorage.getItem('e-leap-native-plan:'+target.id)||'null');}catch{}
+ const authoringPlan=validateNativeAuthoringMetadata(pkg,expectedPlan);
  if(!pkg.courseProfileId&&!confirm('Legacy package: confirm this belongs to '+target.courseLabel+'.'))return;
  if(pkg.schema!=='eleap-native-lesson-package-v1'||String(pkg.lessonNumber).toLowerCase()!==String(target.lessonNumber).toLowerCase())throw Error('This package does not match the active lesson number.');
  if(!Array.isArray(pkg.screens)||!pkg.screens.length||pkg.screens.length>80||!Array.isArray(pkg.assets)||pkg.assets.length>40)throw Error('Invalid package size.');
@@ -573,7 +579,7 @@ async function importNativeLessonPackage(file){
    const out=modelCreateScreen(nonempty(raw.stage,100),nonempty(raw.title,140));
    out.instruction=raw.functional?limit(raw.instruction||'',500):nonempty(raw.instruction,500);
    if(!E_LEAP_LAYOUT_IDS.includes(raw.layout))throw Error('Unknown layout.');
-   out.layout=raw.layout;if(Number.isInteger(raw.sourcePage)&&raw.sourcePage>0)out.sourcePage=raw.sourcePage;
+   out.layout=raw.layout;if(Number.isInteger(raw.sourcePage)&&raw.sourcePage>0)out.sourcePage=raw.sourcePage;if(typeof raw.sourceEvidence==='string')out.sourceEvidence=limit(raw.sourceEvidence,500);if(authoringPlan){out.sectionId=raw.sectionId;out.minutes=raw.minutes;}
    out.blocks=(raw.functional&&raw.blocks.length===0?[]:arr(raw.blocks,80)).map(b=>{
      if(!allowed.has(b.type))throw Error('Unsupported block type.');
      const z=modelCreateBlock(b.type);
@@ -596,8 +602,8 @@ async function importNativeLessonPackage(file){
        }else if(b.type==='fill'){
          t.items=arr(a.items,16).map(x=>({id:nonempty(x.id,20),prompt:nonempty(x.prompt,1800),answers:arr(x.answers,10).map(y=>nonempty(y,300))}));
          if(a.evidenceByItem){t.evidenceByItem={};for(const x of t.items){const e=a.evidenceByItem[x.id];if(e)t.evidenceByItem[x.id]={quote:limit(e.quote||'',500),why:nonempty(e.why,700)};}}
-       }else if(b.type==='ordering'){t.items=arr(a.items,30).map(x=>({id:nonempty(x.id,20),text:nonempty(x.text,1000)}));t.answerKey=[...a.answerKey];
-       }else if(b.type==='categorising'){t.categories=[...a.categories];t.items=arr(a.items,30).map(x=>({id:nonempty(x.id,20),text:nonempty(x.text,1000),category:x.category}));
+       }else if(b.type==='ordering'){t.items=arr(a.items,30).map(x=>({id:nonempty(x.id,20),text:nonempty(x.text,1000)}));t.answerKey=[...a.answerKey];if(a.evidenceByItem){t.evidenceByItem={};for(const id of t.answerKey.map((_,i)=>String(i))){const e=a.evidenceByItem[id];if(e)t.evidenceByItem[id]={quote:limit(e.quote||'',500),why:nonempty(e.why,700)};}}
+       }else if(b.type==='categorising'){t.categories=[...a.categories];t.items=arr(a.items,30).map(x=>({id:nonempty(x.id,20),text:nonempty(x.text,1000),category:x.category}));if(a.evidenceByItem){t.evidenceByItem={};for(const x of t.items){const e=a.evidenceByItem[x.id];if(e)t.evidenceByItem[x.id]={quote:limit(e.quote||'',500),why:nonempty(e.why,700)};}}
        }else if(b.type==='matching'){
          t.pairs=arr(a.pairs,16).map(x=>({id:nonempty(x.id,20),left:nonempty(x.left,500),right:nonempty(x.right,500)}));if(a.evidenceByItem){t.evidenceByItem={};for(const x of t.pairs){const e=a.evidenceByItem[x.id];if(e)t.evidenceByItem[x.id]={quote:limit(e.quote||'',500),why:nonempty(e.why,700)};}}
        }else{t.modelAnswer=limit(a.modelAnswer||'',3000);t.rubric=limit(a.rubric||'',1000);}
@@ -634,7 +640,8 @@ async function importNativeLessonPackage(file){
  const previous={title:target.title,theme:modelClone(target.theme),screens:modelClone(target.screens),assistedAuthoring:modelClone({...target.assistedAuthoring,history:[]})};
  const history=(target.assistedAuthoring?.history||[]).slice(-2);history.push({revision:Number(target.assistedAuthoring?.revision||0),snapshot:previous});
  snapshotDraft();
- lesson={...target,title,screens,theme:pkg.designProfile==='objective-b2'&&target.courseProfileId==='objective-first-b2'?{...target.theme,preset:'Objective First B2',fontFamily:'Poppins',titleSize:48,bodySize:26,textColor:'#203c18',accentColor:'#527a28',backgroundColor:'#F5F9EC'}:target.theme,assistedAuthoring:{schema:'e-leap-chatgpt-revision-v1',revision:Number(target.assistedAuthoring?.revision||0)+1,status:'teacher-review-required',teacherApproved:false,sourceVerified:false,history,sourcePackageReview,reviews:{academic:{findings:['Source-based lesson package imported.'],issues:['Teacher must verify source wording and keys.',...(sourcePackageReview?.notes||[])]},visual:{findings:['Editable native layouts and verified private image references.'],issues:['Inspect slide fit and all media.']},critical:{findings:['Previous revision retained.'],issues:['Live interaction and role QA pending.'],missingMedia:[]}}}};
+ lesson={...target,title,screens,authoringPlan,theme:pkg.designProfile==='objective-b2'&&target.courseProfileId==='objective-first-b2'?{...target.theme,preset:'Objective First B2',fontFamily:'Poppins',titleSize:48,bodySize:26,textColor:'#203c18',accentColor:'#527a28',backgroundColor:'#F5F9EC'}:target.theme,assistedAuthoring:{schema:'e-leap-chatgpt-revision-v1',revision:Number(target.assistedAuthoring?.revision||0)+1,status:'teacher-review-required',teacherApproved:false,sourceVerified:false,history,sourcePackageReview,reviews:sourcePackageReview?.reports||{academic:{findings:['Source-based lesson package imported.'],issues:['Teacher must verify source wording and keys.',...(sourcePackageReview?.notes||[])]},visual:{findings:['Editable native layouts and verified private image references.'],issues:['Inspect slide fit and all media.']},critical:{findings:['Previous revision retained.'],issues:['Live interaction and role QA pending.'],missingMedia:[]}}}};
+ chatgptApprovalChecks={source:false,media:false,activities:false};chatgptApprovalNote='';
  selectedScreen=selectedBlock=0;ensureSchema();markDirty();render();
 }
 
@@ -1099,6 +1106,9 @@ function wire(){
     render();
   }
   document.querySelector('[data-native-brief]')?.addEventListener('input',e=>{nativeBrief=e.target.value;});
+  document.querySelector('[data-native-range]')?.addEventListener('input',e=>{nativeRange=e.target.value;});
+  document.querySelector('[data-native-duration]')?.addEventListener('input',e=>{nativeDuration=e.target.value;});
+  document.querySelector('[data-native-covers]')?.addEventListener('input',e=>{nativeCovers=e.target.value;});
   document.querySelector('[data-native-request]')?.addEventListener('click',async()=>{
    try{
     const target=lesson;
@@ -1107,7 +1117,8 @@ function wire(){
     if(!response.ok||!data.ok||!Array.isArray(data.files))throw Error('Media library unavailable.');
     if(target!==lesson)throw Error('Active draft changed.');
     const combos=Object.entries(TEACHING_COMBOS).map(([id,spec])=>({id,label:spec.label,steps:createTeachingCombo(id)[0]?.combo?.steps?.map(x=>x.id)||[]}));
-    const request=createNativeLessonRequest(lesson,{brief:nativeBrief,includeSource:chatgptIncludeSource,layouts:E_LEAP_LAYOUT_IDS,combos,files:data.files});
+    const request=createNativeLessonRequest(lesson,{brief:nativeBrief,includeSource:chatgptIncludeSource,layouts:E_LEAP_LAYOUT_IDS,combos,files:data.files,requestId:modelUid('native'),sourceRange:nativeRange,durationMinutes:Number(nativeDuration),coverCount:Number(nativeCovers)});
+    localStorage.setItem('e-leap-native-plan:'+lesson.id,JSON.stringify(request.authoring));
     const a=document.createElement('a'),url=URL.createObjectURL(new Blob([JSON.stringify(request,null,2)],{type:'application/json'}));
     a.href=url;a.download='eleap-native-request-'+lesson.id+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
     chatgptMessage='Complete lesson request downloaded. Import the returned native package.';
