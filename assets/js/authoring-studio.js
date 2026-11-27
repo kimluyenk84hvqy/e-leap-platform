@@ -217,7 +217,7 @@ function restoreDocumentMedia(){
    if(lesson===active)render();
  }).catch(()=>status('Imported media could not be reopened from this device.'));
 }
-function markDirty(){dirty=true;status('Unsaved changes');clearTimeout(autosaveTimer);autosaveTimer=setTimeout(saveDraft,700)}
+function markDirty({reviewed=false}={}){if(lesson.courseProfileId==='life' && !reviewed)invalidateImportedReview();dirty=true;status('Unsaved changes');clearTimeout(autosaveTimer);autosaveTimer=setTimeout(saveDraft,700)}
 async function refreshServerDrafts(){
  try{serverDraftIndex=await saveService.listDrafts();render();}
  catch(error){status('Server draft list unavailable; local drafts remain accessible.');}
@@ -255,8 +255,12 @@ async function saveDraft(){
 }
 let coursePublishPending=false;
 async function publishUnit4CourseDraft(){
- const slots={'U4.1':'objective-first-b2-u04-l01','U4.2':'objective-first-b2-u04-l02'};
- const shellId=lesson.courseProfileId==='objective-first-b2'&&slots[lesson.lessonNumber];
+ const slots={
+  'objective-first-b2':{'U4.1':'objective-first-b2-u04-l01','U4.2':'objective-first-b2-u04-l02'},
+  life:{'U4.1':'life-intermediate-u04-l01'}
+ };
+ const shellId=slots[lesson.courseProfileId]?.[lesson.lessonNumber];
+ const destination=lesson.courseProfileId==='life'?'LIFE U4. A&B':'Course B2';
  if(!shellId||verifiedUser?.role!=='admin')return false;
  if(coursePublishPending)return true;
  if(dirty||savingDraft||pendingSave){status('Finish saving the current draft before publishing.');return true;}
@@ -266,9 +270,9 @@ async function publishUnit4CourseDraft(){
  if(!Number.isSafeInteger(revision)||revision<1){status('Save the draft to Preview before publishing.');return true;}
  coursePublishPending=true;
  try{
-  status('Publishing the saved revision to Course B2…');
+  status(`Publishing the saved revision to ${destination}…`);
   await saveService.publishCourse({draftId,revision,shellId});
-  if(lesson.id===draftId)status('Course B2 publication saved.');
+  if(lesson.id===draftId)status(`${destination} publication saved.`);
  }catch(error){
   if(lesson.id===draftId)status('Publish failed: '+error.message);
  }finally{coursePublishPending=false;}
@@ -1232,7 +1236,7 @@ function wire(){
        verifiedSource:chatgptApprovalChecks.source,verifiedMedia:chatgptApprovalChecks.media,
        verifiedActivities:chatgptApprovalChecks.activities,comment:chatgptApprovalNote.trim()});
       lesson=approved;chatgptMessage='Teacher review recorded for Preview only. Final Publish remains disabled pending runtime QA.';
-      markDirty();render();
+      markDirty({reviewed:true});render();
     }catch(error){chatgptMessage='Approval not recorded: '+error.message;render();}
   });
   document.querySelector('[data-pdf-ai-file]')?.addEventListener('change',e=>{

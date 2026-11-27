@@ -3,17 +3,23 @@ import {auditAuditorium} from '../../assets/js/authoring/auditorium-quality.js';
 import {validateServerLesson} from './lessons.js';
 
 const slots = new Map([
-  ['objective-first-b2-u04-l01', 'U4.1'],
-  ['objective-first-b2-u04-l02', 'U4.2']
+  ['objective-first-b2-u04-l01', {profileId:'objective-first-b2', courseId:'objective-first-b2', lessonNumber:'U4.1'}],
+  ['objective-first-b2-u04-l02', {profileId:'objective-first-b2', courseId:'objective-first-b2', lessonNumber:'U4.2'}],
+  ['life-intermediate-u04-l01', {profileId:'life', courseId:'life-intermediate', lessonNumber:'U4.1'}]
 ]);
+
+export function coursePublicationSlot(shellId) {
+  return slots.get(shellId);
+}
 
 export function publicationBlockers(shellId, lesson) {
   const problems = validateServerLesson(lesson);
   if (problems.length) return problems;
 
-  if (!slots.has(shellId) || lesson.courseProfileId !== 'objective-first-b2' ||
-      lesson.lessonNumber !== slots.get(shellId)) {
-    return ['The draft does not match the selected Course B2 lesson.'];
+  const slot = coursePublicationSlot(shellId);
+  if (!slot || lesson.courseProfileId !== slot.profileId ||
+      lesson.lessonNumber !== slot.lessonNumber) {
+    return ['The draft does not match the selected course lesson.'];
   }
 
   const review = lesson.assistedAuthoring;

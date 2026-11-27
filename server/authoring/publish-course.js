@@ -1,17 +1,16 @@
 import {requireAuth, requireSameOrigin} from '../_auth.js';
 import {getResearchDb, isBoundToExpectedPreviewDatabase} from '../_research-db.js';
-import {recordCoursePublication} from './course-publication.js';
+import {coursePublicationSlot, recordCoursePublication} from './course-publication.js';
 
 import {courseImage, projectCourseLesson, checkCourseActivity} from './course-learner.js';
 
-const courseSlots=['objective-first-b2-u04-l01','objective-first-b2-u04-l02'];
-
-async function courseAccess(sql,user){
-  if(user.role!=='student'||String(user.student_id||'').trim().toUpperCase()==='TEST001')return true;
+async function courseAccess(sql,user,slot){
+  if(user.role!=='student')return true;
+  if(slot.courseId==='objective-first-b2' && String(user.student_id||'').trim().toUpperCase()==='TEST001')return true;
   const [membership]=await sql`SELECT 1 FROM auth_class_members m
     JOIN classes c ON c.class_id::text=m.class_id
     WHERE m.student_user_id=${user.user_id} AND m.status='active'
-      AND c.status='active' AND c.course_id='objective-first-b2'
+      AND c.status='active' AND c.course_id=${slot.courseId}
     LIMIT 1`;
   return Boolean(membership);
 }
@@ -20,10 +19,10 @@ async function readPublication(req,res){
   const staff=await requireAuth(req,res,['admin','teacher','student']);
   if(!staff)return;
   const shellId=req.query?.shellId;
-  if(!courseSlots.includes(shellId))return res.status(404).json({ok:false,error:'Unknown course lesson.'});
+  if(!coursePublicationSlot(shellId))return res.status(404).json({ok:false,error:'Unknown course lesson.'});
   try{
     const sql=getResearchDb();
-    if(!await courseAccess(sql,staff))return res.status(403).json({ok:false,error:'Active Course B2 membership is required.'});
+    if(!await courseAccess(sql,staff,coursePublicationSlot(shellId)))return res.status(403).json({ok:false,error:'Active membership in this course is required.'});
     if(req.query?.summary==='1'){
       const [row]=await sql`SELECT shell_id, lesson->>'title' AS title
         FROM studio_course_publications_v1 WHERE shell_id=${shellId}`;
@@ -56,12 +55,12 @@ async function checkActivity(req,res){
   const student=await requireAuth(req,res,['student']);
   if(!student)return;
   const {shellId,blockId,values}=req.body||{};
-  if(!courseSlots.includes(shellId)||typeof blockId!=='string'||blockId.length>120){
+  if(!coursePublicationSlot(shellId)||typeof blockId!=='string'||blockId.length>120){
     return res.status(400).json({ok:false,error:'Invalid activity.'});
   }
   try{
     const sql=getResearchDb();
-    if(!await courseAccess(sql,student))return res.status(403).json({ok:false,error:'Active Course B2 membership is required.'});
+    if(!await courseAccess(sql,student,coursePublicationSlot(shellId)))return res.status(403).json({ok:false,error:'Active membership in this course is required.'});
     const [row]=await sql`SELECT lesson FROM studio_course_publications_v1 WHERE shell_id=${shellId}`;
     const score=row&&checkCourseActivity(row.lesson,blockId,values);
     if(!score)return res.status(422).json({ok:false,error:'Activity or response is unavailable.'});
@@ -89,7 +88,7 @@ export default async function publishCourse(req, res) {
   const {draftId, revision, shellId} = req.body || {};
   if (typeof draftId !== 'string' || !/^[a-zA-Z0-9_-]{4,120}$/.test(draftId) ||
       !Number.isSafeInteger(revision) || revision < 1 ||
-      !courseSlots.includes(shellId)) {
+      !coursePublicationSlot(shellId)) {
     return res.status(400).json({ok: false, error: 'A saved draft revision and a Unit 4 lesson slot are required.'});
   }
 

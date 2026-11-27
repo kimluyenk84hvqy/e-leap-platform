@@ -36,7 +36,7 @@ async function resourceForShell(shellId){const r=await resources();const p=r.pla
 function localResources(shellId){return ELEAPResourceManager.forShell(shellId)}
 function bindShellActions(){$$('[data-shell]',content).forEach(b=>b.onclick=async()=>{const res=await resourceForShell(b.dataset.shell);const sh=shellById(b.dataset.shell);if(res&&sh?.type==='lesson')location.href=`engine/lesson-host.html?resource=${encodeURIComponent(res.id)}`;else go(['shell',b.dataset.shell])});$$('[data-manage]',content).forEach(b=>b.onclick=e=>{e.stopPropagation();manage(b.dataset.manage)});$$('[data-selfmanage]',content).forEach(b=>b.onclick=()=>manage(b.dataset.selfmanage));$$('[data-add]',content).forEach(b=>b.onclick=()=>addChild(b.dataset.add));$$('[data-resource-add]',content).forEach(b=>b.onclick=()=>addResource(b.dataset.resourceAdd))}
 async function coursePublicationLink(shellId){
-  if(!['teacher','admin','student'].includes(role)||!['objective-first-b2-u04-l01','objective-first-b2-u04-l02'].includes(shellId))return '';
+  if(!['teacher','admin','student'].includes(role)||!['objective-first-b2-u04-l01','objective-first-b2-u04-l02','life-intermediate-u04-l01'].includes(shellId))return '';
   try{
     const url='/api/authoring/publish-course?summary=1&shellId='+encodeURIComponent(shellId);
     const reply=await getJSON(url);
