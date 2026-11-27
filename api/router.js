@@ -1,3 +1,4 @@
+import publishCourse from '../server/authoring/publish-course.js';
 import authoringLessons from '../server/authoring/lessons.js';
 import authoringPdfAI from '../server/authoring/pdf-ai-build.js';
 import authLogin from '../server/auth/login.js';
@@ -28,6 +29,7 @@ import researchReadingJigsaw from '../server/research/reading-jigsaw.js';
 import researchReadingJigsawPhoto from '../server/research/reading-jigsaw-photo.js';
 
 const ROUTES={
+  'authoring/publish-course':publishCourse,
   'authoring/lessons':authoringLessons,
   'authoring/pdf-ai-build':authoringPdfAI,
   'auth/login':authLogin,
