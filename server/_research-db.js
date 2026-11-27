@@ -37,8 +37,10 @@ export function isBoundToExpectedPreviewDatabase(){
     const host=new URL(getConnectionString()).hostname.toLowerCase();
     // Unique to Neon branch br-holy-surf-b3fhwfih, including read-write,
     // pooled and Neon compute-binding host variants.
-    return /^ep-square-term-b35ucjfc(?:[-.]|$)/.test(host) &&
-      host.endsWith('.neon.tech');
+    const expectedEndpoint=process.env.VERCEL_GIT_COMMIT_REF==='preview/life-u41-publication'
+      ? /^ep-cool-math-b39o0rw5(?:[-.]|$)/
+      : /^ep-square-term-b35ucjfc(?:[-.]|$)/;
+    return expectedEndpoint.test(host) && host.endsWith('.neon.tech');
   }catch{return false;}
 }
 
