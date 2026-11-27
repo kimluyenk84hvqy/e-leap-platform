@@ -21,6 +21,7 @@ import {E_LEAP_SMART_TEMPLATES,createSmartTemplate} from './smart-templates.js';
 import {normaliseDeliveryPolicy,E_LEAP_DELIVERY_POLICIES} from './assessment-policy.js';
 import {auditLesson} from './quality-gate.js';
 import {ELeapAuthoringSaveService} from './authoring-save-service.js';
+import {createNativeLessonRequest,bindTrackReferences} from './authoring/native-authoring-request.js';
 import {validateNativePackage,nativeSourceReview,resolvePrivateMedia,sourceFromNativeDraft} from './authoring/native-blueprint.js';
 import {suggestCoursePlan} from './authoring/course-adaptive-plan.js';
 import {inspectPdfLesson,requestPdfAiLesson,toUnverifiedLessonDraft,getPdfAiCapability} from './authoring/pdf-ai-intake.js';
@@ -76,6 +77,7 @@ const saveService=new ELeapAuthoringSaveService();
 let serverDraftIndex=[],savingDraft=false,pendingSave=false,adaptiveFocus='Reading',adaptivePlan=null;
 let pdfAiFile=null,pdfAiExtracted=null,pdfAiBusy=false,pdfAiStart=1,pdfAiEnd=8,pdfAiRights=false,pdfAiConsent=false,pdfAiCapability=null,pdfAiMessage='Select a PDF and lesson pages; PDF bytes stay in your browser.';
 let pdfAiExpectedPassages=0,pdfAiSourceGate=null,pdfAiBatchRanges='',pdfAiBatchPlan=null,pdfAiBatchMessage='Plan a small batch by page ranges.';
+let nativeBrief='';
 let chatgptIncludeSource=false,chatgptResponseText='',chatgptApprovalChecks={source:false,media:false,activities:false},chatgptApprovalNote='',chatgptMessage='Send a lesson request to ChatGPT; paste its structured JSON reply here.';
 let lesson=null, selectedScreen=0, selectedBlock=0, dirty=false, previewRole='teacher', autosaveTimer=null;
 const jigsawPreviewAccounts=new Map(); // Teacher-only UI filter; NOT an authorized learner assignment.
@@ -428,7 +430,9 @@ function lessonProps(){
   <label><input type="checkbox" data-chatgpt-source ${chatgptIncludeSource?'checked':''}> Include extracted PDF text in ChatGPT request (only if permitted)</label>
   <div class="studio-course-options">
    <button type="button" class="studio-btn" data-chatgpt-send>Send to AI Review · Copy</button>
-   <button type="button" class="studio-btn" data-chatgpt-download>Download request JSON</button>
+   <button type="button" class="studio-btn" data-chatgpt-download>Download review JSON</button>
+  <label>Complete lesson brief<textarea data-native-brief rows="3" placeholder="Scope, duration, sections and teaching requirements">${esc(nativeBrief)}</textarea></label>
+  <button type="button" class="studio-btn primary" data-native-request>Download complete lesson request</button>
   </div>
   <label>Import AI Lesson · Paste ChatGPT response JSON
    <textarea data-chatgpt-response rows="4" placeholder="Paste the complete JSON object returned by ChatGPT…">${esc(chatgptResponseText)}</textarea>
@@ -542,7 +546,13 @@ async function importNativeLessonPackage(file){
  const target=lesson;
  if(target.status!=='draft'||target.resourceBank||target.screens?.some(x=>x.sourceReviewDraft||x.resourceStage))throw Error('Open an ordinary editable lesson draft.');
  const fingerprint=JSON.stringify(target);
- const pkg=JSON.parse(await file.text());
+ let pkg=JSON.parse(await file.text());
+ if(pkg.schema==='eleap-native-lesson-package-v1'&&pkg.courseProfileId===target.courseProfileId&&String(pkg.lessonNumber).toLowerCase()===String(target.lessonNumber).toLowerCase()&&pkg.screens?.some(s=>s.blocks?.some(b=>(b.type==='audio'&&b.content?.track!=null)||(b.type==='listening'&&b.activity?.media?.track!=null)))){
+   const response=await fetch('/api/studio-media',{credentials:'same-origin',cache:'no-store'});
+   const data=await response.json();
+   if(!response.ok||!data.ok||!Array.isArray(data.files))throw Error('Media library unavailable.');
+   pkg=bindTrackReferences(pkg,data.files);
+ }
  const title=validateNativePackage(pkg,target);
  const sourcePackageReview=nativeSourceReview(pkg);
  if(!pkg.courseProfileId&&!confirm('Legacy package: confirm this belongs to '+target.courseLabel+'.'))return;
@@ -569,7 +579,7 @@ async function importNativeLessonPackage(file){
      const z=modelCreateBlock(b.type);
      if(b.type==='text'){z.content.text=nonempty(b.content?.text,10000);z.content.role=['body','eyebrow','display','heading'].includes(b.content?.role)?b.content.role:'body';}
      else if(b.type==='image'){
-       if(!media.has(b.content?.assetId))throw Error('Missing packaged image.');
+       if(!media.has(b.content?.assetId)&&!/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(b.content?.assetId||''))throw Error('Missing packaged or private image.');
        Object.assign(z.content,{assetId:b.content.assetId,src:'',alt:nonempty(b.content.alt,200),caption:limit(b.content.caption||'',400),fit:'contain'});
      }else if(['audio','video'].includes(b.type)){
        Object.assign(z.content,{assetId:b.content.assetId,src:'',label:nonempty(b.content.label||b.type,200),transcript:limit(b.content.transcript||'',20000)});
@@ -1088,6 +1098,22 @@ function wire(){
     }catch(error){chatgptMessage='Review export failed: '+String(error?.message||error)}
     render();
   }
+  document.querySelector('[data-native-brief]')?.addEventListener('input',e=>{nativeBrief=e.target.value;});
+  document.querySelector('[data-native-request]')?.addEventListener('click',async()=>{
+   try{
+    const target=lesson;
+    const response=await fetch('/api/studio-media',{credentials:'same-origin',cache:'no-store'});
+    const data=await response.json();
+    if(!response.ok||!data.ok||!Array.isArray(data.files))throw Error('Media library unavailable.');
+    if(target!==lesson)throw Error('Active draft changed.');
+    const combos=Object.entries(TEACHING_COMBOS).map(([id,spec])=>({id,label:spec.label,steps:createTeachingCombo(id)[0]?.combo?.steps?.map(x=>x.id)||[]}));
+    const request=createNativeLessonRequest(lesson,{brief:nativeBrief,includeSource:chatgptIncludeSource,layouts:E_LEAP_LAYOUT_IDS,combos,files:data.files});
+    const a=document.createElement('a'),url=URL.createObjectURL(new Blob([JSON.stringify(request,null,2)],{type:'application/json'}));
+    a.href=url;a.download='eleap-native-request-'+lesson.id+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+    chatgptMessage='Complete lesson request downloaded. Import the returned native package.';
+   }catch(error){chatgptMessage='Complete request failed: '+error.message;}
+   render();
+  });
   document.querySelector('[data-chatgpt-send]')?.addEventListener('click',()=>sendChatGPTReview(false));
   document.querySelector('[data-chatgpt-download]')?.addEventListener('click',()=>sendChatGPTReview(true));
   document.querySelector('[data-chatgpt-file]')?.addEventListener('change',async event=>{

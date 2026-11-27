@@ -22,7 +22,7 @@ td button{max-width:116px;padding:8px}code{word-break:break-all}
 <section class="panel">
 <h2>Learning materials</h2><div id="status">Checking access…</div><p class="muted">Upload once; reuse by Asset ID. Original PPT stays temporary until its extracted assets are verified.</p>
 <div class="grid"><div><label for="category">Material type</label><select id="category"><option value="textbook">Textbook — keep</option><option value="audio">Audio — keep</option><option value="temporary">PowerPoint — temporary</option><option value="image">Image — reuse</option><option value="video">Video — reuse</option></select></div>
-<div><label for="file">Select a file</label><input id="file" type="file" accept=".pdf,.pptx,.docx,.jpg,.jpeg,.png,.webp,.mp3,.wav,.m4a,.mp4"></div></div>
+<div><label for="file">Select file(s)</label><input id="file" type="file" accept=".pdf,.pptx,.docx,.jpg,.jpeg,.png,.webp,.mp3,.wav,.m4a,.mp4"></div><div id="audio-course-field" hidden><label for="audio-course">Audio textbook</label><select id="audio-course"><option value="">Select textbook</option><option value="life">LIFE</option><option value="objective-first-b2">Objective First B2</option><option value="objective-pet-b1">Objective PET B1</option></select></div></div>
 <p><button id="upload" disabled>Upload selected file</button></p><p id="message" role="status" class="muted"></p>
 <div class="warn" id="warning">Uploading is disabled until private access, the completion callback, the quota controls and download permissions pass Preview testing. Do not upload copyrighted textbooks into an unverified public store.</div>
 </section>
@@ -30,10 +30,14 @@ td button{max-width:116px;padding:8px}code{word-break:break-all}
 <section class="panel"><h2>My materials</h2><div style="overflow-x:auto"><table><thead><tr><th>File</th><th>Type</th><th>Size</th><th>Actions</th></tr></thead><tbody id="records"><tr><td colspan="4">Loading…</td></tr></tbody></table></div></section>
 </main>
 <script type="module">
+import {persistDocumentMedia,listDocumentSources} from '../assets/js/authoring/document-library.js';
+import {canonicalAudioName} from '../assets/js/authoring/native-authoring-request.js';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const mb=x=>(Number(x||0)/1e6).toFixed(1)+' MB';
-let uploadEnabled=false;
+let uploadEnabled=false,documentAudioEnabled=false,busy=false;
+function updateUploadControls(){const audio=$('category').value==='audio';$('audio-course-field').hidden=!audio;$('file').multiple=audio;$('file').accept=audio?'.mp3,.wav,.m4a':'.pdf,.pptx,.docx,.jpg,.jpeg,.png,.webp,.mp4';$('upload').textContent=audio?'Upload selected audio files':'Upload selected file';const available=audio?documentAudioEnabled:uploadEnabled;$('upload').disabled=busy||!available;$('warning').hidden=available;}
+$('category').addEventListener('change',()=>{$('file').value='';updateUploadControls();});
 async function refresh(){
  try{
  const r=await fetch('/api/studio-media',{credentials:'same-origin',cache:'no-store'});
@@ -44,12 +48,13 @@ async function refresh(){
   throw Error('HTTP '+r.status+': '+(data.error||'Library is unavailable'));
  }
  uploadEnabled=Boolean(data.uploadEnabled);
+ documentAudioEnabled=false;
+ try{documentAudioEnabled=(await listDocumentSources()).uploadEnabled===true;}catch{}
  $('status').textContent=uploadEnabled?'Teacher/Administrator · Upload available':'Teacher/Administrator · Library preview';
  const usage=data.usage||{};
  $('usage').textContent=mb(usage.bytes)+' / '+mb(usage.limit);
  $('meter').value=usage.limit?Math.min(100,usage.bytes/usage.limit*100):0;
- $('upload').disabled=!uploadEnabled;
- $('warning').hidden=uploadEnabled;
+ updateUploadControls();
  $('records').innerHTML=(data.files||[]).map(a=>
  '<tr><td>'+esc(a.original_name)+'</td><td>'+esc(a.category)+'</td><td>'+mb(a.bytes)+'</td><td><button class="secondary" data-open="'+esc(a.asset_id)+'">Open</button> <button class="secondary" data-archive="'+esc(a.asset_id)+'">Archive</button></td></tr>'
  ).join('')||'<tr><td colspan="4">No uploaded materials yet.</td></tr>';
@@ -63,12 +68,31 @@ $('records').addEventListener('click',async e=>{
  const out=await r.json();$('message').textContent=out.note||out.error||'';await refresh();
 });
 $('upload').addEventListener('click',async()=>{
+ if(busy)return;
+ if($('category').value==='audio'){
+  if(!documentAudioEnabled)return;
+  const files=Array.from($('file').files||[]);
+  if(!files.length)return void($('message').textContent='Select audio files.');
+  try{
+   const course=$('audio-course').value;
+   const types={mp3:'audio/mpeg',wav:'audio/wav',m4a:'audio/mp4'};
+   const items=files.map(file=>{const name=canonicalAudioName(file.name,course);return {name,type:types[name.split('.').pop()],blob:file,id:'document:'+crypto.randomUUID(),category:'audio'};});
+   if(new Set(items.map(x=>x.name)).size!==items.length)throw Error('Duplicate track filenames in selection.');
+   busy=true;updateUploadControls();$('category').disabled=true;
+   let done=0;const failures=[];
+   for(const item of items){try{$('message').textContent='Uploading '+(done+failures.length+1)+' / '+items.length+'…';await persistDocumentMedia([item],null);done++;}catch(e){failures.push(item.name+': '+e.message);}}
+   await refresh();
+   $('message').textContent=done+' / '+items.length+' confirmed. '+(failures.length?failures.join(' | '):'Audio saved.');
+  }catch(e){$('message').textContent=e.message;}
+  finally{busy=false;$('category').disabled=false;updateUploadControls();}
+  return;
+ }
  if(!uploadEnabled)return;
  const file=$('file').files?.[0];if(!file)return void($('message').textContent='Please select a file.');
  const types={pdf:'application/pdf',pptx:'application/vnd.openxmlformats-officedocument.presentationml.presentation',docx:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',webp:'image/webp',mp3:'audio/mpeg',wav:'audio/wav',m4a:'audio/mp4',mp4:'video/mp4'};
  const extension=file.name.split('.').pop().toLowerCase(),mime=types[extension];
  if(!mime)return void($('message').textContent='Unsupported file type.');
- $('upload').disabled=true;$('message').textContent='Preparing secure upload…';
+ busy=true;updateUploadControls();$('message').textContent='Preparing secure upload…';
  try{
  const sha=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',await file.arrayBuffer()))).map(x=>x.toString(16).padStart(2,'0')).join('');
  const {upload}=await import('https://esm.sh/@vercel/blob@2.6.1/client?bundle');
@@ -77,7 +101,7 @@ $('upload').addEventListener('click',async()=>{
  clientPayload:JSON.stringify({name:file.name,bytes:file.size,mime,sha256:sha,category:$('category').value})});
  $('message').textContent='Upload received. Refresh the list after completion callback.';
  await refresh();
- }catch(e){$('message').textContent='Upload failed: '+e.message}finally{$('upload').disabled=!uploadEnabled}
+ }catch(e){$('message').textContent='Upload failed: '+e.message}finally{busy=false;updateUploadControls()}
 });
 refresh();
 </script></body></html>

@@ -19,7 +19,7 @@ export function validateNativePackage(pkg,target){
    if(a.answerKey&&!unique(a.answerKey))throw Error('Duplicate or invalid answer key.');
    if(b.type==='ordering'&&(a.answerKey?.length!==a.items.length||!a.answerKey.every(k=>a.items.some(x=>x.id===k))))throw Error('Invalid ordering key.');
    if(b.type==='categorising'&&(!unique(a.categories)||a.items.some(x=>!a.categories.includes(x.category))))throw Error('Invalid categories.');
-   if(['audio','video','listening','video-question'].includes(b.type)&&!uuid((b.content||a.media)?.assetId))throw Error('Private media ID required.');
+   if(['audio','video','listening','video-question'].includes(b.type)&&!uuid((['audio','video'].includes(b.type)?b.content:a.media)?.assetId))throw Error('Private media ID required.');
   }
  }
  return pkg.title;
@@ -37,7 +37,7 @@ export function nativeSourceReview(pkg){
  return {source,notes:notes.map(v=>text(v,2000)),status:'teacher-review-required'};
 }
 export async function resolvePrivateMedia(screens,fetcher=globalThis.fetch){
- const refs=[];for(const s of screens)for(const b of s.blocks){if(['audio','video'].includes(b.type))refs.push([b.content,b.type]);if(['listening','video-question'].includes(b.type))refs.push([b.activity.media,b.type==='listening'?'audio':'video']);}
+ const refs=[];for(const s of screens)for(const b of s.blocks){if(['audio','video'].includes(b.type))refs.push([b.content,b.type]);if(b.type==='image'&&uuid(b.content?.assetId))refs.push([b.content,'image']);if(['listening','video-question'].includes(b.type))refs.push([b.activity.media,b.type==='listening'?'audio':'video']);}
  if(!refs.length)return;
  const response=await fetcher('/api/studio-media',{cache:'no-store'});const body=await response.json();if(!response.ok||!body.ok||!Array.isArray(body.files))throw Error('Media library unavailable.');
  for(const [ref,kind] of refs)if(!uuid(ref.assetId)||!body.files.some(f=>f.asset_id===ref.assetId&&f.status==='active'&&f.content_type?.startsWith(kind+'/')))throw Error('Media missing or wrong type.');
